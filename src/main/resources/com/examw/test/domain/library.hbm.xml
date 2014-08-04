@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.examw.test.domain.library">
+	<!-- 来源管理 -->
+	<class name="Source" table="tbl_Examw_Test_Library_Sources">
+		<cache usage="read-write" />
+		<!-- 来源ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 来源代码 -->
+		<property name="code" type="string" length="10" unique="true" not-null="true" />
+		<!-- 来源名称 -->
+		<property name="name" type="string" length="32" not-null="true" />
+	</class>
+	<!-- 试卷 -->
+	<class name="Paper" table="tbl_Examw_Test_Library_Papers">
+		<cache usage="read-write" />
+		<!-- 试卷ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 试卷名称 -->
+		<property name="name" type="string" length="32" not-null="true" />
+		<!-- 类型（1-真题，2-模拟题，3-预测题，4-练习题） -->
+		<property name="type" type="integer" />
+		<!-- 状态（0-未审核，1-已审核，2-已发布）-->
+		<property name="status" type="integer" />
+		<!-- 所属科目 -->
+		<many-to-one name="subject" column="subject_id" class="com.examw.test.domain.settings.Subject" not-null="true"/>
+		<!-- 价格（考试币） -->
+		<property name="price" type="integer" />
+		<!-- 总分 -->
+		<property name="score" type="big_decimal" />
+		<!-- 时长 -->
+		<property name="time" type="integer" />
+		<!-- 使用年份（4位数字） -->
+		<property name="year" type="integer" />
+		<!-- 试卷来源 -->
+		<many-to-one name="source" column="source_id" class="Source" />
+		<!-- 创建时间 -->
+		<property name="createTime" column="create_time" type="timestamp" />
+		<!-- 最后修改时间 -->
+		<property name="lastTime" column="last_time" type="timestamp" />
+		<!-- 发布时间 -->
+		<property name="publishTime" column="publish_time" type="timestamp" />
+		<!-- 试卷结构集合 -->
+		<set name="structures" inverse="false" cascade="save-update" order-by="orderNo asc">
+			<key column="paper_id" />
+			<one-to-many class="Structure"/>
+		</set>
+	</class>
+	<!-- 试卷结构 -->
+	<class name="Structure" table="tbl_Examw_Test_Library_Structures">
+		<cache usage="read-write" />
+		<!-- 结构ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 结构标题 -->
+		<property name="title" type="string" length="32" />
+		<!-- 题型 -->
+		<property name="type" type="integer" />
+		<!-- 分数 -->
+		<property name="score" type="big_decimal" />
+		<!-- 排序号 -->
+		<property name="orderNo" type="integer" />
+		<!-- 所属试卷 -->
+		<many-to-one name="paper" column="paper_id" class="Paper" />
+		<!-- 上级结构 -->
+		<many-to-one name="parent" column="pid" class="Structure" />
+		<!--  子结构集合 -->
+		<set name="children" inverse="true" cascade="save-update" order-by="orderNo asc">
+			<key column="pid" />
+			<one-to-many class="Structure"/>
+		</set>
+		<!-- 结构下题目集合 -->
+		<set name="items" inverse="false" cascade="save-update" order-by="orderNo asc">
+			<key column="structure_id" />
+			<one-to-many class="StructureItem"/>
+		</set>
+	</class>
+	<!-- 结构题目 -->
+	<class name="StructureItem" table="tbl_Examw_Test_Library_StructureItems">
+		<cache usage="read-write" />
+		<!-- 结构题目ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 所属结构 -->
+		<many-to-one name="structure" column="structure_id" class="Structure" />
+		<!-- 结构题目序号 -->
+		<property name="serial" type="string" length="10" />
+		<!-- 所属题目  -->
+		<many-to-one name="item" column="item_id" class="Item" />
+		<!-- 结构题目分数 -->
+		<property name="score" type="big_decimal" />
+		<!-- 排序号 -->
+		<property name="orderNo" type="integer" />
+		<!-- 共享题集合 -->
+		<set name="shareItemScores" inverse="false" cascade="save-update">
+			<key column="structure_item_id" />
+			<one-to-many class="StructureShareItemScore"/>
+		</set>
+	</class>
+	<!-- 结构共享题目 -->
+	<class name="StructureShareItemScore" table="tbl_Examw_Test_Library_StructureShareItemScores">
+		<cache usage="read-write" />
+		<!-- 共享题ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 共享题序号 -->
+		<property name="serial" type="string" length="10" />
+		<!-- 所属结构题目 -->
+		<many-to-one name="structureItem" column="structure_item_id" class="StructureItem" />
+		<!-- 共享题分数 -->
+		<property name="score" type="big_decimal" />
+		<!-- 所属共享题目 -->
+		<many-to-one name="subItem" column="sub_item_id" class="Item" />
+	</class>
+	<!-- 题目 -->
+	<class name="Item" table="tbl_Examw_Test_Library_Items">
+		<cache usage="read-write" />
+		<!-- 题目ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 题型 (1-单选，2-多选，3-不定向选择，4-判断题，5-问答题，6-共享提干，7-共享答案)-->
+		<property name="type" type="integer" not-null="true" />
+		<!-- 内容 -->
+		<property name="content" type="text" />
+		<!-- 难度值 -->
+		<property name="level" type="integer" />
+		<!-- 所属科目 -->
+		<many-to-one name="subject" column="subject_id" class="com.examw.test.domain.settings.Subject" />
+		<!-- 题目答案 -->
+		<property name="answer" type="text" />
+		<!-- 题目解析 -->
+		<property name="analysis" type="text" />
+		<!-- 验证码 -->
+		<property name="checkCode" type="string" length="64" />
+		<!-- 来源 -->
+		<many-to-one name="source" column="source_id" class="Source" />
+		<!-- 使用年份(yyyy) -->
+		<property name="year" type="integer" />
+		<!-- 类型(1-真题，2-模拟题，3-练习题) -->
+		<property name="opt" type="integer" />
+		<!-- 状态(0-未审核，1-已审核) -->
+		<property name="status" type="integer" />
+		<!-- 创建时间 -->
+		<property name="createTime" type="timestamp" />
+		<!-- 最后修改时间 -->
+		<property name="lastTime" type="timestamp" />
+		<!-- 排序号 -->
+		<property name="orderNo" type="integer" />
+		<!-- 父题目 -->
+		<many-to-one name="parent" column="pid" class="Item" />
+		<!-- 子题目集合 -->
+		<set name="children" inverse="true" cascade="save-update" order-by="orderNo asc">
+			<key column="pid" />
+			<one-to-many class="Item"/>
+		</set>
+	</class>
+</hibernate-mapping>

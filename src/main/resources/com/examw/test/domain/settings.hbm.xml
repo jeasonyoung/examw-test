@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.examw.test.domain.settings">
+	<!-- 地区设置 -->
+	<class name="Area"  table="tbl_Examw_Test_Settings_Area">
+		<cache usage="read-write" />
+		<!-- 地区ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 地区代码 -->
+		<property name="code" type="string" length="10" unique="true" not-null="true" />
+		<!-- 地区名称 -->
+		<property name="name" type="string" length="32" not-null="true" />
+		<!-- EN简称 -->
+		<property name="abbr" type="string" length="10" unique="true" not-null="true" />
+	</class>
+	<!-- 考试类别 -->
+	<class name="Category" table="tbl_Examw_Test_Settings_Categories">
+		<cache usage="read-write" />
+		<!-- 考试类别ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 考试类别代码 -->
+		<property name="code" type="string" length="10" unique="true" not-null="true" />
+		<!-- 考试类别名称 -->
+		<property name="name" type="string" length="32" not-null="true" />
+		<!-- 考试类别EN简称 -->
+		<property name="abbr" type="string" length="10" unique="true" not-null="true" />
+		<!-- 上级考试类别 -->
+		<many-to-one name="parent" column="pid" class="Category" />
+		<!-- 子考试类别集合 -->
+		<set name="children" inverse="true" cascade="save-update" order-by="code asc">
+			<key column="pid" />
+			<one-to-many class="Category"/>
+		</set>
+		<!-- 考试集合 -->
+		<set name="exams" inverse="true" lazy="true" order-by="code asc">
+			<key column="category_id" />
+			<one-to-many class="Exam"/>
+		</set>
+	</class>
+	<!-- 考试 -->
+	<class name="Exam" table="tbl_Examw_Test_Settings_Exams">
+		<cache usage="read-write" />
+		<!-- 考试ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 考试代码 -->
+		<property name="code" type="string" length="10" unique="true" not-null="true" />
+		<!-- 考试名称 -->
+		<property name="name" type="string" length="32" not-null="true" />
+		<!-- 考试EN简称 -->
+		<property name="abbr" type="string" length="10" unique="true" not-null="true" />
+		<!-- 所属类别 -->
+		<many-to-one name="category" column="category_id" class="Category" not-null="true"/>
+		<!-- 所属地区 -->
+		<many-to-one name="area" column="area_id" class="Area" not-null="true" />
+		<!-- 考试科目集合 -->
+		<set name="subjects" inverse="true" lazy="true" order-by="code asc">
+			<key column="exam_id" />
+			<one-to-many class="Subject"/>
+		</set>
+	</class>
+	<!-- 考试科目 -->
+	<class name="Subject" table="tbl_Examw_Test_Settings_Subjects">
+		<cache usage="read-write" />
+		<!-- 科目ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 科目代码 -->
+		<property name="code" type="string" length="10" unique="true" not-null="true" />
+		<!-- 科目名称 -->
+		<property name="name" type="string" length="32" not-null="true" />
+		<!-- 所属考试 -->
+		<many-to-one name="exam" column="exam_id" class="Exam" not-null="true" />
+		<!-- 所属地区 -->
+		<many-to-one name="area" column="area_id" class="Area" />
+	</class>
+</hibernate-mapping>

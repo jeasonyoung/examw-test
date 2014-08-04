@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.examw.test.domain.products">
+	<!-- 软件类型 -->
+	<class name="SoftwareType" table="tbl_Examw_Test_Products_SoftwareTypes">
+		<cache usage="read-write" />
+		<!-- 类型ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 类型代码 -->
+		<property name="code" type="string" length="10" unique="true" not-null="true" />
+		<!-- 类型名称 -->
+		<property name="name" type="string" length="32" not-null="true" />
+		<!-- 关联限制集合 -->
+		<set name="limits" inverse="true" lazy="true">
+			<key column="type_id" />
+			<one-to-many class="SoftwareTypeLimit"/>
+		</set>
+		<!-- 绑定记录 -->
+		<set name="records" inverse="true" lazy="true">
+			<key column="software_type_id" />
+			<one-to-many class="RegistrationBindRecord"/>
+		</set>
+	</class>
+	<!-- 销售渠道 -->
+	<class name="Channel" table="tbl_Examw_Test_Products_Channels">
+		<cache usage="read-write" />
+		<!-- 渠道ID  -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 渠道代码 -->
+		<property name="code" type="string" length="10" unique="true" not-null="true" />
+		<!-- 渠道名称 -->
+		<property name="name" type="string" length="32" not-null="true" />
+	</class>
+	<!-- 产品软件 -->
+	<class name="Software" table="tbl_Examw_Test_Products_Softwares">
+		<cache usage="read-write" />
+		<!-- 软件ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 软件代码 -->
+		<property name="code" type="string" length="10" not-null="true"/>
+		<!-- 软件名称 -->
+		<property name="name" type="string" length="32" not-null="true" />
+		<!-- 所属产品 -->
+		<many-to-one name="product" column="product_id" class="Product" />
+		<!-- 软件类型 -->
+		<many-to-one name="type" column="type_id" class="SoftwareType" />
+		<!-- 版本 -->
+		<property name="version" type="float" />
+		<!-- 软件介绍 -->
+		<property name="content" type="text" />
+		<!-- 宣传图片 -->
+		<property name="img" type="string" length="1024" />
+		<!-- 下载地址 -->
+		<property name="url" type="string" length="1024" />
+		<!-- 所属渠道 -->
+		<many-to-one name="channel" column="channel_id" class="Channel" />
+		<!-- 下载次数 -->
+		<property name="count" type="long" />
+		<!--  状态(0-正常，－1-删除) -->
+		<property name="status" type="integer" />
+		<!-- 创建时间 -->
+		<property name="createTime" type="timestamp" />
+		<!-- 最后修改时间 -->
+		<property name="lastTime" type="timestamp" />
+	</class>
+	<!-- 产品 -->
+	<class name="Product" table="tbl_Examw_Test_Products_Products">
+		<cache usage="read-write" />
+		<!-- 产品ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 产品代码 -->
+		<property name="code" type="string" length="10" unique="true" not-null="true"/>
+		<!-- 产品名称 -->
+		<many-to-one name="exam" column="exam_id" class="com.examw.test.domain.settings.Exam" />
+		<!-- 包含科目集合 -->
+		<set name="subjects" inverse="false" cascade="save-update" table="tbl_Examw_Test_Products_ProductSubjects">
+			<key column="product_id" />
+			<many-to-many class="com.examw.test.domain.settings.Subject" column="subject_id" />
+		</set>
+		<!-- 产品被关联集合 -->
+		<set name="relations" inverse="true" order-by="createTime desc">
+			<key column="product_id" />
+			<one-to-many class="RelationProduct"/>
+		</set>
+		<!-- 产品定价 -->
+		<property name="price" type="big_decimal" />
+		<!-- 产品优惠价 -->
+		<property name="discount" type="big_decimal" />
+		<!-- 产品介绍 -->
+		<property name="content" type="text" />
+		<!-- 创建时间 -->
+		<property name="createTime" type="timestamp" />
+		<!-- 最后修改时间 -->
+		<property name="lastTime" type="timestamp" />
+		<!--  状态(0-正常，－1-删除) -->
+		<property name="status" type="integer" />
+	</class>
+	<!-- 产品用户 -->
+	<class name="ProductUser" table="tbl_Examw_Test_Products_Users">
+		<cache usage="read-write" />
+		<!-- 用户ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 用户代码 -->
+		<property name="code" type="string" length="10" unique="true" not-null="true"/>
+		<!-- 用户名称 -->
+		<property name="name" type="string" length="32" not-null="true" />
+		<!-- 手机号码 -->
+		<property name="mobile" type="string" length="20" />
+		<!-- 用户状态 (0-禁用，1-启用，－1－删除)-->
+		<property name="status" type="integer" />
+		<!-- 创建时间 -->
+		<property name="createTime" type="timestamp" />
+		<!-- 最后修改时间 -->
+		<property name="lastTime" type="timestamp" />
+	</class>
+	<!-- 关联产品 -->
+	<class name="RelationProduct" table="bl_Examw_Test_Products_RelationProducts">
+		<cache usage="read-write" />
+		<!-- 关联产品ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 关联产品名称 -->
+		<property name="name" type="string" length="32" not-null="true" />
+		<!-- 所属产品 -->
+		<many-to-one name="product" column="product_id" class="Product" unique-key="uk_relationProduct" not-null="true"/>
+		<!-- 所属注册码 -->
+		<many-to-one name="registration" column="registration_id" class="Registration" unique-key="uk_relationProduct" not-null="true"/>
+		<!-- 关联时间 -->
+		<property name="createTime" column="relation_time" type="timestamp" />
+	</class>
+	<!-- 软件限制 -->
+	<class name="SoftwareTypeLimit" table="tbl_Examw_Test_Products_SoftwareTypeLimits">
+		<cache usage="read-write" />
+		<!-- 软件限制ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 软件类型 -->
+		<many-to-one name="type" column="type_id" class="SoftwareType"  unique-key="uk_registration_type" not-null="true" />
+		<!-- 关联注册码 -->
+		<many-to-one name="registration" column="registration_id" class="Registration" unique-key="uk_registration_type" not-null="true" />
+		<!--  绑定次数 -->
+		<property name="time" type="integer" />
+	</class>
+	<!-- 注册码管理 -->
+	<class name="Registration" table="tbl_Examw_Test_Products_Registrations">
+		<cache usage="read-write" />
+		<!--  注册码ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 注册码 -->
+		<property name="code" type="string" length="32" unique="true" not-null="true"/>
+		<!-- 关联产品集合 -->
+		<set name="products" inverse="false" cascade="save-update" order-by="createTime desc">
+			<key column="registration_id" />
+			<one-to-many class="RelationProduct"/>
+		</set>
+		<!-- 关联销售渠道 -->
+		<many-to-one name="channel" column="channel_id" class="Channel" />
+		<!-- 关联用户 -->
+		<many-to-one name="user" column="user_id" class="ProductUser" />
+		<!-- 使用期限（月） -->
+		<property name="limit" type="integer" />
+		<!-- 软件限制集合 -->
+		<set name="typeLimits" inverse="false" cascade="save-update" order-by="time asc">
+			<key column="registration_id" />
+			<one-to-many class="SoftwareTypeLimit"/>
+		</set>
+		<!-- 原价 -->
+		<property name="price" type="big_decimal" />
+		<!-- 优惠价 -->
+		<property name="discount" type="big_decimal" />
+		<!-- 状态(0-未激活，1-激活，－1-停用，－2注销) -->
+		<property name="status" type="integer" />
+		<!-- 创建时间 -->
+		<property name="createTime" column="create_time" type="timestamp" />
+		<!-- 最后修改时间 -->
+		<property name="lastTime" column="last_time" type="timestamp" />
+		<!-- 激活时间 -->
+		<property name="startTime" column="start_time" type="timestamp" />
+		<!-- 过期时间 -->
+		<property name="endTime" column="end_time" type="timestamp" />
+		<!-- 绑定记录集合 -->
+		<set name="bindRecords" inverse="false" cascade="save-update" order-by="createTime desc">
+			<key column="registration_id" />
+			<one-to-many class="RegistrationBindRecord"/>
+		</set>
+	</class>
+	<!-- 注册码绑定记录 -->
+	<class name="RegistrationBindRecord" table="tbl_Examw_Test_Products_RegistrationBindRecord">
+		<cache usage="read-write" />
+		<!-- 绑定记录ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 所属注册码 -->
+		<many-to-one name="registration" column="registration_id" class="Registration" unique-key="uk_registration_software_type" not-null="true" />
+		<!-- 所属软件类型 -->
+		<many-to-one name="softwareType" column="software_type_id" class="SoftwareType" unique-key="uk_registration_software_type" not-null="true" />
+		<!-- 机器码 -->
+		<property name="machineCode" type="string" length="64" />
+		<!-- 机器信息 -->
+		<property name="detail" type="string" length="512" />
+		<!-- 绑定时间 -->
+		<property name="createTime" type="timestamp" />
+	</class>
+	<!-- 注册码日志 -->
+	<class name="RegistrationLog" table="bl_Examw_Test_Products_RegistrationBindRecord_Logs">
+		<cache usage="read-write" />
+		<!-- 日志ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 所属注册码 -->
+		<many-to-one name="registration" column="registration_id" class="Registration" not-null="true" />
+		<!-- 所属软件 -->
+		<many-to-one name="software" column="software_id" class="Software" />
+		<!-- 机器码 -->
+		<property name="machineCode" type="string" length="64" />
+		<!-- 机器信息 -->
+		<property name="detail" type="string" length="512" />
+		<!-- IP地址 -->
+		<property name="ip" type="string" length="32" />
+		<!-- 操作类型(1-绑定注册码,2-更新数据,3-软件更新) -->
+		<property name="type" type="integer" />
+		<!-- 机器同步次数（从机器上获取） -->
+		<property name="time" type="long" />
+		<!-- 记录时间 -->
+		<property name="createTime" type="timestamp" />
+	</class>
+</hibernate-mapping>

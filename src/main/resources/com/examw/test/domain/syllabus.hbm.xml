@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.examw.test.domain.syllabus">
+	<!-- 出版社 -->
+	<class name="Press" table="tbl_Examw_Test_Syllabus_Press">
+		<cache usage="read-write" />
+		<!-- 出版社ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 出版社名称 -->
+		<property name="name" type="string" length="32" not-null="true" />
+	</class>
+	<!-- 考试大纲 -->
+	<class name="Syllabus" table="tbl_Examw_Test_Syllabus_TestSyllabus">
+		<cache usage="read-write" />
+		<!-- 要点ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 要点代码 -->
+		<property name="code" type="string" length="10" unique="true" not-null="true"/>
+		<!-- 要点 -->
+		<property name="title" type="string" length="1024" />
+		<!-- 所属科目 -->
+		<many-to-one name="subject" column="subject_id" class="com.examw.test.domain.settings.Subject" />
+		<!-- 上级要点 -->
+		<many-to-one name="parent" column="pid" class="Syllabus" />
+		<!-- 子要点集合 -->
+		<set name="children" inverse="true" cascade="save-update" order-by="code asc">
+			<key column="pid" />
+			<one-to-many class="Syllabus"/>
+		</set>
+	</class>
+	<!-- 教材课本 -->
+	<class name="TextBook" table="tbl_Examw_Test_Syllabus_TextBooks">
+		<cache usage="read-write" />
+		<!-- 教材ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 教材名称 -->
+		<property name="name" type="string" length="32" not-null="true"/>
+		<!-- 教材价格 -->
+		<property name="price" type="big_decimal" />
+		<!-- 所属科目 -->
+		<many-to-one name="subject" column="subject_id" class="com.examw.test.domain.settings.Subject" not-null="true"/>
+		<!-- 所属出版社 -->
+		<many-to-one name="press" column="press_id" class="Press" not-null="true"/>
+		<!-- 知识点集合 -->
+		<set name="knowledges" inverse="false" cascade="save-update" order-by="code asc">
+			<key column="book_id" />
+			<one-to-many class="Knowledge"/>
+		</set>
+	</class>
+	<!-- 知识点 -->
+	<class name="Knowledge" table="tbl_Examw_Test_Syllabus_Knowledges">
+		<cache usage="read-write" />
+		<!-- 知识点ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 知识点代码 -->
+		<property name="code" type="string" length="10" />
+		<!-- 知识点内容 -->
+		<property name="content" type="text" />
+		<!-- 所属教材 -->
+		<many-to-one name="book" column="book_id" class="TextBook" />
+		<!-- 所属大纲要点 -->
+		<many-to-one name="syllabus" column="syllabus_id" class="Syllabus" />
+	</class>
+</hibernate-mapping>
