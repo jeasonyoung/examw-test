@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Set;
 
 import com.examw.test.domain.settings.Subject;
+import com.examw.test.domain.syllabus.Syllabus;
 
 /**
  * 题目。
@@ -20,6 +21,7 @@ public class Item implements Serializable {
 	private Date createTime,lastTime;
 	private Item parent;
 	private Set<Item> children;
+	private Set<Syllabus> syllabuses;
 	/**
 	 * 类型－单选。
 	 */
@@ -321,5 +323,20 @@ public class Item implements Serializable {
 	 */
 	public void setOrderNo(Integer orderNo) {
 		this.orderNo = orderNo;
+	}
+	/**
+	 * 获取所属大纲要点集合。
+	 * @return 所属大纲要点集合。
+	 */
+	public Set<Syllabus> getSyllabuses() {
+		return syllabuses;
+	}
+	/**
+	 * 设置所属大纲要点集合。
+	 * @param syllabuses 
+	 *	  所属大纲要点集合。
+	 */
+	public void setSyllabuses(Set<Syllabus> syllabuses) {
+		this.syllabuses = syllabuses;
 	}
 }
