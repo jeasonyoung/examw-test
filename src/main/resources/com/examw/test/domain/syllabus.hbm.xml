@@ -7,7 +7,7 @@
 		<!-- 出版社ID -->
 		<id name="id"  type="string"  length="64" />
 		<!-- 出版社名称 -->
-		<property name="name" type="string" length="32" not-null="true" />
+		<property name="name" type="string" length="32" unique="true" not-null="true" />
 	</class>
 	<!-- 考试大纲 -->
 	<class name="Syllabus" table="tbl_Examw_Test_Syllabus_TestSyllabus">
