@@ -17,7 +17,7 @@ public class Registration implements Serializable {
 	private Channel channel;
 	private ProductUser user;
 	private Set<SoftwareTypeLimit> typeLimits;
-	private Integer limit,status;
+	private Integer limitTime,status;
 	private BigDecimal price,discount;
 	private Date createTime,lastTime,startTime,endTime; 
 	private Set<RegistrationBindRecord> bindRecords;
@@ -131,16 +131,16 @@ public class Registration implements Serializable {
 	 * 获取使用期限。
 	 * @return 使用期限。
 	 */
-	public Integer getLimit() {
-		return limit;
+	public Integer getLimitTime() {
+		return limitTime;
 	}
 	/**
 	 * 设置使用期限。
-	 * @param limit 
+	 * @param limitTime 
 	 *	  使用期限。
 	 */
-	public void setLimit(Integer limit) {
-		this.limit = limit;
+	public void setLimitTime(Integer limitTime) {
+		this.limitTime = limitTime;
 	}
 	/**
 	 * 获取状态。

@@ -156,7 +156,7 @@
 		<!-- 关联用户 -->
 		<many-to-one name="user" column="user_id" class="ProductUser" />
 		<!-- 使用期限（月） -->
-		<property name="limit" type="integer" />
+		<property name="limitTime" type="integer" />
 		<!-- 软件限制集合 -->
 		<set name="typeLimits" inverse="false" cascade="save-update" order-by="time asc">
 			<key column="registration_id" />
