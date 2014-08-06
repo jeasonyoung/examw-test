@@ -28,7 +28,7 @@ import com.examw.test.service.settings.IAreaService;
 @RequestMapping(value = "/settings/area")
 public class AreaController {
 	private static final Logger logger = Logger.getLogger(AreaController.class);
-	//登录日志服务接口。
+	//地区服务接口。
 	@Resource
 	private IAreaService areaService;
 	/**

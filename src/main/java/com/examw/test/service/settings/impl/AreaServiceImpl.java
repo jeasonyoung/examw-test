@@ -20,8 +20,7 @@ import com.examw.test.service.settings.IAreaService;
  */
 public class AreaServiceImpl extends BaseDataServiceImpl<Area, AreaInfo>
 		implements IAreaService {
-	private static final Logger logger = Logger
-			.getLogger(AreaServiceImpl.class);
+	private static final Logger logger = Logger.getLogger(AreaServiceImpl.class);
 	private IAreaDao areaDao;
 
 	/**
