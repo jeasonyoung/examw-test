@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.model.Json;
 import com.examw.model.TreeNode;
+import com.examw.test.domain.security.Right;
 import com.examw.test.model.syllabus.SyllabusInfo;
 import com.examw.test.service.syllabus.ISyllabusService;
 /**
@@ -32,7 +34,7 @@ public class SyllabusController {
 	 * 获取列表页面。
 	 * @return
 	 */
-	//@RequiresPermissions({ModuleConstant. + ":" + Right.VIEW})
+	@RequiresPermissions({ModuleConstant.SYLLABUSS_SYLLABUS+ ":" + Right.VIEW})
 	@RequestMapping(value={"","/list"}, method = RequestMethod.GET)
 	public String list(Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载列表页面...");
@@ -43,7 +45,7 @@ public class SyllabusController {
 	 * @return
 	 * 编辑页面。
 	 */
-	//@RequiresPermissions({ModuleConstant.+ ":" + Right.UPDATE})
+	@RequiresPermissions({ModuleConstant.SYLLABUSS_SYLLABUS+ ":" + Right.VIEW})
 	@RequestMapping(value="/edit", method = RequestMethod.GET)
 	public String edit(Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
@@ -56,7 +58,7 @@ public class SyllabusController {
 	 * @return
 	 * 更新后数据。
 	 */
-	//@RequiresPermissions({ModuleConstant. + ":" + Right.UPDATE})
+	@RequiresPermissions({ModuleConstant.SYLLABUSS_SYLLABUS+ ":" + Right.VIEW})
 	@RequestMapping(value="/update", method = RequestMethod.POST)
 	@ResponseBody
 	public Json update(SyllabusInfo info){
@@ -77,7 +79,7 @@ public class SyllabusController {
 	 * @param id
 	 * @return
 	 */
-	//@RequiresPermissions({ModuleConstant. + ":" + Right.DELETE})
+	@RequiresPermissions({ModuleConstant.SYLLABUSS_SYLLABUS+ ":" + Right.VIEW})
 	@RequestMapping(value="/delete", method = RequestMethod.POST)
 	@ResponseBody
 	public Json delete(String id){
