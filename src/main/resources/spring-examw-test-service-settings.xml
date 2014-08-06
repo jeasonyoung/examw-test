@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<!-- service -->
+	<!-- 基础设置 服务接口实现 begin -->
+	<!-- 行政地区服务 -->
+	<bean id="areaService" class="com.examw.test.service.settings.impl.AreaServiceImpl">
+		<!-- 地区数据操作接口 -->
+		<property name="areaDao" ref="areaDao" />
+	</bean>
+	<!-- 基础设置 服务接口实现 end -->
+</beans>

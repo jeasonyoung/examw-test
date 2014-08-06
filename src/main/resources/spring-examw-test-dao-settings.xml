@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<!-- dao -->
+	
+	<!-- 基础设置 数据接口实现 begin -->
+	<!-- 行政地区Dao -->
+	<bean id="areaDao"  class="com.examw.test.dao.settings.impl.AreaDaoImpl">
+	  <property name="sessionFactory"  ref="sessionFactory" />
+	</bean>
+	<!-- 考试分类Dao -->
+	<bean id="categoryDao" class="com.examw.test.dao.settings.impl.CategoryDaoImpl">
+	  <property name="sessionFactory"  ref="sessionFactory" />
+	</bean>
+	<!-- 具体考试Dao -->
+	<bean id="examDao"  class="com.examw.test.dao.settings.impl.ExamDaoImpl">
+	   <property name="sessionFactory"  ref="sessionFactory" />
+	</bean>
+	<!-- 科目Dao -->
+	<bean id="subjectDao"  class="com.examw.test.dao.settings.impl.SubjectDaoImpl">
+	   <property name="sessionFactory"  ref="sessionFactory" />
+	</bean>
+	<!-- 基础设置 数据接口实现end -->
+</beans>

@@ -4,4 +4,6 @@
 	<!-- service -->
 	<!-- 系统管理 服务接口实现-->
 	<import resource="spring-examw-test-service-security.xml"/>
+	<!-- 基础设置 服务接口实现-->
+	<import resource="spring-examw-test-service-settings.xml"/>
 </beans>
