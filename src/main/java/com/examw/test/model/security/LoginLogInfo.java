@@ -6,6 +6,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
 import com.examw.model.Paging;
+import com.examw.support.CustomDateSerializer;
 /**
  * 登录日志信息。
  * @author yangyong.
@@ -85,6 +86,7 @@ public class LoginLogInfo extends Paging {
 	 * @return
 	 * 登录时间。
 	 */
+	@JsonSerialize(using = CustomDateSerializer.class)
 	public Date getTime() {
 		return time;
 	}

@@ -7,5 +7,9 @@
 	<bean id="sourceDao" class="com.examw.test.dao.library.impl.SourceDaoImpl">
 		<property name="sessionFactory"  ref="sessionFactory" />
 	</bean>
+	<!-- 试卷数据接口 -->
+	<bean id="paperDao" class="com.examw.test.dao.library.impl.PaperDaoImpl">
+		<property name="sessionFactory"  ref="sessionFactory" />
+	</bean>
 	<!--  题库管理  数据接口实现 end -->
 </beans>
