@@ -9,4 +9,16 @@ public final class ModuleConstant {
 	 * 地区设置ID。
 	 */
 	public static final String SETTINGS_AREA = "ETS0000102";
+	/**
+	 * 考试分类ID。
+	 */
+	public static final String SETTINGS_CATEGORY = "ETS0000202";
+	/**
+	 * 考试设置ID。
+	 */
+	public static final String SETTINGS_EXAM = "ETS0000302";
+	/**
+	 * 科目设置ID。
+	 */
+	public static final String SETTINGS_SUBJECT = "ETS0000402";
 }
