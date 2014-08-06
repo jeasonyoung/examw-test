@@ -27,7 +27,7 @@ import com.examw.test.service.settings.ICategoryService;
  * @since 2014年8月6日 下午3:48:01.
  */
 @Controller
-@RequestMapping(value = "/settings/caregory")
+@RequestMapping(value = "/settings/category")
 public class CategoryController {
 	private static final Logger logger = Logger.getLogger(CategoryController.class);
 	//考试分类服务接口。
@@ -51,8 +51,9 @@ public class CategoryController {
 	 */
 	@RequiresPermissions({ModuleConstant.SETTINGS_CATEGORY + ":" + Right.UPDATE})
 	@RequestMapping(value="/edit", method = RequestMethod.GET)
-	public String edit(){
-		return "settings/catalog_edit";
+	public String edit(String pid,Model model){
+		model.addAttribute("CURRENT_CATEGORY_ID", pid);
+		return "settings/category_edit";
 	}
 	/**
 	 * 查询数据。

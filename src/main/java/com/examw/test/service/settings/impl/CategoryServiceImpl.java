@@ -81,9 +81,9 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 	@Override
 	public CategoryInfo update(CategoryInfo info) {
 		if(logger.isDebugEnabled()) logger.debug("更新数据...");
-		if(info == null || StringUtils.isEmpty(info.getId())) return null;
+		if(info == null) return null;
 		boolean isAdded = false;
-		Category data = this.categoryDao.load(Category.class, info.getId());
+		Category data = StringUtils.isEmpty(info.getId()) ? null :this.categoryDao.load(Category.class, info.getId());
 		if(isAdded = (data == null)){
 			if(StringUtils.isEmpty(info.getId())){
 				info.setId(UUID.randomUUID().toString());

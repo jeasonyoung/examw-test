@@ -1,21 +1,22 @@
-<#--章节设置列表-->
-<#include "ftl/comm.ftl"/>
+<#--考试分类列表-->
+<#include "comm.ftl"/>
 <#assign module="settings_category"/>
 <#assign dg="${module}_list_dg"/>
 <script type="text/javascript">
 <!--
 $(function(){
-	var current_catalog_id = "";
-	//subject tree
-	var s_t = $("#${module}_tree").tree({
+	var current_category_id = "";
+	//tree
+	var tree = $("#${module}_tree").tree({
 		url:"<@s.url '/settings/category/tree'/>",
 		onLoadError:function(e){
 			<@error_dialog "e"/>
 		},
 		onBeforeLoad:function(){
-			current_catalog_id =   = "";
+			current_category_id = "";
 		},
 		onClick:function(node){
+			current_category_id = node.id;
 			 ${dg}_search();
 		}
 	});
@@ -34,7 +35,7 @@ $(function(){
 		animate:true,
 		border:true,
 		striped:true,
-		sortName:"orderNo",
+		sortName:"code",
 		sortOrder:"asc",
 		columns:[[{
 			field:"id",
@@ -42,8 +43,7 @@ $(function(){
 		},{
 			title:"类别代码",
 			field:"code",
-			width:20,
-			sortable:true
+			width:20
 		},{
 			title:"类别名称",
 			field:"name",
@@ -52,34 +52,26 @@ $(function(){
 			title:"英文简称",
 			field:"abbr",
 			width:20
-		},{
-			title:"类别全称",
-			field:"orderNo",
-			width:10,
-			align:"right"
 		}]],
 		toolbar:"#${dg}_toobar",
 		onLoadError:function(e){
 			<@error_dialog "e"/>
 		},
 		onDblClickRow:function(row){
-			edit_window("编辑菜单",row);
+			edit_window("编辑考试分类",row);
 		}
 	});
 	//edit
 	function edit_window(title,row){
-		var c_id = current_catalog_id,e_id = current_exam_id,s_id = current_subject_id,chapterId = "";
+		var c_id = current_category_id;
 		if(row){
 			c_id = row.catalogId;
-			e_id = row.examId;
-			s_id = row.subjectId;
-			chapterId = row.id;
 		}
 		var d = $("<div/>").dialog({
 			title:title,
-			width:600,
-			height:400,
-			href:"<@s.url '/admin/settings/chapter/edit'/>?catalogId="+c_id+"&examId="+ e_id +"&subjectId=" + s_id + "&chapterId="+chapterId,
+			width:400,
+			height:300,
+			href:"<@s.url '/settings/category/edit'/>?pid="+c_id,
 			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">      
@@ -89,7 +81,7 @@ $(function(){
 				handler:function(){
 					$.messager.progress();
 					$("#${module}_edit_form").form("submit",{
-						url:"<@s.url '/admin/settings/chapter/update'/>",
+						url:"<@s.url '/settings/category/update'/>",
 						onSubmit: function(){
 							var isValid = $(this).form("validate");
 							if (!isValid)$.messager.progress("close");
@@ -105,6 +97,7 @@ $(function(){
 							if(data.success){
 								dg.treegrid("load");
 								dg.treegrid("unselectAll");
+								tree.tree("reload");
 								d.dialog("close");
 							}else{
 								$.messager.show({
@@ -134,15 +127,13 @@ $(function(){
 	};
 	//add
 	${dg}_add = function(){
-		edit_window("新增科目章节",null);
+		edit_window("新增考试分类",null);
 	};
 	//search
 	${dg}_search = function(){
 		dg.treegrid("load",{
 			  name:$("#${dg}_toobar input[name='name']").val(),
-			  catalogId:current_catalog_id,
-			  examId:current_exam_id,
-			  subjectId:current_subject_id
+			  pid:current_category_id
 		});
 	};
    <@shiro.hasPermission name="${PER_DELETE}">
@@ -173,6 +164,7 @@ $(function(){
 						if(data.success){
 							dg.treegrid("load");
 							dg.treegrid("unselectAll");
+							tree.tree("reload");
 						}else{
 							$.messager.show({
 								title:"提示",
@@ -194,11 +186,11 @@ $(function(){
 	 <div data-options="region:'west',title:'考试分类',split:true,tools: [{
 	 		iconCls:'icon-reload',
 	 		handler:function(){
-	 			$('#${module}_list_subject_tree').tree('reload');
+	 			$('#${module}_tree').tree('reload');
 	 			${dg}_search();
 	 		}
 	 	}]" style="padding:5px;width:190px;">
-	 	<ul id="${module}_list_subject_tree"></ul>
+	 	<ul id="${module}_tree"></ul>
 	 </div>
 	 <div data-options="region:'center',title:'章节列表'">
 		<table id="${dg}"></table>

@@ -48,6 +48,10 @@ public class CategoryDaoImpl extends BaseDaoImpl<Category> implements ICategoryD
 	
 	// 添加查询条件到HQL。
 	private String addWhere(CategoryInfo info, String hql,Map<String, Object> parameters) {
+		if (!StringUtils.isEmpty(info.getPid())) {
+			hql += " and (c.parent.id = :pid)";
+			parameters.put("pid", info.getPid());
+		}
 		if (!StringUtils.isEmpty(info.getName())) {
 			hql += " and (c.name like :name)";
 			parameters.put("name", "%" + info.getName() + "%");
