@@ -1,13 +1,16 @@
-package com.examw.test.domain.library;
+package com.examw.test.model.library;
 
-import java.io.Serializable;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
+import com.examw.model.Paging;
 /**
- * 来源。
- * @author yangyong.
- * @since 2014-08-02.
+ * 来源信息。
+ * @author yangyong
+ * @since 2014-08-06.
  */
-public class Source implements Serializable {
+@JsonSerialize(include = Inclusion.NON_NULL)
+public class SourceInfo extends Paging {
 	private static final long serialVersionUID = 1L;
 	private String id,code,name;
 	/**
