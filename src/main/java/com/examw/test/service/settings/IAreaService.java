@@ -9,5 +9,9 @@ import com.examw.test.service.IBaseDataService;
  * @since 2014年8月6日 下午1:48:28.
  */
 public interface IAreaService extends IBaseDataService<AreaInfo>{
-
+	/**
+	 * 加载最大代码值
+	 * @return
+	 */
+	Integer loadMaxCode();
 }

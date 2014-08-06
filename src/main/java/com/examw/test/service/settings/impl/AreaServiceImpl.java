@@ -105,5 +105,21 @@ public class AreaServiceImpl extends BaseDataServiceImpl<Area, AreaInfo>
 			}
 		}
 	}
+	
+	@Override
+	public Integer loadMaxCode() {
+		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
+		List<Area> sources = this.find(new AreaInfo(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public String getSort() {return "code"; } 
+			@Override
+			public String getOrder() { return "desc";}
+		});
+		if(sources != null && sources.size() > 0){
+			return new Integer(sources.get(0).getCode());
+		}
+		return null;
+	}
 
 }
