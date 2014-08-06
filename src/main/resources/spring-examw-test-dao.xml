@@ -5,6 +5,7 @@
 	<!--  系统管理 数据接口实现 -->
 	<import resource="spring-examw-test-dao-security.xml"/>
 	<!--  基础设置数据接口实现 -->
-	<import resource="spring-examw-test-dao-settings.xml"/>	<!-- 题库管理 数据接口实现 -->
+	<import resource="spring-examw-test-dao-settings.xml"/>	
+	<!-- 题库管理 数据接口实现 -->
 	<import resource="spring-examw-test-dao-library.xml"/>
 </beans>

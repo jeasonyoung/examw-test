@@ -29,20 +29,4 @@ public final class ModuleConstant {
 	 * 登录日志ID。
 	 */
 	public static final String SECURITY_LOGIN_LOG = "ETS0000601";
-	/**
-	 * 行政地区ID。
-	 */
-	public static final String SETTINGS_AREA = "ETS0000102";
-	/**
-	 * 考试分类ID。
-	 */
-	public static final String SETTINGS_CATEGORY = "ETS0000202";
-	/**
-	 * 考试设置ID。
-	 */
-	public static final String SETTINGS_EXAM = "ETS0000302";
-	/**
-	 * 考试分类ID。
-	 */
-	public static final String SETTINGS_SUBJECT = "ETS0000402";
 }

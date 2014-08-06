@@ -1,13 +1,12 @@
-<#--角色列表-->
+<#--来源列表页面-->
 <#include "comm.ftl"/>
-<#assign module="security_role"/>
+<#assign module="library_source"/>
 <#assign dg="${module}_list_dg"/>
 <script type="text/javascript">
 <!--
 $(function(){
-	//dg
 	var dg = $("#${dg}").datagrid({
-		url:"<@s.url '/security/role/datagrid'/>",
+		url:"<@s.url '/library/source/datagrid'/>",
 		fit:true,
 		fitColumns:true,
 		rownumbers:true,
@@ -18,60 +17,49 @@ $(function(){
 		border:true,
 		striped:true,
 		idField:"id",
-		sortName:"name",
-		sortOrder:"asc",
+		sortName:"code",
+		sortOrder:"desc",
 		columns:[[{
 			field:"id",
 			checkbox:true
 		},{
-			title:"角色名称",
-			field:"name",
-			width:30,
+			title:"来源代码",
+			field:"code",
+			width:20,
 			align:"left",
 			sortable:true
 		},{
-			title:"状态",
-			field:"statusName",
-			width:10,
-			align:"center",
-			sortable:true
-		},{
-			title:"描述",
-			field:"description",
+			title:"来源名称",
+			field:"name",
 			width:120,
 			align:"left",
 			sortable:true
-		},{
-			title:"角色权限",
-			field:"opt",
-			width:15,
-			align:"center",
-			formatter:function(value,data,index){
-				return "<a class='role-list-dg-opt-right' onclick='${dg}_right_window(\""+data.id +"\")' href='javascript:void(0)'>授权编辑</a>"
-			}
 		}]],
 		toolbar:"#${dg}_toobar",
 		onLoadError:function(e){
 			<@error_dialog "e"/>
 		},
-		onLoadSuccess:function(data){
-			dg_fields_format();
-		},
 		onDblClickRow:function(rowIndex,rowData){
-			edit_window("修改角色",rowIndex,rowData);
+			edit_window("编辑来源",rowIndex,rowData,null);
 		}
 	});
-	//format dg
-	function dg_fields_format(){
-		$(".role-list-dg-opt-right").linkbutton({text:"授权",plain:true,iconCls:"icon-edit"});
+	//add
+	var m = false;
+	${dg}_add = function(){
+		if(m) return;
+		m = true;
+		$.getJSON("<@s.url '/library/source/code'/>",function(data){
+			m = false;
+			edit_window("新增来源",0,null,data[0]);
+		});
 	};
 	//edit
-	function edit_window(title,index,row){
+	function edit_window(title,index,row,code){
 		var d = $("<div/>").dialog({
 			title:title,
 			width:400,
-			height:260,
-			href:"<@s.url '/security/role/edit'/>",
+			height:180,
+			href:"<@s.url '/library/source/edit'/>",
 			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
@@ -81,7 +69,7 @@ $(function(){
 				handler:function(){
 					$.messager.progress();
 					$("#${module}_edit_form").form("submit",{
-						url:"<@s.url '/security/role/update'/>",
+						url:"<@s.url '/library/source/update'/>",
 						onSubmit: function(){
 							var isValid = $(this).form("validate");
 							if (!isValid)$.messager.progress("close");
@@ -99,7 +87,6 @@ $(function(){
 									index:index,
 									row:data.data
 								});
-								dg_fields_format();
 								d.dialog("close");
 							}else{
 								$.messager.show({
@@ -123,6 +110,10 @@ $(function(){
 				$(this).dialog("destroy");
 			},
 			onLoad:function(){
+				if(code && !row){
+					$("#${module}_edit_form").form("load",{"code":code});
+					return;
+				}
 				if(row) $("#${module}_edit_form").form("load",row);
 			}
 	  });
@@ -132,39 +123,6 @@ $(function(){
 		dg.datagrid("load",{
 			  name:$("#${dg}_toobar input[name='name']").val()
 		});
-	};
-	//add
-	${dg}_add = function(){
-		edit_window("新增角色",0,null);
-	};
-	${dg}_right_window = function(roleId){
-		var d = $("<div/>").dialog({
-			title:"角色权限",
-			width:300,
-			height:500,
-			href:"<@s.url '/security/role/right'/>?roleId="+roleId,
-			modal:true,
-			buttons:[
-			<@shiro.hasPermission name="${PER_UPDATE}">
-			{
-				text:"保存",
-				iconCls:"icon-save",
-				handler:function(){
-					${module}_right_save(d);
-				}
-			},
-			</@shiro.hasPermission>
-			{
-				text:"关闭",
-				iconCls:"icon-cancel",
-				handler:function(){
-					d.dialog("close");
-				}
-			}],
-			onClose:function(){
-				$(this).dialog("destroy");
-			}
-	  });
 	};
 	<@shiro.hasPermission name="${PER_DELETE}">
 	//delete
@@ -179,7 +137,7 @@ $(function(){
 					ids.push(rows[i].id);
 				}
 				$.ajax({
-					url:"<@s.url '/security/role/delete'/>",
+					url:"<@s.url '/library/source/delete'/>",
 					type:"POST",
 					data:{
 						id:ids.join("|")
@@ -221,7 +179,7 @@ $(function(){
 	<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
 	</@shiro.hasPermission>
 	
-	<label>角色名称：<input name="name" type="text" style="width:198px;"/></label>
+	<label>来源名称：<input name="name" type="text" style="width:198px;"/></label>
 	
 	<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
 </div>
