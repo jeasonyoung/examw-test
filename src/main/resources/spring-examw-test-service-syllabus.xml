@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<!-- service -->
+	<!-- 考试大纲 服务接口实现 -->
+	<!-- 出版社服务 -->
+	<bean id="pressService" class="com.examw.test.service.syllabus.impl.PressServiceImpl">
+		<!-- 出版社数据接口 -->
+		<property name="pressDao" ref="pressDao"></property>
+	</bean>
+	<!-- 大纲服务 -->
+	<bean id="syllabusService" class="com.examw.test.service.syllabus.impl.SyllabusServiceImpl">
+		<!-- 大纲数据接口 -->
+		<property name="syllabusDao" ref="syllabusDao"></property>
+	</bean>
+</beans>
