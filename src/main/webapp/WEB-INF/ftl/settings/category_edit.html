@@ -1,0 +1,42 @@
+<!-- 考试分类编辑页面 -->
+<#include "comm.ftl"/>
+<#assign module="settings_category"/>
+<script type="text/javascript">
+<!--
+$(function(){
+	var c = $("#${module}_edit_form input[name='pid']").combotree({
+		url:"<@s.url '/settings/category/tree'/>",
+		valueField:"id",
+		textField:"name",
+		required:true,
+		onLoadError:function(e){
+			<@error_dialog "e"/>
+		},
+		onLoadSuccess:function(){
+			var id = "${CURRENT_CATEGORY_ID}";
+			if($.trim(id) == "") return;
+			c.combotree("setValue",id);
+		}
+	});
+});
+//-->
+</script>
+<form id="${module}_edit_form" method="POST" style="padding:10px;">
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">上级类别：</label>
+		<input name="pid" style="width:268px;"/>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">类别代码：</label>
+		<input type="text" name="code" class="easyui-validatebox" data-options="required:true" style="width:268px;" />
+		<input type="hidden" name="id"/>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">类别名称：</label>
+		<input type="text" name="name" class="easyui-validatebox" style="width:268px;" data-options="required:true"/>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">英文简称：</label>
+		<input type="text" name="abbr" class="easyui-validatebox" data-options="required:true,validType:['english','length[0,15]']" style="width:268px;"/>
+	</div>
+</form>

@@ -3,7 +3,7 @@ package com.examw.test.domain.library;
 import java.io.Serializable;
 
 /**
- * 来源管理。
+ * 来源。
  * @author yangyong.
  * @since 2014-08-02.
  */

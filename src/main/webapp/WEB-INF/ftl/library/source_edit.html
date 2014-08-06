@@ -1,0 +1,15 @@
+<#--来源编辑页面-->
+<#include "comm.ftl"/>
+<#assign module="library_source"/>
+<#assign form="${module}_edit_form"/>
+<form id="${form}" method="POST" style="padding:10px;">
+	<div style="float:left;margin-top:2px;width:100%;">
+		<label style="width:75px;">来源代码：</label>
+		<input type="text" name="code" class="easyui-validatebox"  style="width:268px;" data-options="required:true"/>
+		<input type="hidden" name="id"/>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">来源名称：</label>
+		<input type="text" name="name" class="easyui-validatebox"  style="width:268px;" data-options="required:true"/>
+	</div>
+</form>

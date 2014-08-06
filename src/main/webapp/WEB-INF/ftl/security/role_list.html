@@ -50,10 +50,10 @@ $(function(){
 				return "<a class='role-list-dg-opt-right' onclick='${dg}_right_window(\""+data.id +"\")' href='javascript:void(0)'>授权编辑</a>"
 			}
 		}]],
+		toolbar:"#${dg}_toobar",
 		onLoadError:function(e){
 			<@error_dialog "e"/>
 		},
-		toolbar:"#${dg}_toobar",
 		onLoadSuccess:function(data){
 			dg_fields_format();
 		},
