@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.model.DataGrid;
 import com.examw.model.Json;
+import com.examw.test.controllers.settings.ModuleConstant;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.settings.AreaInfo;
 import com.examw.test.service.settings.IAreaService;
@@ -27,7 +28,7 @@ import com.examw.test.service.settings.IAreaService;
 @RequestMapping(value = "/settings/area")
 public class AreaController {
 	private static final Logger logger = Logger.getLogger(AreaController.class);
-	//登录日志服务接口。
+	//地区服务接口。
 	@Resource
 	private IAreaService areaService;
 	/**
@@ -128,5 +129,18 @@ public class AreaController {
 			@Override
 			public String getOrder() { return "asc"; }
 		}).getRows();
+	}
+	
+	/**
+	 * 加载来源代码值。
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.SETTINGS_AREA + ":" + Right.VIEW})
+	@RequestMapping(value="/code", method = RequestMethod.GET)
+	@ResponseBody
+	public String[] code(){
+		Integer max = this.areaService.loadMaxCode();
+		if(max == null) max = 0;
+		return new String[]{ String.format("%02d", max + 1) };
 	}
 }

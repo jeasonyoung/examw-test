@@ -8,5 +8,11 @@
 		<!-- 地区数据操作接口 -->
 		<property name="areaDao" ref="areaDao" />
 	</bean>
+	
+	<!-- 考试分类服务 -->
+	<bean id="categoryService" class="com.examw.test.service.settings.impl.CategoryServiceImpl">
+		<!-- 地区数据操作接口 -->
+		<property name="categoryDao" ref="categoryDao" />
+	</bean>
 	<!-- 基础设置 服务接口实现 end -->
 </beans>

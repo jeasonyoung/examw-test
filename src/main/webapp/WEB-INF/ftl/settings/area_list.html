@@ -46,15 +46,15 @@ $(function(){
 			<@error_dialog "e"/>
 		},
 		onDblClickRow:function(rowIndex,rowData){
-			edit_window("编辑地区类别",rowIndex,rowData);
+			edit_window("编辑地区类别",rowIndex,rowData,null);
 		}
 	});
 	//edit
-	function edit_window(title,index,row){
+	function edit_window(title,index,row,code){
 		var d = $("<div/>").dialog({
 			title:title,
-			width:300,
-			height:200,
+			width:400,
+			height:230,
 			href:"<@s.url '/settings/area/edit'/>",
 			modal:true,
 			buttons:[
@@ -106,6 +106,10 @@ $(function(){
 				$(this).dialog("destroy");
 			},
 			onLoad:function(){
+				if(code && !row){
+					$("#${module}_edit_form").form("load",{"code":code});
+					return;
+				}
 				if(row) $("#${module}_edit_form").form("load",row);
 			}
 	  });
@@ -117,8 +121,14 @@ $(function(){
 		});
 	};
 	//add
+	var m = false;
 	${dg}_add = function(){
-		edit_window("新增行政地区",0,null);
+		if(m) return;
+		m = true;
+		$.getJSON("<@s.url '/settings/area/code'/>",function(data){
+			m = false;
+			edit_window("新增地区",0,null,data[0]);
+		});
 	};
 	<@shiro.hasPermission name="${PER_DELETE}">
 	//delete

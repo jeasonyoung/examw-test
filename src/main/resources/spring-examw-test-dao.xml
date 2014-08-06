@@ -2,10 +2,12 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 	<!-- dao -->
-	<!--  系统管理 数据接口实现 -->
+	<!-- 系统管理 数据接口实现 -->
 	<import resource="spring-examw-test-dao-security.xml"/>
-	<!--  基础设置数据接口实现 -->
+	<!-- 基础设置数据接口实现 -->
 	<import resource="spring-examw-test-dao-settings.xml"/>	
 	<!-- 题库管理 数据接口实现 -->
 	<import resource="spring-examw-test-dao-library.xml"/>
+	<!-- 考试大纲 数据接口实现 -->
+	<import resource="spring-examw-test-dao-syllabus.xml"/>
 </beans>
