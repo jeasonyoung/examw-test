@@ -2,15 +2,19 @@ package com.examw.test.model.syllabus;
 
 import java.util.Set;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+
 import com.examw.model.Paging;
 /**
  * 大纲信息。
  * @author lq.
  * @since 2014-08-06.
  */
+@JsonSerialize(include = Inclusion.NON_NULL)
 public class SyllabusInfo extends Paging {
 	private static final long serialVersionUID = 1L;
-	private String pid,fullName,id,code,title,subId,subName;
+	private String pid,fullName,id,code,title,subId,subName,cateId,cateName;
 	private Set<SyllabusInfo> children;
 	/**
 	 * 获取上级大纲ID。
@@ -131,5 +135,35 @@ public class SyllabusInfo extends Paging {
 	 */
 	public void setChildren(Set<SyllabusInfo> children) {
 		this.children = children;
+	}
+	/**
+	 * 获取所属考试类别ID。
+	 * @return 所属考试类别ID。
+	 */
+	public String getCateId() {
+		return cateId;
+	}
+	/**
+	 * 设置所属考试类别ID。
+	 * @param cateId
+	 * 所属考试类别ID。
+	 */
+	public void setCateId(String cateId) {
+		this.cateId = cateId;
+	}
+	/**
+	 * 获取所属考试类别名称。
+	 * @return 所属考试类别名称。
+	 */
+	public String getCateName() {
+		return cateName;
+	}
+	/**
+	 * 设置所属考试类别名称。
+	 * @param cateName
+	 * 所属考试类别名称。
+	 */
+	public void setCateName(String cateName) {
+		this.cateName = cateName;
 	}
 }

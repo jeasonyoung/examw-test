@@ -2,12 +2,22 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 	<!-- dao -->
+	<!-- 考试大纲数据接口实现begin -->
 	<!-- 出版社Dao -->
 	<bean id="pressDao" class="com.examw.test.dao.syllabus.impl.PressDaoImpl">
-		<property name="sessionFactory" ref="sessionFactory"></property>
+		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>
 	<!-- 大纲Dao -->
 	<bean id="syllabusDao" class="com.examw.test.dao.syllabus.impl.SyllabusDaoImpl">
-		<property name="sessionFactory" ref="sessionFactory"></property>
+		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>
+	<!-- 教材Dao -->
+	<bean id="bookDao" class="com.examw.test.dao.syllabus.impl.TextBookDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<!-- 知识点Dao -->
+	<bean id="knowDao" class="com.examw.test.dao.syllabus.impl.KnowledgeDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<!-- 考试大纲数据接口实现end -->
 </beans>

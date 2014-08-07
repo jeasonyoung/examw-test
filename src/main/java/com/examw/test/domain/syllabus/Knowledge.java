@@ -1,7 +1,6 @@
 package com.examw.test.domain.syllabus;
 
 import java.io.Serializable;
-
 /**
  * 知识点管理。
  * @author yangyong.

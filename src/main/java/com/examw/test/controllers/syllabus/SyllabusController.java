@@ -8,11 +8,13 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.examw.model.DataGrid;
 import com.examw.model.Json;
 import com.examw.model.TreeNode;
 import com.examw.test.domain.security.Right;
@@ -38,6 +40,8 @@ public class SyllabusController {
 	@RequestMapping(value={"","/list"}, method = RequestMethod.GET)
 	public String list(Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载列表页面...");
+		model.addAttribute("PER_UPDATE",ModuleConstant.SYLLABUSS_SYLLABUS + ":" + Right.UPDATE);
+		model.addAttribute("PER_DELETE",ModuleConstant.SYLLABUSS_SYLLABUS + ":" + Right.DELETE);
 		return "syllabus/syllabus_list";
 	}
 	/**
@@ -47,9 +51,23 @@ public class SyllabusController {
 	 */
 	@RequiresPermissions({ModuleConstant.SYLLABUSS_SYLLABUS+ ":" + Right.VIEW})
 	@RequestMapping(value="/edit", method = RequestMethod.GET)
-	public String edit(Model model){
+	public String edit(String cateId,String syllId,String subId,Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
+		model.addAttribute("CURRENT_CATE_ID", StringUtils.isEmpty(cateId) ? "" : cateId);
+		model.addAttribute("CURRENT_SYLL_ID", syllId);
+		model.addAttribute("CURRENT_SUB_ID", subId);
 		return "syllabus/syllabus_edit";
+	}
+	/**
+	 * 查询数据。
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.SYLLABUSS_SYLLABUS + ":" + Right.VIEW})
+	@RequestMapping(value="/datagrid", method = RequestMethod.POST)
+	@ResponseBody
+	public DataGrid<SyllabusInfo> datagrid(SyllabusInfo info){
+		if(logger.isDebugEnabled()) logger.debug("加载列表数据...");
+		return this.syllabusService.datagrid(info);
 	}
 	/**
 	 * 更新数据。

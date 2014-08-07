@@ -1,23 +1,13 @@
-<#--大纲编辑-->
+<#--教材编辑-->
 <#include "comm.ftl"/>
-<#assign module="syllabus_syllabus"/>
+<#assign module="syllabus_textbook"/>
 <#assign form="${module}_edit_form"/>
 <script type="text/javascript">
 <!--
 $(function(){
-	//parent syllabus
-	var parent_syllabus_cbt = $("#${form} input[name='pid']").combotree({
-		<#if (CURRENT_SUB_ID?length > 0)>
-		url:"<@s.url '/syllabus/syllabus/tree/${CURRENT_SUB_ID}?ignore='/>,
-		</#if>
-		lines:true,
-		onLoadError:function(e){
-			<@error_dialog "e"/>
-		}
-	});
 	//cate
 	var dept_cbt = $("#${form} input[name='cateId']").combotree({
-		url:"<@s.url '/settings/category/tree'/>",
+		url:"<@s.url '/org/dept/tree'/>",
 		required:true,
 		lines:true,
 		onLoadError:function(e){
@@ -53,21 +43,30 @@ $(function(){
 </script>
 <form id="${form}" method="POST" style="padding:10px;">
 	<div style="float:left;margin-top:12px;width:100%;">
-		<label style="width:75px;">上级要点：</label>
-		<input type="text" name="pid" style="width:319px;"/>
-	</div>
-	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">所属科目：</label>
 		<input type="text" name="cateId" style="width:154px;"/>
 		<input type="text" name="subId" style="width:160px;"/>
 		<input type="hidden" name="id">
 	</div> 
-	<div style="float:left; margin-top:12px; width:100%;">
-		<label style="width:75px;">要点代码：</label>
-		<input type="text" name="code" class="easyui-validatebox"  data-options="required:true" style="width:315px;"/>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">所属出版社：</label>
+		<input type="text" name="pressId" class="easyui-combobox" data-options="
+			url:'<@s.url '/syllabus/press/all'/>',
+			valueField:'id',
+			textField:'name',
+			multiple:false,
+			required:true,
+			onLoadError:function(e){
+				<@error_dialog 'e'/>
+			}
+		" style="width:320px;">
 	</div>
 	<div style="float:left; margin-top:12px; width:100%;">
-		<label style="width:75px;">要点名称：</label>
-		<input type="text" name="title" class="easyui-validatebox"  data-options="required:true" style="width:315px;"/>
+		<label style="width:75px;">教材名称：</label>
+		<input type="text" name="name" class="easyui-validatebox"  data-options="required:true" style="width:315px;"/>
+	</div>
+	<div style="float:left; margin-top:12px; width:100%;">
+		<label style="width:75px;">教材价格：</label>
+		<input type="text" name="price" class="easyui-validatebox"  data-options="required:true" style="width:315px;"/>
 	</div>
 </form>

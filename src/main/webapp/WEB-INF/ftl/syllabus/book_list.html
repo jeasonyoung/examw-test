@@ -1,13 +1,13 @@
-<#--出版社列表-->
+<#--教材列表-->
 <#include "comm.ftl"/>
-<#assign module="syllabus_press"/>
+<#assign module="syllabus_textbook"/>
 <#assign dg="${module}_list_dg"/>
 <script type="text/javascript">
 <!--
 $(function(){
 	//dg
 	var dg = $("#${dg}").datagrid({
-		url:"<@s.url '/syllabus/press/datagrid'/>",
+		url:"<@s.url '/syllabus/textbook/datagrid'/>",
 		fit:true,
 		fitColumns:true,
 		rownumbers:true,
@@ -24,10 +24,31 @@ $(function(){
 			field:"id",
 			checkbox:true
 		},{
-			title:"出版社名称",
-			field:"name",
-			width:30,
+			title:"所属科目",
+			field:"subName",
+			width:10,
 			align:"left",
+			sortable:true
+		}
+		,{
+			title:"教材名称",
+			field:"name",
+			width:10,
+			align:"left",
+			sortable:true
+		}
+		,{
+			title:"所属出版社",
+			field:"pressName",
+			width:20,
+			align:"left",
+			sortable:true
+		}
+		,{
+			title:"价格",
+			field:"price",
+			width:20,
+			align:"conter",
 			sortable:true
 		}]],
 		toolbar:"#${dg}_toobar",
@@ -35,30 +56,30 @@ $(function(){
 			<@error_dialog "e"/>
 		},
 		onDblClickRow:function(rowIndex,rowData){
-			edit_window("修改出版社",rowIndex,rowData);
+			edit_window("修改教材",rowIndex,rowData);
 		}
 	});
 	//add
 	${dg}_add = function(){
-		edit_window("新增出版社",0,null);
+		edit_window("新增教材",0,null);
 	};
 	//edit
 	function edit_window(title,index,row){
 		var d = $("<div/>").dialog({
 			title:title,
-			width:400,
-			height:130,
-			href:"<@s.url '/syllabus/press/edit'/>",
+			width:450,
+			height:250,
+			href:"<@s.url '/syllabus/textbook/edit'/>",
 			modal:true,
 			buttons:[
-			<@shiro.hasPermission name="${PER_UPDATE}">  
+			<@shiro.hasPermission name="${PER_UPDATE}">      
 			{
 				text:"保存",
 				iconCls:"icon-save",
 				handler:function(){
 					$.messager.progress();
 					$("#${module}_edit_form").form("submit",{
-						url:"<@s.url '/syllabus/press/update'/>",
+						url:"<@s.url '/syllabus/textbook/update'/>",
 						onSubmit: function(){
 							var isValid = $(this).form("validate");
 							if (!isValid)$.messager.progress("close");
@@ -122,7 +143,7 @@ $(function(){
 					ids.push(rows[i].id);
 				}
 				$.ajax({
-					url:"<@s.url '/syllabus/press/delete'/>",
+					url:"<@s.url '/syllabus/textbook/delete'/>",
 					type:"POST",
 					data:{
 						id:ids.join("|")
@@ -163,6 +184,6 @@ $(function(){
 	<@shiro.hasPermission name="${PER_DELETE}">
 	<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="${dg}_delete()">删除</a>
 	</@shiro.hasPermission>
-	<label>出版社名称：<input name="name" type="text" style="width:198px;"/></label>
+	<label>教材名称：<input name="name" type="text" style="width:198px;"/></label>
 	<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="${dg}_search()" style="margin-left:10px;">查询</a>
 </div>
