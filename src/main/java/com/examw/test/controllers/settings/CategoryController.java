@@ -1,6 +1,5 @@
 package com.examw.test.controllers.settings;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -17,7 +16,6 @@ import com.examw.model.DataGrid;
 import com.examw.model.Json;
 import com.examw.model.TreeNode;
 import com.examw.test.domain.security.Right;
-import com.examw.test.domain.settings.Category;
 import com.examw.test.model.settings.CategoryInfo;
 import com.examw.test.service.settings.ICategoryService;
 
@@ -72,49 +70,26 @@ public class CategoryController {
 	@RequestMapping(value = "/tree", method = {RequestMethod.GET,RequestMethod.POST})
 	@ResponseBody
 	public List<TreeNode> tree(){
-		List<TreeNode> result = new ArrayList<>();
-		List<Category> list = this.categroyService.loadAllCategorys();
-		if(list != null && list.size() > 0){
-			for(final Category data : list){
-				if(data == null) continue;
-				result.add(createTreeNode(data));
-			}
-		}
-		return result;
-	}
-	private TreeNode createTreeNode(Category data){
-		if(data == null) return null;
-		TreeNode node = new TreeNode();
-		node.setId(data.getId());
-		node.setText(data.getName());
-		if(data.getChildren() != null && data.getChildren().size() > 0){
-			List<TreeNode> list = new ArrayList<>();
-			for(Category c : data.getChildren()){
-				TreeNode t = this.createTreeNode(c);
-				 if(t != null) list.add(t);
-			}
-			node.setChildren(list);
-		}
-		return node;
+		return this.categroyService.loadAllCategorys();
 	}
 	/**
 	 * 考试类别考试树。
 	 * @return
 	 */
-//	@RequestMapping(value = "/exams-tree", method = {RequestMethod.GET,RequestMethod.POST})
-//	@ResponseBody
-//	public List<TreeNode> allCatalogExams(){
-//		return this.categroyService.loadAllCatalogExams();
-//	}
+	@RequestMapping(value = "/exams-tree", method = {RequestMethod.GET,RequestMethod.POST})
+	@ResponseBody
+	public List<TreeNode> allCatalogExams(){
+		return this.categroyService.loadAllCategoryExams();
+	}
 	/**
 	 * 考试科目树。
 	 * @return
 	 */
-//	@RequestMapping(value = "/subject-tree", method = { RequestMethod.GET, RequestMethod.POST})
-//	@ResponseBody
-//	public List<TreeNode> allCatalogExamSubjects(){
-//		return this.catalogService.loadAllCatalogExamSubjects();
-//	}
+	@RequestMapping(value = "/subject-tree", method = { RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public List<TreeNode> allCatalogExamSubjects(){
+		return this.categroyService.loadAllCategoryExamSubjects();
+	}
 	/**
 	 * 更新数据。
 	 * @param info
@@ -156,5 +131,15 @@ public class CategoryController {
 			logger.error("删除数据["+id+"]时发生异常:", e);
 		}
 		return result;
+	}
+	/**
+	 * 加载来源代码值。
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.SETTINGS_AREA + ":" + Right.VIEW})
+	@RequestMapping(value="/code", method = RequestMethod.GET)
+	@ResponseBody
+	public String[] code(String pid){
+		return this.categroyService.loadMaxCode(pid);
 	}
 }

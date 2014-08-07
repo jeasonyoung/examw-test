@@ -8,7 +8,6 @@ $(function(){
 		url:"<@s.url '/settings/category/tree'/>",
 		valueField:"id",
 		textField:"name",
-		required:true,
 		onLoadError:function(e){
 			<@error_dialog "e"/>
 		},
@@ -16,6 +15,11 @@ $(function(){
 			var id = "${CURRENT_CATEGORY_ID}";
 			if($.trim(id) == "") return;
 			c.combotree("setValue",id);
+		},
+		onChange:function(newValue, oldValue){
+			$.getJSON("<@s.url '/settings/category/code'/>?pid="+newValue,function(data){
+				$("#${module}_edit_form input[name='code']").val(data[0]);
+			});
 		}
 	});
 });

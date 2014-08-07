@@ -11,8 +11,28 @@
 	
 	<!-- 考试分类服务 -->
 	<bean id="categoryService" class="com.examw.test.service.settings.impl.CategoryServiceImpl">
-		<!-- 地区数据操作接口 -->
+		<!-- 分类数据操作接口 -->
 		<property name="categoryDao" ref="categoryDao" />
+	</bean>
+	
+	<!-- 考试设置服务 -->
+	<bean id="examService" class="com.examw.test.service.settings.impl.ExamServiceImpl">
+		<!-- 地区数据操作接口 -->
+		<property name="areaDao" ref="areaDao" />
+		<!-- 分类数据操作接口 -->
+		<property name="categoryDao" ref="categoryDao" />
+		<!-- 考试数据操作接口 -->
+		<property name="examDao" ref="examDao" />
+	</bean>
+	
+	<!-- 科目服务 -->
+	<bean id="subjectService" class="com.examw.test.service.settings.impl.SubjectServiceImpl">
+		<!-- 地区数据操作接口 -->
+		<property name="areaDao" ref="areaDao" />
+		<!-- 考试数据操作接口 -->
+		<property name="examDao" ref="examDao" />
+		<!-- 科目数据操作接口 -->
+		<property name="subjectDao" ref="subjectDao" />
 	</bean>
 	<!-- 基础设置 服务接口实现 end -->
 </beans>

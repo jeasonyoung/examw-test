@@ -15,6 +15,7 @@ public class SubjectInfo extends Paging{
 	private String id,code,name;
 	private String examId,examName;
 	private String areaId,areaName;
+	private String categoryId,categoryName;
 	/**
 	 * 获取科目ID。
 	 * @return 科目ID。
@@ -124,5 +125,37 @@ public class SubjectInfo extends Paging{
 	public void setAreaName(String areaName) {
 		this.areaName = areaName;
 	}
-
+	/**
+	 * 获取 所属分类ID
+	 * @return categoryId
+	 * 所属分类ID
+	 */
+	public String getCategoryId() {
+		return categoryId;
+	}
+	/**
+	 * 设置 所属分类ID
+	 * @param categoryId
+	 * 所属分类ID
+	 */
+	public void setCategoryId(String categoryId) {
+		this.categoryId = categoryId;
+	}
+	/**
+	 * 获取 所属分类名称
+	 * @return categoryName
+	 * 所属分类名称
+	 */
+	public String getCategoryName() {
+		return categoryName;
+	}
+	/**
+	 * 设置 所属分类名称
+	 * @param categoryName
+	 * 所属分类名称
+	 */
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+	
 }
