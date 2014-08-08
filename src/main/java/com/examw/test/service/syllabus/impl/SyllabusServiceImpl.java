@@ -74,6 +74,10 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 		if(data.getSubject() != null){
 			info.setSubId(data.getSubject().getId());
 			info.setSubName(data.getSubject().getName());
+			if(data.getSubject().getExam() != null){
+				info.setExamId(data.getSubject().getExam().getId());
+				info.setExamName(data.getSubject().getExam().getName());
+			}
 		}
 		return info;
 	}
@@ -119,6 +123,10 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 		if(data.getSubject() != null){
 			info.setSubId(data.getSubject().getId());
 			info.setSubName(data.getSubject().getName());
+			if(data.getSubject().getExam() != null){
+				info.setExamId(data.getSubject().getExam().getId());
+				info.setExamName(data.getSubject().getExam().getName());
+			}
 		}
 		return info;
 	}
@@ -157,6 +165,23 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 		}
 		return nodes;
 	}
+	/*
+	 * 加载所以的要点。
+	 * @see com.examw.test.service.syllabus.ISyllabusService#loadAllSyllabuss()
+	 */
+	@Override
+	public List<TreeNode> loadAllSyllabuss() {
+		if(logger.isDebugEnabled())logger.debug("加载所以的要点...");
+		List<TreeNode> result = new ArrayList<>();
+		List<Syllabus> list = this.syllabusDao.findSyllabuss(new SyllabusInfo());
+			if(list != null){
+				for(int  i = 0; i < list.size(); i++){
+					TreeNode e = this.createNode(list.get(i), null);
+					if(e != null) result.add(e);
+				}
+			}
+		return result;
+	}
 	//创建节点。
 	private TreeNode createNode(Syllabus data,String ignore){
 		if(data == null || (!StringUtils.isEmpty(ignore) && data.getId().equalsIgnoreCase(ignore))) return null;
@@ -165,12 +190,31 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 		node.setText(data.getTitle());
 		if(data.getChildren() != null){
 			List<TreeNode> children = new ArrayList<>();
-			for(Syllabus p : data.getChildren()){
-				TreeNode e = this.createNode(p, ignore);
+			for(Syllabus s : data.getChildren()){
+				TreeNode e = this.createNode(s, ignore);
 				if(e != null) children.add(e);
 			}
 			if(children.size() > 0)node.setChildren(children);
 		}
 		return node;
+	}
+	/*
+	 * 加载最大的代码值。
+	 * @see com.examw.oa.service.check.ICatalogService#loadMaxCode()
+	 */
+	@Override
+	public Integer loadMaxCode() {
+		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
+		List<Syllabus> sources = this.find(new SyllabusInfo(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public String getSort() {return "code"; } 
+			@Override
+			public String getOrder() { return "desc";}
+		});
+		if(sources != null && sources.size() > 0){
+			return new Integer(sources.get(0).getCode());
+		}
+		return null;
 	}
 }

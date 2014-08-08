@@ -70,4 +70,19 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 		}
 		return hql;
 	}
+	/*
+	 * 删除数据。
+	 * @see com.examw.test.dao.impl.BaseDaoImpl#delete(java.lang.Object)
+	 */
+	@Override
+	public void delete(Paper data) {
+		if(logger.isDebugEnabled()) logger.debug("删除数据...");
+		if(data == null) return;
+		if(data.getStatus() != Paper.STATUS_NONE){
+			String msg = "数据［"+data.getId() +","+ data.getName()+"］已被审核或发布不允许删除！";
+			if(logger.isDebugEnabled()) logger.debug(msg);
+			throw new RuntimeException(msg);
+		}
+		super.delete(data);
+	}
 }

@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -46,9 +47,23 @@ public class TextBookController {
 	 */
 	@RequiresPermissions({ModuleConstant.SYLLABUS_TEXTBOOK+ ":" + Right.VIEW})
 	@RequestMapping(value="/edit", method = RequestMethod.GET)
-	public String edit(Model model){
+	public String edit(String examId,String subId,Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
+		model.addAttribute("CURRENT_EXAM_ID", examId);
+		model.addAttribute("CURRENT_SUB_ID", subId);
 		return "syllabus/book_edit";
+	}
+	/**
+	 * 获取编辑页面。
+	 * @return
+	 * 编辑页面。
+	 */
+	@RequiresPermissions({ModuleConstant.SYLLABUS_TEXTBOOK+ ":" + Right.VIEW})
+	@RequestMapping(value="/syll/edit/{syllId}", method = RequestMethod.GET)
+	public String editKnow(@PathVariable String syllId,Model model){
+		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
+		model.addAttribute("CURRENT_SYLL_ID", syllId);
+		return "syllabus/know_edit";
 	}
 	/**
 	 * 查询数据。
