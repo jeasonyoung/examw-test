@@ -14,7 +14,7 @@ import com.examw.model.Paging;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class TextBookInfo extends Paging {
 	private static final long serialVersionUID = 1L;
-	private String id,name,subId,subName,pressId,pressName;
+	private String id,name,subId,subName,pressId,pressName,examId,examName;
 	private BigDecimal price;
 	/**
 	 * 获取教材ID。
@@ -121,5 +121,35 @@ public class TextBookInfo extends Paging {
 	 */
 	public void setPrice(BigDecimal price) {
 		this.price = price;
+	}
+	/**
+	 * 获取所属考试设置ID。
+	 * @return 所属考试设置ID。
+	 */
+	public String getExamId() {
+		return examId;
+	}
+	/**
+	 * 设置所属考试设置ID。
+	 * @param examId
+	 * 所属考试设置ID。
+	 */
+	public void setExamId(String examId) {
+		this.examId = examId;
+	}
+	/**
+	 * 获取所属考试设置名称。 
+	 * @return 所属考试设置名称。
+	 */
+	public String getExamName() {
+		return examName;
+	}
+	/**
+	 * 设置所属考试设置名称。
+	 * @param examName
+	 * 所属考试设置名称。
+	 */
+	public void setExamName(String examName) {
+		this.examName = examName;
 	}
 }

@@ -1,5 +1,7 @@
 package com.examw.test.service.settings;
 
+import java.util.List;
+
 import com.examw.test.model.settings.SubjectInfo;
 import com.examw.test.service.IBaseDataService;
 
@@ -14,4 +16,12 @@ public interface ISubjectService extends IBaseDataService<SubjectInfo>{
 	 * @return
 	 */
 	Integer loadMaxCode();
+	/**
+	 * 根据考试ID加载科目。
+	 * @param examId
+	 * 查询条件。
+	 * @return
+	 * 查询结果。
+	 */
+	List<SubjectInfo> findSubject(String examId);
 }

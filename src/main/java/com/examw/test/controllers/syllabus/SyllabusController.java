@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -51,12 +50,24 @@ public class SyllabusController {
 	 */
 	@RequiresPermissions({ModuleConstant.SYLLABUSS_SYLLABUS+ ":" + Right.VIEW})
 	@RequestMapping(value="/edit", method = RequestMethod.GET)
-	public String edit(String cateId,String syllId,String subId,Model model){
+	public String edit(String syllId,String examId,String subId,Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
-		model.addAttribute("CURRENT_CATE_ID", StringUtils.isEmpty(cateId) ? "" : cateId);
 		model.addAttribute("CURRENT_SYLL_ID", syllId);
+		model.addAttribute("CURRENT_EXAM_ID", examId);
 		model.addAttribute("CURRENT_SUB_ID", subId);
 		return "syllabus/syllabus_edit";
+	}
+	/**
+	 * 加载最大的代码。
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.SYLLABUSS_SYLLABUS+ ":" + Right.VIEW})
+	@RequestMapping(value="/code", method=RequestMethod.GET)
+	@ResponseBody
+	public String[] loadMaxCode(){
+		Integer max = this.syllabusService.loadMaxCode();
+		if(max == null) max = 0;
+		return new String[]{ String.format("%02d", max + 1) };
 	}
 	/**
 	 * 查询数据。
@@ -124,5 +135,14 @@ public class SyllabusController {
 	public List<TreeNode> tree(@PathVariable String subId,String ignore){
 		if(logger.isDebugEnabled()) logger.debug("加载科目［"+subId+"］下的大纲［ignore="+ignore+"］树...");
 		return this.syllabusService.loadSyllabuss(subId, ignore);
+	}
+	/**
+	 * 考试类别树结构数据。
+	 * @return
+	 */
+	@RequestMapping(value = "/tree", method = {RequestMethod.GET,RequestMethod.POST})
+	@ResponseBody
+	public List<TreeNode> tree(){
+		return this.syllabusService.loadAllSyllabuss();
 	}
 }

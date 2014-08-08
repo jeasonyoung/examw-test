@@ -5,6 +5,29 @@
 <script type="text/javascript">
 <!--
 $(function(){
+	var current_subject_id = "" ,current_exam_id = "";
+	//tree
+	var tree = $("#${module}_tree").tree({
+		url:"<@s.url '/settings/category/subject-tree'/>",
+		onLoadError:function(e){
+			<@error_dialog "e"/>
+		},
+		onBeforeLoad:function(){
+			current_exam_id = current_subject_id = "";
+		},
+		onClick:function(node){
+			if(node.attributes.type ==  "exam"){
+				current_exam_id = node.id;
+				current_subject_id = "";
+			}else if(node.attributes.type == "subject"){
+				current_subject_id = node.id;
+				current_exam_id = "";
+			}else{
+				current_subject_id = current_exam_id = "";
+			}
+			 ${dg}_search();
+		}
+	});
 	//dg
 	var dg = $("#${dg}").datagrid({
 		url:"<@s.url '/syllabus/textbook/datagrid'/>",
@@ -65,11 +88,16 @@ $(function(){
 	};
 	//edit
 	function edit_window(title,index,row){
+		var sub_id = current_subject_id,exam_id = current_exam_id;
+		if(row && row.id){
+			exam_id = row.examId;
+			sub_id = row.subId;
+		}
 		var d = $("<div/>").dialog({
 			title:title,
 			width:450,
 			height:250,
-			href:"<@s.url '/syllabus/textbook/edit'/>",
+			href:"<@s.url '/syllabus/textbook/edit'/>?examId="+exam_id+"&subId=" + sub_id,
 			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">      

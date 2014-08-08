@@ -145,4 +145,14 @@ public class SubjectController {
 		if(max == null) max = 0;
 		return new String[]{ String.format("%02d", max + 1) };
 	}
+	/**
+	 * 查询科目数据。
+	 * @param deptId
+	 * @return
+	 */
+	@RequestMapping(value="/alls", method = {RequestMethod.GET,RequestMethod.POST})
+	@ResponseBody
+	public List<SubjectInfo> alls(String examId){
+		return this.subjectService.findSubject(examId);
+	}
 }
