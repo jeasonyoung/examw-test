@@ -69,8 +69,12 @@ public class SyllabusDaoImpl extends BaseDaoImpl<Syllabus> implements ISyllabusD
 	//查询条件
 	private String addWhere(SyllabusInfo info, String hql, Map<String, Object> parameters){
 		if(!StringUtils.isEmpty(info.getSubId())){
-			hql += " and (s.subject.id = :subId or s.subject.parent.id = :subId) ";
+			hql += " and (s.subject.id = :subId) ";
 			parameters.put("subId", info.getSubId());
+		}
+		if(!StringUtils.isEmpty(info.getExamId())){
+			hql += " and (s.subject.exam.id = :examId) ";
+			parameters.put("examId", info.getExamId());
 		}
 		if(!StringUtils.isEmpty(info.getTitle())){
 			hql += " and (s.title like :title) ";

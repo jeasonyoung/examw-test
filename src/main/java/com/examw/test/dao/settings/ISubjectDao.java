@@ -5,7 +5,6 @@ import java.util.List;
 import com.examw.test.dao.IBaseDao;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.settings.SubjectInfo;
-
 /**
  * 科目数据接口
  * @author fengwei.
@@ -28,4 +27,12 @@ public interface ISubjectDao extends IBaseDao<Subject>{
 	 * 数据总数。
 	 */
 	Long total(SubjectInfo info);
+	/**
+	 * 根据考试ID查询所属科目
+	 * @param deptId
+	 * 查询条件。
+	 * @return
+	 * 查询结果。
+	 */
+	List<Subject> findSubject(String examId);
 }

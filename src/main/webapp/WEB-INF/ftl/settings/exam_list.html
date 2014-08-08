@@ -39,10 +39,11 @@ $(function(){
 			field:"id",
 			checkbox:true
 		},{
-			title:"所属考试类别",
-			field:"categoryName",
+			title:"考试名称",
+			field:"name",
 			width:40,
-			align:"left"
+			align:"left",
+			sortable:true
 		},{
 			title:"考试代码",
 			field:"code",
@@ -56,11 +57,10 @@ $(function(){
 			align:"left",
 			sortable:true
 		},{
-			title:"考试名称",
-			field:"name",
+			title:"所属考试类别",
+			field:"categoryName",
 			width:20,
-			align:"left",
-			sortable:true
+			align:"left"
 		},{
 			title:"所属地区",
 			field:"areaName",

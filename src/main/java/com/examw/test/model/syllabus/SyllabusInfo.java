@@ -14,7 +14,7 @@ import com.examw.model.Paging;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class SyllabusInfo extends Paging {
 	private static final long serialVersionUID = 1L;
-	private String pid,fullName,id,code,title,subId,subName,cateId,cateName;
+	private String pid,fullName,id,code,title,subId,subName,examId,examName;
 	private Set<SyllabusInfo> children;
 	/**
 	 * 获取上级大纲ID。
@@ -140,30 +140,31 @@ public class SyllabusInfo extends Paging {
 	 * 获取所属考试类别ID。
 	 * @return 所属考试类别ID。
 	 */
-	public String getCateId() {
-		return cateId;
+	public String getExamId() {
+		return examId;
 	}
 	/**
 	 * 设置所属考试类别ID。
 	 * @param cateId
 	 * 所属考试类别ID。
 	 */
-	public void setCateId(String cateId) {
-		this.cateId = cateId;
+	public void setExamId(String examId) {
+		this.examId = examId;
 	}
 	/**
 	 * 获取所属考试类别名称。
 	 * @return 所属考试类别名称。
 	 */
-	public String getCateName() {
-		return cateName;
+	public String getExamName() {
+		return examName;
 	}
 	/**
 	 * 设置所属考试类别名称。
 	 * @param cateName
 	 * 所属考试类别名称。
 	 */
-	public void setCateName(String cateName) {
-		this.cateName = cateName;
+	public void setExamName(String examName) {
+		this.examName = examName;
 	}
+	
 }

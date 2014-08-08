@@ -1,5 +1,6 @@
 package com.examw.test.service.settings.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,7 +59,7 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 	 */
 	@Override
 	protected List<Subject> find(SubjectInfo info) {
-		return null;
+		return this.subjectDao.findSubjects(info);
 	}
 	/*
 	 * 数据模型转换
@@ -77,6 +78,10 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 				info.setCategoryName(data.getExam().getCategory().getName());
 			}
 		}
+		if(data.getArea()!=null){
+			info.setAreaId(data.getArea().getId());
+			info.setAreaName(data.getArea().getName());
+		}
 		return info;
 	}
 	/*
@@ -85,8 +90,7 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 	 */
 	@Override
 	protected Long total(SubjectInfo info) {
-		
-		return null;
+		return this.subjectDao.total(info);
 	}
 	/*
 	 * 更新或插入数据
@@ -160,5 +164,22 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 			return new Integer(sources.get(0).getCode());
 		}
 		return null;
+	}
+	/*
+	 * 加载考试下的科目。
+	 * @see com.examw.test.service.settings.ISubjectService#findSubject(java.lang.String)
+	 */
+	@Override
+	public List<SubjectInfo> findSubject(String examId) {
+		if(logger.isDebugEnabled())logger.debug("查询考试［"+examId+"］下的科目数据集合...");
+		List<SubjectInfo> list = new ArrayList<>();
+		List<Subject> sub = this.subjectDao.findSubject(examId);
+		if(sub != null && sub.size() > 0){
+			for(Subject data: sub){
+				SubjectInfo info = this.changeModel(data);
+				if(info != null) list.add(info);
+			}
+		}
+		return list;
 	}
 }

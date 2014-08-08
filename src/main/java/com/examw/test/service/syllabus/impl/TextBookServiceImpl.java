@@ -87,6 +87,10 @@ public class TextBookServiceImpl extends BaseDataServiceImpl<TextBook, TextBookI
 		if(data.getSubject() != null){
 			info.setSubId(data.getSubject().getId());
 			info.setSubName(data.getSubject().getName());
+			if(data.getSubject().getExam() != null){
+				info.setExamId(data.getSubject().getExam().getId());
+				info.setExamName(data.getSubject().getExam().getName());
+			}
 		}
 		return info;
 	}
@@ -120,6 +124,10 @@ public class TextBookServiceImpl extends BaseDataServiceImpl<TextBook, TextBookI
 		if(data.getSubject() != null){
 			info.setSubId(data.getSubject().getId());
 			info.setSubName(data.getSubject().getName());
+			if(data.getSubject().getExam() != null){
+				info.setExamId(data.getSubject().getExam().getId());
+				info.setExamName(data.getSubject().getExam().getName());
+			}
 		}
 		if(isAdded)this.bookDao.save(data);
 		return info;

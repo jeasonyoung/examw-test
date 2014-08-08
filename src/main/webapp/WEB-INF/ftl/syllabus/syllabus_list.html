@@ -5,7 +5,7 @@
 <script type="text/javascript">
 <!--
 $(function(){
-	var current_subject_id = "" ,current_exam_id="";
+	var current_subject_id = "" ,current_exam_id = "";
 	//tree
 	var tree = $("#${module}_tree").tree({
 		url:"<@s.url '/settings/category/subject-tree'/>",
@@ -16,7 +16,15 @@ $(function(){
 			current_exam_id = current_subject_id = "";
 		},
 		onClick:function(node){
-			current_category_id = node.id;
+			if(node.attributes.type ==  "exam"){
+				current_exam_id = node.id;
+				current_subject_id = "";
+			}else if(node.attributes.type == "subject"){
+				current_subject_id = node.id;
+				current_exam_id = "";
+			}else{
+				current_subject_id = current_exam_id = "";
+			}
 			 ${dg}_search();
 		}
 	});
@@ -72,22 +80,28 @@ $(function(){
 		}
 	});
 	//add
+	var m = false;
 	${dg}_add = function(){
-		edit_window("新增大纲",0,null);
+		if(m) return;
+		m = true;
+		$.getJSON("<@s.url '/syllabus/syllabus/code'/>",function(data){
+			m = false;
+			edit_window("新增大纲",0,null,data[0]);
+		});
 	};
 	//edit
-	function edit_window(title,index,row){
-		var sub_id= "",syll_id = "";
+	function edit_window(title,index,row,code){
+		var sub_id = current_subject_id,exam_id = current_exam_id,syll_id = "";
 		if(row && row.id){
-			
-			syll_id = row.id;
+			exam_id = row.examId;
 			sub_id = row.subId;
+			syll_id = row.id;
 		}
 		var d = $("<div/>").dialog({
 			title:title,
 			width:450,
 			height:250,
-			href:"<@s.url '/syllabus/syllabus/edit'/>?syllId=" + syll_id+"&subId="+sub_id,
+			href:"<@s.url '/syllabus/syllabus/edit'/>?examId=" + exam_id+"&subId="+sub_id + "&syllId=" + syll_id,
 			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">    
@@ -138,9 +152,12 @@ $(function(){
 				$(this).dialog("destroy");
 			},
 			onLoad:function(){
+				if(code && !row){
+					$("#${module}_edit_form").form("load",{"code":code});
+					return;
+				}
 				if(row){
 					$("#${module}_edit_form").form("load",row);
-					${module}_edit_form_load();
 				}
 			}
 	  });
@@ -148,7 +165,8 @@ $(function(){
 	//search
 	${dg}_search = function(){
 		dg.datagrid("load",{
-			
+			examId:current_exam_id,
+			subId:current_subject_id,
 			title:$("#${dg}_toobar input[name='title']").val()
 		});
 	};
@@ -198,9 +216,9 @@ $(function(){
 //-->
 </script>
 <div class="easyui-layout" data-options="fit:true">
-		 <div data-options="region:'west',title:'考试分类',split:true,tools: [{iconCls:'icon-reload',handler:function(){$('#${module}_tree').tree('reload');${dg}_search();}}]" style="padding:5px;width:190px;">
-		 	<ul id="${module}_tree"></ul>
-		 </div>
+	 <div data-options="region:'west',title:'考试类别—考试—科目树',split:true,tools: [{iconCls:'icon-reload',handler:function(){$('#${module}_tree').tree('reload');${dg}_search();}}]" style="padding:5px;width:193px;">
+	 	<ul id="${module}_tree"></ul>
+	 </div>
 	<div data-options="region:'center',title:'大纲列表'">
 		<table id="${dg}"></table>
 		<div id="${dg}_toobar">
