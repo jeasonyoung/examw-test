@@ -65,7 +65,10 @@ $(function(){
 	function edit_window(title,row,code){
 		var c_id = current_category_id;
 		if(row){
-			c_id = row.catalogId;
+			if(row.pid)
+				c_id = row.pid;
+			else
+				c_id = "";
 		}
 		var d = $("<div/>").dialog({
 			title:title,

@@ -59,6 +59,10 @@ public class SubjectDaoImpl extends BaseDaoImpl<Subject> implements ISubjectDao{
 				hql += " and (s.exam.id = :examId)";
 				parameters.put("examId", info.getExamId());
 			}
+			if (!StringUtils.isEmpty(info.getCategoryId())) {
+				hql += " and (s.exam.category.id = :categoryId)";
+				parameters.put("categoryId", info.getCategoryId());
+			}
 			if (!StringUtils.isEmpty(info.getAreaId())) {
 				hql += " and (s.area.id = :areaId)";
 				parameters.put("areaId", info.getAreaId());

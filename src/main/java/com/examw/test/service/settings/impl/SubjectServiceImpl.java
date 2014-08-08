@@ -58,7 +58,7 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 	 */
 	@Override
 	protected List<Subject> find(SubjectInfo info) {
-		return null;
+		return this.subjectDao.findSubjects(info);
 	}
 	/*
 	 * 数据模型转换
@@ -77,6 +77,10 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 				info.setCategoryName(data.getExam().getCategory().getName());
 			}
 		}
+		if(data.getArea()!=null){
+			info.setAreaId(data.getArea().getId());
+			info.setAreaName(data.getArea().getName());
+		}
 		return info;
 	}
 	/*
@@ -85,8 +89,7 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 	 */
 	@Override
 	protected Long total(SubjectInfo info) {
-		
-		return null;
+		return this.subjectDao.total(info);
 	}
 	/*
 	 * 更新或插入数据
