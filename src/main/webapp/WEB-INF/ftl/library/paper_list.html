@@ -30,7 +30,7 @@ $(function(){
 	});
 	//dg
 	var dg = $("#${dg}").datagrid({
-		//url:"<@s.url '/library/paper/datagrid'/>",
+		url:"<@s.url '/library/paper/datagrid'/>",
 		fit:true,
 		fitColumns:true,
 		rownumbers:true,
@@ -73,12 +73,12 @@ $(function(){
 		},{
 			title:"创建时间",
 			field:"createTime",
-			width:15,
+			width:18,
 			align:"center",
 			sortable:true
 		},{
 			title:"状态",
-			field:"status",
+			field:"statusName",
 			width:15,
 			align:"center",
 			sortable:true
@@ -89,33 +89,58 @@ $(function(){
 			align:"center",
 			sortable:true
 		},{
-			title:"试题操作",
+			title:"操作",
 			field:"opt",
-			width:12,
-			align:"center"
+			width:20,
+			align:"center",
+			formatter:function(value,data,index){
+				var href = "<a class='paper-list-opt-preview' href='#' onclick='${dg}_paper_preview(\""+data.id+"\")'/>"
+				if(data.status == ${PAPER_STATUS_NONE}){
+					href = "<a class='paper-list-opt-add' href='#' onclick='${dg}_paper_items_edit(\""+ data.id+"\",\""+data.name+"\")'/>";
+				}
+				return href;
+			}
 		}]],
 		toolbar:"#${dg}_toobar",
 		onLoadError:function(e){
 			<@error_dialog "e"/>
 		},
+		onLoadSuccess:function(data){
+			dg_format();
+		},
 		onDblClickRow:function(rowIndex,rowData){
 			edit_window("编辑试卷",rowIndex,rowData);
 		}
 	});
+	//format datagrid display.
+	function dg_format(){
+		$(".paper-list-opt-preview").linkbutton({text:"预览试卷",plain:true,iconCls:"icon-print"});
+		$(".paper-list-opt-add").linkbutton({text:"试题管理",plain:true,iconCls:"icon-add"});
+	};
+	//paper_preview
+	${dg}_paper_preview = function(paperId){
+		///TODO:预览试卷
+	};
+	//paper_items_edit
+	${dg}_paper_items_edit = function(paperId,title){
+		///TODO:试题编辑
+	};
 	//add
 	${dg}_add = function(){
 		edit_window("新增试卷",0,null);
 	};
 	//edit
 	function edit_window(title,index,row){
+		var exam_id = current_exam_id;
 		if(row){
-			current_exam_id = current_subject_id = ""
+			exam_id = row.examId;
+			current_subject_id = "";
 		}
 		var d = $("<div/>").dialog({
 			title:title,
 			width:600,
 			height:430,
-			href:"<@s.url '/library/paper/edit'/>?examId="+current_exam_id+"&subjectId=" + current_subject_id ,
+			href:"<@s.url '/library/paper/edit'/>?examId="+exam_id+"&subjectId=" + current_subject_id ,
 			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
@@ -145,6 +170,7 @@ $(function(){
 									index:index,
 									row:data.data
 								});
+								dg_format();
 								d.dialog("close");
 							}else{
 								$.messager.show({

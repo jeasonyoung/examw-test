@@ -128,6 +128,8 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 			info.setSourceId(data.getSource().getId());
 			info.setSourceName(data.getSource().getName());
 		}
+		if(!StringUtils.isEmpty(data.getType())) info.setTypeName(this.loadTypeName(data.getType()));
+		if(!StringUtils.isEmpty(data.getStatus())) info.setStatusName(this.loadStatusName(data.getStatus()));
 		return info;
 	}
 	/*
@@ -145,18 +147,22 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	 */
 	@Override
 	public PaperInfo update(PaperInfo info) {
+		if(logger.isDebugEnabled()) logger.debug("更新数据...");
 		if(info == null) return null;
 		boolean isAdded = false;
 		Paper data = StringUtils.isEmpty(info.getId()) ?  null : this.paperDao.load(Paper.class, info.getId());
 		if(isAdded = (data == null)){
 			if(StringUtils.isEmpty(info.getId())) info.setId(UUID.randomUUID().toString());
 			info.setCreateTime(new Date());
+			info.setStatus(PaperStatus.NONE.getValue());
 			data = new Paper();
 		}
-		if(data.getStatus() == Paper.STATUS_AUDIT) throw new RuntimeException("试卷已审核，不能被修改！");
-		if(data.getStatus() == Paper.STATUS_PUBLISH) throw new RuntimeException("试卷已发布，不能被修改！");
-		
+		if(!StringUtils.isEmpty(data.getStatus())){
+			if(data.getStatus() == Paper.STATUS_AUDIT) throw new RuntimeException("试卷已审核，不能被修改！");
+			if(data.getStatus() == Paper.STATUS_PUBLISH) throw new RuntimeException("试卷已发布，不能被修改！");
+		}
 		if(!isAdded){
+			info.setStatus(data.getStatus());
 			info.setCreateTime(data.getCreateTime());
 			info.setPublishTime(data.getPublishTime());
 		}
@@ -179,6 +185,8 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		if(data.getSource() != null){
 			info.setSourceName(data.getSource().getName());
 		}
+		if(!StringUtils.isEmpty(data.getType())) info.setTypeName(this.loadTypeName(data.getType()));
+		if(!StringUtils.isEmpty(data.getStatus())) info.setStatusName(this.loadStatusName(data.getStatus()));
 		if(isAdded) this.paperDao.save(data);
 		return info;
 	}
@@ -188,10 +196,14 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	 */
 	@Override
 	public void delete(String[] ids) {
+		if(logger.isDebugEnabled()) logger.debug("删除数据....");
 		if(ids == null || ids.length == 0) return;
 		for(int i = 0; i < ids.length; i++){
 			Paper data = this.paperDao.load(Paper.class, ids[i]);
-			if(data != null) this.paperDao.delete(data);
+			if(data != null){
+				if(logger.isDebugEnabled()) logger.debug(String.format("删除［%s］...", ids[i]));
+				this.paperDao.delete(data);
+			}
 		}
 	}
 	/*

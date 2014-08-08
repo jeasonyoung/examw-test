@@ -69,8 +69,12 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 			hql += " and (p.name like :name) ";
 			parameters.put("name", "%"+ info.getName() +"%");
 		}
+		if(!StringUtils.isEmpty(info.getExamId())){
+			hql += " and ((p.subject.exam.id = :examId) or (p.subject.exam.category.id in (select c.id  from Category c where (c.parent.id = :examId or c.id = :examId))))";
+			parameters.put("examId", info.getExamId());
+		}
 		if(!StringUtils.isEmpty(info.getSubjectId())){
-			hql += " and ((p.subject.id = :subjectId) or (p.subject.exam.id = :subjectId) or (p.subject.exam.catalog.id = :subjectId) or (p.subject.exam.catalog.parent.id = :subjectId)) ";
+			hql += " and (p.subject.id = :subjectId) ";
 			parameters.put("subjectId", info.getSubjectId());
 		}
 		return hql;
@@ -83,7 +87,7 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 	public void delete(Paper data) {
 		if(logger.isDebugEnabled()) logger.debug("删除数据...");
 		if(data == null) return;
-		if(data.getStatus() != Paper.STATUS_NONE){
+		if(!StringUtils.isEmpty(data.getStatus()) && (data.getStatus() != Paper.STATUS_NONE)){
 			String msg = "数据［"+data.getId() +","+ data.getName()+"］已被审核或发布不允许删除！";
 			if(logger.isDebugEnabled()) logger.debug(msg);
 			throw new RuntimeException(msg);

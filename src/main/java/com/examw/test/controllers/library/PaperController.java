@@ -20,6 +20,7 @@ import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.library.PaperInfo;
 import com.examw.test.service.library.IPaperService;
+import com.examw.test.service.library.PaperStatus;
 
 /**
  * 试卷控制器。
@@ -45,6 +46,9 @@ public class PaperController {
 		if(logger.isDebugEnabled()) logger.debug("加载列表页面...");
 		model.addAttribute("PER_UPDATE", ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE);
 		model.addAttribute("PER_DELETE", ModuleConstant.LIBRARY_PAPER + ":" + Right.DELETE);
+		
+		model.addAttribute("PAPER_STATUS_NONE", PaperStatus.NONE.getValue());
+		
 		return "library/paper_list";
 	}
 	/**
