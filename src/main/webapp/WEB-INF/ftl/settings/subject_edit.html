@@ -1,0 +1,88 @@
+<#--科目设置编辑-->
+<#include "comm.ftl"/>
+<#assign module="settings_subject"/>
+<script type="text/javascript">
+<!--
+$(function(){
+	var current_category_select = false;
+	//分类树
+	//category_tree
+	var c_t = $("#${module}_edit_form input[name='categoryId']").combotree({
+		url:"<@s.url '/settings/category/tree'/>",
+		required:true,
+		valueField:"id",
+		textField:"name",
+		onLoadError:function(e){
+			<@error_dialog "e"/>
+		},
+		onLoadSuccess:function(){
+			var id = "${CURRENT_CATEGORY_ID}";
+			if($.trim(id) == "") return;
+			c_t.combotree("setValue",id);
+		},
+		onSelect:function(record){
+			current_category_select = true;
+			if(e_t && "${CURRENT_CATEGORY_ID}"!= record.id ){
+				e_t.combobox("reload","<@s.url '/settings/exam/all'/>?categoryId=" + record.id);
+			}
+		}
+	});
+	//考试下拉
+	//exam_tree
+	var e_t = $("#${module}_edit_form input[name='examId']").combobox({
+		url:"<@s.url '/settings/exam/all'/>?categoryId=${CURRENT_CATEGORY_ID}",
+		required:true,
+		valueField:"id",
+		textField:"name",
+		onLoadError:function(e){
+			<@error_dialog "e"/>
+		},
+		onLoadSuccess:function(){
+			e_t.combobox("clear");
+			var id = "${CURRENT_EXAM_ID}";
+			if($.trim(id) == "") return;
+			e_t.combobox("setValue",id);
+		}
+	});
+	//地区下拉
+	var a_t = $("#${module}_edit_form input[name='areaId']").combobox({
+		url:"<@s.url '/settings/area/combo'/>",
+		valueField:"id",
+		textField:"name",
+		onLoadError:function(e){
+			<@error_dialog "e"/>
+		},
+		onLoadSuccess:function(){
+			var id = "${CURRENT_AREA_ID}";
+			if($.trim(id) == "") return;
+			a_t.combobox("setValue",id);
+		}
+	});
+});
+//-->
+</script>
+
+<form id="${module}_edit_form" method="POST" style="padding:10px;">
+	<div style="float:left;margin-top:2px;width:100%;">
+		<label style="width:75px;">所属考试：</label>
+		<input type="text" name="categoryId"  style="width:150px;"/>
+		<input type="text" name="examId"  style="width:150px;"/>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">科目代码：</label>
+		<input type="text" name="code" class="easyui-validatebox" style="width:298px;" data-options="required:true"/>
+		<input type="hidden" name="id"/>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">科目名称：</label>
+			<input type="text" name="name" class="easyui-validatebox" style="width:298px;" data-options="required:true"/>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">字母简称：</label>
+		<input type="text" name="abbr" class="easyui-validatebox" data-options="required:true,validType:['english','length[0,15]']"  style="width:298px;"/>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">地区：</label>
+		<input name="areaId" style="width:298px;"/>
+	</div>
+</form>

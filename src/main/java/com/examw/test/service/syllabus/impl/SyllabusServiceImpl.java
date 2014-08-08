@@ -9,7 +9,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
 import com.examw.model.TreeNode;
+import com.examw.test.dao.settings.ISubjectDao;
 import com.examw.test.dao.syllabus.ISyllabusDao;
+import com.examw.test.domain.settings.Subject;
 import com.examw.test.domain.syllabus.Syllabus;
 import com.examw.test.model.syllabus.SyllabusInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
@@ -22,6 +24,7 @@ import com.examw.test.service.syllabus.ISyllabusService;
 public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusInfo> implements ISyllabusService {
 	private static final Logger logger = Logger.getLogger(SyllabusServiceImpl.class);
 	private ISyllabusDao syllabusDao;
+	private ISubjectDao subjectDao;
 	/**
 	 * 设置大纲数据接口。
 	 * @param syllabusDao
@@ -30,6 +33,14 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 	public void setSyllabusDao(ISyllabusDao syllabusDao) {
 		if(logger.isDebugEnabled())logger.debug("注入大纲数据接口...");
 		this.syllabusDao = syllabusDao;
+	}
+	/**
+	 * 设置科目数据接口。
+	 * @param subjectDao
+	 * 科目数据接口。
+	 */
+	public void setSubjectDao(ISubjectDao subjectDao) {
+		this.subjectDao = subjectDao;
 	}
 	/*
 	 * 查询数据。
@@ -55,10 +66,18 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 	 */
 	@Override
 	protected SyllabusInfo changeModel(Syllabus data) {
-		if(logger.isDebugEnabled())logger.debug("类型转换...");
-		return null;
+		if(logger.isDebugEnabled()) logger.debug("开始类型转换...");
+		SyllabusInfo info = new SyllabusInfo();
+		BeanUtils.copyProperties(data, info, new String[]{"children"});
+		info.setFullName(this.loadFullName(data));
+		if(data.getParent() != null)info.setPid(data.getParent().getId());
+		if(data.getSubject() != null){
+			info.setSubId(data.getSubject().getId());
+			info.setSubName(data.getSubject().getName());
+		}
+		return info;
 	}
-	//加载岗位全称。
+	//加载大纲全称。
 	private String loadFullName(Syllabus data){
 		if(data == null) return null;
 		if(data.getParent() == null) return data.getTitle();
@@ -91,8 +110,8 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 			if(data.getParent() != null && data.getParent().getSubject() != null)
 				data.setSubject(data.getParent().getSubject());
 			else {
-				//Subject sub = this.departmentDao.load(Subject.class, info.getSubId());
-				//if(sub != null) data.setSubject(sub);
+				Subject sub = this.subjectDao.load(Subject.class, info.getSubId());
+				if(sub != null) data.setSubject(sub);
 			}
 		}
 		info.setFullName(this.loadFullName(data));

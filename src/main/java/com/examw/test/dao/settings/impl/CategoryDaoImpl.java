@@ -26,7 +26,7 @@ public class CategoryDaoImpl extends BaseDaoImpl<Category> implements ICategoryD
 	@Override
 	public List<Category> findCategorys(CategoryInfo info) {
 		if(logger.isDebugEnabled()) logger.debug("查询[考试分类]数据...");
-		String hql = "from Category c where c.parent = null and 1 = 1 ";
+		String hql = "from Category c where 1 = 1 ";
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
@@ -40,7 +40,7 @@ public class CategoryDaoImpl extends BaseDaoImpl<Category> implements ICategoryD
 	 */
 	@Override
 	public Long total(CategoryInfo info) {
-		String hql = "select count(*) from Category c where c.parent = null and 1 = 1 ";
+		String hql = "select count(*) from Category c where 1 = 1 ";
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		return this.count(hql, parameters);
@@ -48,6 +48,10 @@ public class CategoryDaoImpl extends BaseDaoImpl<Category> implements ICategoryD
 	
 	// 添加查询条件到HQL。
 	private String addWhere(CategoryInfo info, String hql,Map<String, Object> parameters) {
+		if(StringUtils.isEmpty(info.getPid()))
+		{
+			hql += " and (c.parent is null) ";
+		}
 		if (!StringUtils.isEmpty(info.getPid())) {
 			hql += " and (c.parent.id = :pid)";
 			parameters.put("pid", info.getPid());

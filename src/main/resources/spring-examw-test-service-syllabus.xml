@@ -2,15 +2,36 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 	<!-- service -->
-	<!-- 考试大纲 服务接口实现 -->
+	<!-- 考试大纲服务接口实现 begin-->
 	<!-- 出版社服务 -->
 	<bean id="pressService" class="com.examw.test.service.syllabus.impl.PressServiceImpl">
 		<!-- 出版社数据接口 -->
-		<property name="pressDao" ref="pressDao"></property>
+		<property name="pressDao" ref="pressDao"/>
 	</bean>
 	<!-- 大纲服务 -->
 	<bean id="syllabusService" class="com.examw.test.service.syllabus.impl.SyllabusServiceImpl">
 		<!-- 大纲数据接口 -->
-		<property name="syllabusDao" ref="syllabusDao"></property>
+		<property name="syllabusDao" ref="syllabusDao"/>
+		<!-- 科目数据接口 -->
+		<property name="subjectDao" ref="subjectDao"/>
 	</bean>
+	<!-- 教材服务 -->
+	<bean id="bookService" class="com.examw.test.service.syllabus.impl.TextBookServiceImpl">
+		<!-- 教材数据接口 -->
+		<property name="bookDao" ref="bookDao"/>
+		<!-- 出版社数据接口 -->
+		<property name="pressDao" ref="pressDao"/>
+		<!-- 科目数据接口 -->
+		<property name="subjectDao" ref="subjectDao"/>
+	</bean>
+	<!-- 知识点服务 -->
+	<bean id="knowService" class="com.examw.test.service.syllabus.impl.KnowledegeServiceImpl">
+		<!-- 知识点数据接口 -->
+		<property name="knowDao" ref="knowDao"/>
+		<!-- 教材数据接口 -->
+		<!-- <property name="bookDao" ref="bookDao"/> -->
+		<!-- 大纲数据接口 -->
+		<!-- <property name="syllabusDao" ref="syllabusDao"/ -->
+	</bean>
+	<!-- 考试大纲 服务接口实现 end-->
 </beans>

@@ -1,0 +1,59 @@
+<#--考试设置编辑页面-->
+<#include "comm.ftl"/>
+<#assign module="settings_exam_edit"/>
+<script type="text/javascript">
+<!--
+$(function(){
+	var c = $("#${module}_form input[name='categoryId']").combotree({
+		url:"<@s.url '/settings/category/tree'/>",
+		valueField:"id",
+		textField:"name",
+		required:true,
+		onLoadError:function(e){
+			<@error_dialog "e"/>
+		},
+		onLoadSuccess:function(){
+			var id = "${CURRENT_CATEGORY_ID}";
+			if($.trim(id) == "") return;
+			c.combotree("setValue",id);
+		}
+	});
+	var a = $("#${module}_form input[name='areaId']").combobox({
+		url:"<@s.url '/settings/area/combo'/>",
+		valueField:"id",
+		textField:"name",
+		onLoadError:function(e){
+			<@error_dialog "e"/>
+		},
+		onLoadSuccess:function(){
+			var id = "${CURRENT_AREA_ID}";
+			if($.trim(id) == "") return;
+			a.combobox("setValue",id);
+		}
+	});
+});
+//-->
+</script>
+<form id="${module}_form" method="POST" style="padding:10px;">
+	<div style="float:left;margin-top:2px;width:100%;">
+		<label style="width:75px;">所属类别：</label>
+		<input name="categoryId" style="width:272px;"/>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">考试代码：</label>
+		<input type="text" name="code" class="easyui-validatebox"  data-options="required:true" style="width:268px;"/>
+		<input type="hidden" name="id"/>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">考试名称：</label>
+		<input type="text" name="name" class="easyui-validatebox" data-options="validType:['chinese','length[0,20]']"  style="width:268px;" />
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">字母简称：</label>
+		<input type="text" name="abbr" class="easyui-validatebox" data-options="required:true,validType:['english','length[0,15]']"  style="width:268px;"/>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">地区：</label>
+		<input name="areaId" style="width:272px;"/>
+	</div>
+</form>

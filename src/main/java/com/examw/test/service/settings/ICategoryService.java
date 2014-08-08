@@ -2,7 +2,7 @@ package com.examw.test.service.settings;
 
 import java.util.List;
 
-import com.examw.test.domain.settings.Category;
+import com.examw.model.TreeNode;
 import com.examw.test.model.settings.CategoryInfo;
 import com.examw.test.service.IBaseDataService;
 
@@ -13,8 +13,26 @@ import com.examw.test.service.IBaseDataService;
  */
 public interface ICategoryService extends IBaseDataService<CategoryInfo>{
 	/**
+	 * 加载同级别最大代码值
+	 * @param pid 父ID
+	 * @return
+	 */
+	String[] loadMaxCode(String pid);
+	/**
 	 * 查询所有的考试分类
 	 * @return
 	 */
-	List<Category> loadAllCategorys();
+	List<TreeNode> loadAllCategorys();
+	/**
+	 * 加载考试类型下考试设置树数据。
+	 * @return
+	 * 考试设置树数据。
+	 */
+	List<TreeNode> loadAllCategoryExams();
+	/**
+	 * 加载考试类型下考试科目树数据。
+	 * @return
+	 * 考试科目树数据。
+	 */
+	List<TreeNode> loadAllCategoryExamSubjects();
 }
