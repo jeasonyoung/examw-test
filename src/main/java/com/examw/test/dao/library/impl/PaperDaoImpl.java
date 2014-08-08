@@ -26,10 +26,19 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 	@Override
 	public List<Paper> findPapers(PaperInfo info) {
 		if(logger.isDebugEnabled()) logger.debug("查询数据...");
-		String hql = "select p from Paper p where 1=1 "; 
+		String hql = "from Paper p where 1=1 "; 
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
+			if(info.getSort().equalsIgnoreCase("examName")){
+				info.setSort("subject.exam.name");
+			}
+			if(info.getSort().equalsIgnoreCase("subjectName")){
+				info.setSort("subject.name");
+			}
+			if(info.getSort().equalsIgnoreCase("sourceName")){
+				info.setSort("source.name");
+			}
 			if(info.getSort().equalsIgnoreCase("typeName")){
 				info.setSort("type");
 			}
@@ -61,12 +70,8 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 			parameters.put("name", "%"+ info.getName() +"%");
 		}
 		if(!StringUtils.isEmpty(info.getSubjectId())){
-			hql += " and (p.subject.id = :subjectId) ";
+			hql += " and ((p.subject.id = :subjectId) or (p.subject.exam.id = :subjectId) or (p.subject.exam.catalog.id = :subjectId) or (p.subject.exam.catalog.parent.id = :subjectId)) ";
 			parameters.put("subjectId", info.getSubjectId());
-		}
-		if(!StringUtils.isEmpty(info.getExamId())){
-			hql += " and(p.subject.exam.id = :examId)";
-			parameters.put("examId", info.getExamId());
 		}
 		return hql;
 	}

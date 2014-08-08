@@ -2,6 +2,7 @@ package com.examw.test.domain.library;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -17,6 +18,7 @@ public class StructureItem implements Serializable {
 	private Structure structure;
 	private Item item;
 	private Set<StructureShareItemScore> shareItemScores;
+	private Date createTime;
 	/**
 	 * 获取结构题目ID。
 	 * @return 结构题目ID。
@@ -121,5 +123,20 @@ public class StructureItem implements Serializable {
 	 */
 	public void setShareItemScores(Set<StructureShareItemScore> shareItemScores) {
 		this.shareItemScores = shareItemScores;
+	}
+	/**
+	 * 获取创建时间。
+	 * @return 创建时间。
+	 */
+	public Date getCreateTime() {
+		return createTime;
+	}
+	/**
+	 * 设置创建时间。
+	 * @param createTime 
+	 *	  创建时间。
+	 */
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 }

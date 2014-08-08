@@ -14,7 +14,7 @@ import com.examw.test.domain.settings.Subject;
  */
 public class Paper implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id,name;
+	private String id,name,description;
 	private Integer type,status,price,time,year;
 	private BigDecimal score;
 	private Subject subject;
@@ -79,6 +79,21 @@ public class Paper implements Serializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+	/**
+	 * 获取试卷描述。
+	 * @return 试卷描述。
+	 */
+	public String getDescription() {
+		return description;
+	}
+	/**
+	 * 设置试卷描述。
+	 * @param description 
+	 *	  试卷描述。
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	/**
 	 * 获取试卷类型。

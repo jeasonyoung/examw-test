@@ -11,5 +11,9 @@
 	<bean id="paperDao" class="com.examw.test.dao.library.impl.PaperDaoImpl">
 		<property name="sessionFactory"  ref="sessionFactory" />
 	</bean>
+	<!-- 题目数据接口 -->
+	<bean id="itemDao" class="com.examw.test.dao.library.impl.ItemDaoImpl">
+		<property name="sessionFactory"  ref="sessionFactory" />
+	</bean>
 	<!--  题库管理  数据接口实现 end -->
 </beans>

@@ -26,7 +26,7 @@ public class UserDaoImpl extends BaseDaoImpl<User> implements IUserDao {
 	@Override
 	public List<User> findUsers(UserInfo info) {
 		if(logger.isDebugEnabled()) logger.debug("查询数据...");
-		String hql = "select u from User u where 1=1 "; 
+		String hql = "from User u where 1=1 "; 
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){

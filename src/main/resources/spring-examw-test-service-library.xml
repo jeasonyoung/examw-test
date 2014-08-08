@@ -1,12 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+									  http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 	<!-- service -->
 	<!-- 题库管理 服务接口实现 begin-->
 	<!-- 来源服务 -->
 	<bean id="sourceService" class="com.examw.test.service.library.impl.SourceServiceImpl">
 		<!-- 来源数据接口 -->
 		<property name="sourceDao" ref="sourceDao" />
+	</bean>
+	<!-- 题型集合 -->
+	<util:map id="mapPaperTypes" map-class="java.util.HashMap">
+		<entry key="1" value="真题" />
+		<entry key="2" value="模拟题" />
+		<entry key="3" value="预测题" />
+		<entry key="4" value="练习题" />
+	</util:map>
+	<!-- 试卷服务 -->
+	<bean id="paperService" class="com.examw.test.service.library.impl.PaperServiceImpl">
+		<!-- 试卷数据接口 -->
+		<property name="paperDao" ref="paperDao" />
+		<!-- 来源数据接口 -->
+		<property name="sourceDao" ref="sourceDao" />
+		<!-- 考试科目数据接口 -->
+		<property name="subjectDao" ref="subjectDao" />
+		<!-- 试卷类型 -->
+		<property name="typeMap" ref="mapPaperTypes"/>
+		<!-- 试卷状态 -->
+		<property name="statusMap">
+			<map>
+				<entry key="0" value="未审核"/>
+				<entry key="1" value="已审核"/>
+				<entry key="2" value="已发布"/>
+			</map>
+		</property>
+	</bean>
+	<!-- 题目服务 -->
+	<bean id="itemService" class="com.examw.test.service.library.impl.ItemServiceImpl">
+		<!-- 题目数据接口 -->
+		<property name="itemDao" ref="itemDao" />
+		<!-- 所属考试科目数据接口 -->
+		<property name="subjectDao" ref="subjectDao" />
+		<!-- 来源数据接口 -->
+		<property name="sourceDao" ref="sourceDao" />
+		<!-- 题型数据接口 -->
+		<property name="typeMap">
+			<map>
+				<entry key="1" value="单选" />
+				<entry key="2" value="多选" />
+				<entry key="3" value="不定向选" />
+				<entry key="4" value="判断题" />
+				<entry key="5" value="问答题" />
+				<entry key="6" value="共享题干题" />
+				<entry key="7" value="共享答案题" />
+			</map>
+		</property>
+		<!-- 题目状态 -->
+		<property name="statusMap">
+			<map>
+				<entry key="0" value="未审核" />
+				<entry key="1" value="已审核" />
+			</map>
+		</property>
+		<!-- 类型 -->
+		<property name="optMap" ref="mapPaperTypes" />
+		<!-- 判断题答案名称 -->
+		<property name="judgeAnswerMap">
+			<map>
+				<entry key="1" value="正确" />
+				<entry key="0" value="错误" />
+			</map>
+		</property>
 	</bean>
 	<!-- 题库管理 服务接口实现 end-->
 </beans>

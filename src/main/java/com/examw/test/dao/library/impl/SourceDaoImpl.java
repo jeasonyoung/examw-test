@@ -26,7 +26,7 @@ public class SourceDaoImpl extends BaseDaoImpl<Source> implements ISourceDao {
 	@Override
 	public List<Source> findSources(SourceInfo info) {
 		if(logger.isDebugEnabled()) logger.debug("查询数据...");
-		String hql = "select s from Source s where 1=1 "; 
+		String hql = "from Source s where 1=1 "; 
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){

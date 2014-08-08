@@ -22,6 +22,7 @@ public class Item implements Serializable {
 	private Item parent;
 	private Set<Item> children;
 	private Set<Syllabus> syllabuses;
+	private Set<StructureItem> structureItems;
 	/**
 	 * 类型－单选。
 	 */
@@ -338,5 +339,20 @@ public class Item implements Serializable {
 	 */
 	public void setSyllabuses(Set<Syllabus> syllabuses) {
 		this.syllabuses = syllabuses;
+	}
+	/**
+	 * 获取所属试卷集合。
+	 * @return 所属试卷集合。
+	 */
+	public Set<StructureItem> getStructureItems() {
+		return structureItems;
+	}
+	/**
+	 * 设置所属试卷集合。
+	 * @param structureItems 
+	 *	  所属试卷集合。
+	 */
+	public void setStructureItems(Set<StructureItem> structureItems) {
+		this.structureItems = structureItems;
 	}
 }

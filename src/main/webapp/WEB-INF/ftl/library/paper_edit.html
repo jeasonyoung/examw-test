@@ -1,0 +1,90 @@
+<#--试卷编辑页面-->
+<#include "comm.ftl"/>
+<#assign module="library_paper"/>
+<#assign form="${module}_edit_form" />
+<script type="text/javascript">
+<!--
+$(function(){
+	//exam-tree
+	var exam_tree = $("#${form} input[name='examId']").combotree({
+		url:"<@s.url '/settings/category/exams-tree'/>",
+		required:true,
+		onLoadError:function(e){
+				<@error_dialog "e"/>
+		},
+		onChange:function(n,o){
+			if(subject_cbb){
+				subject_cbb.combobox("clear");
+				subject_cbb.combobox("reload","<@s.url '/settings/subject/all'/>?examId=" + n);
+			}
+		}
+	});
+	//subject-tree
+	var subject_cbb = $("#${form} input[name='subjectId']").combobox({
+		<#if ((CURRENT_EXAM_ID?length) > 0)>
+	     url:"<@s.url '/settings/subject/all'/>?examId=${CURRENT_EXAM_ID}",
+	   </#if>
+		required:true,
+		valueField:"id",
+		textField:"name",
+		onLoadError:function(e){
+			<@error_dialog 'e'/>
+		}
+	});
+});
+//-->
+</script>
+<form id="${form}" method="POST" style="padding:10px;">
+	<div style="float:left;margin-top:2px;width:100%;">
+		<label style="width:75px;">所属科目：</label>
+		<input name="examId" type="text" style="width:268px;"/>
+		<input name="subjectId" type="text" style="width:200px;"/>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">试卷名称：</label>
+		<input name="name" type="text" class="easyui-validatebox" data-options="required:true" style="width:468px;"/>
+		<input name="id" type="hidden" />
+	</div>
+	<div style="float:left;margin-top:5px;width:100%;">
+		<label style="margin-top:5px;width:75px;">试卷类型：</label>
+		<label style="padding-top:0px;"><input type="radio" name="type" value="${TYPE_REAL_VALUE}" />${TYPE_REAL_NAME}</label>
+		<label style="padding-top:0px;margin-left:15px;"><input type="radio" name="type" value="${TYPE_SIMU_VALUE}" />${TYPE_SIMU_NAME}</label>
+		<label style="padding-top:0px;margin-left:15px;"><input type="radio" name="type" value="${TYPE_FORECAST_VALUE}" />${TYPE_FORECAST_NAME}</label>
+		<label style="padding-top:0px;margin-left:15px;"><input type="radio" name="type" value="${TYPE_PRACTICE_VALUE}" checked="checked" />${TYPE_PRACTICE_NAME}</label>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<div style="float:left;">
+			<label style="width:75px;">卷面总分：</label>
+			<input name="score" class="easyui-numberbox" data-options="min:0,value:100" style="text-align:right;width:100px;"/>
+		</div>
+		<div style="float:left;margin-left:12px;">
+			<label style="width:75px;">考试时长：</label>
+			<input name="time" class="easyui-numberbox" data-options="min:0,value:90" style="text-align:right;width:80px;"/>
+			<span>(分钟)</span>
+		</div>
+		<div style="float:left;margin-left:12px;">
+			<label style="width:78px;">使用年份：</label>
+			<input name="time" class="easyui-numberbox" data-options="min:0,value:${CURRENT_YEAR}" style="text-align:right;width:80px;"/>
+		</div>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<div style="float:left;">
+			<label style="width:75px;">试卷来源：</label>
+			<input name="sourceId" class="easyui-combobox" data-options="
+					url:'<@s.url '/library/source/all'/>',
+					valueField:'id',
+					textField:'name',
+					onLoadError:function(e){
+						<@error_dialog 'e'/>
+					}
+				" style="width:298px;"/>
+		</div>
+		<div style="float:left;">
+			<label style="width:95px;">价格(考试币)：</label>
+			<input name="price" type="text" class="easyui-numberbox" data-options="min:0,value:0" style="text-align:right;width:80px;"/>
+		</div>
+	</div>
+	<div style="float:left;margin-top:5px;width:100%;">
+		<textarea name="description" class="easyui-kindeditor" data-options="minWidth:550" rows="10" cols="20"></textarea>
+	</div>
+</form>

@@ -17,7 +17,7 @@ import com.examw.support.CustomDateSerializer;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class PaperInfo extends Paging {
 	private static final long serialVersionUID = 1L;
-	private String id,name,typeName,statusName,examId,examName,subjectId,subjectName,sourceId,sourceName;
+	private String id,name,description,typeName,statusName,examId,examName,subjectId,subjectName,sourceId,sourceName;
 	private Integer type,status,price,time,year;
 	private BigDecimal score;
 	private Date createTime,lastTime,publishTime;
@@ -50,6 +50,21 @@ public class PaperInfo extends Paging {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+	/**
+	 * 获取试卷描述。
+	 * @return 试卷描述。
+	 */
+	public String getDescription() {
+		return description;
+	}
+	/**
+	 * 设置试卷描述。
+	 * @param description 
+	 *	  试卷描述。
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	/**
 	 * 获取所属考试ID。
@@ -265,7 +280,7 @@ public class PaperInfo extends Paging {
 	 * 获取创建时间。
 	 * @return 创建时间。
 	 */
-	@JsonSerialize(using=CustomDateSerializer.class)
+	@JsonSerialize(using=CustomDateSerializer.ShortDate.class)
 	public Date getCreateTime() {
 		return createTime;
 	}
@@ -281,7 +296,7 @@ public class PaperInfo extends Paging {
 	 * 获取最后修改时间。
 	 * @return 最后修改时间。
 	 */
-	@JsonSerialize(using=CustomDateSerializer.class)
+	@JsonSerialize(using=CustomDateSerializer.ShortDate.class)
 	public Date getLastTime() {
 		return lastTime;
 	}

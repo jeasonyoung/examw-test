@@ -1,6 +1,7 @@
 package com.examw.test.model.library;
 
 import java.util.Date;
+import java.util.Set;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
@@ -15,9 +16,10 @@ import com.examw.support.CustomDateSerializer;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class ItemInfo extends Paging {
 	private static final long serialVersionUID = 1L;
-	private String pid,id,typeName,statusName,subjectId,subjectName, content,answer,analysis,checkCode,sourceId,sourceName;
+	private String pid,id,typeName,statusName,optName,subjectId,subjectName, content,answer,analysis,checkCode,sourceId,sourceName;
 	private Integer type,level,year,opt,status,orderNo;
 	private Date createTime,lastTime;
+	private Set<ItemInfo> children;
 	/**
 	 * 获取父题目ID。
 	 * @return 父题目ID。
@@ -274,6 +276,21 @@ public class ItemInfo extends Paging {
 		this.opt = opt;
 	}
 	/**
+	 * 获取类型名称。
+	 * @return 类型名称。
+	 */
+	public String getOptName() {
+		return optName;
+	}
+	/**
+	 * 设置类型名称。
+	 * @param optName 
+	 *	  类型名称。
+	 */
+	public void setOptName(String optName) {
+		this.optName = optName;
+	}
+	/**
 	 * 获取排序号。
 	 * @return 排序号。
 	 */
@@ -319,5 +336,20 @@ public class ItemInfo extends Paging {
 	 */
 	public void setLastTime(Date lastTime) {
 		this.lastTime = lastTime;
+	}
+	/**
+	 * 获取子题目集合。
+	 * @return 子题目集合。
+	 */
+	public Set<ItemInfo> getChildren() {
+		return children;
+	}
+	/**
+	 * 设置子题目集合。
+	 * @param children 
+	 *	  子题目集合。
+	 */
+	public void setChildren(Set<ItemInfo> children) {
+		this.children = children;
 	}
 }

@@ -18,6 +18,8 @@
 		<id name="id"  type="string"  length="64" />
 		<!-- 试卷名称 -->
 		<property name="name" type="string" length="32" not-null="true" />
+		<!-- 试卷描述 -->
+		 <property name="description" type="text" />
 		<!-- 类型（1-真题，2-模拟题，3-预测题，4-练习题） -->
 		<property name="type" type="integer" />
 		<!-- 状态（0-未审核，1-已审核，2-已发布）-->
@@ -94,6 +96,8 @@
 			<key column="structure_item_id" />
 			<one-to-many class="StructureShareItemScore"/>
 		</set>
+		<!-- 创建时间 -->
+		<property name="createTime" column="create_time" type="timestamp" />
 	</class>
 	<!-- 结构共享题目 -->
 	<class name="StructureShareItemScore" table="tbl_Examw_Test_Library_StructureShareItemScores">
@@ -153,6 +157,11 @@
 		<set name="syllabuses" inverse="false" cascade="save-update" table="tbl_Examw_Test_Library_ItemSyllabuses">
 			<key column="item_id" />
 			<many-to-many class="com.examw.test.domain.syllabus.Syllabus" column="syllabus_id" />
+		</set>
+		<!-- 所属试卷集合 -->
+		<set name="structureItems" inverse="true" lazy="true" order-by="createTime desc">
+			<key column="item_id" />
+			<one-to-many class="StructureItem"/>
 		</set>
 	</class>
 </hibernate-mapping>

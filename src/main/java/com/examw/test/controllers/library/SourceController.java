@@ -1,5 +1,7 @@
 package com.examw.test.controllers.library;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
@@ -52,6 +54,21 @@ public class SourceController {
 		Integer max = this.sourceService.loadMaxCode();
 		if(max == null) max = 0;
 		return new String[]{ String.format("%02d", max + 1) };
+	}
+	/**
+	 * 加载来源的全部数据。
+	 * @return
+	 */
+	@RequestMapping(value="/all", method = {RequestMethod.GET,RequestMethod.POST})
+	@ResponseBody
+	public List<SourceInfo> all(){
+		return this.sourceService.datagrid(new SourceInfo(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public String getSort(){return "code";};
+			@Override
+			public String getOrder(){return "asc";};
+		}).getRows();
 	}
 	/**
 	 * 加载列表页面数据。
