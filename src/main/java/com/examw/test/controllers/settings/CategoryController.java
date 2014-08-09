@@ -73,7 +73,7 @@ public class CategoryController {
 		return this.categroyService.loadAllCategorys();
 	}
 	/**
-	 * 考试类别考试树。
+	 * 考试类别-考试树。
 	 * @return
 	 */
 	@RequestMapping(value = "/exams-tree", method = {RequestMethod.GET,RequestMethod.POST})
@@ -82,7 +82,7 @@ public class CategoryController {
 		return this.categroyService.loadAllCategoryExams();
 	}
 	/**
-	 * 考试科目树。
+	 * 考试类别-考试-科目树。
 	 * @return
 	 */
 	@RequestMapping(value = "/subject-tree", method = { RequestMethod.GET, RequestMethod.POST})

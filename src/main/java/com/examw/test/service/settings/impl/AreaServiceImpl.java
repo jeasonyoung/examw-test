@@ -105,7 +105,10 @@ public class AreaServiceImpl extends BaseDataServiceImpl<Area, AreaInfo>
 			}
 		}
 	}
-	
+	/*
+	 * 加载最大的代码值
+	 * @see com.examw.test.service.settings.IAreaService#loadMaxCode()
+	 */
 	@Override
 	public Integer loadMaxCode() {
 		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");

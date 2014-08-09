@@ -40,6 +40,7 @@ public class CategoryDaoImpl extends BaseDaoImpl<Category> implements ICategoryD
 	 */
 	@Override
 	public Long total(CategoryInfo info) {
+		if(logger.isDebugEnabled()) logger.debug("查询[考试分类]数据统计...");
 		String hql = "select count(*) from Category c where 1 = 1 ";
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);

@@ -177,7 +177,14 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		}
 		return result;
 	}
-	
+	/**
+	 * 根据条件创建树节点
+	 * @param data		考试分类
+	 * @param attributes	分类节点带的属性
+	 * @param withExam	是否加载所包含考试
+	 * @param withSubject	是否加载所包含科目
+	 * @return
+	 */
 	private TreeNode createTreeNode(Category data,Map<String, Object> attributes,boolean withExam,boolean withSubject){
 		if(data == null) return null;
 		TreeNode node = new TreeNode();
@@ -238,7 +245,10 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		}
 		return node;
 	}
-	
+	/*
+	 * 加载所有的考试分类-考试树
+	 * @see com.examw.test.service.settings.ICategoryService#loadAllCategoryExams()
+	 */
 	@Override
 	public List<TreeNode> loadAllCategoryExams() {
 		List<TreeNode> treeNodes = new ArrayList<>();
@@ -263,7 +273,10 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		}
 		return treeNodes;
 	}
-	
+	/*
+	 * 加载考试分类-考试-科目树
+	 * @see com.examw.test.service.settings.ICategoryService#loadAllCategoryExamSubjects()
+	 */
 	@Override
 	public List<TreeNode> loadAllCategoryExamSubjects() {
 		List<TreeNode> treeNodes = new ArrayList<>();

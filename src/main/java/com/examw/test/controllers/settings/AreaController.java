@@ -114,7 +114,10 @@ public class AreaController {
 		}
 		return result;
 	}
-	
+	/**
+	 * 地区的下拉数据
+	 * @return
+	 */
 	@RequestMapping(value="/combo", method = {RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	public List<AreaInfo> combo(){
