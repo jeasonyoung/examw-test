@@ -96,7 +96,7 @@ $(function(){
 			formatter:function(value,data,index){
 				var href = "<a class='paper-list-opt-preview' href='#' onclick='${dg}_paper_preview(\""+data.id+"\")'/>"
 				if(data.status == ${PAPER_STATUS_NONE}){
-					href = "<a class='paper-list-opt-add' href='#' onclick='${dg}_paper_items_edit(\""+ data.id+"\",\""+data.name+"\")'/>";
+					href = "<a class='paper-list-opt-add' href='#' onclick='${dg}_paper_structure(\""+ data.id+"\",\"试卷［"+data.name+"］试题管理\")'/>";
 				}
 				return href;
 			}
@@ -121,9 +121,25 @@ $(function(){
 	${dg}_paper_preview = function(paperId){
 		///TODO:预览试卷
 	};
-	//paper_items_edit
-	${dg}_paper_items_edit = function(paperId,title){
-		///TODO:试题编辑
+	//paper_structure
+	${dg}_paper_structure = function(paperId,title){
+		var d = $("<div/>").dialog({
+			title:title,
+			width:800,
+			height:600,
+			href:"<@s.url '/library/paper/structure/'/>" + paperId,
+			modal:true,
+			buttons:[{
+				text:"关闭",
+				iconCls:"icon-cancel",
+				handler:function(){
+					d.dialog("close");
+				}
+			}],
+			onClose:function(){
+				$(this).dialog("destroy");
+			}
+		});
 	};
 	//add
 	${dg}_add = function(){

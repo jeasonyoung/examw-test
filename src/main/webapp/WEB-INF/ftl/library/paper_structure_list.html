@@ -1,0 +1,175 @@
+<#--试卷结构列表 -->
+<#include "comm.ftl"/>
+<#assign module="library_paper_structure"/>
+<#assign dg="${module}_list_dg"/>
+<script type="text/javascript">
+<!--
+$(function(){
+	var current_structure_id = "";
+	//structure_tree
+	var structure_tree = $("#${module}_tree").tree({
+		url:"<@s.url '/library/paper/structure/tree/${CURRENT_PAPER_ID}'/>",
+		lines:true,
+		onContextMenu:function(e, node){
+			e.preventDefault();
+			current_structure_id = node.id;
+			// select the node
+			structure_tree.tree("select", node.target);
+			// display context menu
+			$("#${module}_tree_menu").menu("show", {
+				left: e.pageX,
+				top: e.pageY
+			});
+		},
+		onLoadError:function(e){
+			<@error_dialog "e"/>
+		},
+		onBeforeLoad:function(){
+			current_structure_id = "";
+		},
+		onClick:function(node){
+			current_structure_id = node.id;
+		},
+		onDblClick:function(node){
+			current_structure_id = node.id;
+			structure_edit("编辑试卷结构",node.attributes);
+		}
+	});
+	<@shiro.hasPermission name="${PER_UPDATE}">
+	//structure_add
+	${module}_add = function(){
+		structure_edit("新增试卷结构",null)
+	};
+	</@shiro.hasPermission>
+	//structure_edit
+	function structure_edit(title,row){
+		var structure_id = "";
+		if(row){
+			structure_id = row.id;
+		}
+		var d = $("<div/>").dialog({
+			title:title,
+			width:400,
+			height:300,
+			href:"<@s.url '/library/paper/structure/edit/${CURRENT_PAPER_ID}'/>?ignoreStructureId=" + structure_id,
+			modal:true,
+			buttons:[
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			{
+				iconCls:"icon-save",
+				text:"保存",
+				handler:function(){
+					$.messager.progress();
+					$("#${module}_edit_form").form("submit",{
+						url:"<@s.url '/library/paper/structure/update/${CURRENT_PAPER_ID}'/>",
+						onSubmit: function(){
+							var isValid = $(this).form("validate");
+							if (!isValid)$.messager.progress("close");
+							return isValid;
+						},
+						onLoadError:function(e){
+							$.messager.progress("close");
+							<@error_dialog "e"/>
+						},
+						success:function(data){
+							$.messager.progress("close");
+							var data = $.parseJSON(data);
+							if(data.success){
+								if(structure_tree)structure_tree.tree("reload");
+								d.dialog("close");
+							}else{
+								$.messager.show({
+									title:"保存异常",
+									msg:data.msg
+								});
+							}
+						}
+					});
+				}
+			},
+			</@shiro.hasPermission>
+			{
+				text:"关闭",
+				iconCls:"icon-cancel",
+				handler:function(){
+					d.dialog("close");
+				}
+			}],
+			onClose:function(){
+				$(this).dialog("destroy");
+			},
+			onLoad:function(){
+				$("#${module}_edit_form").form("load",(row ? row : {"pid":current_structure_id}));
+			}
+		});
+	}
+	<@shiro.hasPermission name="${PER_DELETE}">
+	//structure_delete
+	${module}_delete = function(){
+		if(!current_structure_id || $.trim(current_structure_id) == ""){
+			$.messager.alert("提示","未选中须删除的数据！");
+			return;
+		}
+		$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
+			if(!r)return;
+			$.messager.progress();
+			$.ajax({
+				url:"<@s.url '/library/paper/structure/delete/${CURRENT_PAPER_ID}'/>",
+				type:"POST",
+				data:{
+					"structureId":current_structure_id
+				},
+				dataType:"json",
+				error:function(e){
+					$.messager.progress("close");
+					<@error_dialog "e"/>
+				},
+				success:function(data,textStatus){
+					$.messager.progress("close");
+					if(data.success){
+						if(structure_tree)structure_tree.tree("reload");
+					}else{
+						$.messager.show({
+							title:"提示",
+							msg:data.msg
+						});
+					}
+				}
+			});
+		});
+	};
+	</@shiro.hasPermission>
+});
+//-->
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+	<div data-options="region:'west',title:'试卷结构',split:true,tools:[{
+			iconCls:'icon-reload',
+			handler:function(){
+				$('#${module}_tree').tree('reload');
+				//TODO::刷新列表数据
+			}
+		}
+		<@shiro.hasPermission name='${PER_UPDATE}'>
+		,{
+			iconCls:'icon-add',
+			handler:function(){
+				${module}_add();
+			}
+		}
+		</@shiro.hasPermission>
+		]" style="width:190px;">
+		<ul id="${module}_tree"></ul>
+		<div id="${module}_tree_menu" class="easyui-menu" style="width:120px;">
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			<div onclick="${module}_add()" data-options="iconCls:'icon-add'">添加试卷结构</div>
+			</@shiro.hasPermission>
+			<@shiro.hasPermission name="${PER_DELETE}">
+			<div onclick="${module}_delete()" data-options="iconCls:'icon-remove'">删除试卷结构</div>
+			</@shiro.hasPermission>
+		</div>
+	</div>
+	<div data-options="region:'center',title:'试题列表' " >
+		
+	</div>
+</div>

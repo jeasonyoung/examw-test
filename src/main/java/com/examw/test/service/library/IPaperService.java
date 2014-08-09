@@ -59,5 +59,5 @@ public interface IPaperService extends IBaseDataService<PaperInfo> {
 	 * @param structureId
 	 * 试卷结构ID。
 	 */
-	void deleteStructure(String paperId,String structureId);
+	void deleteStructure(String paperId,String... structureId);
 }

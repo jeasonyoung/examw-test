@@ -3,6 +3,7 @@ package com.examw.test.service.library.impl;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -212,7 +213,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	 */
 	@Override
 	public void updateStatus(String id, PaperStatus status) {
-		if(logger.isDebugEnabled())logger.debug(String.format("更新状态：%1$s -> %2$d", id, status));
+		if(logger.isDebugEnabled())logger.debug(String.format("更新状态：%1$s -> %2$s", id, status));
 		String msg = null;
 		if(StringUtils.isEmpty(id)){
 			msg = "试卷ID为空！";
@@ -253,16 +254,17 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		if(paper.getStructures() == null || paper.getStructures().size() == 0) return null;
 		 List<StructureInfo> list = new ArrayList<>();
 		 for(Structure s: paper.getStructures()){
-			 if(s == null) continue;
+			 if(s == null || (s.getParent() != null)) continue;
 			 StructureInfo info = new StructureInfo();
-			 this.changeModel(s, info);
-			 list.add(info);
+			 if(this.changeModel(s, info)){
+				 list.add(info);
+			 }
 		 }
 		return list;
 	}
 	//试卷结构类型转换。
-	private void changeModel(Structure source, StructureInfo target){
-		if(source == null || target == null) return;
+	private boolean changeModel(Structure source, StructureInfo target){
+		if(source == null || target == null) return false;
 		BeanUtils.copyProperties(source, target, new String[]{"children"});
 		if(source.getChildren() != null && source.getChildren().size() > 0){
 			Set<StructureInfo> children = new TreeSet<StructureInfo>(new Comparator<StructureInfo>(){
@@ -275,11 +277,13 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 				if(s == null) continue;
 				 StructureInfo e = new StructureInfo();
 				 e.setPid(target.getId());
-				 this.changeModel(s, e);
-				 children.add(e);
+				 if(this.changeModel(s, e)){
+					 children.add(e);
+				 }
 			}
 			if(children.size() > 0) target.setChildren(children);
 		}
+		return true;
 	}
 	/*
 	 * 更新试卷结构。
@@ -322,8 +326,34 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		if(!StringUtils.isEmpty(info.getPid()) && (data.getParent() == null || !data.getParent().getId().equalsIgnoreCase(info.getPid()))){
 			data.setParent(this.findStructure(paper, info.getPid()));
 		}
-		BeanUtils.copyProperties(info, data);
+		this.updateStructureChildren(paper,info, data);
+		if(isAdded){
+			if(paper.getStructures() == null) paper.setStructures(new HashSet<Structure>());
+			paper.getStructures().add(data);
+		}
 	}
+	//更新当前结构及其子结构。
+	private boolean updateStructureChildren(Paper paper,StructureInfo source, Structure target){
+		if(paper == null || source == null || target == null) return false;
+		BeanUtils.copyProperties(source, target, new String[]{"children"});
+		if(source.getChildren() != null && source.getChildren().size() > 0){
+			Set<Structure> children = new HashSet<>();
+			for(StructureInfo info : source.getChildren()){
+				Structure e = StringUtils.isEmpty(info.getId()) ? null : this.findStructure(paper, info.getId());
+				if(e == null){
+					if(StringUtils.isEmpty(info.getId())) info.setId(UUID.randomUUID().toString());
+					e = new Structure();
+				}
+				e.setParent(target);
+				if(this.updateStructureChildren(paper, info, e)){
+					children.add(e);
+				}
+			}
+			if(children.size() > 0) target.setChildren(children);
+		}
+		return true;
+	}
+	
 	//查找试卷下的结构对象。
 	private Structure findStructure(Paper paper, String structureId){
 		Structure find = null;
@@ -352,22 +382,25 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	 * @see com.examw.test.service.library.IPaperService#deleteStructure(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void deleteStructure(String paperId, String structureId) {
+	public void deleteStructure(String paperId, String... structureId) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("删除试卷［paperId = %1$s］结构［structureId = %2$s］...", paperId, structureId));
-		if(StringUtils.isEmpty(paperId) || StringUtils.isEmpty(structureId)) return;
+		if(StringUtils.isEmpty(paperId) || structureId == null || structureId.length == 0) return;
 		Paper paper = this.paperDao.load(Paper.class, paperId);
 		if(paper == null){
 			String msg = String.format("所属试卷［paperId = %s］不存在！", paperId);
 			if(logger.isDebugEnabled()) logger.debug(msg);
 			throw new RuntimeException(msg);
 		}
-		Structure data = this.findStructure(paper, structureId);
-		if(data == null) return;
-		Structure parent = data.getParent();
- 		if(parent == null){
-			paper.getStructures().remove(data);
-			return;
+		for(int i = 0; i< structureId.length; i++){
+			if(logger.isDebugEnabled()) logger.debug(String.format("删除结构［%s］数据...", structureId[i]));
+			Structure data = this.findStructure(paper, structureId[i]);
+			if(data == null) return;
+			Structure parent = data.getParent();
+	 		if(parent == null){
+				paper.getStructures().remove(data);
+				continue;
+			}
+	 		parent.getChildren().remove(data);
 		}
- 		parent.getChildren().remove(data);
 	}
 }

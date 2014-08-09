@@ -1,0 +1,42 @@
+<#--试卷结构编辑页面-->
+<#include "comm.ftl"/>
+<#assign module="library_paper_structure"/>
+<#assign form="${module}_edit_form" />
+<form id="${form}" method="POST" style="padding:10px;">
+	<div style="float:left;margin-top:2px;width:100%;">
+		<label style="width:50px;">上级：</label>
+		<input name="pid" class="easyui-combotree" data-options="
+				url:'<@s.url '/library/paper/structure/tree/${CURRENT_PAPER_ID}?ignoreStructureId=${IGNORE_STRUCTURE_ID}'/>',
+				onLoadError:function(e){
+					<@error_dialog 'e'/>
+				}
+			" style="width:302px;" />
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:50px;">标题：</label>
+		<textarea name="title" class="easyui-validatebox" data-options="required:true"  rows="10" cols="20" style="width:298px;height:50px;"/>
+		<input name="id" type="hidden" />
+	</div>
+	<div style="float:left;margin-top:7px;width:100%;">
+		<label style="margin-top:5px;width:50px;">题型：</label>
+		<div style="float:left;width:280px;">
+			<label style="padding-top:0px;margin-left:5px;"><input type="radio" name="type" value="${TYPE_SINGLE_VALUE}" checked="checked"/>${TYPE_SINGLE_NAME}</label>
+			<label style="padding-top:0px;margin-left:5px;"><input type="radio" name="type" value="${TYPE_MULTY_VALUE}" />${TYPE_MULTY_NAME}</label>
+			<label style="padding-top:0px;margin-left:5px;"><input type="radio" name="type" value="${TYPE_UNCERTAIN_VALUE}" />${TYPE_UNCERTAIN_NAME}</label>
+			<label style="padding-top:0px;margin-left:5px;"><input type="radio" name="type" value="${TYPE_JUDGE_VALUE}" />${TYPE_JUDGE_NAME}</label>
+			<label style="padding-top:0px;margin-left:5px;"><input type="radio" name="type" value="${TYPE_QANDA_VALUE}" />${TYPE_QANDA_NAME}</label>
+			<label style="padding-top:0px;margin-left:5px;"><input type="radio" name="type" value="${TYPE_SHARE_TITLE_VALUE}" />${TYPE_SHARE_TITLE_NAME}</label>
+			<label style="padding-top:0px;margin-left:5px;"><input type="radio" name="type" value="${TYPE_SHARE_ANSWER_VALUE}" />${TYPE_SHARE_ANSWER_NAME}</label>
+		</div>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<div style="float:left;">
+			<label style="width:50px;">分数：</label>
+			<input name="score" class="easyui-numberbox" data-options="min:0,value:0" style="width:80px;text-align:right;">
+		</div>
+		<div style="float:right;margin-right:15px;">
+			<label style="width:100px;">排序号：</label>
+			<input name="orderNo" class="easyui-numberbox" data-options="min:0,value:1" style="width:80px;text-align:right;">
+		</div>
+	</div>
+</form>
