@@ -76,7 +76,7 @@ public class SubjectController {
 	public List<SubjectInfo> all(final String examId)
 	{
 		if(StringUtils.isEmpty(examId)) return new ArrayList<SubjectInfo>();
-		return this.datagrid(new SubjectInfo(){
+		return this.subjectService.datagrid(new SubjectInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Integer getPage(){return null;}
@@ -144,15 +144,5 @@ public class SubjectController {
 		Integer max = this.subjectService.loadMaxCode();
 		if(max == null) max = 0;
 		return new String[]{ String.format("%02d", max + 1) };
-	}
-	/**
-	 * 查询科目数据。
-	 * @param deptId
-	 * @return
-	 */
-	@RequestMapping(value="/alls", method = {RequestMethod.GET,RequestMethod.POST})
-	@ResponseBody
-	public List<SubjectInfo> alls(String examId){
-		return this.subjectService.findSubject(examId);
 	}
 }

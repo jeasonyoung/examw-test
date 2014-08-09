@@ -27,12 +27,4 @@ public interface ISubjectDao extends IBaseDao<Subject>{
 	 * 数据总数。
 	 */
 	Long total(SubjectInfo info);
-	/**
-	 * 根据考试ID查询所属科目
-	 * @param deptId
-	 * 查询条件。
-	 * @return
-	 * 查询结果。
-	 */
-	List<Subject> findSubject(String examId);
 }

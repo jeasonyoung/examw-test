@@ -50,34 +50,23 @@ public class SubjectDaoImpl extends BaseDaoImpl<Subject> implements ISubjectDao{
 	}
 	
 	// 添加查询条件到HQL。
-private String addWhere(SubjectInfo info, String hql,Map<String, Object> parameters) {
-			if (!StringUtils.isEmpty(info.getName())) {
-				hql += " and (s.name like :name)";
-				parameters.put("name", "%" + info.getName() + "%");
-			}
-			if (!StringUtils.isEmpty(info.getExamId())) {
-				hql += " and (s.exam.id = :examId)";
-				parameters.put("examId", info.getExamId());
-			}
-			if (!StringUtils.isEmpty(info.getCategoryId())) {
-				hql += " and (s.exam.category.id = :categoryId)";
-				parameters.put("categoryId", info.getCategoryId());
-			}
-			if (!StringUtils.isEmpty(info.getAreaId())) {
-				hql += " and (s.area.id = :areaId)";
-				parameters.put("areaId", info.getAreaId());
-			}
-			return hql;
+	private String addWhere(SubjectInfo info, String hql,Map<String, Object> parameters) {
+		if (!StringUtils.isEmpty(info.getName())) {
+			hql += " and (s.name like :name)";
+			parameters.put("name", "%" + info.getName() + "%");
 		}
-	/*
-	 * 根据考试ID查询科目。
-	 * @see com.examw.test.dao.settings.ISubjectDao#findSubject(java.lang.String)
-	 */
-	@Override
-	public List<Subject> findSubject(String examId) {
-		final String hql = "from Subject s where s.exam.id = :examId order by s.name";
-		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("examId", examId);
-		return this.find(hql, parameters, null, null);
+		if (!StringUtils.isEmpty(info.getExamId())) {
+			hql += " and (s.exam.id = :examId)";
+			parameters.put("examId", info.getExamId());
+		}
+		if (!StringUtils.isEmpty(info.getCategoryId())) {
+			hql += " and (s.exam.category.id = :categoryId)";
+			parameters.put("categoryId", info.getCategoryId());
+		}
+		if (!StringUtils.isEmpty(info.getAreaId())) {
+			hql += " and (s.area.id = :areaId)";
+			parameters.put("areaId", info.getAreaId());
+		}
+		return hql;
 	}
 }
