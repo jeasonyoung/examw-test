@@ -1,6 +1,5 @@
 package com.examw.test.service.settings.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -164,22 +163,5 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 			return new Integer(sources.get(0).getCode());
 		}
 		return null;
-	}
-	/*
-	 * 加载考试下的科目。
-	 * @see com.examw.test.service.settings.ISubjectService#findSubject(java.lang.String)
-	 */
-	@Override
-	public List<SubjectInfo> findSubject(String examId) {
-		if(logger.isDebugEnabled())logger.debug("查询考试［"+examId+"］下的科目数据集合...");
-		List<SubjectInfo> list = new ArrayList<>();
-		List<Subject> sub = this.subjectDao.findSubject(examId);
-		if(sub != null && sub.size() > 0){
-			for(Subject data: sub){
-				SubjectInfo info = this.changeModel(data);
-				if(info != null) list.add(info);
-			}
-		}
-		return list;
 	}
 }
