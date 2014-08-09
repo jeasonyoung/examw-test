@@ -22,14 +22,14 @@ $(function(){
 			if(sub_cbb){
 				sub_cbb.combobox("clear");
 				if($.trim(n) == "") return;
-				sub_cbb.combobox("reload","<@s.url '/settings/subject/alls?examId='/>" + n);
+				sub_cbb.combobox("reload","<@s.url '/settings/subject/all?examId='/>" + n);
 			}
 		}
 	});
 	//subject
 	var sub_cbb = $("#${form} input[name='subId']").combobox({
 		<#if (CURRENT_EXAM_ID?length > 0)>
-		url:"<@s.url '/settings/subject/alls?examId=${CURRENT_EXAM_ID}'/>",
+		url:"<@s.url '/settings/subject/all?examId=${CURRENT_EXAM_ID}'/>",
 		</#if>
 		valueField:"id",
 		textField:"name",

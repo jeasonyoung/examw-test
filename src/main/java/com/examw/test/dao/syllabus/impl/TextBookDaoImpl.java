@@ -63,6 +63,14 @@ public class TextBookDaoImpl extends BaseDaoImpl<TextBook> implements ITextBookD
 			hql += " and (t.subject.id like :subId) ";
 			parameters.put("subId", "%"+ info.getSubId() +"%");
 		}
+		if(!StringUtils.isEmpty(info.getExamId())){
+			hql += " and (t.subject.exam.id like :examId) ";
+			parameters.put("examId", "%"+ info.getExamId() +"%");
+		}
+		if(!StringUtils.isEmpty(info.getCateId())){
+			hql += " and (t.subject.exam.category.id like :cateId) ";
+			parameters.put("cateId", "%"+ info.getCateId() +"%");
+		}
 		return hql;
 	}
 }

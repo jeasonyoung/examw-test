@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -53,8 +54,8 @@ public class SyllabusController {
 	public String edit(String syllId,String examId,String subId,Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
 		model.addAttribute("CURRENT_SYLL_ID", syllId);
-		model.addAttribute("CURRENT_EXAM_ID", examId);
-		model.addAttribute("CURRENT_SUB_ID", subId);
+		model.addAttribute("CURRENT_EXAM_ID", StringUtils.isEmpty(examId) ? "" : examId.trim());
+		model.addAttribute("CURRENT_SUBJECT_ID", StringUtils.isEmpty(subId) ? "" : subId.trim());
 		return "syllabus/syllabus_edit";
 	}
 	/**
@@ -140,9 +141,9 @@ public class SyllabusController {
 	 * 考试类别树结构数据。
 	 * @return
 	 */
-	@RequestMapping(value = "/tree", method = {RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value = "/trees", method = {RequestMethod.GET,RequestMethod.POST})
 	@ResponseBody
-	public List<TreeNode> tree(){
+	public List<TreeNode> trees(){
 		return this.syllabusService.loadAllSyllabuss();
 	}
 }

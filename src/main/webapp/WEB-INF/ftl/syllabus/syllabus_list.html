@@ -5,27 +5,27 @@
 <script type="text/javascript">
 <!--
 $(function(){
-	var current_subject_id = "" ,current_exam_id = "";
-	//tree
-	var tree = $("#${module}_tree").tree({
+	var current_exam_id = current_subject_id = "";
+	//exam tree
+	var exam_tree = $("#${module}_exam_tree").tree({
 		url:"<@s.url '/settings/category/subject-tree'/>",
+		lines:true,
 		onLoadError:function(e){
 			<@error_dialog "e"/>
 		},
 		onBeforeLoad:function(){
-			current_exam_id = current_subject_id = "";
+			current_subject_id = "";
 		},
 		onClick:function(node){
-			if(node.attributes.type ==  "exam"){
-				current_exam_id = node.id;
-				current_subject_id = "";
-			}else if(node.attributes.type == "subject"){
+			current_exam_id = current_subject_id = "";
+			if(node.attributes.type =="subject"){
 				current_subject_id = node.id;
-				current_exam_id = "";
+				var parent = exam_tree.tree("getParent",node.target);
+				if(parent) current_exam_id = parent.id;
 			}else{
-				current_subject_id = current_exam_id = "";
+				current_exam_id = node.id;
 			}
-			 ${dg}_search();
+			${dg}_search();
 		}
 	});
 	//dg
@@ -91,17 +91,19 @@ $(function(){
 	};
 	//edit
 	function edit_window(title,index,row,code){
-		var sub_id = current_subject_id,exam_id = current_exam_id,syll_id = "";
+		var exam_id = current_exam_id,syll_id = "";
 		if(row && row.id){
 			exam_id = row.examId;
-			sub_id = row.subId;
+			current_subject_id = "";
 			syll_id = row.id;
 		}
+
+		
 		var d = $("<div/>").dialog({
 			title:title,
 			width:450,
 			height:250,
-			href:"<@s.url '/syllabus/syllabus/edit'/>?examId=" + exam_id+"&subId="+sub_id + "&syllId=" + syll_id,
+			href:"<@s.url '/syllabus/syllabus/edit'/>?examId="+exam_id+"&subId=" + current_subject_id +"&syllId="+syll_id,
 			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">    
@@ -159,6 +161,8 @@ $(function(){
 				if(row){
 					$("#${module}_edit_form").form("load",row);
 				}
+				$("#${module}_edit_form").form("load",(row ? row : {"examId":current_exam_id,"subId":current_subject_id}));
+				if(row && row.description) $("#${module}_edit_form textarea").kindeditor("setValue",row.description);
 			}
 	  });
 	};
@@ -216,8 +220,8 @@ $(function(){
 //-->
 </script>
 <div class="easyui-layout" data-options="fit:true">
-	 <div data-options="region:'west',title:'考试类别—考试—科目树',split:true,tools: [{iconCls:'icon-reload',handler:function(){$('#${module}_tree').tree('reload');${dg}_search();}}]" style="padding:5px;width:193px;">
-	 	<ul id="${module}_tree"></ul>
+	 <div data-options="region:'west',title:'考试类别—考试—科目树',split:true,tools: [{iconCls:'icon-reload',handler:function(){$('#${module}_exam_tree').tree('reload');${dg}_search();}}]" style="padding:5px;width:193px;">
+	 	<ul id="${module}_exam_tree"></ul>
 	 </div>
 	<div data-options="region:'center',title:'大纲列表'">
 		<table id="${dg}"></table>

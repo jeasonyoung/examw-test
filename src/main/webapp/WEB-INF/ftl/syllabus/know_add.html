@@ -1,0 +1,39 @@
+<#--知识点编辑-->
+<#include "comm.ftl"/>
+<#assign module="syllabus_knows"/>
+<#assign form="${module}_edit_form"/>
+<script type="text/javascript">
+<!--
+$(function(){
+	var c = $("#${form} input[name='syllId']").combotree({
+		url:"<@s.url '/syllabus/syllabus/trees'/>",
+		valueField:"id",
+		textField:"name",
+		required:true,
+		onLoadError:function(e){
+			<@error_dialog "e"/>
+		},
+		onLoadSuccess:function(){
+			var id = "${CURRENT_SYLL_ID}";
+			if($.trim(id) == "") return;
+			c.combotree("setValue",id);
+		}
+	});
+});
+//-->
+</script>
+<form id="${form}" method="POST" style="padding:10px;">
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">所属要点：</label>
+		<input type="text" name="syllId" style="width:325px;"/>
+		<input type="hidden" name="id">
+		<input type="hidden" name="bookId" value="${CURRENT_BOOK_ID}">
+	</div> 
+	<div style="float:left; margin-top:12px; width:100%;">
+		<label style="width:75px;">要点代码：</label>
+		<input type="text" name="code" class="easyui-validatebox"  data-options="required:true" style="width:325px;"/>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<textarea type="text" name="content" class="easyui-kindeditor" data-options="minWidth:510,minHeight:160" row="15" cols="20"/>
+	</div>
+</form>

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.examw.model.DataGrid;
 import com.examw.model.Json;
 import com.examw.test.domain.security.Right;
+import com.examw.test.model.syllabus.KnowledgeInfo;
 import com.examw.test.model.syllabus.TextBookInfo;
 import com.examw.test.service.syllabus.ITextBookService;
 /**
@@ -54,15 +55,28 @@ public class TextBookController {
 		return "syllabus/book_edit";
 	}
 	/**
+	 * 获取添加页面。
+	 * @return
+	 * 添加页面。
+	 */
+	@RequiresPermissions({ModuleConstant.SYLLABUS_TEXTBOOK+ ":" + Right.VIEW})
+	@RequestMapping(value="/add", method = RequestMethod.GET)
+	public String add(String bookId,String syllId,Model model){
+		if(logger.isDebugEnabled()) logger.debug("加载添加页面...");
+		model.addAttribute("CURRENT_BOOK_ID", bookId);
+		model.addAttribute("CURRENT_SYLL_ID", syllId);
+		return "syllabus/know_add";
+	}
+	/**
 	 * 获取编辑页面。
 	 * @return
 	 * 编辑页面。
 	 */
 	@RequiresPermissions({ModuleConstant.SYLLABUS_TEXTBOOK+ ":" + Right.VIEW})
-	@RequestMapping(value="/syll/edit/{syllId}", method = RequestMethod.GET)
-	public String editKnow(@PathVariable String syllId,Model model){
+	@RequestMapping(value="/syll/edit/{bookId}", method = RequestMethod.GET)
+	public String editKnow(@PathVariable String bookId,Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
-		model.addAttribute("CURRENT_SYLL_ID", syllId);
+		model.addAttribute("CURRENT_BOOK_ID", bookId);
 		return "syllabus/know_edit";
 	}
 	/**
@@ -100,6 +114,27 @@ public class TextBookController {
 		return result;
 	}
 	/**
+	 * 更新试卷结构数据。
+	 * @param info
+	 * @return
+	 */
+	//@RequiresPermissions({ModuleConstant.PAPERS_PAPER + ":" + Right.UPDATE})
+	@RequestMapping(value="/{bookId}/update", method = RequestMethod.POST)
+	@ResponseBody
+	public Json updateStructure(@PathVariable String bookId, KnowledgeInfo info){
+		if(logger.isDebugEnabled()) logger.debug("更新试卷结构数据...");
+		Json result = new Json();
+		try {
+			 this.bookService.updateKnowledge(bookId, info);
+			 result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("更新数据发生异常", e);
+		}
+		return result;
+	}
+	/**
 	 * 删除数据。
 	 * @param id
 	 * @return
@@ -119,5 +154,17 @@ public class TextBookController {
 			logger.error("删除数据["+id+"]时发生异常:", e);
 		}
 		return result;
+	}
+	/**
+	 * 加载来源代码值。
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.SYLLABUS_TEXTBOOK + ":" + Right.VIEW})
+	@RequestMapping(value="/code", method = RequestMethod.GET)
+	@ResponseBody
+	public String[] code(){
+		Integer max = this.bookService.loadMaxCode();
+		if(max == null) max = 0;
+		return new String[]{ String.format("%02d", max + 1) };
 	}
 }

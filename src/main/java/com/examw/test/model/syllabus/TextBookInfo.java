@@ -1,6 +1,7 @@
 package com.examw.test.model.syllabus;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
@@ -14,8 +15,9 @@ import com.examw.model.Paging;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class TextBookInfo extends Paging {
 	private static final long serialVersionUID = 1L;
-	private String id,name,subId,subName,pressId,pressName,examId,examName;
+	private String id,name,subId,subName,pressId,pressName,examId,examName,cateId;
 	private BigDecimal price;
+	private Set<KnowledgeInfo> knowledges;
 	/**
 	 * 获取教材ID。
 	 * @return 教材ID。
@@ -151,5 +153,37 @@ public class TextBookInfo extends Paging {
 	 */
 	public void setExamName(String examName) {
 		this.examName = examName;
+	}
+	/**
+	 * 获取所属知识点。
+	 * @return
+	 * 所属知识点。
+	 */
+	public Set<KnowledgeInfo> getKnowledges() {
+		return knowledges;
+	}
+	/**
+	 * 设置所属知识点。
+	 * @param knowledges
+	 * 所属知识点。
+	 */
+	public void setKnowledges(Set<KnowledgeInfo> knowledges) {
+		this.knowledges = knowledges;
+	}
+	/**
+	 * 获取所属考试分类ID。
+	 * @return 所属考试分类ID。
+	 */
+	public String getCateId() {
+		return cateId;
+	}
+	/**
+	 * 设置所属考试分类ID。
+	 * @param cateId
+	 * 所属考试分类ID。
+	 */
+	
+	public void setCateId(String cateId) {
+		this.cateId = cateId;
 	}
 }

@@ -11,7 +11,7 @@ import com.examw.model.Paging;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class KnowledgeInfo extends Paging {
 	private static final long serialVersionUID = 1L;
-	private String id,code,content,bookId,bookNmae,syllId,syllName,cateId,cateName;
+	private String id,code,content,bookId,syllId,syllName,cateId,cateName;
 	/**
 	 * 设置知识点ID。
 	 * @return 知识点ID。
@@ -72,22 +72,6 @@ public class KnowledgeInfo extends Paging {
 	 */
 	public void setBookId(String bookId) {
 		this.bookId = bookId;
-	}
-	/**
-	 * 获取所属教材名称。
-	 * @return
-	 * 所属教材名称。
-	 */
-	public String getBookNmae() {
-		return bookNmae;
-	}
-	/**
-	 * 设置所属教材名称。
-	 * @param booNmae
-	 * 所属教材名称。
-	 */
-	public void setBookNmae(String bookNmae) {
-		this.bookNmae = bookNmae;
 	}
 	/**
 	 * 获取所属大纲ID。

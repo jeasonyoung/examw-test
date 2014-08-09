@@ -55,10 +55,6 @@ public class KnowledgeDaoImpl extends BaseDaoImpl<Knowledge> implements IKnowled
 	}
 	//条件查询。
 	private String addWhere(KnowledgeInfo info, String hql, Map<String, Object> parameters){
-		if(!StringUtils.isEmpty(info.getBookNmae())){
-			hql += " and (k.book.name like :bookName) ";
-			parameters.put("bookName", "%"+ info.getBookNmae() +"%");
-		}
 		if(!StringUtils.isEmpty(info.getSyllName())){
 			hql += " and (k.syllabus.name like :syllName) ";
 			parameters.put("syllName", "%"+ info.getSyllName() +"%");

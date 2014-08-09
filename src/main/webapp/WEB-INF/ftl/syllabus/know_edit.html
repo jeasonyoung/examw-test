@@ -8,7 +8,7 @@ $(function(){
 	var current_syllabus_id = "";
 	//tree
 	var t = $("#${module}_tree").tree({
-		url:"<@s.url '/syllabus/syllabus/tree'/>",
+		url:"<@s.url '/syllabus/syllabus/trees'/>",
 		onLoadError:function(e){
 			<@error_dialog "e"/>
 		},
@@ -22,7 +22,7 @@ $(function(){
 	});
 	//dg
 	var dg=$("#${dg}").datagrid({
-		url:"<@s.url '/syllabus/syllabus/datagrid'/>",
+		url:"<@s.url '/syllabus/knowledge/datagrid'/>",
 		fit:true,
 		fitColumns:true,
 		rownumbers:true,
@@ -40,13 +40,13 @@ $(function(){
 			checkbox:true
 		},{
 			title:"所属要点",
-			field:"",
+			field:"syllName",
 			width:30,
 			align:"left",
 			sortable:true
 		},{
 			title:"知识点内容",
-			field:"",
+			field:"content",
 			width:25,
 			align:"left",
 			sortable:true
@@ -56,7 +56,7 @@ $(function(){
 			<@error_dialog "e"/>
 		},
 		onDblClickRow:function(rowIndex,rowData){
-			edit_window("修改大纲",rowIndex,rowData);
+			edit_window("修改知识点",rowIndex,rowData);
 		}
 	});
 	//add
@@ -64,24 +64,18 @@ $(function(){
 	${dg}_add = function(){
 		if(m) return;
 		m = true;
-		$.getJSON("<@s.url '/syllabus/syllabus/code'/>",function(data){
+		$.getJSON("<@s.url '/syllabus/textbook/code'/>",function(data){
 			m = false;
-			edit_window("新增大纲",0,null,data[0]);
+			edit_window("新增知识点",0,null,data[0]);
 		});
 	};
 	//edit
 	function edit_window(title,index,row,code){
-		var sub_id = current_subject_id,exam_id = current_exam_id,syll_id = "";
-		if(row && row.id){
-			exam_id = row.examId;
-			sub_id = row.subId;
-			syll_id = row.id;
-		}
 		var d = $("<div/>").dialog({
 			title:title,
-			width:450,
-			height:250,
-			href:"<@s.url '/syllabus/syllabus/edit'/>?examId=" + exam_id+"&subId="+sub_id + "&syllId=" + syll_id,
+			width:550,
+			height:380,
+			href:"<@s.url'/syllabus/textbook/add'/>?bookId="+"${CURRENT_BOOK_ID}"+"&syllId="+current_syllabus_id,
 			modal:true,
 			buttons:[
 			
@@ -91,7 +85,7 @@ $(function(){
 				handler:function(){
 					$.messager.progress();
 					$("#${module}_edit_form").form("submit",{
-						url:"<@s.url '/syllabus/syllabus/update'/>",
+						url:"<@s.url '/syllabus/textbook/${CURRENT_BOOK_ID}/update'/>",
 						onSubmit: function(){
 							var isValid = $(this).form("validate");
 							if (!isValid)$.messager.progress("close");
@@ -136,16 +130,14 @@ $(function(){
 					$("#${module}_edit_form").form("load",{"code":code});
 					return;
 				}
-				if(row){
-					$("#${module}_edit_form").form("load",row);
-				}
+				if(row) $("#${module}_edit_form").form("load",row);
 			}
 	  });
 	};
 	//search
 	${dg}_search = function(){
 		dg.datagrid("load",{
-			subId:current_subject_id,
+			syllId:current_syllabus_id,
 			title:$("#${dg}_toobar input[name='title']").val()
 		});
 	};
@@ -198,7 +190,7 @@ $(function(){
 		 <div data-options="region:'west',title:'考试大纲',split:true,tools: [{iconCls:'icon-reload',handler:function(){$('#${module}_tree').tree('reload');${dg}_search();}}]" style="padding:5px;width:190px;">
 		 	<ul id="${module}_tree"></ul>
 		 </div>
-	<div data-options="region:'center',title:'大纲列表'">
+	<div data-options="region:'center',title:'知识点列表'">
 		<table id="${dg}"></table>
 		<div id="${dg}_toobar">
 		
@@ -208,7 +200,7 @@ $(function(){
 			
 			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="${dg}_delete()">删除</a>
 		
-			<label>大纲名称：<input name="title" type="text" style="width:198px;"/></label>
+			<label>知识要点：<input name="title" type="text" style="width:198px;"/></label>
 			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="${dg}_search()" style="margin-left:10px;">查询</a>
 		</div>
 	</div>
