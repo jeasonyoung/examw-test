@@ -2,10 +2,12 @@
 <#include "comm.ftl"/>
 <#assign module="settings_category"/>
 <#assign dg="${module}_list_dg"/>
+<#assign menu="${module}_menu"/>
 <script type="text/javascript">
 <!--
 $(function(){
 	var current_category_id = "";
+	var current_node = undefined;
 	//tree
 	var tree = $("#${module}_tree").tree({
 		url:"<@s.url '/settings/category/tree'/>",
@@ -18,6 +20,17 @@ $(function(){
 		onClick:function(node){
 			current_category_id = node.id;
 			 ${dg}_search();
+		},onContextMenu: function(e, node){
+			e.preventDefault();
+			// 查找节点
+			tree.tree('select', node.target);
+			current_node = node;	//当前节点
+			current_category_id = node.id;
+			// 显示快捷菜单
+			$('#${menu}').menu('show', {
+				left: e.pageX,
+				top: e.pageY
+			});
 		}
 	});
 	//dg
@@ -58,6 +71,7 @@ $(function(){
 			<@error_dialog "e"/>
 		},
 		onDblClickRow:function(row){
+			console.info(row);
 			edit_window("编辑考试分类",row,null);
 		}
 	});
@@ -133,7 +147,7 @@ $(function(){
 		});
 	};
 	//add
-	${dg}_add = function(){
+	${menu}_append = ${dg}_add = function(){
 		if(!current_category_id)	//顶级的才传
 		{
 			$.getJSON("<@s.url '/settings/category/code'/>?pid="+current_category_id,function(data){
@@ -143,6 +157,14 @@ $(function(){
 			edit_window("新增考试分类",null,null);
 		}
 	};
+	//menu_modify
+	${menu}_modify = function(){
+		var parent = tree.tree("getParent",current_node.target);
+		var pid = "";
+		if(parent) pid = parent.id;
+		var row = {id:current_node.id,name:current_node.text,abbr:current_node.attributes.abbr,code:current_node.attributes.code,pid:pid};
+		edit_window("编辑考试分类",row,null);
+	}
 	//search
 	${dg}_search = function(){
 		dg.treegrid("load",{
@@ -162,36 +184,49 @@ $(function(){
 				for(var i = 0; i < rows.length; i++){
 					ids.push(rows[i].id);
 				}
-				$.ajax({
-					url:"<@s.url '/settings/category/delete'/>",
-					type:"POST",
-					data:{
-						id:ids.join("|")
-					},
-					dataType:"json",
-					error:function(e){
-						$.messager.progress("close");
-						<@error_dialog "e"/>
-					},
-					success:function(data,textStatus){
-						$.messager.progress("close");
-						if(data.success){
-							dg.treegrid("load");
-							dg.treegrid("unselectAll");
-							tree.tree("reload");
-						}else{
-							$.messager.show({
-								title:"提示",
-								msg:data.msg
-							});
-						}
-					}
-				});
+				remove({id:ids.join("|")});
 			});
 		}else{
 			$.messager.alert("提示","未选中须删除的数据！");
 		}
 	};
+	//menu_remove
+	${menu}_remove = function(){
+		if(tree.tree("isLeaf",current_node.target)){
+			$.messager.confirm("确认","您是否确认删除选中的节点?",function(r){
+				if(!r)return;
+				$.messager.progress();
+				remove({id:current_node.id});
+			});
+		}else{
+			$.messager.alert("提示","请先删除叶子节点！");
+		}
+	}
+	function remove(data){
+		$.ajax({
+			url:"<@s.url '/settings/category/delete'/>",
+			type:"POST",
+			data:data,
+			dataType:"json",
+			error:function(e){
+				$.messager.progress("close");
+				<@error_dialog "e"/>
+			},
+			success:function(data,textStatus){
+				$.messager.progress("close");
+				if(data.success){
+					dg.treegrid("load");
+					dg.treegrid("unselectAll");
+					tree.tree("reload");
+				}else{
+					$.messager.show({
+						title:"提示",
+						msg:data.msg
+					});
+				}
+			}
+		});
+	}
 	</@shiro.hasPermission>
 });
 //-->
@@ -222,4 +257,10 @@ $(function(){
 			<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
 		</div>
 	</div>
+</div>
+<!-- 树形右键菜单 -->
+<div id="${menu}" class="easyui-menu" style="width:120px;">
+	<div onclick="${menu}_append()" data-options="iconCls:'icon-add'">新增</div>
+	<div onclick="${menu}_modify()" data-options="iconCls:'icon-edit'">修改</div>
+	<div onclick="${menu}_remove()" data-options="iconCls:'icon-remove'">删除</div>
 </div>

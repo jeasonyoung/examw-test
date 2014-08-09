@@ -165,4 +165,12 @@ public class ExamServiceImpl extends BaseDataServiceImpl<Exam, ExamInfo> impleme
 		}
 		return null;
 	}
+	/*
+	 * 加载
+	 * @see com.examw.test.service.settings.IExamService#loadExam(java.lang.String)
+	 */
+	@Override
+	public Exam loadExam(String examId) {
+		return this.examDao.load(Exam.class, examId);
+	}
 }
