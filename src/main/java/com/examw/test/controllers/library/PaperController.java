@@ -2,6 +2,7 @@ package com.examw.test.controllers.library;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -62,6 +63,27 @@ public class PaperController {
 	public DataGrid<PaperInfo> datagrid(PaperInfo info){
 		if(logger.isDebugEnabled()) logger.debug("加载列表页面数据...");
 		return this.paperService.datagrid(info);
+	}
+	/**
+	 * 加载全部数据。
+	 * @param examId
+	 * @param subjectId
+	 * @return
+	 */
+	@RequestMapping(value="/all", method = {RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public List<PaperInfo> all(final String examId,final String subjectId){
+		return this.paperService.datagrid(new PaperInfo(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public String getExamId(){return examId;}
+			@Override
+			public String getSubjectId(){return subjectId;}
+			@Override
+			public String getSort(){return "name";}
+			@Override
+			public String getOrder(){return "asc";}
+		}).getRows();
 	}
 	/**
 	 * 加载编辑页面。

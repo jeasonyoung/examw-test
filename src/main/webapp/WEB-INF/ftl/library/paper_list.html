@@ -136,15 +136,10 @@ $(function(){
 			exam_id = row.examId;
 			current_subject_id = "";
 		}
-		var d = $("<div/>").dialog({
-			title:title,
-			width:600,
-			height:430,
-			href:"<@s.url '/library/paper/edit'/>?examId="+exam_id+"&subjectId=" + current_subject_id ,
-			modal:true,
-			buttons:[
-			<@shiro.hasPermission name="${PER_UPDATE}">
-			{
+		var btns = [];
+		<@shiro.hasPermission name="${PER_UPDATE}">
+		if((!row) || (row && (row.status == ${PAPER_STATUS_NONE}))){
+			btns.push({
 				text:"保存",
 				iconCls:"icon-save",
 				handler:function(){
@@ -181,15 +176,23 @@ $(function(){
 						}
 					});
 				}
-			},
-			</@shiro.hasPermission>
-			{
-				text:"关闭",
-				iconCls:"icon-cancel",
-				handler:function(){
-					d.dialog("close");
-				}
-			}],
+			});
+		}
+		</@shiro.hasPermission>
+		btns.push({
+			text:"关闭",
+			iconCls:"icon-cancel",
+			handler:function(){
+				d.dialog("close");
+			}
+		});
+		var d = $("<div/>").dialog({
+			title:title,
+			width:600,
+			height:430,
+			href:"<@s.url '/library/paper/edit'/>?examId="+exam_id+"&subjectId=" + current_subject_id ,
+			modal:true,
+			buttons:btns,
 			onClose:function(){
 				$(this).dialog("destroy");
 			},
