@@ -23,15 +23,15 @@
 		<property name="pressDao" ref="pressDao"/>
 		<!-- 科目数据接口 -->
 		<property name="subjectDao" ref="subjectDao"/>
+		<!-- 知识点数据接口 -->
+		<property name="knowDao" ref="knowDao"/>
+		<!-- 大纲数据接口 -->
+		<property name="syllabusDao" ref="syllabusDao"/>
 	</bean>
 	<!-- 知识点服务 -->
 	<bean id="knowService" class="com.examw.test.service.syllabus.impl.KnowledegeServiceImpl">
 		<!-- 知识点数据接口 -->
 		<property name="knowDao" ref="knowDao"/>
-		<!-- 教材数据接口 -->
-		<!-- <property name="bookDao" ref="bookDao"/> -->
-		<!-- 大纲数据接口 -->
-		<!-- <property name="syllabusDao" ref="syllabusDao"/ -->
 	</bean>
 	<!-- 考试大纲 服务接口实现 end-->
 </beans>

@@ -76,6 +76,10 @@ public class SyllabusDaoImpl extends BaseDaoImpl<Syllabus> implements ISyllabusD
 			hql += " and (s.subject.exam.id = :examId) ";
 			parameters.put("examId", info.getExamId());
 		}
+		if(!StringUtils.isEmpty(info.getCateId())){
+			hql += " and (s.subject.exam.category.id = :cateId) ";
+			parameters.put("cateId", info.getCateId());
+		}
 		if(!StringUtils.isEmpty(info.getTitle())){
 			hql += " and (s.title like :title) ";
 			parameters.put("title", "%"+ info.getTitle() +"%");

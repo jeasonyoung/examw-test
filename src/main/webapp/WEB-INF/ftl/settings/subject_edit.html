@@ -42,6 +42,12 @@ $(function(){
 			var id = "${CURRENT_EXAM_ID}";
 			if($.trim(id) == "") return;
 			e_t.combobox("setValue",id);
+		},
+		onSelect:function(record){
+			//同时默认选中该考试所属的地区
+			if(a_t && "${CURRENT_AREA_ID}"!= record.areaId ){
+				a_t.combobox("setValue",record.areaId);
+			}
 		}
 	});
 	//地区下拉

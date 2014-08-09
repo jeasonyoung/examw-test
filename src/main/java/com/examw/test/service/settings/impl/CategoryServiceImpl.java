@@ -128,6 +128,7 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 	public String[] loadMaxCode(final String pid) {
 		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
 		Integer max = null;
+		String maxCode = null;
 		List<Category> sources = this.find(new CategoryInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -138,7 +139,8 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 			public String getOrder() { return "desc";}
 		});
 		if(sources != null && sources.size() > 0){
-			max = new Integer(sources.get(0).getCode());
+			maxCode = sources.get(0).getCode();
+			max = new Integer(maxCode);
 		}
 		if(max == null)
 		{
@@ -148,7 +150,7 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 			String code = this.categoryDao.load(Category.class, pid).getCode();
 			return new String[]{String.format("%0"+(code.length()+2)+"d", new Integer(code)*100+1)};
 		}
-		return new String[]{ String.format("%02d", max + 1) };
+		return new String[]{ String.format("%0"+maxCode.length()+"d", max + 1) };
 	}
 	
 	/*
@@ -190,10 +192,18 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		TreeNode node = new TreeNode();
 		node.setId(data.getId());
 		node.setText(data.getName());
+		//只在加载类别树的时候添加一些属性
+		boolean withAttr = (attributes == null);
+		if(withAttr){
+			attributes = new HashMap<>();
+			attributes.put("abbr", data.getAbbr());
+			attributes.put("code", data.getCode());
+		}
 		node.setAttributes(attributes);
 		if(data.getChildren() != null && data.getChildren().size() > 0){
 			List<TreeNode> list = new ArrayList<>();
 			for(Category c : data.getChildren()){
+				if(withAttr) attributes = null;
 				TreeNode t = this.createTreeNode(c,attributes,withExam,withSubject);
 				 if(t != null){
 					 list.add(t);

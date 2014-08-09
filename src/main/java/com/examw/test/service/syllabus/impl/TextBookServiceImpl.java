@@ -1,17 +1,25 @@
 package com.examw.test.service.syllabus.impl;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
+
 import com.examw.test.dao.settings.ISubjectDao;
+import com.examw.test.dao.syllabus.IKnowledgeDao;
 import com.examw.test.dao.syllabus.IPressDao;
+import com.examw.test.dao.syllabus.ISyllabusDao;
 import com.examw.test.dao.syllabus.ITextBookDao;
 import com.examw.test.domain.settings.Subject;
+import com.examw.test.domain.syllabus.Knowledge;
 import com.examw.test.domain.syllabus.Press;
+import com.examw.test.domain.syllabus.Syllabus;
 import com.examw.test.domain.syllabus.TextBook;
+import com.examw.test.model.syllabus.KnowledgeInfo;
 import com.examw.test.model.syllabus.TextBookInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.syllabus.ITextBookService;
@@ -25,6 +33,8 @@ public class TextBookServiceImpl extends BaseDataServiceImpl<TextBook, TextBookI
 	private ITextBookDao bookDao;
 	private ISubjectDao subjectDao;
 	private IPressDao pressDao;
+	private IKnowledgeDao knowDao;
+	private ISyllabusDao syllabusDao;
 	/**
 	 * 设置教材数据接口。
 	 * @param bookDao
@@ -42,6 +52,21 @@ public class TextBookServiceImpl extends BaseDataServiceImpl<TextBook, TextBookI
 	public void setSubjectDao(ISubjectDao subjectDao) {
 		if(logger.isDebugEnabled())logger.debug("注入科目数据接口...");
 		this.subjectDao = subjectDao;
+	}
+	/**
+	 * 
+	 * @param syllabusDao
+	 */
+	public void setSyllabusDao(ISyllabusDao syllabusDao) {
+		this.syllabusDao = syllabusDao;
+	}
+	/**
+	 * 设置知识点数据接口。
+	 * @param knowDao
+	 * 知识点数据接口。
+	 */
+	public void setKnowDao(IKnowledgeDao knowDao) {
+		this.knowDao = knowDao;
 	}
 	/**
 	 * 设置出版社数据接口。
@@ -79,7 +104,7 @@ public class TextBookServiceImpl extends BaseDataServiceImpl<TextBook, TextBookI
 		if(logger.isDebugEnabled())logger.debug("类型转换...");
 		if(data == null) return null;
 		TextBookInfo info = new TextBookInfo();
-		BeanUtils.copyProperties(data, info, new String[]{"type"});
+		BeanUtils.copyProperties(data, info);
 		if(data.getPress() != null){
 			info.setPressId(data.getPress().getId());
 			info.setPressName(data.getPress().getName());
@@ -91,6 +116,14 @@ public class TextBookServiceImpl extends BaseDataServiceImpl<TextBook, TextBookI
 				info.setExamId(data.getSubject().getExam().getId());
 				info.setExamName(data.getSubject().getExam().getName());
 			}
+		}
+		if(data.getKnowledges() != null && data.getKnowledges().size() > 0){
+			Set<KnowledgeInfo> knows = new HashSet<KnowledgeInfo>();
+			for(Knowledge know : data.getKnowledges()){
+				KnowledgeInfo k = this.changeModel(know);
+				if(k != null)knows.add(k);
+			}
+			info.setKnowledges(knows);
 		}
 		return info;
 	}
@@ -148,5 +181,70 @@ public class TextBookServiceImpl extends BaseDataServiceImpl<TextBook, TextBookI
 				this.bookDao.delete(data);
 			} 
 		}	
+	}
+	/*
+	 * 加载最大代码。
+	 * @see com.examw.test.service.syllabus.ITextBookService#loadMaxCode()
+	 */
+	@Override
+	public Integer loadMaxCode() {
+		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
+		List<Knowledge> sources = this.knowDao.findKnowledges(new KnowledgeInfo(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public String getSort() {return "code"; } 
+			@Override
+			public String getOrder() { return "desc";}
+		});
+		if(sources != null && sources.size() > 0){
+			return new Integer(sources.get(0).getCode());
+		}
+		return null;
+	}
+	/*
+	 * 知识点类型转换。
+	 */
+	private KnowledgeInfo changeModel(Knowledge data) {
+		if(logger.isDebugEnabled())logger.debug("类型转换...");
+		if(data == null) return null;
+		KnowledgeInfo info = new KnowledgeInfo();
+		BeanUtils.copyProperties(data, info);
+		if(data.getSyllabus() != null){
+			info.setSyllId(data.getSyllabus().getId());
+			info.setSyllName(data.getSyllabus().getTitle());
+		}
+		if(data.getBook() != null){
+			info.setBookId(data.getBook().getId());
+		}
+		return info;
+	}
+	/*
+	 * 更新知识点。
+	 * @see com.examw.test.service.syllabus.ITextBookService#updateKnowledge(java.lang.String, com.examw.test.model.syllabus.KnowledgeInfo)
+	 */
+	@Override
+	public void updateKnowledge(String bookId, KnowledgeInfo info) {
+		if(StringUtils.isEmpty(bookId) || info == null) return;
+		boolean isAdded = false;
+		Knowledge data = StringUtils.isEmpty(info.getId()) ?  null : this.knowDao.load(Knowledge.class, info.getId());
+		if(isAdded = (data == null)){
+			if(StringUtils.isEmpty(info.getId())){
+				info.setId(UUID.randomUUID().toString());
+			}
+			data = new Knowledge();
+		}
+		BeanUtils.copyProperties(info,data);
+		if(!StringUtils.isEmpty(info.getSyllId()) && (data.getSyllabus() == null || !data.getSyllabus().getId().equalsIgnoreCase(info.getSyllId()))){
+			Syllabus s = this.syllabusDao.load(Syllabus.class, info.getSyllId());
+			if(s != null) data.setSyllabus(s);
+		}
+		if(data.getSyllabus() != null){
+			info.setSyllId(data.getSyllabus().getId());
+			info.setSyllName(data.getSyllabus().getTitle());
+		}
+		if(data.getBook() == null || !data.getBook().getId().equalsIgnoreCase(bookId)){
+			data.setBook(this.bookDao.load(TextBook.class, bookId)); 
+		}
+		if(isAdded)this.knowDao.save(data);
 	}
 }

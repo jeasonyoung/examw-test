@@ -17,7 +17,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.examw.model.DataGrid;
 import com.examw.model.Json;
 import com.examw.test.domain.security.Right;
+import com.examw.test.domain.settings.Area;
+import com.examw.test.domain.settings.Category;
+import com.examw.test.domain.settings.Exam;
 import com.examw.test.model.settings.SubjectInfo;
+import com.examw.test.service.settings.IExamService;
 import com.examw.test.service.settings.ISubjectService;
 
 /**
@@ -34,6 +38,11 @@ public class SubjectController {
 	 */
 	@Resource
 	private ISubjectService subjectService;
+	/**
+	 * 考试服务接口
+	 */
+	@Resource
+	private IExamService examService;
 	/**
 	 * 科目列表页面。
 	 * @return
@@ -52,6 +61,17 @@ public class SubjectController {
 	@RequiresPermissions({ModuleConstant.SETTINGS_SUBJECT + ":" + Right.UPDATE})
 	@RequestMapping(value="/edit", method = RequestMethod.GET)
 	public String edit(String categoryId,String examId, Model model){
+		String areaId = null;
+		if(!StringUtils.isEmpty(examId)){
+			Exam exam = this.examService.loadExam(examId);
+			if(exam!=null){
+				Category c = exam.getCategory();
+				if(c != null) categoryId = c.getId();
+				Area a = exam.getArea();
+				if(a != null) areaId = a.getId();
+			}
+		}
+		model.addAttribute("CURRENT_AREA_ID", StringUtils.isEmpty(areaId) ?  "" : areaId);
 		model.addAttribute("CURRENT_CATEGORY_ID", StringUtils.isEmpty(categoryId) ?  "" : categoryId);
 		model.addAttribute("CURRENT_EXAM_ID", StringUtils.isEmpty(examId) ? "" : examId);
 		return "settings/subject_edit";

@@ -7,48 +7,41 @@
 $(function(){
 	//parent syllabus
 	var parent_syllabus_cbt = $("#${form} input[name='pid']").combotree({
-		<#if (CURRENT_SUB_ID?length>0)>
-		url:"<@s.url '/syllabus/syllabus/tree/${CURRENT_SUB_ID}?ignore='/><#if (CURRENT_SYLL_ID?length > 0)>${CURRENT_SYLL_ID}</#if>",
+		<#if (CURRENT_SUBJECT_ID?length>0)>
+		url:"<@s.url '/syllabus/syllabus/tree/${CURRENT_SUBJECT_ID}?ignore='/><#if (CURRENT_SYLL_ID?length > 0)>${CURRENT_SYLL_ID}</#if>",
 		</#if>
 		lines:true,
 		onLoadError:function(e){
 			<@error_dialog "e"/>
 		}
 	});
-
-	//exam
-	var exam_cbt = $("#${form} input[name='examId']").combotree({
+	//exam-tree
+	var exam_tree = $("#${form} input[name='examId']").combotree({
 		url:"<@s.url '/settings/category/exams-tree'/>",
 		required:true,
-		lines:true,
 		onLoadError:function(e){
-			<@error_dialog "e"/>
-		},
-		onLoadSuccess:function(n,d){
-			<#if (CURRENT_EXAM_ID?length > 0)>
-			if(exam_cbt)exam_cbt.combotree("setValue","${CURRENT_EXAM_ID}");
-			</#if>
+				<@error_dialog "e"/>
 		},
 		onChange:function(n,o){
-			if(sub_cbb){
-				sub_cbb.combobox("clear");
-				if($.trim(n) == "") return;
-				sub_cbb.combobox("reload","<@s.url '/settings/subject/alls?examId='/>" + n);
+			if(subject_cbb){
+				subject_cbb.combobox("clear");
+				subject_cbb.combobox("reload","<@s.url '/settings/subject/all'/>?examId=" + n);
 			}
 		}
 	});
-	//subject
-	var sub_cbb = $("#${form} input[name='subId']").combobox({
-		<#if (CURRENT_EXAM_ID?length > 0)>
-		url:"<@s.url '/settings/subject/alls?examId=${CURRENT_EXAM_ID}'/>",
-		</#if>
+	//subject-tree
+	var subject_cbb = $("#${form} input[name='subId']").combobox({
+		<#if ((CURRENT_EXAM_ID?length) > 0)>
+	     url:"<@s.url '/settings/subject/all'/>?examId=${CURRENT_EXAM_ID}",
+	   </#if>
+		required:true,
 		valueField:"id",
 		textField:"name",
-		required:true,
 		onLoadError:function(e){
-			<@error_dialog "e"/>
-		},
+			<@error_dialog 'e'/>
+		}
 	});
+
 });
 //-->
 </script>
@@ -59,8 +52,8 @@ $(function(){
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">所属科目：</label>
-		<input type="text" name="examId" style="width:154px;"/>
-		<input type="text" name="subId" style="width:160px;"/>
+		<input name="examId" type="text"  style="width:154px;"/>
+		<input name="subId" type="text"  style="width:160px;"/>
 		<input type="hidden" name="id">
 	</div> 
 	<div style="float:left; margin-top:12px; width:100%;">

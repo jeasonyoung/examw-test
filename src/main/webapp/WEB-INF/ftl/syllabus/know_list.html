@@ -5,25 +5,32 @@
 <script type="text/javascript">
 <!--
 $(function(){
-	var current_subject_id = "" ,current_exam_id = "";
+	var current_subject_id = "" ,current_exam_id = "",current_cate_id ="";
 	//tree
 	var tree = $("#${module}_tree").tree({
 		url:"<@s.url '/settings/category/subject-tree'/>",
+		lines:true,
 		onLoadError:function(e){
 			<@error_dialog "e"/>
 		},
 		onBeforeLoad:function(){
-			current_exam_id = current_subject_id = "";
+			current_exam_id = current_subject_id = current_cate_id = "";
 		},
 		onClick:function(node){
 			if(node.attributes.type ==  "exam"){
 				current_exam_id = node.id;
 				current_subject_id = "";
+				current_cate_id = "";
 			}else if(node.attributes.type == "subject"){
 				current_subject_id = node.id;
 				current_exam_id = "";
+				current_cate_id = "";
+			}else if(node.attributes.type == "category"){
+				current_cate_id = node.id;
+				current_subject_id = "";
+				current_exam_id = "";
 			}else{
-				current_subject_id = current_exam_id = "";
+				current_subject_id = current_exam_id = current_cate_id = "";
 			}
 			 ${dg}_search();
 		}
@@ -82,13 +89,13 @@ $(function(){
 			$(".syllabus-list-opt-add").linkbutton({text:"知识点编辑",plain:true,iconCls:"icon-add"});
 		};
 	//add
-	${dg}_syllabus_add = function(syllId){
-		if(!syllId || $.trim(syllId) == "") return;
+	${dg}_syllabus_add = function(bookId){
+		if(!bookId || $.trim(bookId) == "") return;
 		var d = $("<div/>").dialog({
 			title:"知识点编辑",
 			width:800,
 			height:600,
-			href:"<@s.url '/syllabus/textbook/syll/edit/'/>"+syllId,
+			href:"<@s.url '/syllabus/textbook/syll/edit/'/>"+bookId,
 			modal:true,
 			buttons:[{
 				text:"关闭",
@@ -105,8 +112,10 @@ $(function(){
 	//search
 	${dg}_search = function(){
 		dg.datagrid("load",{
+			cateId:current_cate_id,
+			examId:current_exam_id,
 			subId:current_subject_id,
-			title:$("#${dg}_toobar input[name='title']").val()
+			name:$("#${dg}_toobar input[name='name']").val()
 		});
 	};
 	<@shiro.hasPermission name="${PER_DELETE}">
@@ -164,7 +173,7 @@ $(function(){
 			<@shiro.hasPermission name="${PER_DELETE}">
 			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="${dg}_delete()">删除</a>
 			</@shiro.hasPermission>
-			<label>大纲名称：<input name="title" type="text" style="width:198px;"/></label>
+			<label>教材名称：<input name="name" type="text" style="width:198px;"/></label>
 			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="${dg}_search()" style="margin-left:10px;">查询</a>
 		</div>
 	</div>

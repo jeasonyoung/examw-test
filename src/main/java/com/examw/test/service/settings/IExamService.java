@@ -1,5 +1,6 @@
 package com.examw.test.service.settings;
 
+import com.examw.test.domain.settings.Exam;
 import com.examw.test.model.settings.ExamInfo;
 import com.examw.test.service.IBaseDataService;
 
@@ -14,5 +15,9 @@ public interface IExamService  extends IBaseDataService<ExamInfo>{
 	 * @return
 	 */
 	Integer loadMaxCode();
-
+	/**
+	 * 根据ID加载考试
+	 * @return
+	 */
+	Exam loadExam(String examId);
 }
