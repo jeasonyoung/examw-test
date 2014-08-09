@@ -252,8 +252,8 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		return data;
 	}
 	//类型转换。
-	private void changeModel(ItemInfo source,Item target){
-		if(source == null || target == null) return;
+	private boolean changeModel(ItemInfo source,Item target){
+		if(source == null || target == null) return false;
 		BeanUtils.copyProperties(source, target, new String[]{"children"});
 		if(!StringUtils.isEmpty(source.getSubjectId())){
 			target.setSubject(this.subjectDao.load(Subject.class, source.getSubjectId()));
@@ -268,11 +268,13 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 				if(StringUtils.isEmpty(info.getId())) info.setId(UUID.randomUUID().toString());
 				Item item = new Item();
 				item.setParent(target);
-				this.changeModel(info, item);
-				children.add(item);
+				if(this.changeModel(info, item)){
+					children.add(item);
+				}
 			}
 			if(children.size() > 0) target.setChildren(children);
 		}
+		return true;
 	}
 	//计算题目校验值。
 		private String computeCheckCode(ItemInfo info) {
