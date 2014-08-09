@@ -139,6 +139,44 @@ $(function(){
 		});
 	};
 	</@shiro.hasPermission>
+	//items_dg
+	var dg = $("#${dg}").datagrid({
+		//url
+		fit:true,
+		fitColumns:true,
+		rownumbers:true,
+		pagination:true,
+		pagePosition:"bottom",
+		pageSize:20,
+		pageList:[20,30,40],
+		border:true,
+		striped:true,
+		idField:"id",
+		sortName:"code",
+		sortOrder:"desc",
+		columns:[[{
+			
+		}]],
+		toolbar:"#${dg}_toobar",
+		onLoadError:function(e){
+			<@error_dialog "e"/>
+		},
+		onDblClickRow:function(rowIndex,rowData){
+			//edit_items_window("编辑试题",rowIndex,rowData,null);
+		}
+	});
+	//items_search
+	${dg}_search = function(){
+		
+	};
+	//items_add
+	${dg}_add = function(){
+		
+	};
+	//items_delete
+	${dg}_delete = function(){
+		
+	};
 });
 //-->
 </script>
@@ -169,7 +207,18 @@ $(function(){
 			</@shiro.hasPermission>
 		</div>
 	</div>
-	<div data-options="region:'center',title:'试题列表' " >
-		
+	<div data-options="region:'center'" >
+		<table id="${dg}"></table>
+		<div id="${dg}_toobar">
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			<a id="${dg}_toobar_add" href="#" class="easyui-linkbutton" onclick="${dg}_add()" data-options="iconCls:'icon-add',plain:true,disabled:true" style="float:left;">添加</a>
+			</@shiro.hasPermission>
+			<span>|</span>
+			<@shiro.hasPermission name="${PER_DELETE}">
+			<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
+			</@shiro.hasPermission>
+			<label>题目：<input name="content" type="text" style="width:268px;"/></label>	
+			<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
+		</div>
 	</div>
 </div>
