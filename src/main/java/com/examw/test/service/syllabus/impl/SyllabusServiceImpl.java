@@ -166,22 +166,22 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 		return nodes;
 	}
 	/*
-	 * 加载所以的要点。
+	 * 加载所有的要点。
 	 * @see com.examw.test.service.syllabus.ISyllabusService#loadAllSyllabuss()
 	 */
 	@Override
-	public List<TreeNode> loadAllSyllabuss() {
-		if(logger.isDebugEnabled())logger.debug("加载所以的要点...");
-		List<TreeNode> result = new ArrayList<>();
-		List<Syllabus> list = this.syllabusDao.findSyllabuss(new SyllabusInfo());
-			if(list != null){
-				for(int  i = 0; i < list.size(); i++){
-					TreeNode e = this.createNode(list.get(i), null);
-					if(e != null) result.add(e);
-				}
+	public List<TreeNode> loadAllSyllabuss(String ignore) {
+		List<TreeNode> treeNodes = new ArrayList<>();
+		List<Syllabus> list = this.syllabusDao.loadFristSyllabus();
+		if(list != null){
+			for(int i = 0; i < list.size(); i++){
+				TreeNode e = this.createNode(list.get(i),ignore);
+				if(e != null) treeNodes.add(e);
 			}
-		return result;
+		}
+		return treeNodes;
 	}
+	
 	//创建节点。
 	private TreeNode createNode(Syllabus data,String ignore){
 		if(data == null || (!StringUtils.isEmpty(ignore) && data.getId().equalsIgnoreCase(ignore))) return null;

@@ -33,4 +33,6 @@ public interface ISyllabusDao extends IBaseDao<Syllabus>{
 	 * @return
 	 */
 	List<Syllabus> loadFristSyllabuss(String subId);
+
+	List<Syllabus> loadFristSyllabus();
 }

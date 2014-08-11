@@ -54,8 +54,9 @@ public class TextBookServiceImpl extends BaseDataServiceImpl<TextBook, TextBookI
 		this.subjectDao = subjectDao;
 	}
 	/**
-	 * 
+	 * 设置大纲要点数据接口。
 	 * @param syllabusDao
+	 * 大纲要点数据接口。
 	 */
 	public void setSyllabusDao(ISyllabusDao syllabusDao) {
 		this.syllabusDao = syllabusDao;
@@ -223,8 +224,8 @@ public class TextBookServiceImpl extends BaseDataServiceImpl<TextBook, TextBookI
 	 * @see com.examw.test.service.syllabus.ITextBookService#updateKnowledge(java.lang.String, com.examw.test.model.syllabus.KnowledgeInfo)
 	 */
 	@Override
-	public void updateKnowledge(String bookId, KnowledgeInfo info) {
-		if(StringUtils.isEmpty(bookId) || info == null) return;
+	public KnowledgeInfo updateKnowledge(String bookId, KnowledgeInfo info) {
+		if(StringUtils.isEmpty(bookId) || info == null) return null;
 		boolean isAdded = false;
 		Knowledge data = StringUtils.isEmpty(info.getId()) ?  null : this.knowDao.load(Knowledge.class, info.getId());
 		if(isAdded = (data == null)){
@@ -246,5 +247,6 @@ public class TextBookServiceImpl extends BaseDataServiceImpl<TextBook, TextBookI
 			data.setBook(this.bookDao.load(TextBook.class, bookId)); 
 		}
 		if(isAdded)this.knowDao.save(data);
+		return info;
 	}
 }

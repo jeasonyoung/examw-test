@@ -16,16 +16,22 @@ $(function(){
 		}
 	});
 	//exam-tree
+	var current_category_select = false;
 	var exam_tree = $("#${form} input[name='examId']").combotree({
 		url:"<@s.url '/settings/category/exams-tree'/>",
 		required:true,
 		onLoadError:function(e){
 				<@error_dialog "e"/>
 		},
-		onChange:function(n,o){
-			if(subject_cbb){
-				subject_cbb.combobox("clear");
-				subject_cbb.combobox("reload","<@s.url '/settings/subject/all'/>?examId=" + n);
+		onLoadSuccess:function(){
+			var id = "${CURRENT_EXAM_ID}";
+			if($.trim(id) == "") return;
+			exam_tree.combotree("setValue",id);
+		},
+		onSelect:function(record){
+			current_category_select = true;
+			if(subject_cbb && "${CURRENT_EXAM_ID}"!= record.id ){
+				subject_cbb.combobox("reload","<@s.url '/settings/subject/all'/>?examId=" + record.id);
 			}
 		}
 	});
@@ -39,9 +45,15 @@ $(function(){
 		textField:"name",
 		onLoadError:function(e){
 			<@error_dialog 'e'/>
-		}
+		},
+		onLoadSuccess:function(){
+			subject_cbb.combobox("clear");
+			var id = "${CURRENT_SUBJECT_ID}";
+			console.info(id);
+			if($.trim(id) == "") return;
+			subject_cbb.combobox("setValue",id);
+		},
 	});
-
 });
 //-->
 </script>

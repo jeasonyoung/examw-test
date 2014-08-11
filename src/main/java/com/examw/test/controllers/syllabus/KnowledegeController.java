@@ -40,17 +40,6 @@ public class KnowledegeController {
 		return "syllabus/know_list";
 	}
 	/**
-	 * 获取编辑页面。
-	 * @return
-	 * 编辑页面。
-	 */
-	@RequiresPermissions({ModuleConstant.SYLLABUS_KNOWLEDGE+ ":" + Right.VIEW})
-	@RequestMapping(value="/edit", method = RequestMethod.GET)
-	public String edit(Model model){
-		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
-		return "syllabus/book_edit";
-	}
-	/**
 	 * 查询数据。
 	 * @return
 	 */
@@ -60,29 +49,6 @@ public class KnowledegeController {
 	public DataGrid<KnowledgeInfo> datagrid(KnowledgeInfo info){
 		if(logger.isDebugEnabled()) logger.debug("加载列表数据...");
 		return this.knowService.datagrid(info);
-	}
-	/**
-	 * 更新数据。
-	 * @param info
-	 * 更新源数据。
-	 * @return
-	 * 更新后数据。
-	 */
-	@RequiresPermissions({ModuleConstant.SYLLABUS_KNOWLEDGE+ ":" + Right.VIEW})
-	@RequestMapping(value="/update", method = RequestMethod.POST)
-	@ResponseBody
-	public Json update(KnowledgeInfo info){
-		if(logger.isDebugEnabled()) logger.debug("更新数据...");
-		Json result = new Json();
-		try {
-			result.setData(this.knowService.update(info));
-			result.setSuccess(true);
-		} catch (Exception e) {
-			result.setSuccess(false);
-			result.setMsg(e.getMessage());
-			logger.error("更新教材数据发生异常", e);
-		}
-		return result;
 	}
 	/**
 	 * 删除数据。

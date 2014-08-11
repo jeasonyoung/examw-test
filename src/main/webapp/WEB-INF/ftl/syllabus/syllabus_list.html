@@ -94,11 +94,9 @@ $(function(){
 		var exam_id = current_exam_id,syll_id = "";
 		if(row && row.id){
 			exam_id = row.examId;
-			current_subject_id = "";
+			current_subject_id = row.subId;
 			syll_id = row.id;
 		}
-
-		
 		var d = $("<div/>").dialog({
 			title:title,
 			width:450,
@@ -162,15 +160,14 @@ $(function(){
 					$("#${module}_edit_form").form("load",row);
 				}
 				$("#${module}_edit_form").form("load",(row ? row : {"examId":current_exam_id,"subId":current_subject_id}));
-				if(row && row.description) $("#${module}_edit_form textarea").kindeditor("setValue",row.description);
 			}
 	  });
 	};
 	//search
 	${dg}_search = function(){
 		dg.datagrid("load",{
-			examId:current_exam_id,
-			subId:current_subject_id,
+			"examId":current_exam_id,
+			"subId":current_subject_id,
 			title:$("#${dg}_toobar input[name='title']").val()
 		});
 	};
@@ -220,9 +217,15 @@ $(function(){
 //-->
 </script>
 <div class="easyui-layout" data-options="fit:true">
-	 <div data-options="region:'west',title:'考试类别—考试—科目树',split:true,tools: [{iconCls:'icon-reload',handler:function(){$('#${module}_exam_tree').tree('reload');${dg}_search();}}]" style="padding:5px;width:193px;">
-	 	<ul id="${module}_exam_tree"></ul>
-	 </div>
+	<div data-options="region:'west',title:'考试类别—考试—科目树',split:true,tools:[{
+			iconCls:'icon-reload',
+		 	handler:function(){
+		 		$('#${module}_exam_tree').tree('reload');
+		 		${dg}_search();
+		 	}
+		}]"  style="padding:5px;width:195px;">
+		<ul id="${module}_exam_tree"></ul>
+	</div>
 	<div data-options="region:'center',title:'大纲列表'">
 		<table id="${dg}"></table>
 		<div id="${dg}_toobar">
@@ -233,7 +236,7 @@ $(function(){
 			<@shiro.hasPermission name="${PER_DELETE}">
 			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="${dg}_delete()">删除</a>
 			</@shiro.hasPermission>
-			<label>大纲名称：<input name="title" type="text" style="width:198px;"/></label>
+			<label>要点名称：<input name="title" type="text" style="width:198px;"/></label>
 			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="${dg}_search()" style="margin-left:10px;">查询</a>
 		</div>
 	</div>

@@ -55,6 +55,18 @@ public class TextBookController {
 		return "syllabus/book_edit";
 	}
 	/**
+	 * 获取编辑页面。
+	 * @return
+	 * 编辑页面。
+	 */
+	@RequiresPermissions({ModuleConstant.SYLLABUS_TEXTBOOK+ ":" + Right.VIEW})
+	@RequestMapping(value="/syll/edit/{bookId}", method = RequestMethod.GET)
+	public String editKnow(@PathVariable String bookId,Model model){
+		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
+		model.addAttribute("CURRENT_BOOK_ID", bookId);
+		return "syllabus/know_edit";
+	}
+	/**
 	 * 获取添加页面。
 	 * @return
 	 * 添加页面。
@@ -66,18 +78,6 @@ public class TextBookController {
 		model.addAttribute("CURRENT_BOOK_ID", bookId);
 		model.addAttribute("CURRENT_SYLL_ID", syllId);
 		return "syllabus/know_add";
-	}
-	/**
-	 * 获取编辑页面。
-	 * @return
-	 * 编辑页面。
-	 */
-	@RequiresPermissions({ModuleConstant.SYLLABUS_TEXTBOOK+ ":" + Right.VIEW})
-	@RequestMapping(value="/syll/edit/{bookId}", method = RequestMethod.GET)
-	public String editKnow(@PathVariable String bookId,Model model){
-		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
-		model.addAttribute("CURRENT_BOOK_ID", bookId);
-		return "syllabus/know_edit";
 	}
 	/**
 	 * 查询数据。
@@ -114,9 +114,11 @@ public class TextBookController {
 		return result;
 	}
 	/**
-	 * 更新试卷结构数据。
+	 * 更新知识点数据。
 	 * @param info
+	 * 更新源数据。
 	 * @return
+	 * 更新后数据。
 	 */
 	//@RequiresPermissions({ModuleConstant.PAPERS_PAPER + ":" + Right.UPDATE})
 	@RequestMapping(value="/{bookId}/update", method = RequestMethod.POST)
@@ -125,7 +127,7 @@ public class TextBookController {
 		if(logger.isDebugEnabled()) logger.debug("更新试卷结构数据...");
 		Json result = new Json();
 		try {
-			 this.bookService.updateKnowledge(bookId, info);
+			result.setData(this.bookService.updateKnowledge(bookId, info));
 			 result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);
@@ -156,7 +158,7 @@ public class TextBookController {
 		return result;
 	}
 	/**
-	 * 加载来源代码值。
+	 * 加载源代码值。
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.SYLLABUS_TEXTBOOK + ":" + Right.VIEW})

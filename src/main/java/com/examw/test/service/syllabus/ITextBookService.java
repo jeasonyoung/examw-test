@@ -15,9 +15,11 @@ public interface ITextBookService extends IBaseDataService<TextBookInfo> {
 	 */
 	Integer loadMaxCode();
 	/**
-	 * 
+	 * 更新知识点数据。
 	 * @param bookId
+	 * 更新条件。
 	 * @param info
+	 * 更新条件。
 	 */
-	void updateKnowledge(String bookId, KnowledgeInfo info);
+	KnowledgeInfo updateKnowledge(String bookId, KnowledgeInfo info);
 }
