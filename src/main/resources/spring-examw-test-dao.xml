@@ -10,4 +10,6 @@
 	<import resource="spring-examw-test-dao-library.xml"/>
 	<!-- 考试大纲 数据接口实现 -->
 	<import resource="spring-examw-test-dao-syllabus.xml"/>
+	<!-- 产品管理 数据接口实现 -->
+	<import resource="spring-examw-test-dao-products.xml"/>
 </beans>

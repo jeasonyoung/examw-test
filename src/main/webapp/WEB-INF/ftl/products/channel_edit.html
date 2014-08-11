@@ -1,0 +1,13 @@
+<!-- 渠道编辑页面 -->
+<#assign module="products_channel"/>
+<form id="${module}_edit_form" method="POST" style="padding:10px;">
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">渠道代码：</label>
+		<input type="text" name="code" class="easyui-validatebox" data-options="required:true" style="width:268px;" />
+		<input type="hidden" name="id"/>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">渠道名称：</label>
+		<input type="text" name="name" class="easyui-validatebox" style="width:268px;" data-options="required:true"/>
+	</div>
+</form>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<!-- service -->
+	<!-- 产品管理 服务接口实现 begin -->
+	<!-- 渠道服务 -->
+	<bean id="channelService" class="com.examw.test.service.products.impl.ChannelServiceImpl">
+		<!-- 地区数据操作接口 -->
+		<property name="channelDao" ref="channelDao" />
+	</bean>
+	
+
+	<!-- 产品管理  服务接口实现 end -->
+</beans>
