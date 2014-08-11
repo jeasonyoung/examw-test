@@ -27,8 +27,8 @@ public interface ISyllabusService extends IBaseDataService<SyllabusInfo> {
 	 */
 	Integer loadMaxCode();
 	/**
-	 * 加载所以的大纲要点。
+	 * 加载所有的大纲要点。
 	 * @return
 	 */
-	List<TreeNode> loadAllSyllabuss();
+	List<TreeNode> loadAllSyllabuss(String ignore);
 }

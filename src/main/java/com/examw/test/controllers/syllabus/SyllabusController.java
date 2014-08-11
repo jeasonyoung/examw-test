@@ -143,7 +143,7 @@ public class SyllabusController {
 	 */
 	@RequestMapping(value = "/trees", method = {RequestMethod.GET,RequestMethod.POST})
 	@ResponseBody
-	public List<TreeNode> trees(){
-		return this.syllabusService.loadAllSyllabuss();
+	public List<TreeNode> trees(String ignore){
+		return this.syllabusService.loadAllSyllabuss(ignore);
 	}
 }

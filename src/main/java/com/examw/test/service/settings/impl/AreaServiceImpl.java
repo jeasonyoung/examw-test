@@ -92,7 +92,7 @@ public class AreaServiceImpl extends BaseDataServiceImpl<Area, AreaInfo>
 	@Override
 	public void delete(String[] ids) {
 		if (logger.isDebugEnabled())
-			logger.debug("更新数据...");
+			logger.debug("删除数据...");
 		if (ids == null || ids.length == 0)
 			return;
 		for (int i = 0; i < ids.length; i++) {

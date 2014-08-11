@@ -15,7 +15,7 @@ import com.examw.model.Paging;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class TextBookInfo extends Paging {
 	private static final long serialVersionUID = 1L;
-	private String id,name,subId,subName,pressId,pressName,examId,examName,cateId;
+	private String id,name,subId,subName,pressId,pressName,examId,examName;
 	private BigDecimal price;
 	private Set<KnowledgeInfo> knowledges;
 	/**
@@ -169,21 +169,5 @@ public class TextBookInfo extends Paging {
 	 */
 	public void setKnowledges(Set<KnowledgeInfo> knowledges) {
 		this.knowledges = knowledges;
-	}
-	/**
-	 * 获取所属考试分类ID。
-	 * @return 所属考试分类ID。
-	 */
-	public String getCateId() {
-		return cateId;
-	}
-	/**
-	 * 设置所属考试分类ID。
-	 * @param cateId
-	 * 所属考试分类ID。
-	 */
-	
-	public void setCateId(String cateId) {
-		this.cateId = cateId;
 	}
 }

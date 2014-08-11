@@ -1,13 +1,13 @@
-<#--行政地区设置列表-->
+<#--渠道列表-->
 <#include "comm.ftl"/>
-<#assign module="settings_area"/>
+<#assign module="products_channel"/>
 <#assign dg="${module}_list_dg"/>
 <script type="text/javascript">
 <!--
 $(function(){
 	//dg
 	var dg=$("#${dg}").datagrid({
-		url:"<@s.url '/settings/area/datagrid'/>",
+		url:"<@s.url '/products/channel/datagrid'/>",
 		fit:true,
 		fitColumns:true,
 		rownumbers:true,
@@ -23,19 +23,13 @@ $(function(){
 			field:"id",
 			checkbox:true
 		},{
-			title:"地区代码",
+			title:"渠道代码",
 			field:"code",
 			width:10,
 			align:"left",
 			sortable:true
 		},{
-			title:"英文简称",
-			field:"abbr",
-			width:10,
-			align:"left",
-			sortable:true
-		},{
-			title:"地区名称",
+			title:"渠道名称",
 			field:"name",
 			width:10,
 			align:"left",
@@ -46,7 +40,7 @@ $(function(){
 			<@error_dialog "e"/>
 		},
 		onDblClickRow:function(rowIndex,rowData){
-			edit_window("编辑地区",rowIndex,rowData,null);
+			edit_window("编辑渠道",rowIndex,rowData,null);
 		}
 	});
 	//edit
@@ -55,7 +49,7 @@ $(function(){
 			title:title,
 			width:400,
 			height:230,
-			href:"<@s.url '/settings/area/edit'/>",
+			href:"<@s.url '/products/channel/edit'/>",
 			modal:true,
 			buttons:[
 			 <@shiro.hasPermission name="${PER_UPDATE}">
@@ -65,7 +59,7 @@ $(function(){
 				handler:function(){
 					$.messager.progress();
 					$("#${module}_edit_form").form("submit",{
-						url:"<@s.url '/settings/area/update'/>",
+						url:"<@s.url '/products/channel/update'/>",
 						onSubmit: function(){
 							var isValid = $(this).form("validate");
 							if (!isValid)$.messager.progress("close");
@@ -125,9 +119,9 @@ $(function(){
 	${dg}_add = function(){
 		if(m) return;
 		m = true;
-		$.getJSON("<@s.url '/settings/area/code'/>",function(data){
+		$.getJSON("<@s.url '/products/channel/code'/>",function(data){
 			m = false;
-			edit_window("新增地区",0,null,data[0]);
+			edit_window("新增渠道",0,null,data[0]);
 		});
 	};
 	<@shiro.hasPermission name="${PER_DELETE}">
@@ -143,7 +137,7 @@ $(function(){
 					ids.push(rows[i].id);
 				}
 				$.ajax({
-					url:"<@s.url '/settings/area/delete'/>",
+					url:"<@s.url '/products/channel/delete'/>",
 					type:"POST",
 					data:{
 						id:ids.join("|")
@@ -185,7 +179,7 @@ $(function(){
 	<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
 	</@shiro.hasPermission>
 	
-	<label>地区名称：<input name="name" type="text" style="width:198px;"/></label>
+	<label>渠道名称：<input name="name" type="text" style="width:198px;"/></label>
 	
 	<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
 </div>

@@ -1,0 +1,58 @@
+package com.examw.test.model.products;
+
+import com.examw.model.Paging;
+
+/**
+ * 软件类型信息
+ * @author fengwei.
+ * @since 2014年8月11日 下午3:46:46.
+ */
+public class SoftwareTypeInfo extends Paging {
+	private static final long serialVersionUID = 1L;
+	private String id,code,name;
+	/**
+	 * 获取类型ID。
+	 * @return 类型ID。
+	 */
+	public String getId() {
+		return id;
+	}
+	/**
+	 * 设置类型ID。
+	 * @param id 
+	 *	 类型ID。
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+	/**
+	 * 获取类型代码。
+	 * @return 类型代码。
+	 */
+	public String getCode() {
+		return code;
+	}
+	/**
+	 * 设置类型代码。
+	 * @param code 
+	 *	  类型代码。
+	 */
+	public void setCode(String code) {
+		this.code = code;
+	}
+	/**
+	 * 获取类型名称。
+	 * @return 类型名称。
+	 */
+	public String getName() {
+		return name;
+	}
+	/**
+	 * 设置类型名称。
+	 * @param name 
+	 *	  类型名称。
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+}

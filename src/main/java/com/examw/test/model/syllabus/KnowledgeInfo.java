@@ -11,7 +11,7 @@ import com.examw.model.Paging;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class KnowledgeInfo extends Paging {
 	private static final long serialVersionUID = 1L;
-	private String id,code,content,bookId,syllId,syllName,cateId,cateName;
+	private String id,code,content,bookId,syllId,syllName;
 	/**
 	 * 设置知识点ID。
 	 * @return 知识点ID。
@@ -103,35 +103,4 @@ public class KnowledgeInfo extends Paging {
 	public void setSyllName(String syllName) {
 		this.syllName = syllName;
 	}
-	/**
-	 * 所属考试类别ID。
-	 * @return 考试类别ID。
-	 */
-	public String getCateId() {
-		return cateId;
-	}
-	/**
-	 * 设置考试类别ID。
-	 * @param cateId
-	 * 考试类别ID。
-	 */
-	public void setCateId(String cateId) {
-		this.cateId = cateId;
-	}
-	/**
-	 * 获取考试类别名称。
-	 * @return 考试类别名称。
-	 * 
-	 */
-	public String getCateName() {
-		return cateName;
-	}
-	/**
-	 * 设置考试类别名称。
-	 * @param cateName
-	 * 考试类别名称。
-	 */
-	public void setCateName(String cateName) {
-		this.cateName = cateName;
-	}	
 }

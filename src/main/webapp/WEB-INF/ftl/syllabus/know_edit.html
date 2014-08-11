@@ -84,33 +84,35 @@ $(function(){
 				iconCls:"icon-save",
 				handler:function(){
 					$.messager.progress();
-					$("#${module}_edit_form").form("submit",{
-						url:"<@s.url '/syllabus/textbook/${CURRENT_BOOK_ID}/update'/>",
-						onSubmit: function(){
-							var isValid = $(this).form("validate");
-							if (!isValid)$.messager.progress("close");
-							return isValid;
-						},
-						onLoadError:function(e){
-							$.messager.progress("close");
-							<@error_dialog "e"/>
-						},
-						success:function(data){
-							$.messager.progress("close");
-							var data = $.parseJSON(data);
-							if(data.success){
-								dg.datagrid(row ? "updateRow" : "insertRow",{
-									index:index,
-									row:data.data
-								});
-								d.dialog("close");
-							}else{
-								$.messager.show({
-									title:"保存异常",
-									msg:data.msg
-								});
+					$.messager.confirm("确认","您是否确认保存知识点?",function(r){
+						if(!r)return;
+						$.messager.progress();
+						var post = $("#${module}_edit_form").form("serialize");
+						$.ajax({
+							url:"<@s.url '/syllabus/textbook/${CURRENT_BOOK_ID}/update'/>",
+							type:"POST",
+							data:post,
+							dataType:"json",
+							error:function(e){
+								$.messager.progress("close");
+								<@error_dialog "e"/>
+							},
+							success:function(data,textStatus){
+								$.messager.progress("close");
+								if(data.success){
+									dg.datagrid(row ? "updateRow" : "insertRow",{
+										index:index,
+										row:data.data
+									});
+									d.dialog("close");
+								}else{
+									$.messager.show({
+										title:"提示",
+										msg:data.msg
+									});
+								}
 							}
-						}
+						});
 					});
 				}
 			},
@@ -129,7 +131,8 @@ $(function(){
 				if(code && !row){
 					$("#${module}_edit_form").form("load",{"code":code});
 					return;
-				}
+				};
+				if(row && row.content) $("#${module}_edit_form textarea").kindeditor("setValue",row.content);
 				if(row) $("#${module}_edit_form").form("load",row);
 			}
 	  });
@@ -154,7 +157,7 @@ $(function(){
 					ids.push(rows[i].id);
 				}
 				$.ajax({
-					url:"<@s.url '/syllabus/syllabus/delete'/>",
+					url:"<@s.url '/syllabus/knowledge/delete'/>",
 					type:"POST",
 					data:{
 						id:ids.join("|")

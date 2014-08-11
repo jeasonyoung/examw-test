@@ -68,17 +68,13 @@ public class SyllabusDaoImpl extends BaseDaoImpl<Syllabus> implements ISyllabusD
 	}
 	//查询条件
 	private String addWhere(SyllabusInfo info, String hql, Map<String, Object> parameters){
+		if(!StringUtils.isEmpty(info.getExamId())){
+			hql += " and ((s.subject.exam.id = :examId) or (s.subject.exam.category.id in (select c.id  from Category c where (c.parent.id = :examId or c.id = :examId))))";
+			parameters.put("examId", info.getExamId());
+		}
 		if(!StringUtils.isEmpty(info.getSubId())){
 			hql += " and (s.subject.id = :subId) ";
 			parameters.put("subId", info.getSubId());
-		}
-		if(!StringUtils.isEmpty(info.getExamId())){
-			hql += " and (s.subject.exam.id = :examId) ";
-			parameters.put("examId", info.getExamId());
-		}
-		if(!StringUtils.isEmpty(info.getCateId())){
-			hql += " and (s.subject.exam.category.id = :cateId) ";
-			parameters.put("cateId", info.getCateId());
 		}
 		if(!StringUtils.isEmpty(info.getTitle())){
 			hql += " and (s.title like :title) ";
@@ -102,5 +98,16 @@ public class SyllabusDaoImpl extends BaseDaoImpl<Syllabus> implements ISyllabusD
 			}
 		}
 		super.delete(data);
+	}
+	/*
+	 * 加载所有的大纲要点。
+	 * @see com.examw.test.dao.syllabus.ISyllabusDao#loadFristSyllabus()
+	 */
+	@Override
+	public List<Syllabus> loadFristSyllabus() {
+		if(logger.isDebugEnabled())logger.debug("加载一级数据...");
+		final String hql = "from Syllabus s where (s.parent is null) order by s.code";
+		if(logger.isDebugEnabled())logger.debug(hql);
+		return this.find(hql, null, null, null);
 	}
 }
