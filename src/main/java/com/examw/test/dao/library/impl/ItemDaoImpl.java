@@ -38,6 +38,12 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 			if(info.getSort().equalsIgnoreCase("statusName")){
 				info.setSort("status");
 			}
+			if(info.getSort().equalsIgnoreCase("optName")){
+				info.setSort("opt");
+			}
+			if(info.getSort().equalsIgnoreCase("examName")){
+				info.setSort("subject.exam.name");
+			}
 			if(info.getSort().equalsIgnoreCase("subjectName")){
 				info.setSort("subject.name");
 			}
@@ -64,8 +70,12 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 	}
 	//添加查询条件。
 	private String addWhere(ItemInfo info, String hql, Map<String, Object> parameters){
+		if(!StringUtils.isEmpty(info.getExamId())){
+			hql += " and (i.subject.exam.id = :examId or (i.subject.exam.category.id in (select c.id  from Category c where (c.parent.id = :examId or c.id = :examId))))";
+			parameters.put("examId", info.getExamId());
+		}
 		if(!StringUtils.isEmpty(info.getSubjectId())){
-			hql += " and (i.subject.id = :subjectId or i.subject.exam.id = :subjectId or i.subject.exam.category.id = :subjectId or  i.subject.exam.category.parent.id = :subjectId) ";
+			hql += " and (i.subject.id = :subjectId) ";
 			parameters.put("subjectId", info.getSubjectId());
 		}
 		if(!StringUtils.isEmpty(info.getSourceId())){

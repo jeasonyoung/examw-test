@@ -1,13 +1,13 @@
-<#--试卷列表页面-->
+<#--试题列表页面-->
 <#include "comm.ftl"/>
-<#assign module="library_paper"/>
+<#assign module="library_item"/>
 <#assign dg="${module}_list_dg"/>
 <script type="text/javascript">
 <!--
 $(function(){
 	var current_exam_id = current_subject_id = "";
-	//exam tree
-	var exam_tree = $("#${module}_exam_tree").tree({
+	//subject tree
+	var subject_tree = $("#${module}_subject_tree").tree({
 		url:"<@s.url '/settings/category/subject-tree'/>",
 		lines:true,
 		onLoadError:function(e){
@@ -20,7 +20,7 @@ $(function(){
 			current_exam_id = current_subject_id = "";
 			if(node.attributes.type =="subject"){
 				current_subject_id = node.id;
-				var parent = exam_tree.tree("getParent",node.target);
+				var parent = subject_tree.tree("getParent",node.target);
 				if(parent) current_exam_id = parent.id;
 			}else{
 				current_exam_id = node.id;
@@ -30,7 +30,7 @@ $(function(){
 	});
 	//dg
 	var dg = $("#${dg}").datagrid({
-		url:"<@s.url '/library/paper/datagrid'/>",
+		url:"<@s.url '/library/item/datagrid'/>",
 		fit:true,
 		fitColumns:true,
 		rownumbers:true,
@@ -59,16 +59,32 @@ $(function(){
 			align:"left",
 			sortable:true
 		},{
-			title:"试卷名称",
-			field:"name",
+			title:"题型",
+			field:"typeName",
+			width:15,
+			align:"center",
+			sortable:true
+		},{
+			title:"试题",
+			field:"content",
 			width:50,
 			align:"left",
 			sortable:true
 		},{
 			title:"类型",
-			field:"typeName",
+			field:"optName",
 			width:15,
 			align:"center",
+			sortable:true
+		},{
+			title:"验证码",
+			field:"checkCode",
+			width:20,
+			align:"left",
+			formatter: function(value,row,index){
+				var v = row["checkCode"];
+				return "<span title=' "+ v +"'>"+v+"</span>";
+			},
 			sortable:true
 		},{
 			title:"创建时间",
@@ -82,54 +98,90 @@ $(function(){
 			width:15,
 			align:"center",
 			sortable:true
-		},{
-			title:"来源",
-			field:"sourceName",
-			width:25,
-			align:"center",
-			sortable:true
-		},{
-			title:"操作",
-			field:"opt",
-			width:20,
-			align:"center",
-			formatter:function(value,data,index){
-				var href = "<a class='paper-list-opt-preview' href='#' onclick='${dg}_paper_preview(\""+data.id+"\")'/>"
-				if(data.status == ${PAPER_STATUS_NONE}){
-					href = "<a class='paper-list-opt-add' href='#' onclick='${dg}_paper_structure(\""+ data.id+"\",\"试卷［"+data.name+"］试题管理\")'/>";
-				}
-				return href;
-			}
 		}]],
 		toolbar:"#${dg}_toobar",
 		onLoadError:function(e){
 			<@error_dialog "e"/>
 		},
-		onLoadSuccess:function(data){
-			dg_format();
-		},
 		onDblClickRow:function(rowIndex,rowData){
-			edit_window("编辑试卷",rowIndex,rowData);
+			edit_window("编辑试题［"+rowData.typeName+"］",rowIndex,rowData);
 		}
 	});
-	//format datagrid display.
-	function dg_format(){
-		$(".paper-list-opt-preview").linkbutton({text:"预览试卷",plain:true,iconCls:"icon-print"});
-		$(".paper-list-opt-add").linkbutton({text:"试题管理",plain:true,iconCls:"icon-add"});
+	//search
+	${dg}_search = function(){
+		dg.datagrid("load",{
+			"examId":current_exam_id,
+			"subjectId":current_subject_id,
+			"content":$("#${dg}_toobar input[name='content']").val()
+		});
 	};
-	//paper_preview
-	${dg}_paper_preview = function(paperId){
-		///TODO:预览试卷
+	<@shiro.hasPermission name="${PER_UPDATE}">
+	//add
+	${dg}_add = function(item){
+		edit_window("新增试题［"+$(item).text()+"］",0,null,$(item).attr("value"));
 	};
-	//paper_structure
-	${dg}_paper_structure = function(paperId,title){
+	</@shiro.hasPermission>
+	//edit_window
+	function edit_window(title,inde,row,type){
+		var exam_id = current_exam_id;
+		var opts = true;
+		if(row){
+			if(row.examId)exam_id = row.examId;
+			if(row.type)type = row.type;
+			if(row.status) opts = (row.status == ${ITEM_STATUS_NONE_VALUE});
+		}
 		var d = $("<div/>").dialog({
 			title:title,
 			width:800,
 			height:600,
-			href:"<@s.url '/library/paper/structure/'/>" + paperId,
+			href:"<@s.url '/library/item/edit/'/>" + type + "?examId=" + exam_id + "&opts=" + opts,
 			modal:true,
-			buttons:[{
+			buttons:[
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			{
+				text:"保存",
+				iconCls:"icon-save",
+				handler:function(){
+					$.messager.progress();
+					var valid = eval("${module}_"+type+"_validate()");
+					if(!valid){
+						$.messager.progress("close");
+						return;
+					}
+					var post = eval("${module}_"+type+"_update()");
+					if(!post){
+						$.messager.progress("close");
+						$.messager.alert("提示","试题数据失败！");
+						return;
+					}
+					$.ajax({
+						url:"<@s.url '/library/item/update'/>",
+						type:"POST",
+						data:JSON.stringify(post),
+						dataType:"json",
+						contentType:"application/json;charset=UTF-8",
+						error:function(e){
+							$.messager.progress("close");
+							<@error_dialog "e"/>
+						},
+						success:function(data,textStatus){
+							$.messager.progress("close");
+							if(data.success){
+								dg.datagrid("load");
+								dg.datagrid("unselectAll");
+							}else{
+								$.messager.show({
+									title:"提示",
+									msg:data.msg
+								});
+							}
+							d.dialog("close");
+						}
+					});
+				}
+			},
+			</@shiro.hasPermission>
+			{
 				text:"关闭",
 				iconCls:"icon-cancel",
 				handler:function(){
@@ -138,96 +190,15 @@ $(function(){
 			}],
 			onClose:function(){
 				$(this).dialog("destroy");
-			}
-		});
-	};
-	//add
-	${dg}_add = function(){
-		edit_window("新增试卷",0,null);
-	};
-	//edit
-	function edit_window(title,index,row){
-		var exam_id = current_exam_id;
-		if(row){
-			exam_id = row.examId;
-			current_subject_id = "";
-		}
-		var btns = [];
-		<@shiro.hasPermission name="${PER_UPDATE}">
-		if((!row) || (row && (row.status == ${PAPER_STATUS_NONE}))){
-			btns.push({
-				text:"保存",
-				iconCls:"icon-save",
-				handler:function(){
-					$.messager.progress();
-					var valid = $("#${module}_edit_form").form("validate");
-					if(!valid){
-						$.messager.progress("close");
-						return;
-					}
-					$.ajax({
-						url:"<@s.url '/library/paper/update'/>",
-						type:"POST",
-						data:$("#${module}_edit_form").form("serialize"),
-						dataType:"json",
-						error:function(e){
-							$.messager.progress("close");
-							<@error_dialog "e"/>
-						},
-						success:function(data,textStatus){
-							$.messager.progress("close");
-							if(data.success){
-								dg.datagrid(row ? "updateRow" : "insertRow",{
-									index:index,
-									row:data.data
-								});
-								dg_format();
-								d.dialog("close");
-							}else{
-								$.messager.show({
-									title:"保存异常",
-									msg:data.msg
-								});
-							}
-						}
-					});
-				}
-			});
-		}
-		</@shiro.hasPermission>
-		btns.push({
-			text:"关闭",
-			iconCls:"icon-cancel",
-			handler:function(){
-				d.dialog("close");
-			}
-		});
-		var d = $("<div/>").dialog({
-			title:title,
-			width:600,
-			height:430,
-			href:"<@s.url '/library/paper/edit'/>?examId="+exam_id+"&subjectId=" + current_subject_id ,
-			modal:true,
-			buttons:btns,
-			onClose:function(){
-				$(this).dialog("destroy");
 			},
 			onLoad:function(){
-					$("#${module}_edit_form").form("load",(row ? row : {"examId":current_exam_id,"subjectId":current_subject_id}));
-					if(row && row.description) $("#${module}_edit_form textarea").kindeditor("setValue",row.description);
+				var data = (row ? row : {"examId":current_exam_id,"subjectId":current_subject_id});
+				eval("${module}_"+type+"_load(data)");
 			}
 		});
-	};
-	//search
-	${dg}_search = function(){
-		dg.datagrid("load",{
-			"examId":current_exam_id,
-			"subjectId":current_subject_id,
-			"name":$("#${dg}_toobar input[name='name']").val()
-		});
-	};
+	}
 	<@shiro.hasPermission name="${PER_DELETE}">
-	//detele
+	//delete
 	${dg}_delete = function(){
 		var rows = dg.datagrid("getChecked");
 		if(rows && rows.length > 0){
@@ -239,7 +210,7 @@ $(function(){
 					ids.push(rows[i].id);
 				}
 				$.ajax({
-					url:"<@s.url '/library/paper/delete'/>",
+					url:"<@s.url '/library/item/delete'/>",
 					type:"POST",
 					data:{
 						id:ids.join("|")
@@ -272,27 +243,39 @@ $(function(){
 //-->
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
-	<div data-options="region:'west',title:'所属考试',split:true,tools:[{
+	<div data-options="region:'west' ,title:'所属考试科目',split:true,tools:[{
 			iconCls:'icon-reload',
 		 	handler:function(){
-		 		$('#${module}_exam_tree').tree('reload');
+		 		$('#${module}_subject_tree').tree('reload');
 		 		${dg}_search();
 		 	}
-		}]"  style="padding:5px;width:190px;">
-		<ul id="${module}_exam_tree"></ul>
+		}]" style="width:220px;">
+		<ul id="${module}_subject_tree"></ul>
 	</div>
-	<div data-options="region:'center',border:false">
+	<div data-options="region:'center',border:false" >
 		<table id="${dg}"></table>
 		<div id="${dg}_toobar">
 			<@shiro.hasPermission name="${PER_UPDATE}">
-			<a href="#" class="easyui-linkbutton" onclick="${dg}_add()" data-options="iconCls:'icon-add',plain:true" style="float:left;">新增</a>
+			<a href="#" class="easyui-menubutton" data-options="iconCls:'icon-add',menu:'#${dg}_toobar_menu',plain:true" style="float:left;">新增</a>
+			<div id="${dg}_toobar_menu" style="width:120p;">
+				<div onclick="${dg}_add(this)" value="${TYPE_SINGLE_VALUE}">${TYPE_SINGLE_NAME}</div>
+				<div onclick="${dg}_add(this)" value="${TYPE_MULTY_VALUE}">${TYPE_MULTY_NAME}</div>
+				<div onclick="${dg}_add(this)" value="${TYPE_UNCERTAIN_VALUE}">${TYPE_UNCERTAIN_NAME}</div>
+				<div class="menu-sep"></div>
+				<div onclick="${dg}_add(this)" value="${TYPE_JUDGE_VALUE}">${TYPE_JUDGE_NAME}</div>
+				<div class="menu-sep"></div>
+				<div onclick="${dg}_add(this)" value="${TYPE_QANDA_VALUE}">${TYPE_QANDA_NAME}</div>
+				<div class="menu-sep"></div>
+				<div onclick="${dg}_add(this)" value="${TYPE_SHARE_TITLE_VALUE}">${TYPE_SHARE_TITLE_NAME}</div>
+				<div onclick="${dg}_add(this)" value="${TYPE_SHARE_ANSWER_VALUE}">${TYPE_SHARE_ANSWER_NAME}</div>
+			</div>
 			</@shiro.hasPermission>
 			<span>|</span>
 			<@shiro.hasPermission name="${PER_DELETE}">
 			<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
 			</@shiro.hasPermission>
 			
-			<label>试卷名称：<input name="name" type="text" style="width:268px;"/></label>
+			<label>试题：<input name="content" type="text" style="width:368px;"/></label>
 	
 			<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
 		</div>

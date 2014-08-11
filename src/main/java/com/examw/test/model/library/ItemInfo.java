@@ -16,7 +16,7 @@ import com.examw.support.CustomDateSerializer;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class ItemInfo extends Paging {
 	private static final long serialVersionUID = 1L;
-	private String pid,id,typeName,statusName,optName,subjectId,subjectName, content,answer,analysis,checkCode,sourceId,sourceName;
+	private String pid,id,typeName,statusName,optName,examId,examName,subjectId,subjectName, content,answer,analysis,checkCode,sourceId,sourceName;
 	private Integer type,level,year,opt,status,orderNo;
 	private Date createTime,lastTime;
 	private Set<ItemInfo> children;
@@ -116,6 +116,36 @@ public class ItemInfo extends Paging {
 	 */
 	public String getSubjectId() {
 		return subjectId;
+	}
+	/**
+	 * 获取所属考试ID。
+	 * @return 所属考试ID。
+	 */
+	public String getExamId() {
+		return examId;
+	}
+	/**
+	 * 设置所属考试ID。
+	 * @param examId 
+	 *	  所属考试ID。
+	 */
+	public void setExamId(String examId) {
+		this.examId = examId;
+	}
+	/**
+	 * 获取所属考试名称。
+	 * @return 所属考试名称。
+	 */
+	public String getExamName() {
+		return examName;
+	}
+	/**
+	 * 设置所属考试名称。
+	 * @param examName 
+	 *	  所属考试名称。
+	 */
+	public void setExamName(String examName) {
+		this.examName = examName;
 	}
 	/**
 	 * 设置所属考试科目ID。

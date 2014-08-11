@@ -1,0 +1,6 @@
+<#--试题选项页面-->
+<#assign module = "library_item_${CURRENT_ITEM_TYPE_VALUE}" />
+<form id="${module}_edit_opt_form"  method="POST" style="padding:1px;">
+	<input type="hidden" name="opt_id" value="${CURRENT_ID}"/>
+	<textarea style="float:left" name="opt_content" class="easyui-kindeditor"  data-options="minWidth:480,minHeight:82" rows="5" cols="20" />
+</form>

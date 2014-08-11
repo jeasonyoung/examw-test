@@ -174,6 +174,10 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		if(data.getSubject() != null){
 			info.setSubjectId(data.getSubject().getId());
 			info.setSubjectName(data.getSubject().getName());
+			if(data.getSubject().getExam() != null){
+				info.setExamId(data.getSubject().getExam().getId());
+				info.setExamName(data.getSubject().getExam().getName());
+			}
 		}
 		if(data.getSource() != null){
 			info.setSourceId(data.getSource().getId());

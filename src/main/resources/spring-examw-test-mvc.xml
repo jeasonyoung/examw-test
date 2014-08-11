@@ -34,15 +34,17 @@
 				<list>
 					<bean class="org.springframework.http.converter.StringHttpMessageConverter">
 						<property name="supportedMediaTypes">
-							<value>text/html;charset=UTF-8</value><!-- 兼容IE下application/json解析为下载的问题 -->
-							<!-- <value>application/json;charset=UTF-8</value> -->
+						    <list>
+						        <value>text/html;charset=UTF-8</value><!-- 兼容IE下application/json解析为下载的问题 -->
+								<value>application/json;charset=UTF-8</value>
+						    </list>
 						</property>
 					</bean>
 					<bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
 						<property name="supportedMediaTypes">
 							<list>
 								<value>text/html;charset=UTF-8</value><!-- 兼容IE下application/json解析为下载的问题 -->
-								<!-- <value>application/json;charset=UTF-8</value> -->
+								<value>application/json;charset=UTF-8</value>
 							</list>
 						</property>
 					</bean>
@@ -107,12 +109,10 @@
 				</map>
 			</property>
 		</bean>
-		
 		<!-- 异常处理 -->
 		<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
 			<!-- 定义默认的异常处理页面，当该异常类型的注册时使用 --> 
 			<property name="defaultErrorView" value="/error/error" />
-			<!-- <property name="defaultStatusCode" value="404" /> -->
 			<!-- 定义异常处理页面用来获取异常信息的变量名，默认名为exception -->
 			<property name="exceptionAttribute" value="ex" />
 			<!-- 定义需要特殊处理的异常，用类名或完全路径名作为key，异常也页名作为值 -->

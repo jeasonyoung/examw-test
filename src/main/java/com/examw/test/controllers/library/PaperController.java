@@ -246,11 +246,7 @@ public class PaperController {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［paperId = %s］结构编辑页面...", paperId));
 		model.addAttribute("CURRENT_PAPER_ID", paperId);
 		model.addAttribute("IGNORE_STRUCTURE_ID", StringUtils.isEmpty(ignoreStructureId) ? "" : ignoreStructureId);
-		this.addItemTypes(model);
-		return "library/paper_structure_edit";
-	}
-	//添加题型
-	private void addItemTypes(Model model){
+		
 		//单选
 		model.addAttribute("TYPE_SINGLE_VALUE", Item.TYPE_SINGLE);
 		model.addAttribute("TYPE_SINGLE_NAME", this.itemService.loadTypeName(Item.TYPE_SINGLE));
@@ -272,6 +268,8 @@ public class PaperController {
 		//共答案
 		model.addAttribute("TYPE_SHARE_ANSWER_VALUE", Item.TYPE_SHARE_ANSWER);
 		model.addAttribute("TYPE_SHARE_ANSWER_NAME", this.itemService.loadTypeName(Item.TYPE_SHARE_ANSWER));
+		
+		return "library/paper_structure_edit";
 	}
 	/**
 	 * 更新试卷结构数据。

@@ -119,7 +119,7 @@
 		<!-- 题目ID -->
 		<id name="id"  type="string"  length="64" />
 		<!-- 题型 (1-单选，2-多选，3-不定向选择，4-判断题，5-问答题，6-共享提干，7-共享答案)-->
-		<property name="type" type="integer" not-null="true" />
+		<property name="type" type="integer" />
 		<!-- 内容 -->
 		<property name="content" type="text" />
 		<!-- 难度值 -->
