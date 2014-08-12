@@ -7,5 +7,4 @@ import com.examw.test.service.IBaseDataService;
  * @author lq.
  * @since 2014-08-06.
  */
-public interface IPressService extends IBaseDataService<PressInfo> {
-}
+public interface IPressService extends IBaseDataService<PressInfo> {}

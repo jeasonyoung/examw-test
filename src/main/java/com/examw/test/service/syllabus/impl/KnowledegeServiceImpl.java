@@ -32,8 +32,8 @@ public class KnowledegeServiceImpl extends BaseDataServiceImpl<Knowledge, Knowle
 	 */
 	@Override
 	protected List<Knowledge> find(KnowledgeInfo info) {
-		if(logger.isDebugEnabled())logger.debug("查询数据..."+info.getSyllName());
-		return this.knowDao.findKnowledges(info);
+		if(logger.isDebugEnabled())logger.debug("查询数据...");
+		return null;
 	}
 	/*
 	 * 统计数据
@@ -42,7 +42,7 @@ public class KnowledegeServiceImpl extends BaseDataServiceImpl<Knowledge, Knowle
 	@Override
 	protected Long total(KnowledgeInfo info) {
 		if(logger.isDebugEnabled())logger.debug("统计数据...");
-		return this.knowDao.total(info);
+		return null;
 	}
 	/*
 	 * 类型转换。
@@ -53,7 +53,6 @@ public class KnowledegeServiceImpl extends BaseDataServiceImpl<Knowledge, Knowle
 		if(logger.isDebugEnabled())logger.debug("类型转换...");
 		return null;
 	}
-	
 	/*
 	 * 更新数据。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#update(java.lang.Object)

@@ -1,5 +1,6 @@
 package com.examw.test.service.syllabus.impl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
+import com.examw.model.DataGrid;
 import com.examw.test.dao.settings.ISubjectDao;
 import com.examw.test.dao.syllabus.IKnowledgeDao;
 import com.examw.test.dao.syllabus.IPressDao;
@@ -190,7 +192,7 @@ public class TextBookServiceImpl extends BaseDataServiceImpl<TextBook, TextBookI
 	@Override
 	public Integer loadMaxCode() {
 		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
-		List<Knowledge> sources = this.knowDao.findKnowledges(new KnowledgeInfo(){
+		List<Knowledge> sources = this.knowDao.findKnowledges(null, new KnowledgeInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public String getSort() {return "code"; } 
@@ -206,7 +208,7 @@ public class TextBookServiceImpl extends BaseDataServiceImpl<TextBook, TextBookI
 	 * 知识点类型转换。
 	 */
 	private KnowledgeInfo changeModel(Knowledge data) {
-		if(logger.isDebugEnabled())logger.debug("类型转换...");
+		if(logger.isDebugEnabled())logger.debug(" 知识点类型转换...");
 		if(data == null) return null;
 		KnowledgeInfo info = new KnowledgeInfo();
 		BeanUtils.copyProperties(data, info);
@@ -225,6 +227,7 @@ public class TextBookServiceImpl extends BaseDataServiceImpl<TextBook, TextBookI
 	 */
 	@Override
 	public KnowledgeInfo updateKnowledge(String bookId, KnowledgeInfo info) {
+		if(logger.isDebugEnabled())logger.debug("更新知识点...");
 		if(StringUtils.isEmpty(bookId) || info == null) return null;
 		boolean isAdded = false;
 		Knowledge data = StringUtils.isEmpty(info.getId()) ?  null : this.knowDao.load(Knowledge.class, info.getId());
@@ -248,5 +251,33 @@ public class TextBookServiceImpl extends BaseDataServiceImpl<TextBook, TextBookI
 		}
 		if(isAdded)this.knowDao.save(data);
 		return info;
+	}
+	/*
+	 * 查询知识点。
+	 * @see com.examw.test.service.syllabus.ITextBookService#findKnowledge(java.lang.String, com.examw.test.model.syllabus.KnowledgeInfo)
+	 */
+	@Override
+	public DataGrid<KnowledgeInfo> findKnowledge(String bookId, KnowledgeInfo info) {
+		if(logger.isDebugEnabled())logger.debug("根据教材ID查询知识点...");
+		DataGrid<KnowledgeInfo> grid = new DataGrid<KnowledgeInfo>();
+		List<Knowledge> list = this.knowDao.findKnowledges(bookId, info);
+		if(list != null){
+			List<KnowledgeInfo> rows = new ArrayList<>();
+			for(Knowledge data : list){
+				KnowledgeInfo k = new KnowledgeInfo();
+				BeanUtils.copyProperties(data, k);
+				if(data.getBook() != null){
+					 k.setBookId(data.getBook().getId());
+				}
+				if(data.getSyllabus() != null){
+					k.setSyllId(data.getSyllabus().getId());
+					k.setSyllName(data.getSyllabus().getTitle());
+				}
+				rows.add(k);
+			}
+			grid.setRows(rows);
+			grid.setTotal(this.knowDao.total(bookId, info));
+		}
+		return grid;
 	}
 }

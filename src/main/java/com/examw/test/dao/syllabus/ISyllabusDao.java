@@ -30,9 +30,14 @@ public interface ISyllabusDao extends IBaseDao<Syllabus>{
 	/**
 	 * 加载一级大纲。
 	 * @param subId
+	 * 查询条件。
 	 * @return
+	 * 查询结果。
 	 */
 	List<Syllabus> loadFristSyllabuss(String subId);
-
+	/**
+	 * 加载所有的大纲要点。
+	 * @return
+	 */
 	List<Syllabus> loadFristSyllabus();
 }

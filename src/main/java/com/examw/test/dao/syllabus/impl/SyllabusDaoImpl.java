@@ -24,7 +24,7 @@ public class SyllabusDaoImpl extends BaseDaoImpl<Syllabus> implements ISyllabusD
 	 */
 	@Override
 	public List<Syllabus> loadFristSyllabuss(String subId) {
-		if(logger.isDebugEnabled()) logger.debug("加载一级大纲数据［deptId="+subId+"］集合...");
+		if(logger.isDebugEnabled()) logger.debug("加载一级大纲数据［subId="+subId+"］集合...");
 		String hql = "from Syllabus s where (s.parent is null) ";
 		Map<String, Object> parameters = new HashMap<>();
 		if(!StringUtils.isEmpty(subId)){

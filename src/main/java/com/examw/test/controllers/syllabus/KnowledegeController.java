@@ -9,11 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.examw.model.DataGrid;
 import com.examw.model.Json;
 import com.examw.test.domain.security.Right;
-import com.examw.test.model.syllabus.KnowledgeInfo;
 import com.examw.test.service.syllabus.IKnowledgeService;
 /**
  * 知识点控制器。
@@ -38,17 +35,6 @@ public class KnowledegeController {
 		model.addAttribute("PER_UPDATE",ModuleConstant.SYLLABUS_KNOWLEDGE + ":" + Right.UPDATE);
 		model.addAttribute("PER_DELETE",ModuleConstant.SYLLABUS_KNOWLEDGE + ":" + Right.DELETE);
 		return "syllabus/know_list";
-	}
-	/**
-	 * 查询数据。
-	 * @return
-	 */
-	@RequiresPermissions({ModuleConstant.SYLLABUS_KNOWLEDGE + ":" + Right.VIEW})
-	@RequestMapping(value="/datagrid", method = RequestMethod.POST)
-	@ResponseBody
-	public DataGrid<KnowledgeInfo> datagrid(KnowledgeInfo info){
-		if(logger.isDebugEnabled()) logger.debug("加载列表数据...");
-		return this.knowService.datagrid(info);
 	}
 	/**
 	 * 删除数据。

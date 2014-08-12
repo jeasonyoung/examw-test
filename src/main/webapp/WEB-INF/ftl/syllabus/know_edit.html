@@ -22,7 +22,7 @@ $(function(){
 	});
 	//dg
 	var dg=$("#${dg}").datagrid({
-		url:"<@s.url '/syllabus/knowledge/datagrid'/>",
+		url:"<@s.url '/syllabus/textbook/${CURRENT_BOOK_ID}/datagrid'/>",
 		fit:true,
 		fitColumns:true,
 		rownumbers:true,
@@ -41,13 +41,13 @@ $(function(){
 		},{
 			title:"所属要点",
 			field:"syllName",
-			width:30,
+			width:25,
 			align:"left",
 			sortable:true
 		},{
 			title:"知识点内容",
 			field:"content",
-			width:25,
+			width:30,
 			align:"left",
 			sortable:true
 		}]],
@@ -78,7 +78,7 @@ $(function(){
 			href:"<@s.url'/syllabus/textbook/add'/>?bookId="+"${CURRENT_BOOK_ID}"+"&syllId="+current_syllabus_id,
 			modal:true,
 			buttons:[
-			
+			<@shiro.hasPermission name="${PER_UPDATE}">    
 			{
 				text:"保存",
 				iconCls:"icon-save",
@@ -116,7 +116,7 @@ $(function(){
 					});
 				}
 			},
-		
+			</@shiro.hasPermission>
 			{
 				text:"关闭",
 				iconCls:"icon-cancel",
@@ -141,10 +141,10 @@ $(function(){
 	${dg}_search = function(){
 		dg.datagrid("load",{
 			syllId:current_syllabus_id,
-			title:$("#${dg}_toobar input[name='title']").val()
+			syllName:$("#${dg}_toobar input[name='titles']").val()
 		});
 	};
-	
+	<@shiro.hasPermission name="${PER_DELETE}">
 	//delete
 	${dg}_delete = function(){
 		var rows = dg.datagrid("getChecked");
@@ -185,7 +185,7 @@ $(function(){
 			$.messager.alert("提示","未选中须删除的数据！");
 		}
 	};
-	
+	</@shiro.hasPermission>
 });
 //-->
 </script>
@@ -196,14 +196,14 @@ $(function(){
 	<div data-options="region:'center',title:'知识点列表'">
 		<table id="${dg}"></table>
 		<div id="${dg}_toobar">
-		
+			<@shiro.hasPermission name="${PER_UPDATE}">
 			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"  onclick="${dg}_add()" style="float:left;">新增</a>
-			
+			</@shiro.hasPermission>
 			<span>|</span>
-			
+			<@shiro.hasPermission name="${PER_DELETE}">
 			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="${dg}_delete()">删除</a>
-		
-			<label>知识要点：<input name="title" type="text" style="width:198px;"/></label>
+			</@shiro.hasPermission>
+			<label>知识要点：<input name="titles" type="text" style="width:198px;"/></label>
 			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="${dg}_search()" style="margin-left:10px;">查询</a>
 		</div>
 	</div>
