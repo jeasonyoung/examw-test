@@ -152,7 +152,7 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 	@Override
 	public Integer loadMaxCode() {
 		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
-		List<Subject> sources = this.find(new SubjectInfo(){
+		List<Subject> sources = this.subjectDao.findSubjects(new SubjectInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public String getSort() {return "code"; } 

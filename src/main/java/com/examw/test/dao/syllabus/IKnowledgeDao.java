@@ -13,12 +13,14 @@ import com.examw.test.model.syllabus.KnowledgeInfo;
 public interface IKnowledgeDao extends IBaseDao<Knowledge> {
 	/**
 	 * 查询数据。
+	 * @param bookId
+	 * 查询条件。
 	 * @param info
 	 * 查询条件。
 	 * @return
 	 * 查询结果。
 	 */
-	List<Knowledge> findKnowledges(KnowledgeInfo info);
+	List<Knowledge> findKnowledges(String bookId,KnowledgeInfo info);
 	/**
 	 * 查询统计。
 	 * @param info
@@ -26,5 +28,5 @@ public interface IKnowledgeDao extends IBaseDao<Knowledge> {
 	 * @return
 	 * 数据统计。
 	 */
-	Long total(KnowledgeInfo info);
+	Long total(String bookId,KnowledgeInfo info);
 }

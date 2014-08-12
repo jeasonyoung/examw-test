@@ -12,8 +12,12 @@
 	<bean id="softwareTypeDao" class="com.examw.test.dao.products.impl.SoftwareTypeDaoImpl">
 	  <property name="sessionFactory"  ref="sessionFactory" />
 	</bean>
-	<!-- 产品用户考试Dao -->
+	<!-- 产品用户Dao -->
 	<bean id="productUserDao"  class="com.examw.test.dao.products.impl.ProductUserDaoImpl">
+	   <property name="sessionFactory"  ref="sessionFactory" />
+	</bean>
+	<!-- 产品Dao -->
+	<bean id="productDao"  class="com.examw.test.dao.products.impl.ProductDaoImpl">
 	   <property name="sessionFactory"  ref="sessionFactory" />
 	</bean>
 	<!-- 产品管理  数据接口实现end -->

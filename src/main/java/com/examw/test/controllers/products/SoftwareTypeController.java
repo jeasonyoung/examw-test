@@ -1,4 +1,4 @@
-package com.examw.test.controllers.settings;
+package com.examw.test.controllers.products;
 
 import java.util.List;
 
@@ -14,45 +14,44 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.model.DataGrid;
 import com.examw.model.Json;
-import com.examw.test.controllers.settings.ModuleConstant;
 import com.examw.test.domain.security.Right;
-import com.examw.test.model.settings.AreaInfo;
-import com.examw.test.service.settings.IAreaService;
+import com.examw.test.model.products.SoftwareTypeInfo;
+import com.examw.test.service.products.ISoftwareTypeService;
 
 /**
- * 行政地区控制器
+ * 软件类型控制器
  * @author fengwei.
- * @since 2014年8月6日 下午1:46:31.
+ * @since 2014年8月12日 上午9:03:07.
  */
 @Controller
-@RequestMapping(value = "/settings/area")
-public class AreaController {
-	private static final Logger logger = Logger.getLogger(AreaController.class);
-	//地区服务接口。
+@RequestMapping("/products/softwaretype")
+public class SoftwareTypeController {
+	private static final Logger logger = Logger.getLogger(SoftwareTypeController.class);
+	//软件类型服务接口。
 	@Resource
-	private IAreaService areaService;
+	private ISoftwareTypeService softwareTypeService;
 	/**
 	 * 获取列表页面。
 	 * @return
 	 */
-	@RequiresPermissions({ModuleConstant.SETTINGS_AREA + ":" + Right.VIEW})
+	@RequiresPermissions({ModuleConstant.PRODUCTS_SOFTWARETYPE + ":" + Right.VIEW})
 	@RequestMapping(value={"","/list"}, method = RequestMethod.GET)
 	public String list(Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载列表页面...");
-		model.addAttribute("PER_UPDATE", ModuleConstant.SETTINGS_AREA + ":" + Right.UPDATE);
-		model.addAttribute("PER_DELETE", ModuleConstant.SETTINGS_AREA + ":" + Right.DELETE);
-		return "settings/area_list";
+		model.addAttribute("PER_UPDATE", ModuleConstant.PRODUCTS_SOFTWARETYPE + ":" + Right.UPDATE);
+		model.addAttribute("PER_DELETE", ModuleConstant.PRODUCTS_SOFTWARETYPE + ":" + Right.DELETE);
+		return "products/softwaretype_list";
 	}
 	/**
 	 * 查询数据。
 	 * @return
 	 */
-	@RequiresPermissions({ModuleConstant.SETTINGS_AREA + ":" + Right.VIEW})
+	@RequiresPermissions({ModuleConstant.PRODUCTS_SOFTWARETYPE + ":" + Right.VIEW})
 	@RequestMapping(value="/datagrid", method = RequestMethod.POST)
 	@ResponseBody
-	public DataGrid<AreaInfo> datagrid(AreaInfo info){
+	public DataGrid<SoftwareTypeInfo> datagrid(SoftwareTypeInfo info){
 		if(logger.isDebugEnabled()) logger.debug("加载列表数据...");
-		return this.areaService.datagrid(info);
+		return this.softwareTypeService.datagrid(info);
 	}
 	
 	/**
@@ -62,11 +61,11 @@ public class AreaController {
 	 * @return
 	 * 编辑页面地址。
 	 */
-	@RequiresPermissions({ModuleConstant.SETTINGS_AREA + ":" + Right.UPDATE})
+	@RequiresPermissions({ModuleConstant.PRODUCTS_SOFTWARETYPE + ":" + Right.UPDATE})
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
 	public String edit(Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
-		return "settings/area_edit";
+		return "products/softwaretype_edit";
 	}
 	/**
 	 * 更新数据。
@@ -75,19 +74,19 @@ public class AreaController {
 	 * @return
 	 * 更新后数据。
 	 */
-	@RequiresPermissions({ModuleConstant.SETTINGS_AREA + ":" + Right.UPDATE})
+	@RequiresPermissions({ModuleConstant.PRODUCTS_SOFTWARETYPE + ":" + Right.UPDATE})
 	@RequestMapping(value="/update", method = RequestMethod.POST)
 	@ResponseBody
-	public Json update(AreaInfo info){
+	public Json update(SoftwareTypeInfo info){
 		if(logger.isDebugEnabled()) logger.debug("更新数据...");
 		Json result = new Json();
 		try {
-			 result.setData(this.areaService.update(info));
+			 result.setData(this.softwareTypeService.update(info));
 			 result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
-			logger.error("更新地区数据发生异常", e);
+			logger.error("更新软件类型数据发生异常", e);
 		}
 		return result;
 	}
@@ -96,14 +95,14 @@ public class AreaController {
 	 * @param id
 	 * @return
 	 */
-	@RequiresPermissions({ModuleConstant.SETTINGS_AREA + ":" + Right.DELETE})
+	@RequiresPermissions({ModuleConstant.PRODUCTS_SOFTWARETYPE + ":" + Right.DELETE})
 	@RequestMapping(value="/delete", method = RequestMethod.POST)
 	@ResponseBody
 	public Json delete(String id){
 		if(logger.isDebugEnabled()) logger.debug("删除数据［"+ id +"］...");
 		Json result = new Json();
 		try {
-			this.areaService.delete(id.split("\\|"));
+			this.softwareTypeService.delete(id.split("\\|"));
 			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);
@@ -113,13 +112,13 @@ public class AreaController {
 		return result;
 	}
 	/**
-	 * 地区的下拉数据
+	 * 软件类型的下拉数据
 	 * @return
 	 */
 	@RequestMapping(value="/combo", method = {RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public List<AreaInfo> combo(){
-		return this.areaService.datagrid(new AreaInfo(){
+	public List<SoftwareTypeInfo> combo(){
+		return this.softwareTypeService.datagrid(new SoftwareTypeInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Integer getPage(){return null;}
@@ -131,16 +130,15 @@ public class AreaController {
 			public String getOrder() { return "asc"; }
 		}).getRows();
 	}
-	
 	/**
 	 * 加载来源代码值。
 	 * @return
 	 */
-	@RequiresPermissions({ModuleConstant.SETTINGS_AREA + ":" + Right.VIEW})
+	@RequiresPermissions({ModuleConstant.PRODUCTS_CHANNEL + ":" + Right.VIEW})
 	@RequestMapping(value="/code", method = RequestMethod.GET)
 	@ResponseBody
 	public String[] code(){
-		Integer max = this.areaService.loadMaxCode();
+		Integer max = this.softwareTypeService.loadMaxCode();
 		if(max == null) max = 0;
 		return new String[]{ String.format("%02d", max + 1) };
 	}

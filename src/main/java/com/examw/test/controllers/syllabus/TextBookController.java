@@ -55,7 +55,7 @@ public class TextBookController {
 		return "syllabus/book_edit";
 	}
 	/**
-	 * 获取编辑页面。
+	 * 获取知识点编辑页面。
 	 * @return
 	 * 编辑页面。
 	 */
@@ -64,17 +64,33 @@ public class TextBookController {
 	public String editKnow(@PathVariable String bookId,Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
 		model.addAttribute("CURRENT_BOOK_ID", bookId);
+		model.addAttribute("PER_UPDATE",ModuleConstant.SYLLABUS_TEXTBOOK + ":" + Right.UPDATE);
+		model.addAttribute("PER_DELETE",ModuleConstant.SYLLABUS_TEXTBOOK + ":" + Right.DELETE);
 		return "syllabus/know_edit";
 	}
 	/**
-	 * 获取添加页面。
+	 * 教材下知识点数据列表。
+	 * @param info
+	 * 查询知识点。
+	 * @return
+	 * 查询结果。
+	 */
+	@RequiresPermissions({ModuleConstant.SYLLABUS_TEXTBOOK+ ":" + Right.VIEW})
+	@RequestMapping(value="/{bookId}/datagrid", method = RequestMethod.POST)
+	@ResponseBody
+	public DataGrid<KnowledgeInfo> dgStructureItems(@PathVariable String bookId, KnowledgeInfo info){
+		if(logger.isDebugEnabled()) logger.debug("加载教材下的［"+bookId+"］知识点数据列表...");
+		return this.bookService.findKnowledge(bookId, info);
+	}
+	/**
+	 * 获取添加知识点页面。
 	 * @return
 	 * 添加页面。
 	 */
 	@RequiresPermissions({ModuleConstant.SYLLABUS_TEXTBOOK+ ":" + Right.VIEW})
 	@RequestMapping(value="/add", method = RequestMethod.GET)
 	public String add(String bookId,String syllId,Model model){
-		if(logger.isDebugEnabled()) logger.debug("加载添加页面...");
+		if(logger.isDebugEnabled()) logger.debug("加载添加知识点页面...");
 		model.addAttribute("CURRENT_BOOK_ID", bookId);
 		model.addAttribute("CURRENT_SYLL_ID", syllId);
 		return "syllabus/know_add";
@@ -120,7 +136,7 @@ public class TextBookController {
 	 * @return
 	 * 更新后数据。
 	 */
-	//@RequiresPermissions({ModuleConstant.PAPERS_PAPER + ":" + Right.UPDATE})
+	@RequiresPermissions({ModuleConstant.SYLLABUS_TEXTBOOK+ ":" + Right.VIEW})
 	@RequestMapping(value="/{bookId}/update", method = RequestMethod.POST)
 	@ResponseBody
 	public Json updateStructure(@PathVariable String bookId, KnowledgeInfo info){
@@ -135,6 +151,18 @@ public class TextBookController {
 			logger.error("更新数据发生异常", e);
 		}
 		return result;
+	}
+	/**
+	 * 加载源代码值。
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.SYLLABUS_TEXTBOOK + ":" + Right.VIEW})
+	@RequestMapping(value="/code", method = RequestMethod.GET)
+	@ResponseBody
+	public String[] code(){
+		Integer max = this.bookService.loadMaxCode();
+		if(max == null) max = 0;
+		return new String[]{ String.format("%02d", max + 1) };
 	}
 	/**
 	 * 删除数据。
@@ -156,17 +184,5 @@ public class TextBookController {
 			logger.error("删除数据["+id+"]时发生异常:", e);
 		}
 		return result;
-	}
-	/**
-	 * 加载源代码值。
-	 * @return
-	 */
-	@RequiresPermissions({ModuleConstant.SYLLABUS_TEXTBOOK + ":" + Right.VIEW})
-	@RequestMapping(value="/code", method = RequestMethod.GET)
-	@ResponseBody
-	public String[] code(){
-		Integer max = this.bookService.loadMaxCode();
-		if(max == null) max = 0;
-		return new String[]{ String.format("%02d", max + 1) };
 	}
 }

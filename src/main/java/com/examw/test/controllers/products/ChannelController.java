@@ -56,8 +56,6 @@ public class ChannelController {
 	
 	/**
 	 * 获取编辑页面。
-	 * @param agencyId
-	 * 所属培训机构。
 	 * @param model
 	 * 数据绑定。
 	 * @return
@@ -65,7 +63,7 @@ public class ChannelController {
 	 */
 	@RequiresPermissions({ModuleConstant.PRODUCTS_CHANNEL + ":" + Right.UPDATE})
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
-	public String edit(String agencyId,Model model){
+	public String edit(Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
 		return "products/channel_edit";
 	}
@@ -88,7 +86,7 @@ public class ChannelController {
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
-			logger.error("更新用户数据发生异常", e);
+			logger.error("更新渠道数据发生异常", e);
 		}
 		return result;
 	}

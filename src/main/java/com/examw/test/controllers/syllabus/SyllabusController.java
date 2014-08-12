@@ -126,8 +126,9 @@ public class SyllabusController {
 		return result;
 	}
 	/**
-	 * 加载部门下的岗位树.
+	 * 加载科目下的大纲树.
 	 * @param deptId
+	 * 加载条件。
 	 * @param ignore
 	 * @return
 	 */
@@ -138,7 +139,7 @@ public class SyllabusController {
 		return this.syllabusService.loadSyllabuss(subId, ignore);
 	}
 	/**
-	 * 考试类别树结构数据。
+	 * 大纲树结构数据。
 	 * @return
 	 */
 	@RequestMapping(value = "/trees", method = {RequestMethod.GET,RequestMethod.POST})

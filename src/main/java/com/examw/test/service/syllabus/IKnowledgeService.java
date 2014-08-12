@@ -7,6 +7,4 @@ import com.examw.test.service.IBaseDataService;
  * @author lq.
  * @since 2014-08-07.
  */
-public interface IKnowledgeService extends IBaseDataService<KnowledgeInfo> {
-
-}
+public interface IKnowledgeService extends IBaseDataService<KnowledgeInfo> {}

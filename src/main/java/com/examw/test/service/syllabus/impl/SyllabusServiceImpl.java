@@ -181,7 +181,6 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 		}
 		return treeNodes;
 	}
-	
 	//创建节点。
 	private TreeNode createNode(Syllabus data,String ignore){
 		if(data == null || (!StringUtils.isEmpty(ignore) && data.getId().equalsIgnoreCase(ignore))) return null;

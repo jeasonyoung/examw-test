@@ -91,7 +91,7 @@ public class ChannelServiceImpl extends BaseDataServiceImpl<Channel,ChannelInfo>
 	@Override
 	public Integer loadMaxCode() {
 		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
-		List<Channel> sources = this.find(new ChannelInfo(){
+		List<Channel> sources = this.channelDao.findChannels(new ChannelInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public String getSort() {return "code"; } 

@@ -1,5 +1,6 @@
 package com.examw.test.service.syllabus;
 
+import com.examw.model.DataGrid;
 import com.examw.test.model.syllabus.KnowledgeInfo;
 import com.examw.test.model.syllabus.TextBookInfo;
 import com.examw.test.service.IBaseDataService;
@@ -22,4 +23,14 @@ public interface ITextBookService extends IBaseDataService<TextBookInfo> {
 	 * 更新条件。
 	 */
 	KnowledgeInfo updateKnowledge(String bookId, KnowledgeInfo info);
+	/**
+	 * 根据教材ID查询知识点。
+	 * @param bookId
+	 * 查询条件。
+	 * @param info
+	 * 查询条件。
+	 * @return
+	 * 查询结果。
+	 */
+	DataGrid<KnowledgeInfo> findKnowledge(String bookId, KnowledgeInfo info);
 }

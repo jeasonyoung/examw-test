@@ -1,5 +1,4 @@
 package com.examw.test.dao.syllabus.impl;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +22,11 @@ public class KnowledgeDaoImpl extends BaseDaoImpl<Knowledge> implements IKnowled
 	 * @see com.examw.test.dao.syllabus.IKnowledgeDao#findKnowledges(com.examw.test.model.syllabus.KnowledgeInfo)
 	 */
 	@Override
-	public List<Knowledge> findKnowledges(KnowledgeInfo info) {
+	public List<Knowledge> findKnowledges(String bookId,KnowledgeInfo info) {
 		if(logger.isDebugEnabled())logger.debug("查询数据...");
 		String hql = "from Knowledge k where 1=1 ";
 		Map<String, Object> parameters = new HashMap<>();
-		hql = this.addWhere(info, hql, parameters);
+		hql = this.addWhere(bookId, info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
 			if(info.getSort().equalsIgnoreCase("subName")){
 				info.setSort("subject.name");
@@ -45,19 +44,23 @@ public class KnowledgeDaoImpl extends BaseDaoImpl<Knowledge> implements IKnowled
 	 * @see com.examw.test.dao.syllabus.IKnowledgeDao#total(com.examw.test.model.syllabus.KnowledgeInfo)
 	 */
 	@Override
-	public Long total(KnowledgeInfo info) {
+	public Long total(String bookId,KnowledgeInfo info) {
 		if(logger.isDebugEnabled())logger.debug("统计数据...");
 		String hql = "select count(*) from Knowledge k where 1=1 ";
 		Map<String, Object> parameters = new HashMap<>();
-		hql = this.addWhere(info, hql, parameters);
+		hql = this.addWhere(bookId, info, hql, parameters);
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.count(hql, parameters);
 	}
 	//条件查询。
-	private String addWhere(KnowledgeInfo info, String hql, Map<String, Object> parameters){
+	private String addWhere(String bookId,KnowledgeInfo info, String hql, Map<String, Object> parameters){
+		if(!StringUtils.isEmpty(bookId)){
+			hql += "  and (k.book.id = :bookId) ";
+			parameters.put("bookId", bookId);
+		}
 		if(!StringUtils.isEmpty(info.getSyllName())){
-			hql += " and (k.syllabus.title like :title) ";
-			parameters.put("title", "%"+ info.getSyllName() +"%");
+			hql += " and (k.syllabus.title like :syllName)";
+			parameters.put("syllName", "%"+ info.getSyllName() +"%");
 		}
 		if(!StringUtils.isEmpty(info.getSyllId())){
 			hql += " and (k.syllabus.id = :syllId) ";
