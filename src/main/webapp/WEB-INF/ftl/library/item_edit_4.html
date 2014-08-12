@@ -1,10 +1,73 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-
-</body>
-</html>
+<#--试题（判断题）编辑页面-->
+<#include "library/item_edit.ftl"/>
+<script type="text/javascript">
+<!--
+$(function(){
+	var post = {};
+	//validate
+	${module}_validate = function(){
+		var valid = $("#${form}").form("validate");
+		if(!valid) return false;
+		post["id"] = $("#${form} input[name='id']").val();
+		post["type"] = $("#${form} input[name='type']").val();
+		post["typeName"] = $("#${form} input[name='typeName']").val();
+		<#if !CURRENT_ITEM_ISCHILD>
+		post["status"] = $("#${form} input[name='status']").val();
+		post["examId"] = $("#${form} input[name='examId']").val();
+		post["subjectId"] = $("#${form} input[name='subjectId']").val();
+		post["sourceId"] = $("#${form} input[name='sourceId']").val();
+		post["level"] = $("#${form} input[name='level']").val();
+		post["year"] = $("#${form} input[name='year']").val();
+		post["opt"] = $("#${form} input[name='opt']:checked").val();
+		</#if>
+		post["content"] = $.trim($("#${form} textarea[name='content']").val());
+		if($.trim(post["content"]) == ""){
+			$.messager.alert("警告","请输入试题内容！");
+			return false;
+		}
+		post["answer"] = $("#${form} input[name='answer']:checked").val();
+		if($.trim(post["answer"]) == ""){
+			$.messager.alert("警告","请确定选项中的正确答案！");
+			return false;
+		}
+		post["analysis"] = $.trim($("#${form} textarea[name='analysis']").val());
+		if($.trim(post["analysis"]) == ""){
+			$.messager.alert("警告","请输入答案解析！");
+			return false;
+		}
+		return valid;
+	};
+	//save update
+	${module}_update = function(){
+		return post;
+	};
+	//load
+	${module}_load = function(row){
+		if(!row)return;
+		$("#${form}").form("load",row);
+		if(row.content)$("#${form} textarea[name='content']").kindeditor("setValue",row.content);
+		if(row.answer) $("#${form} input[name='answer'][value='"+row.answer+"']").attr("checked",true);
+		if(row.analysis)$("#${form} textarea[name='analysis']").kindeditor("setValue",row.analysis);
+	};
+});
+//-->
+</script>
+<form id="${form}" method="POST" class="easyui-layout" data-options="fit:true,border:false">
+	<div data-options="region:'north',collapsible:false,height:242">
+		<@item_base />
+		<div style="float:left;margin-left:10px;margin-top:5px;border:false">
+			<textarea style="float:left" name="content" class="easyui-kindeditor"  data-options="minWidth:762,minHeight:<#if CURRENT_ITEM_ISCHILD>192<#else>110</#if>" rows="5" cols="20" />
+		</div>
+	</div>
+	<div data-options="region:'center',title:'正确答案',border:false">
+		<div style="float:left;margin-top:12px;margin-left:20px;">
+				<label><input type="radio" name="answer" value="${JUDGE_ANSWER_RIGTH_VALUE}" checked="checked"/>${JUDGE_ANSWER_RIGTH_NAME}</label>
+				<label><input type="radio" name="answer" value="${JUDGE_ANSWER_WRONG_VALUE}"/>${JUDGE_ANSWER_WRONG_NAME}</label>
+		</div>
+	</div>
+	<div data-options="region:'south',title:'答案解析',collapsible:false,height:200,border:false">
+		<div style="float:left;margin-left:10px;margin-top:5px;">
+			<textarea style="float:left" name="analysis" class="easyui-kindeditor"  data-options="minWidth:762,minHeight:120" rows="5" cols="20"/>
+		</div>
+	</div>
+</form>

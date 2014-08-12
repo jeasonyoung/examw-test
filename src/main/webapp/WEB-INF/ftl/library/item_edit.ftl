@@ -1,9 +1,17 @@
 <#include "comm.ftl" />
-<#assign module = "library_item_${CURRENT_ITEM_TYPE_VALUE}" />
+<#assign base="library_item"/>
+<#assign module = "${base}_${CURRENT_ITEM_TYPE_VALUE}" />
 <#assign form = "${module}_edit_form" />
 <#assign dg = "${module}_opts_dg"/>
 <#--试题基础信息-->
 <#macro item_base>
+<div style="float:left;width:100%;display:none;">
+	<input name="id" type="hidden" />
+	<input name="type" type="hidden" value="${CURRENT_ITEM_TYPE_VALUE}" />
+	<input name="typeName" type="hidden" value="${CURRENT_ITEM_TYPE_NAME}" />
+	<input name="status" type="hidden" value="${CURRENT_ITEM_STATUS_VALUE}" />
+</div>
+<#if !CURRENT_ITEM_ISCHILD>
 <div style="float:left;margin-top:7px;width:100%;">
 	<label style="width:75px;">所属科目：</label>
 	<input name="examId" class="easyui-combotree" data-options="
@@ -28,9 +36,6 @@
 				<@error_dialog 'e'/>
 			}
 	" style="width:298px;"/>
-	<input name="id" type="hidden" />
-	<input name="type" type="hidden" value="${CURRENT_ITEM_TYPE_VALUE}" />
-	<input name="status" type="hidden" value="${CURRENT_ITEM_STATUS_VALUE}" />
 </div>
 <div style="float:left;margin-top:2px;width:100%;">
 	<label style="margin-top:5px;width:75px;">所属类型：</label>
@@ -60,6 +65,7 @@
 		<input name="year" type="text" class="easyui-numberbox" data-options="min:0,value:${CURRENT_YEAR}" style="text-align:right;width:75px;"/>
 	</div>
 </div>
+</#if>
 </#macro>
 
 
@@ -126,13 +132,11 @@ $(function(){
 						$.messager.alert("警告","请输入选项内容！");
 						return;
 					}
-					if(!row) {
-						dg.datagrid("appendRow",data);
+					var index = dg.datagrid("getRowIndex",data["opt_id"]);
+					if(index > -1) {
+						dg.datagrid("updateRow",{index:index, row : data});
 					}else{
-						dg.datagrid("updateRow",{
-							index:index,
-							row:data
-						});
+						dg.datagrid("appendRow",data);
 					}
 					d.dialog("close");
 				}
@@ -151,7 +155,7 @@ $(function(){
 			onLoad:function(){
 				if(row){
 					$("#${module}_edit_opt_form").form("load",row);
-					$("#${module}_edit_opt_form textarea").kindeditor("setValue",row.content);
+					$("#${module}_edit_opt_form textarea").kindeditor("setValue",row.opt_content);
 				}
 			}
 		});
@@ -163,7 +167,7 @@ $(function(){
 			$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
 				if(!r)return;
 				for(var i = 0; i < rows.length; i++){
-					var index = dg.datagrid("getRowIndex",rows[i]);
+					var index = dg.datagrid("getRowIndex",rows[i]["opt_id"]);
 					if(index > -1){
 						dg.datagrid("deleteRow",index);
 					}
@@ -174,7 +178,7 @@ $(function(){
 		}
 	};
 	</@shiro.hasPermission>
-	<!--===================================================================================--->
+	//============================================================================================
 	var post = {};
 	//validate
 	${module}_validate = function(){
@@ -182,6 +186,8 @@ $(function(){
 		if(!valid) return false;
 		post["id"] = $("#${form} input[name='id']").val();
 		post["type"] = $("#${form} input[name='type']").val();
+		post["typeName"] = $("#${form} input[name='typeName']").val();
+		<#if !CURRENT_ITEM_ISCHILD>
 		post["status"] = $("#${form} input[name='status']").val();
 		post["examId"] = $("#${form} input[name='examId']").val();
 		post["subjectId"] = $("#${form} input[name='subjectId']").val();
@@ -189,7 +195,7 @@ $(function(){
 		post["level"] = $("#${form} input[name='level']").val();
 		post["year"] = $("#${form} input[name='year']").val();
 		post["opt"] = $("#${form} input[name='opt']:checked").val();
-		
+		</#if>
 		post["content"] = $.trim($("#${form} textarea[name='content']").val());
 		if($.trim(post["content"]) == ""){
 			$.messager.alert("警告","请输入试题内容！");
@@ -255,15 +261,15 @@ $(function(){
 		}
 		if(row.analysis)$("#${form} textarea[name='analysis']").kindeditor("setValue",row.analysis);
 	};
-	<!--===================================================================================--->
+	//============================================================================================
 });
 //-->
 </script>
 <form id="${form}" method="POST" class="easyui-layout" data-options="fit:true,border:false">
-	<div data-options="region:'north',collapsible:false,height:210">
+	<div data-options="region:'north',collapsible:false,height:210,border:false">
 		<@item_base />
 		<div style="float:left;margin-left:10px;margin-top:5px;">
-			<textarea style="float:left" name="content" class="easyui-kindeditor"  data-options="minWidth:762,minHeight:70" rows="5" cols="20" />
+			<textarea style="float:left" name="content" class="easyui-kindeditor"  data-options="minWidth:762,minHeight:<#if CURRENT_ITEM_ISCHILD>162<#else>82</#if>" rows="5" cols="20" />
 		</div>
 	</div>
 	<div data-options="region:'center',title:'选项',
@@ -292,9 +298,9 @@ $(function(){
 		border:false">
 		<table id="${dg}"></table>
 	</div>
-	<div data-options="region:'south',title:'答案解析',collapsible:false,height:160,border:false">
+	<div data-options="region:'south',title:'答案解析',collapsible:false,height:150,border:false">
 		<div style="float:left;margin-left:10px;margin-top:5px;">
-			<textarea style="float:left" name="analysis" class="easyui-kindeditor"  data-options="minWidth:762,minHeight:80" rows="5" cols="20"/>
+			<textarea style="float:left" name="analysis" class="easyui-kindeditor"  data-options="minWidth:762,minHeight:75" rows="5" cols="20"/>
 		</div>
 	</div>
 </form>

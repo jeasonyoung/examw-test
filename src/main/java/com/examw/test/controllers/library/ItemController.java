@@ -24,6 +24,7 @@ import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.library.ItemInfo;
 import com.examw.test.service.library.IItemService;
+import com.examw.test.service.library.ItemJudgeAnswer;
 import com.examw.test.service.library.ItemStatus;
 
 /**
@@ -95,7 +96,7 @@ public class ItemController {
 	 */
 	@RequiresPermissions({ModuleConstant.LIBRARY_ITEM + ":" + Right.UPDATE})
 	@RequestMapping(value = "/edit/{type}", method = RequestMethod.GET)
-	public String edit(@PathVariable Integer type,String examId,Boolean opts,Model model){
+	public String edit(@PathVariable Integer type,String examId,Boolean opts,Boolean isChild,Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
 		
 		model.addAttribute("PER_UPDATE", ModuleConstant.LIBRARY_ITEM + ":" + Right.UPDATE);
@@ -104,9 +105,12 @@ public class ItemController {
 		model.addAttribute("CURRENT_YEAR",new SimpleDateFormat("yyyy").format(new Date()));
 		
 		model.addAttribute("CURRENT_ITEM_TYPE_VALUE", type);
+		model.addAttribute("CURRENT_ITEM_TYPE_NAME", this.itemService.loadTypeName(type));
+		
 		model.addAttribute("CURRENT_ITEM_STATUS_VALUE", ItemStatus.NONE.getValue());
 		model.addAttribute("CURRENT_EXAM_ID", StringUtils.isEmpty(examId) ? "" : examId);
 		model.addAttribute("CURRENT_OPTS_STATUS", opts == null ? true : opts);
+		model.addAttribute("CURRENT_ITEM_ISCHILD", isChild == null ? false : isChild);
 		
 		model.addAttribute("OPT_REAL_VALUE", Paper.TYPE_REAL);
 		model.addAttribute("OPT_REAL_NAME", this.itemService.loadOptName(Paper.TYPE_REAL));
@@ -116,6 +120,27 @@ public class ItemController {
 		model.addAttribute("OPT_PRACTICE_NAME", this.itemService.loadOptName(Paper.TYPE_PRACTICE));
 		model.addAttribute("OPT_FORECAST_VALUE", Paper.TYPE_FORECAST);
 		model.addAttribute("OPT_FORECAST_NAME", this.itemService.loadOptName(Paper.TYPE_FORECAST));
+		
+		model.addAttribute("JUDGE_ANSWER_RIGTH_VALUE", ItemJudgeAnswer.RIGTH.getValue());
+		model.addAttribute("JUDGE_ANSWER_RIGTH_NAME", this.itemService.loadJudgeAnswerName(ItemJudgeAnswer.RIGTH.getValue()));
+		model.addAttribute("JUDGE_ANSWER_WRONG_VALUE", ItemJudgeAnswer.WRONG.getValue());
+		model.addAttribute("JUDGE_ANSWER_WRONG_NAME", this.itemService.loadJudgeAnswerName(ItemJudgeAnswer.WRONG.getValue()));
+		
+		//单选
+		model.addAttribute("TYPE_SINGLE_VALUE", Item.TYPE_SINGLE);
+		model.addAttribute("TYPE_SINGLE_NAME", this.itemService.loadTypeName(Item.TYPE_SINGLE));
+		//多选
+		model.addAttribute("TYPE_MULTY_VALUE", Item.TYPE_MULTY);
+		model.addAttribute("TYPE_MULTY_NAME", this.itemService.loadTypeName(Item.TYPE_MULTY));
+		//不定向选
+		model.addAttribute("TYPE_UNCERTAIN_VALUE", Item.TYPE_UNCERTAIN);
+		model.addAttribute("TYPE_UNCERTAIN_NAME", this.itemService.loadTypeName(Item.TYPE_UNCERTAIN));
+		//判断
+		model.addAttribute("TYPE_JUDGE_VALUE", Item.TYPE_JUDGE);
+		model.addAttribute("TYPE_JUDGE_NAME", this.itemService.loadTypeName(Item.TYPE_JUDGE));
+		//问答
+		model.addAttribute("TYPE_QANDA_VALUE", Item.TYPE_QANDA);
+		model.addAttribute("TYPE_QANDA_NAME", this.itemService.loadTypeName(Item.TYPE_QANDA));
 		
 		return String.format("library/item_edit_%s", type);
 	}
@@ -130,6 +155,16 @@ public class ItemController {
 		model.addAttribute("CURRENT_ITEM_TYPE_VALUE", type);
 		model.addAttribute("CURRENT_ID", UUID.randomUUID().toString());
 		return "library/item_option_dialog";
+	}
+	/**
+	 * 创建共享题子题ID
+	 * @return
+	 */
+	@RequestMapping(value = "/uuid", method = RequestMethod.GET)
+	@ResponseBody
+	public String[] shareItemUUID(){
+		if(logger.isDebugEnabled()) logger.debug("加载创建共享题子题ID...");
+		return new String[]{UUID.randomUUID().toString()};
 	}
 	/**
 	 * 更新数据。
