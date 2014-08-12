@@ -1,0 +1,13 @@
+<!-- 地区编辑页面 -->
+<#assign module="product_softwaretype"/>
+<form id="${module}_edit_form" method="POST" style="padding:10px;">
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:100px;">软件类型代码：</label>
+		<input type="text" name="code" class="easyui-validatebox" data-options="required:true" style="width:240px;" />
+		<input type="hidden" name="id"/>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:100px;">软件类型名称：</label>
+		<input type="text" name="name" class="easyui-validatebox" style="width:240px;" data-options="required:true"/>
+	</div>
+</form>

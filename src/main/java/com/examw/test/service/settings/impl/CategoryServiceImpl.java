@@ -129,7 +129,7 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
 		Integer max = null;
 		String maxCode = null;
-		List<Category> sources = this.find(new CategoryInfo(){
+		List<Category> sources = this.categoryDao.findCategorys(new CategoryInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public String getPid() { return pid;}

@@ -1,5 +1,7 @@
 package com.examw.test.model.products;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import com.examw.model.IPaging;
 import com.examw.test.domain.products.Channel;
 
@@ -8,16 +10,18 @@ import com.examw.test.domain.products.Channel;
  * @author fengwei.
  * @since 2014年8月11日 下午3:15:30.
  */
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class ChannelInfo extends Channel implements IPaging{
 	private static final long serialVersionUID = 1L;
+	private Integer rows,page;
+	private String sort,order;
 	/*
 	 * 获取每页数据量
 	 * @see com.examw.model.IPaging#getRows()
 	 */
 	@Override
 	public Integer getRows() {
-		
-		return null;
+		return rows;
 	}
 	/*
 	 * 设置每页数据量。
@@ -25,6 +29,7 @@ public class ChannelInfo extends Channel implements IPaging{
 	 */
 	@Override
 	public void setRows(Integer rows) {
+		this.rows = rows;
 	}
 	
 	/*
@@ -33,8 +38,7 @@ public class ChannelInfo extends Channel implements IPaging{
 	 */
 	@Override
 	public Integer getPage() {
-		
-		return null;
+		return page;
 	}
 	/*
 	 * 设置页码。
@@ -42,6 +46,7 @@ public class ChannelInfo extends Channel implements IPaging{
 	 */
 	@Override
 	public void setPage(Integer page) {
+		this.page = page;
 	}
 	
 	/*
@@ -50,8 +55,7 @@ public class ChannelInfo extends Channel implements IPaging{
 	 */
 	@Override
 	public String getSort() {
-		
-		return null;
+		return sort;
 	}
 	
 	/*
@@ -60,6 +64,7 @@ public class ChannelInfo extends Channel implements IPaging{
 	 */
 	@Override
 	public void setSort(String sort) {
+		this.sort = sort;
 	}
 	
 	/*
@@ -68,8 +73,7 @@ public class ChannelInfo extends Channel implements IPaging{
 	 */
 	@Override
 	public String getOrder() {
-		
-		return null;
+		return order;
 	}
 	
 	/*
@@ -78,5 +82,6 @@ public class ChannelInfo extends Channel implements IPaging{
 	 */
 	@Override
 	public void setOrder(String order) {
+		this.order = order;
 	}
 }

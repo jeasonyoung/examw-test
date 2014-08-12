@@ -153,7 +153,7 @@ public class ExamServiceImpl extends BaseDataServiceImpl<Exam, ExamInfo> impleme
 	@Override
 	public Integer loadMaxCode() {
 		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
-		List<Exam> sources = this.find(new ExamInfo(){
+		List<Exam> sources = this.examDao.findExams(new ExamInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public String getSort() {return "code"; } 

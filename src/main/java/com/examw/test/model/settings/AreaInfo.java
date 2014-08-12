@@ -15,14 +15,15 @@ import com.examw.test.domain.settings.Area;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class AreaInfo extends Area implements Serializable,IPaging{
 	private static final long serialVersionUID = 1L;
+	private Integer rows,page;
+	private String sort,order;
 	/*
 	 * 获取每页数据量
 	 * @see com.examw.model.IPaging#getRows()
 	 */
 	@Override
 	public Integer getRows() {
-		
-		return null;
+		return rows;
 	}
 	/*
 	 * 设置每页数据量。
@@ -30,6 +31,7 @@ public class AreaInfo extends Area implements Serializable,IPaging{
 	 */
 	@Override
 	public void setRows(Integer rows) {
+		this.rows = rows;
 	}
 	
 	/*
@@ -38,8 +40,7 @@ public class AreaInfo extends Area implements Serializable,IPaging{
 	 */
 	@Override
 	public Integer getPage() {
-		
-		return null;
+		return page;
 	}
 	/*
 	 * 设置页码。
@@ -47,6 +48,7 @@ public class AreaInfo extends Area implements Serializable,IPaging{
 	 */
 	@Override
 	public void setPage(Integer page) {
+		this.page = page;
 	}
 	
 	/*
@@ -55,8 +57,7 @@ public class AreaInfo extends Area implements Serializable,IPaging{
 	 */
 	@Override
 	public String getSort() {
-		
-		return null;
+		return sort;
 	}
 	
 	/*
@@ -65,6 +66,7 @@ public class AreaInfo extends Area implements Serializable,IPaging{
 	 */
 	@Override
 	public void setSort(String sort) {
+		this.sort = sort;
 	}
 	
 	/*
@@ -73,8 +75,7 @@ public class AreaInfo extends Area implements Serializable,IPaging{
 	 */
 	@Override
 	public String getOrder() {
-		
-		return null;
+		return order;
 	}
 	
 	/*
@@ -83,6 +84,7 @@ public class AreaInfo extends Area implements Serializable,IPaging{
 	 */
 	@Override
 	public void setOrder(String order) {
+		this.order = order;
 	}
 	
 }

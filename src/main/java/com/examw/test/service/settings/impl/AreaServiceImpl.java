@@ -112,7 +112,7 @@ public class AreaServiceImpl extends BaseDataServiceImpl<Area, AreaInfo>
 	@Override
 	public Integer loadMaxCode() {
 		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
-		List<Area> sources = this.find(new AreaInfo(){
+		List<Area> sources = this.areaDao.findAreas(new AreaInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public String getSort() {return "code"; } 

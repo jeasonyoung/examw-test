@@ -25,7 +25,7 @@ public class ProductUserDaoImpl extends BaseDaoImpl<ProductUser> implements IPro
 	 */
 	@Override
 	public List<ProductUser> findProductUsers(ProductUserInfo info) {
-		if(logger.isDebugEnabled()) logger.debug("查询[渠道]数据...");
+		if(logger.isDebugEnabled()) logger.debug("查询[产品用户]数据...");
 		String hql = "from ProductUser pu where 1=1 ";
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
@@ -41,7 +41,7 @@ public class ProductUserDaoImpl extends BaseDaoImpl<ProductUser> implements IPro
 	 */
 	@Override
 	public Long total(ProductUserInfo info) {
-		if(logger.isDebugEnabled()) logger.debug("查询[渠道]数据统计...");
+		if(logger.isDebugEnabled()) logger.debug("查询[产品用户]数据统计...");
 		String hql = "select count(*) from ProductUser pu where 1 = 1 ";
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
