@@ -1,7 +1,9 @@
 package com.examw.test.controllers.library;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -162,9 +164,14 @@ public class ItemController {
 	 */
 	@RequestMapping(value = "/uuid", method = RequestMethod.GET)
 	@ResponseBody
-	public String[] shareItemUUID(){
+	public String[] shareItemUUID(Integer count){
 		if(logger.isDebugEnabled()) logger.debug("加载创建共享题子题ID...");
-		return new String[]{UUID.randomUUID().toString()};
+		if(count == null || count < 1) count = 1;
+		List<String> list = new ArrayList<>();
+		for(int i = 0; i < count; i++){
+			list.add(UUID.randomUUID().toString());
+		}
+		return list.toArray(new String[0]);
 	}
 	/**
 	 * 更新数据。

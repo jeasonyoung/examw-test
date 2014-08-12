@@ -119,7 +119,7 @@ $(function(){
 			title:title,
 			width:500,
 			height:200,
-			href:"<@s.url '/library/item/edit//option/${CURRENT_ITEM_TYPE_VALUE}'/>",
+			href:"<@s.url '/library/item/edit/option/${CURRENT_ITEM_TYPE_VALUE}'/>",
 			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
@@ -275,7 +275,7 @@ $(function(){
 	<div data-options="region:'center',title:'选项',
 		<#if CURRENT_OPTS_STATUS>
 		tools:[
-			<@shiro.hasPermission name="${PER_UPDATE}">
+			<@shiro.hasPermission name='${PER_UPDATE}'>
 			{
 				iconCls:'icon-add',
 				text:'添加选项',
@@ -284,7 +284,7 @@ $(function(){
 				}
 			},
 			</@shiro.hasPermission>
-			<@shiro.hasPermission name="${PER_DELETE}">
+			<@shiro.hasPermission name='${PER_DELETE}'>
 			{
 				iconCls:'icon-remove',
 				text:'删除选项',
