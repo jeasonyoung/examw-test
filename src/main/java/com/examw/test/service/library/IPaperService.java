@@ -2,8 +2,10 @@ package com.examw.test.service.library;
 
 import java.util.List;
 
+import com.examw.model.DataGrid;
 import com.examw.test.model.library.PaperInfo;
 import com.examw.test.model.library.StructureInfo;
+import com.examw.test.model.library.StructureItemInfo;
 import com.examw.test.service.IBaseDataService;
 
 /**
@@ -60,4 +62,26 @@ public interface IPaperService extends IBaseDataService<PaperInfo> {
 	 * 试卷结构ID。
 	 */
 	void deleteStructure(String paperId,String... structureId);
+	/**
+	 * 加载结构下试题数据。
+	 * @param paperId
+	 * 所属试卷ID。
+	 * @param info
+	 * @return
+	 */
+	DataGrid<StructureItemInfo> loadStructureItems(String paperId, StructureItemInfo info);
+	/**
+	 * 更新结构下试题数据。
+	 * @param paperId
+	 * 所属试卷ID。
+	 * @param info
+	 * @return
+	 */
+	StructureItemInfo updateStructureItem(String paperId,StructureItemInfo info);
+	/**
+	 * 删除结构下试题。
+	 * @param ids
+	 * 结构下试题ID。
+	 */
+	void deleteStructureItem(String[] ids);
 }

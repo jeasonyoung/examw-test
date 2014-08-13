@@ -25,6 +25,10 @@
 		<property name="sourceDao" ref="sourceDao" />
 		<!-- 考试科目数据接口 -->
 		<property name="subjectDao" ref="subjectDao" />
+		<!-- 试卷结构下试题数据接口 -->
+		<property name="structureItemDao" ref="structureItemDao" />
+		<!-- 试题服务接口 -->
+		<property name="itemService" ref="itemService" />
 		<!-- 试卷类型 -->
 		<property name="typeMap" ref="mapPaperTypes"/>
 		<!-- 试卷状态 -->
