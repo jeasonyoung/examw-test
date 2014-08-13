@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -27,10 +28,11 @@ import com.examw.test.service.products.IProductService;
  * @since 2014年8月12日 下午3:38:24.
  */
 public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo> implements IProductService{
-	private static final Logger logger = Logger.getLogger(ChannelServiceImpl.class);
+	private static final Logger logger = Logger.getLogger(ProductServiceImpl.class);
 	private IProductDao productDao;
 	private IExamDao examDao;
 	private ISubjectDao subjectDao;
+	private Map<Integer,String> statusMap;
 	/**
 	 * 设置 产品数据接口
 	 * @param productDao
@@ -57,6 +59,16 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 	public void setSubjectDao(ISubjectDao subjectDao) {
 		this.subjectDao = subjectDao;
 	}
+	
+	/**
+	 * 设置 状态名称映射
+	 * @param statusMap
+	 * 
+	 */
+	public void setStatusMap(Map<Integer, String> statusMap) {
+		this.statusMap = statusMap;
+	}
+
 	/*
 	 * 查询数据
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#find(java.lang.Object)
@@ -92,6 +104,7 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 			info.setSubjectId(list.toArray(new String[0]));
 			info.setSubjectName(name);
 		}
+		info.setStatusName(this.loadStatusName(data.getStatus()));
 		return info;
 	}
 	/*
@@ -120,9 +133,15 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 			info.setCreateTime(new Date());
 		}
 		BeanUtils.copyProperties(info, data);
+		if(data.getStatus() == null){
+			data.setStatus(Product.STATUS_NONE);
+			info.setStatus(Product.STATUS_NONE);
+		}
 		if(info.getExamId()!=null && (data.getExam()==null || !data.getExam().getId().equalsIgnoreCase(info.getExamId()))){
 			Exam exam = this.examDao.load(Exam.class, info.getExamId());
 			data.setExam(exam);
+			info.setExamId(exam.getId());
+			info.setExamName(exam.getName());
 		}
 		Set<Subject> subjects = new HashSet<Subject>();
 		if(info.getSubjectId()!=null && info.getSubjectId().length>0){
@@ -138,6 +157,7 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 			data.setLastTime(new Date());
 			info.setLastTime(new Date());
 		}
+		info.setStatusName(this.loadStatusName(data.getStatus()));
 		return info;
 	}
 	/*
@@ -179,5 +199,12 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 			return new Integer(sources.get(0).getCode());
 		}
 		return null;
+	}
+	
+	@Override
+	public String loadStatusName(Integer status) {
+		if(status == null || statusMap == null)
+		return null;
+		return statusMap.get(status);
 	}
 }

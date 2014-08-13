@@ -23,6 +23,7 @@ public class SoftwareInfo extends Paging{
 	private Long count;
 	private Integer status;
 	private String statusName;
+	private String examId,examName;
 	/**
 	 * 获取软件ID。
 	 * @return 软件ID。
@@ -308,4 +309,37 @@ public class SoftwareInfo extends Paging{
 	public void setStatusName(String statusName) {
 		this.statusName = statusName;
 	}
+	/**
+	 * 获取 考试ID
+	 * @return examId
+	 * 
+	 */
+	public String getExamId() {
+		return examId;
+	}
+	/**
+	 * 设置 考试ID
+	 * @param examId
+	 * 
+	 */
+	public void setExamId(String examId) {
+		this.examId = examId;
+	}
+	/**
+	 * 获取 考试名称
+	 * @return examName
+	 * 
+	 */
+	public String getExamName() {
+		return examName;
+	}
+	/**
+	 * 设置 考试名称
+	 * @param examName
+	 * 
+	 */
+	public void setExamName(String examName) {
+		this.examName = examName;
+	}
+	
 }

@@ -1,6 +1,5 @@
 package com.examw.test.controllers.products;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -16,62 +15,60 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.model.DataGrid;
 import com.examw.model.Json;
-import com.examw.test.domain.products.Product;
 import com.examw.test.domain.security.Right;
-import com.examw.test.model.products.ProductInfo;
-import com.examw.test.service.products.IProductService;
+import com.examw.test.model.products.SoftwareInfo;
+import com.examw.test.service.products.ISoftwareService;
 
 /**
- * 产品控制器
+ * 产品软件控制器
  * @author fengwei.
- * @since 2014年8月12日 下午4:57:38.
+ * @since 2014年8月13日 下午4:12:34.
  */
 @Controller
-@RequestMapping("/products/product")
-public class ProductController {
-	private static final Logger logger = Logger.getLogger(ProductController.class);
-	//产品服务接口。
+@RequestMapping("/products/software")
+public class SoftwareController {
+	private static final Logger logger = Logger.getLogger(SoftwareController.class);
+	//产品软件服务接口。
 	@Resource
-	private IProductService productService;
+	private ISoftwareService softwareService;
+	
 	/**
 	 * 获取列表页面。
 	 * @return
 	 */
-	@RequiresPermissions({ModuleConstant.PRODUCTS_PRODUCT + ":" + Right.VIEW})
+	@RequiresPermissions({ModuleConstant.PRODUCTS_SOFTWARE + ":" + Right.VIEW})
 	@RequestMapping(value={"","/list"}, method = RequestMethod.GET)
 	public String list(Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载列表页面...");
-		model.addAttribute("PER_UPDATE", ModuleConstant.PRODUCTS_PRODUCT + ":" + Right.UPDATE);
-		model.addAttribute("PER_DELETE", ModuleConstant.PRODUCTS_PRODUCT + ":" + Right.DELETE);
-		return "products/product_list";
+		model.addAttribute("PER_UPDATE", ModuleConstant.PRODUCTS_SOFTWARE + ":" + Right.UPDATE);
+		model.addAttribute("PER_DELETE", ModuleConstant.PRODUCTS_SOFTWARE + ":" + Right.DELETE);
+		return "products/software_list";
 	}
 	/**
 	 * 查询数据。
 	 * @return
 	 */
-	@RequiresPermissions({ModuleConstant.PRODUCTS_PRODUCT + ":" + Right.VIEW})
+	@RequiresPermissions({ModuleConstant.PRODUCTS_SOFTWARE + ":" + Right.VIEW})
 	@RequestMapping(value="/datagrid", method = RequestMethod.POST)
 	@ResponseBody
-	public DataGrid<ProductInfo> datagrid(ProductInfo info){
+	public DataGrid<SoftwareInfo> datagrid(SoftwareInfo info){
 		if(logger.isDebugEnabled()) logger.debug("加载列表数据...");
-		return this.productService.datagrid(info);
+		return this.softwareService.datagrid(info);
 	}
 	
 	/**
 	 * 获取编辑页面。
-	 * @param examId
-	 * 所属考试ID
 	 * @param model
 	 * 数据绑定。
 	 * @return
 	 * 编辑页面地址。
 	 */
-	@RequiresPermissions({ModuleConstant.PRODUCTS_PRODUCT + ":" + Right.UPDATE})
+	@RequiresPermissions({ModuleConstant.PRODUCTS_SOFTWARE + ":" + Right.UPDATE})
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
 	public String edit(String examId,Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
 		model.addAttribute("CURRENT_EXAM_ID", StringUtils.isEmpty(examId)?"":examId);
-		return "products/product_edit";
+		return "products/software_edit";
 	}
 	/**
 	 * 更新数据。
@@ -80,19 +77,19 @@ public class ProductController {
 	 * @return
 	 * 更新后数据。
 	 */
-	@RequiresPermissions({ModuleConstant.PRODUCTS_PRODUCT + ":" + Right.UPDATE})
+	@RequiresPermissions({ModuleConstant.PRODUCTS_SOFTWARE + ":" + Right.UPDATE})
 	@RequestMapping(value="/update", method = RequestMethod.POST)
 	@ResponseBody
-	public Json update(ProductInfo info){
+	public Json update(SoftwareInfo info){
 		if(logger.isDebugEnabled()) logger.debug("更新数据...");
 		Json result = new Json();
 		try {
-			 result.setData(this.productService.update(info));
+			 result.setData(this.softwareService.update(info));
 			 result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
-			logger.error("更新产品数据发生异常", e);
+			logger.error("更新渠道数据发生异常", e);
 		}
 		return result;
 	}
@@ -101,14 +98,14 @@ public class ProductController {
 	 * @param id
 	 * @return
 	 */
-	@RequiresPermissions({ModuleConstant.PRODUCTS_PRODUCT + ":" + Right.DELETE})
+	@RequiresPermissions({ModuleConstant.PRODUCTS_SOFTWARE + ":" + Right.DELETE})
 	@RequestMapping(value="/delete", method = RequestMethod.POST)
 	@ResponseBody
 	public Json delete(String id){
 		if(logger.isDebugEnabled()) logger.debug("删除数据［"+ id +"］...");
 		Json result = new Json();
 		try {
-			this.productService.delete(id.split("\\|"));
+			this.softwareService.delete(id.split("\\|"));
 			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);
@@ -117,16 +114,14 @@ public class ProductController {
 		}
 		return result;
 	}
-	
 	/**
-	 * 产品的下拉数据
+	 * 软件的下拉数据
 	 * @return
 	 */
 	@RequestMapping(value="/combo", method = {RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public List<ProductInfo> combo(final String examId){
-		if(StringUtils.isEmpty(examId)) return new ArrayList<>();
-		return this.productService.datagrid(new ProductInfo(){
+	public List<SoftwareInfo> combo(){
+		return this.softwareService.datagrid(new SoftwareInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Integer getPage(){return null;}
@@ -136,10 +131,6 @@ public class ProductController {
 			public String getSort(){ return "code"; }
 			@Override
 			public String getOrder() { return "asc"; }
-			@Override
-			public String getExamId() {return examId;}
-			@Override
-			public Integer getStatus() {return Product.STATUS_NONE;}
 		}).getRows();
 	}
 	
@@ -147,11 +138,11 @@ public class ProductController {
 	 * 加载来源代码值。
 	 * @return
 	 */
-	@RequiresPermissions({ModuleConstant.PRODUCTS_PRODUCT + ":" + Right.VIEW})
+	@RequiresPermissions({ModuleConstant.PRODUCTS_SOFTWARE + ":" + Right.VIEW})
 	@RequestMapping(value="/code", method = RequestMethod.GET)
 	@ResponseBody
 	public String[] code(){
-		Integer max = this.productService.loadMaxCode();
+		Integer max = this.softwareService.loadMaxCode();
 		if(max == null) max = 0;
 		return new String[]{ String.format("%02d", max + 1) };
 	}

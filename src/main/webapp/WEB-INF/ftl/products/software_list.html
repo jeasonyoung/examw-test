@@ -1,6 +1,6 @@
-<#--科目设置列表-->
+<#--产品软件设置列表-->
 <#include "comm.ftl"/>
-<#assign module="products_product"/>
+<#assign module="products_software"/>
 <#assign dg="${module}_list_dg"/>
 <script type="text/javascript">
 <!--
@@ -32,7 +32,7 @@ $(function(){
 	});
 	//dg
 	var dg=$("#${dg}").datagrid({
-		url:"<@s.url '/products/product/datagrid'/>",
+		url:"<@s.url '/products/software/datagrid'/>",
 		fit:true,
 		fitColumns:true,
 		rownumbers:true,
@@ -51,56 +51,32 @@ $(function(){
 		},{
 			title:"所属考试",
 			field:"examName",
-			width:10,
+			width:30,
 			align:"left"
 		},{
-			title:"产品代码",
+			title:"产品软件名称",
+			field:"name",
+			width:40,
+			align:"left",
+			sortable:true
+		},{
+			title:"产品软件代码",
 			field:"code",
 			width:10,
 			align:"center",
 			sortable:true
 		},{
-			title:"产品名称",
-			field:"name",
-			width:30,
-			align:"center",
-			sortable:true
-		},{
-			title:"定价",
-			field:"price",
-			width:10,
-			align:"center",
-			sortable:true
-		},{
-			title:"优惠价",
-			field:"discount",
-			width:10,
-			align:"center",
-			sortable:true
-		},{
-			title:"状态",
-			field:"statusName",
+			title:"所属地区",
+			field:"areaName",
 			width:10,
 			align:"center"
-		},{
-			title:"创建时间",
-			field:"createTime",
-			width:10,
-			align:"center",
-			sortable:true
-		},{
-			title:"修改时间",
-			field:"lastTime",
-			width:10,
-			align:"center",
-			sortable:true
 		}]],
 		toolbar:"#${dg}_toobar",
 		onLoadError:function(e){
 			<@error_dialog "e"/>
 		},
 		onDblClickRow:function(rowIndex,rowData){
-			edit_window("编辑产品",rowIndex,rowData,null);
+			edit_window("编辑产品软件",rowIndex,rowData,null);
 		}
 	});
 	//edit
@@ -112,9 +88,9 @@ $(function(){
 		}
 		var d = $("<div/>").dialog({
 			title:title,
-			width:600,
-			height:550,
-			href:"<@s.url '/products/product/edit'/>?categoryId="+c_id+"&examId=" + e_id,
+			width:680,
+			height:540,
+			href:"<@s.url '/products/software/edit'/>?categoryId="+c_id+"&examId=" + e_id,
 			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
@@ -124,7 +100,7 @@ $(function(){
 				handler:function(){
 					$.messager.progress();
 					$("#${module}_edit_form").form("submit",{
-						url:"<@s.url '/products/product/update'/>",
+						url:"<@s.url '/products/software/update'/>",
 						onSubmit: function(){
 							var isValid = $(this).form("validate");
 							if (!isValid)$.messager.progress("close");
@@ -185,9 +161,9 @@ $(function(){
 	${dg}_add = function(){
 		if(m) return;
 		m = true;
-		$.getJSON("<@s.url '/products/product/code'/>",function(data){
+		$.getJSON("<@s.url '/products/software/code'/>",function(data){
 			m = false;
-			edit_window("新增产品",0,null,data[0]);
+			edit_window("新增产品软件",0,null,data[0]);
 		});
 	};
 	<@shiro.hasPermission name="${PER_DELETE}">
@@ -203,7 +179,7 @@ $(function(){
 					ids.push(rows[i].id);
 				}
 				$.ajax({
-					url:"<@s.url '/products/product/delete'/>",
+					url:"<@s.url '/products/software/delete'/>",
 					type:"POST",
 					data:{
 						id:ids.join("|")
@@ -245,7 +221,7 @@ $(function(){
 	 	}]" style="padding:5px;width:190px;">
 	 	<ul id="${module}_list_category_exam_tree"></ul>
 	 </div>
-	 <div data-options="region:'center',title:'产品列表'">
+	 <div data-options="region:'center',title:'产品软件列表'">
 		<table id="${dg}"></table>
 		<div id="${dg}_toobar">
 			<@shiro.hasPermission name="${PER_UPDATE}">
@@ -256,7 +232,7 @@ $(function(){
 			<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
 			</@shiro.hasPermission>
 			
-			<label>产品名称:</label>
+			<label>软件名称:</label>
 			<input name="name" type="text" style="width:198px;"/>
 
 			<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
