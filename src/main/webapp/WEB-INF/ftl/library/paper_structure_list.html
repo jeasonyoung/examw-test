@@ -151,7 +151,7 @@ $(function(){
 //=========================================================================================
 	//items_dg
 	var dg = $("#${dg}").datagrid({
-		//url
+		url:"<@s.url '/library/paper/structure/items/datagrid/${CURRENT_PAPER_ID}'/>",
 		fit:true,
 		fitColumns:true,
 		rownumbers:true,
@@ -162,10 +162,35 @@ $(function(){
 		border:true,
 		striped:true,
 		idField:"id",
-		sortName:"code",
-		sortOrder:"desc",
+		sortName:"orderNo",
+		sortOrder:"asc",
 		columns:[[{
-			
+			field:"id",
+			checkbox:true
+		},{
+			title:"题号",
+			field:"serial",
+			width:10,
+			align:"left",
+			sortable:true
+		},{
+			title:"题型",
+			field:"TypeName",
+			width:12,
+			align:"center",
+			sortable:true
+		},{
+			title:"试题内容",
+			field:"content",
+			width:100,
+			align:"left",
+			sortable:true
+		},{
+			title:"分数",
+			field:"score",
+			width:10,
+			align:"right",
+			sortable:true
 		}]],
 		toolbar:"#${dg}_toobar",
 		onLoadError:function(e){
@@ -177,7 +202,10 @@ $(function(){
 	});
 	//items_search
 	${dg}_search = function(){
-		alert("seach");
+		dg.datagrid("load",{
+			"structureId":current_structure_id,
+			"content":$("#${dg}_toobar input[name='content']").val()
+		});
 	};
 	//items_add
 	${dg}_add = function(obj){

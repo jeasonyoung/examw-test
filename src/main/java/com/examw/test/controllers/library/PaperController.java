@@ -27,6 +27,7 @@ import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.library.PaperInfo;
 import com.examw.test.model.library.StructureInfo;
+import com.examw.test.model.library.StructureItemInfo;
 import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperService;
 import com.examw.test.service.library.PaperStatus;
@@ -169,10 +170,13 @@ public class PaperController {
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.VIEW})
-	@RequestMapping(value="/structure/{paperId}", method = RequestMethod.GET)
-	public String structureList(@PathVariable String paperId, Model model){
+	@RequestMapping(value="/structure/{paperId}/{examId}/{subjectId}", method = RequestMethod.GET)
+	public String structureList(@PathVariable String paperId,@PathVariable String examId,@PathVariable String subjectId, Model model){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［paperId = %s］结构列表页面...", paperId));
+		
 		model.addAttribute("CURRENT_PAPER_ID", paperId);
+		model.addAttribute("CURRENT_EXAM_ID", examId);
+		model.addAttribute("CURRENT_SUBJECT_ID", subjectId);
 		
 		model.addAttribute("PER_UPDATE", ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE);
 		model.addAttribute("PER_DELETE", ModuleConstant.LIBRARY_PAPER + ":" + Right.DELETE);
@@ -316,6 +320,64 @@ public class PaperController {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
 			logger.error(String.format("删除数据[%s]时发生异常:",structureId), e);
+		}
+		return result;
+	}
+	/**
+	 * 加载试卷结构下试题列表页面数据。
+	 * @param info
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_SOURCE + ":" + Right.VIEW})
+	@RequestMapping(value="/structure/items/datagrid/{paperId}", method = RequestMethod.POST)
+	@ResponseBody
+	public DataGrid<StructureItemInfo> structureItemsdatagrid(@PathVariable String paperId,StructureItemInfo info){
+		if(logger.isDebugEnabled()) logger.debug("加载试卷结构下试题列表页面数据...");
+		return this.paperService.loadStructureItems(paperId, info);
+	}
+	/**
+	 * 更新试卷结构下试题数据。
+	 * @param paperId
+	 * 所属试卷ID。
+	 * @param info
+	 * 试卷结构数据。
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE})
+	@RequestMapping(value = "/structure/items/update/{paperId}", method = RequestMethod.POST)
+	@ResponseBody
+	public Json structureItemsUpdate(@PathVariable String paperId,StructureItemInfo info){
+		if(logger.isDebugEnabled()) logger.debug(String.format("更新试卷［%s］结构下试题数据...", paperId));
+		Json result = new Json();
+		try {
+			 result.setData(this.paperService.updateStructureItem(paperId, info));
+			 result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("更新数据发生异常", e);
+		}
+		return result;
+	}
+	/**
+	 * 删除试卷结构下试题数据。
+	 * @param id
+	 * 删除的结构ID。
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.DELETE})
+	@RequestMapping(value = "/structure/items/delete", method = RequestMethod.POST)
+	@ResponseBody
+	public Json structureItemsDelete(String id){
+		if(logger.isDebugEnabled()) logger.debug(String.format("删除试卷结构下试题［%s］数据...",  id));
+		Json result = new Json();
+		try {
+			this.paperService.deleteStructureItem(id.split("\\|"));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error(String.format("删除数据[%s]时发生异常:",id), e);
 		}
 		return result;
 	}

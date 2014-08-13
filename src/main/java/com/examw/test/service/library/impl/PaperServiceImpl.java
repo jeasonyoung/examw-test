@@ -438,16 +438,16 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	public DataGrid<StructureItemInfo> loadStructureItems(String paperId,StructureItemInfo info) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("查询试卷［paper = %s］结构试题查询...", paperId));
 		DataGrid<StructureItemInfo> grid = new DataGrid<StructureItemInfo>();
+		List<StructureItemInfo> rows = new ArrayList<>();
 		List<StructureItem> list = this.structureItemDao.findStructureItems(paperId, info);
 		if(list != null && list.size() > 0){
-			List<StructureItemInfo> rows = new ArrayList<>();
 			for(StructureItem structureItem : list){
 				StructureItemInfo target = this.changeModel(structureItem);
 				if(target != null) rows.add(target);
 			}
-			grid.setRows(rows);
-			grid.setTotal(this.structureItemDao.total(paperId, info));
 		}
+		grid.setRows(rows);
+		grid.setTotal(this.structureItemDao.total(paperId, info));
 		return grid;
 	}
 	//类型转换（StructureItem => StructureItemInfo）。
@@ -457,6 +457,12 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		BeanUtils.copyProperties(source, target);
 		if(source.getStructure() != null) target.setStructureId(source.getStructure().getId());
 		target.setItem(this.changeModel(source.getItem(), source.getShareItemScores()));
+		if(!StringUtils.isEmpty(source.getSerial())){
+			target.getItem().setSerial(source.getSerial());
+		}
+		if(source.getScore() != null){
+			target.getItem().setScore(source.getScore());
+		}
 		return target;
 	}
 	//类型转换（item => ItemScoreInfo ）。
@@ -465,21 +471,21 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		ItemScoreInfo info = new ItemScoreInfo();
 		//试题信息。
 		BeanUtils.copyProperties(item, info, new String[]{"children"});
-//		if(item.getSubject() != null){
-//			info.setSubjectId(item.getSubject().getId());
-//			info.setSubjectName(item.getSubject().getName());
-//			if(item.getSubject().getExam() != null){
-//				info.setExamId(item.getSubject().getExam().getId());
-//				info.setExamName(item.getSubject().getExam().getName());
-//			}
-//		}
-//		if(item.getSource() != null){
-//			info.setSourceId(item.getSource().getId());
-//			info.setSourceName(item.getSource().getName());
-//		}
-//		if(item.getType() != null) info.setTypeName(this.itemService.loadTypeName(item.getType()));
-//		if(item.getStatus() != null) info.setStatusName(this.itemService.loadStatusName(item.getStatus()));
-//		if(item.getOpt() != null) info.setOptName(this.itemService.loadOptName(item.getOpt()));
+		if(item.getSubject() != null){
+			info.setSubjectId(item.getSubject().getId());
+			info.setSubjectName(item.getSubject().getName());
+			if(item.getSubject().getExam() != null){
+				info.setExamId(item.getSubject().getExam().getId());
+				info.setExamName(item.getSubject().getExam().getName());
+			}
+		}
+		if(item.getSource() != null){
+			info.setSourceId(item.getSource().getId());
+			info.setSourceName(item.getSource().getName());
+		}
+		if(item.getType() != null) info.setTypeName(this.itemService.loadTypeName(item.getType()));
+		if(item.getStatus() != null) info.setStatusName(this.itemService.loadStatusName(item.getStatus()));
+		if(item.getOpt() != null) info.setOptName(this.itemService.loadOptName(item.getOpt()));
 		//结构试题信息。
 		if(shareItemScores != null && shareItemScores.size() > 0){
 			StructureShareItemScore structureShareItemScore = null; 
@@ -529,7 +535,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 			throw new RuntimeException(msg);
 		}
 		if(paper.getStatus() != PaperStatus.NONE.getValue()){
-			msg = String.format("试卷［％1$s］状态［%2$s］不允许修改！", paper.getName(),this.loadStatusName(paper.getStatus()));
+			msg = String.format("试卷［％1$s］状态［%2$s］不允许更新！", paper.getName(),this.loadStatusName(paper.getStatus()));
 			if(logger.isDebugEnabled()) logger.debug(msg);
 			throw new RuntimeException(msg);
 		}
@@ -563,7 +569,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		data.setItem(item);
 		data.setShareItemScores(shareItemScores);
 		if(isAdded)this.structureItemDao.save(data);
-		return info;
+		return this.changeModel(data);
 	}
 	/*
 	 * 删除试卷结构下的数据。

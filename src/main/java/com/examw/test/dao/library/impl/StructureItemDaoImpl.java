@@ -31,6 +31,12 @@ public class StructureItemDaoImpl extends BaseDaoImpl<StructureItem> implements 
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(paperId, info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
+			if(info.getSort().equalsIgnoreCase("TypeName")){
+				info.setSort("item.type");
+			}
+			if(info.getSort().equalsIgnoreCase("content")){
+				info.setSort("item.content");
+			}
 			hql += " order by s." + info.getSort() + " " + info.getOrder();
 		}
 		if(logger.isDebugEnabled()) logger.debug(hql);

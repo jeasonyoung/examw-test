@@ -94,9 +94,9 @@ $(function(){
 			width:20,
 			align:"center",
 			formatter:function(value,data,index){
-				var href = "<a class='paper-list-opt-preview' href='#' onclick='${dg}_paper_preview(\""+data.id+"\")'/>"
+				var href = "<a class='paper-list-opt-preview' href='#' onclick='${dg}_paper_preview(\""+data["id"]+"\")'/>"
 				if(data.status == ${PAPER_STATUS_NONE}){
-					href = "<a class='paper-list-opt-add' href='#' onclick='${dg}_paper_structure(\""+ data.id+"\",\"试卷［"+data.name+"］试题管理\")'/>";
+					href = "<a class='paper-list-opt-add' href='#' onclick='${dg}_paper_structure(\""+ data["id"] +"\",\"试卷［"+data["name"]+"］试题管理\",\"" + data["examId"] +"\",\"" + data["subjectId"] + "\")'/>";
 				}
 				return href;
 			}
@@ -122,12 +122,12 @@ $(function(){
 		///TODO:预览试卷
 	};
 	//paper_structure
-	${dg}_paper_structure = function(paperId,title){
+	${dg}_paper_structure = function(paperId,title,examId,subjectId){
 		var d = $("<div/>").dialog({
 			title:title,
 			width:800,
 			height:600,
-			href:"<@s.url '/library/paper/structure/'/>" + paperId,
+			href:"<@s.url '/library/paper/structure/'/>" + paperId +"/" + examId + "/" + subjectId,
 			modal:true,
 			buttons:[{
 				text:"关闭",

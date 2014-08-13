@@ -17,7 +17,8 @@ import com.examw.model.Paging;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class StructureItemInfo extends Paging {
 	private static final long serialVersionUID = 1L;
-	private String id,structureId,content;
+	private String id,serial,structureId,content;
+	private BigDecimal score;
 	private Integer orderNo;
 	private ItemScoreInfo item;
 	private Date createTime;
@@ -35,6 +36,20 @@ public class StructureItemInfo extends Paging {
 	 */
 	public void setId(String id) {
 		this.id = id;
+	}
+	/**
+	 * 获取试题题型。
+	 * @return 试题类型。
+	 */
+	public Integer getType(){
+		return (this.getItem() == null) ? null : this.getItem().getType();
+	}
+	/**
+	 * 获取试题题型名称。
+	 * @return
+	 */
+	public String getTypeName(){
+		return (this.getItem() == null) ? null : this.getItem().getTypeName();
 	}
 	/**
 	 * 获取所属结构ID。
@@ -56,7 +71,15 @@ public class StructureItemInfo extends Paging {
 	 * @return 结构题目序号。
 	 */
 	public String getSerial() {
-		return this.item.getSerial();
+		return this.serial;
+	}
+	/**
+	 * 设置结构题目序号。
+	 * @param serial
+	 * 结构题目序号。
+	 */
+	public void setSerial(String serial){
+		this.serial = serial;
 	}
 	/**
 	 * 获取题目内容。
@@ -79,7 +102,15 @@ public class StructureItemInfo extends Paging {
 	 * @return 题目分数。
 	 */
 	public BigDecimal getScore() {
-		return (this.item == null) ? BigDecimal.ZERO : this.item.getScore();
+		return this.score;
+	}
+	/**
+	 * 设置题目分数。
+	 * @param score
+	 * 题目分数。
+	 */
+	public void setScore(BigDecimal score){
+		this.score = score;
 	}
 	/**
 	 * 获取试题排序号。
