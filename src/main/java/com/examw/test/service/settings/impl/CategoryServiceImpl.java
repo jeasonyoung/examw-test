@@ -98,7 +98,8 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		BeanUtils.copyProperties(info, data);
 		if(!StringUtils.isEmpty(info.getPid()) && (data.getParent() == null || !data.getParent().getId().equalsIgnoreCase(info.getPid()))){
 			Category parent = this.categoryDao.load(Category.class, info.getPid());
-			if(parent != null)data.setParent(parent);
+			//自己不能是自己的父类
+			if(parent != null && !parent.getId().equalsIgnoreCase(data.getId()))	data.setParent(parent);
 		}
 		if(isAdded) this.categoryDao.save(data);
 		return info;
@@ -158,7 +159,7 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 	 * @see com.examw.test.service.settings.ICategoryService#loadAllCategorys()
 	 */
 	@Override
-	public List<TreeNode> loadAllCategorys() {
+	public List<TreeNode> loadAllCategorys(String ignoreCategoryId) {
 		List<TreeNode> result = new ArrayList<>();
 		List<Category> list = this.categoryDao.findCategorys(new CategoryInfo(){
 			private static final long serialVersionUID = 1L;
@@ -174,7 +175,8 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		if(list != null && list.size() > 0){
 			for(final Category data : list){
 				if(data == null) continue;
-				result.add(createTreeNode(data,null,false,false));
+				TreeNode node = (createTreeNode(data,ignoreCategoryId,null,false,false));
+				if(node!=null) result.add(node);
 			}
 		}
 		return result;
@@ -187,8 +189,8 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 	 * @param withSubject	是否加载所包含科目
 	 * @return
 	 */
-	private TreeNode createTreeNode(Category data,Map<String, Object> attributes,boolean withExam,boolean withSubject){
-		if(data == null) return null;
+	private TreeNode createTreeNode(Category data,String ignoreCategoryId,Map<String, Object> attributes,boolean withExam,boolean withSubject){
+		if(data == null || data.getId().equalsIgnoreCase(ignoreCategoryId)) return null;
 		TreeNode node = new TreeNode();
 		node.setId(data.getId());
 		node.setText(data.getName());
@@ -204,7 +206,7 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 			List<TreeNode> list = new ArrayList<>();
 			for(Category c : data.getChildren()){
 				if(withAttr) attributes = null;
-				TreeNode t = this.createTreeNode(c,attributes,withExam,withSubject);
+				TreeNode t = this.createTreeNode(c,ignoreCategoryId,attributes,withExam,withSubject);
 				 if(t != null){
 					 list.add(t);
 				 }
@@ -278,7 +280,7 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 				if(data == null) continue;
 				Map<String,Object> attributes = new HashMap<>();
 				attributes.put("type", "category");
-				treeNodes.add(createTreeNode(data,attributes,true,false));
+				treeNodes.add(createTreeNode(data,null,attributes,true,false));
 			}
 		}
 		return treeNodes;
@@ -306,7 +308,7 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 				if(data == null) continue;
 				Map<String,Object> attributes = new HashMap<>();
 				attributes.put("type", "category");
-				treeNodes.add(createTreeNode(data,attributes,true,true));
+				treeNodes.add(createTreeNode(data,null,attributes,true,true));
 			}
 		}
 		return treeNodes;

@@ -6,14 +6,14 @@
 $(function(){
 	//考试分类树
 	var c = $("#${module}_edit_form input[name='pid']").combotree({
-		url:"<@s.url '/settings/category/tree'/>",
+		url:"<@s.url '/settings/category/tree'/>?ignoreCategoryId=${CURRENT_CATEGORY_ID}",
 		valueField:"id",
 		textField:"name",
 		onLoadError:function(e){
 			<@error_dialog "e"/>
 		},
 		onLoadSuccess:function(){
-			var id = "${CURRENT_CATEGORY_ID}";
+			var id = "${CURRENT_CATEGORY_PID}";
 			if($.trim(id) == "") return;
 			c.combotree("setValue",id);
 		},

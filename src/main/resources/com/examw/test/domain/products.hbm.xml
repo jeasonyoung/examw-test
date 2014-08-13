@@ -71,6 +71,8 @@
 		<!-- 产品代码 -->
 		<property name="code" type="string" length="10" unique="true" not-null="true"/>
 		<!-- 产品名称 -->
+		<property name="name" type="string" length="32" not-null="true" />
+		<!-- 所属考试  -->
 		<many-to-one name="exam" column="exam_id" class="com.examw.test.domain.settings.Exam" />
 		<!-- 包含科目集合 -->
 		<set name="subjects" inverse="false" cascade="save-update" table="tbl_Examw_Test_Products_ProductSubjects">

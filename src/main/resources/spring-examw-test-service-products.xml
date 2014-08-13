@@ -17,6 +17,7 @@
 	<bean id="productUserService" class="com.examw.test.service.products.impl.ProductUserServiceImpl">
 		<!-- 产品用户数据操作接口 -->
 		<property name="productUserDao" ref="productUserDao" />
+		<!-- 状态-名称映射 -->
 		<property name="statusMap">
 		    <map>
 		        <entry key="0" value="禁用"/>
@@ -33,6 +34,31 @@
 		<property name="examDao" ref="examDao" />
 		<!-- 科目数据操作接口 -->
 		<property name="subjectDao" ref="subjectDao" />
+		<!-- 状态-名称映射 -->
+		<property name="statusMap">
+		    <map>
+		        <entry key="0" value="正常"/>
+		        <entry key="-1" value="删除"/>
+		    </map>
+		</property>
+	</bean>
+	<!-- 产品软件服务 -->
+	<bean id="softwareService" class="com.examw.test.service.products.impl.SoftwareServiceImpl">
+		<!-- 产品软件数据操作接口 -->
+		<property name="softwareDao" ref="softwareDao" />
+		<!-- 产品数据操作接口 -->
+		<property name="productDao" ref="productDao" />
+		<!-- 渠道数据操作接口 -->
+		<property name="channelDao" ref="channelDao" />
+		<!-- 软件类型数据操作接口 -->
+		<property name="softwareTypeDao" ref="softwareTypeDao" />
+		<!-- 状态-名称映射 -->
+		<property name="statusMap">
+		    <map>
+		        <entry key="0" value="正常"/>
+		        <entry key="-1" value="删除"/>
+		    </map>
+		</property>
 	</bean>
 	<!-- 产品管理  服务接口实现 end -->
 </beans>
