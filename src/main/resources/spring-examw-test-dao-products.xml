@@ -20,5 +20,9 @@
 	<bean id="productDao"  class="com.examw.test.dao.products.impl.ProductDaoImpl">
 	   <property name="sessionFactory"  ref="sessionFactory" />
 	</bean>
+	<!-- 产品软件Dao -->
+	<bean id="softwareDao"  class="com.examw.test.dao.products.impl.SoftwareDaoImpl">
+	   <property name="sessionFactory"  ref="sessionFactory" />
+	</bean>
 	<!-- 产品管理  数据接口实现end -->
 </beans>

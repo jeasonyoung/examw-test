@@ -14,17 +14,27 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
+import com.examw.model.DataGrid;
 import com.examw.test.dao.library.IPaperDao;
 import com.examw.test.dao.library.ISourceDao;
+import com.examw.test.dao.library.IStructureItemDao;
 import com.examw.test.dao.settings.ISubjectDao;
+import com.examw.test.domain.library.Item;
 import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.library.Source;
 import com.examw.test.domain.library.Structure;
+import com.examw.test.domain.library.StructureItem;
+import com.examw.test.domain.library.StructureShareItemScore;
 import com.examw.test.domain.settings.Subject;
+import com.examw.test.model.library.ItemInfo;
+import com.examw.test.model.library.ItemScoreInfo;
 import com.examw.test.model.library.PaperInfo;
 import com.examw.test.model.library.StructureInfo;
+import com.examw.test.model.library.StructureItemInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
+import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperService;
+import com.examw.test.service.library.ItemType;
 import com.examw.test.service.library.PaperStatus;
 
 /**
@@ -37,6 +47,8 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	private IPaperDao paperDao;
 	private ISourceDao sourceDao;
 	private ISubjectDao subjectDao;
+	private IStructureItemDao structureItemDao;
+	private IItemService itemService;
 	private Map<Integer,String> typeMap,statusMap;
 	/**
 	 * 设置试卷数据接口。
@@ -62,6 +74,22 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	 */
 	public void setSubjectDao(ISubjectDao subjectDao) {
 		this.subjectDao = subjectDao;
+	}
+	/**
+	 * 设置试卷结构下试题数据接口。
+	 * @param structureItemDao 
+	 *	  试卷结构下试题数据接口。
+	 */
+	public void setStructureItemDao(IStructureItemDao structureItemDao) {
+		this.structureItemDao = structureItemDao;
+	}
+	/**
+	 * 设置试题服务接口。
+	 * @param itemService 
+	 *	  试题服务接口。
+	 */
+	public void setItemService(IItemService itemService) {
+		this.itemService = itemService;
 	}
 	/**
 	 * 设置试卷类型集合。
@@ -353,7 +381,6 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		}
 		return true;
 	}
-	
 	//查找试卷下的结构对象。
 	private Structure findStructure(Paper paper, String structureId){
 		Structure find = null;
@@ -401,6 +428,156 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 				continue;
 			}
 	 		parent.getChildren().remove(data);
+		}
+	}
+	/*
+	 * 查询试卷结构试题查询。
+	 * @see com.examw.test.service.library.IPaperService#loadStructureItems(java.lang.String, com.examw.test.model.library.StructureItemInfo)
+	 */
+	@Override
+	public DataGrid<StructureItemInfo> loadStructureItems(String paperId,StructureItemInfo info) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("查询试卷［paper = %s］结构试题查询...", paperId));
+		DataGrid<StructureItemInfo> grid = new DataGrid<StructureItemInfo>();
+		List<StructureItem> list = this.structureItemDao.findStructureItems(paperId, info);
+		if(list != null && list.size() > 0){
+			List<StructureItemInfo> rows = new ArrayList<>();
+			for(StructureItem structureItem : list){
+				StructureItemInfo target = this.changeModel(structureItem);
+				if(target != null) rows.add(target);
+			}
+			grid.setRows(rows);
+			grid.setTotal(this.structureItemDao.total(paperId, info));
+		}
+		return grid;
+	}
+	//类型转换（StructureItem => StructureItemInfo）。
+	private StructureItemInfo changeModel(StructureItem source){
+		if(source == null || source.getItem() == null) return null;
+		StructureItemInfo target = new StructureItemInfo();
+		BeanUtils.copyProperties(source, target);
+		if(source.getStructure() != null) target.setStructureId(source.getStructure().getId());
+		target.setItem(this.changeModel(source.getItem(), source.getShareItemScores()));
+		return target;
+	}
+	//类型转换（item => ItemScoreInfo ）。
+	private ItemScoreInfo changeModel(Item item,Set<StructureShareItemScore> shareItemScores ){
+		if(item == null) return null;
+		ItemScoreInfo info = new ItemScoreInfo();
+		//试题信息。
+		BeanUtils.copyProperties(item, info, new String[]{"children"});
+//		if(item.getSubject() != null){
+//			info.setSubjectId(item.getSubject().getId());
+//			info.setSubjectName(item.getSubject().getName());
+//			if(item.getSubject().getExam() != null){
+//				info.setExamId(item.getSubject().getExam().getId());
+//				info.setExamName(item.getSubject().getExam().getName());
+//			}
+//		}
+//		if(item.getSource() != null){
+//			info.setSourceId(item.getSource().getId());
+//			info.setSourceName(item.getSource().getName());
+//		}
+//		if(item.getType() != null) info.setTypeName(this.itemService.loadTypeName(item.getType()));
+//		if(item.getStatus() != null) info.setStatusName(this.itemService.loadStatusName(item.getStatus()));
+//		if(item.getOpt() != null) info.setOptName(this.itemService.loadOptName(item.getOpt()));
+		//结构试题信息。
+		if(shareItemScores != null && shareItemScores.size() > 0){
+			StructureShareItemScore structureShareItemScore = null; 
+			for(StructureShareItemScore itemScore : shareItemScores){
+				 if(itemScore == null || itemScore.getSubItem() == null) continue;
+				 if(!StringUtils.isEmpty(item.getId()) && itemScore.getSubItem().getId().equalsIgnoreCase(item.getId())){
+					 structureShareItemScore = itemScore;
+					 break;
+				 }
+			 }
+			if(structureShareItemScore != null){
+				info.setSerial(structureShareItemScore.getSerial());
+				info.setScore(structureShareItemScore.getScore());
+			}
+		}
+		if(item.getChildren() != null && item.getChildren().size() > 0){
+			Set<ItemInfo> children = new TreeSet<ItemInfo>(new Comparator<ItemInfo>(){
+				@Override
+				public int compare(ItemInfo o1, ItemInfo o2) {
+					return o1.getOrderNo() - o2.getOrderNo();
+				}
+			});
+			for(Item e : item.getChildren()){
+				ItemInfo itemInfo = this.changeModel(e, shareItemScores);
+				if(itemInfo != null){
+					itemInfo.setPid(info.getId());
+					children.add(itemInfo);
+				}
+			}
+			if(children.size() > 0) info.setChildren(children);	
+		}
+		return info;
+	}
+	/*
+	 * 更新试卷结构下试题。
+	 * @see com.examw.test.service.library.IPaperService#updateStructureItem(java.lang.String, com.examw.test.model.library.StructureItemInfo)
+	 */
+	@Override
+	public StructureItemInfo updateStructureItem(String paperId,StructureItemInfo info) {
+		if(logger.isDebugEnabled()) logger.debug("更新试卷结构下试题...");
+		if(StringUtils.isEmpty(paperId) || info == null || info.getItem() == null) return null;
+		String msg = null;
+		Paper paper = this.paperDao.load(Paper.class, paperId);
+		if(paper == null){
+			msg = String.format("试卷［id=%s］不存在！", paperId);
+			if(logger.isDebugEnabled()) logger.debug(msg);
+			throw new RuntimeException(msg);
+		}
+		if(paper.getStatus() != PaperStatus.NONE.getValue()){
+			msg = String.format("试卷［％1$s］状态［%2$s］不允许修改！", paper.getName(),this.loadStatusName(paper.getStatus()));
+			if(logger.isDebugEnabled()) logger.debug(msg);
+			throw new RuntimeException(msg);
+		}
+		boolean isAdded = false;
+		StructureItem data = StringUtils.isEmpty(info.getId()) ? null : this.structureItemDao.load(StructureItem.class, info.getId());
+		if(isAdded = (data == null)){
+			if(StringUtils.isEmpty(info.getId())) info.setId(UUID.randomUUID().toString());
+			 info.setCreateTime(new Date());
+			data = new StructureItem(); 
+			Structure structure = this.findStructure(paper, info.getStructureId());
+			if(structure == null){
+				msg = String.format("试卷［%1$s］下未找到结构［structureId = %2$s］！", paper.getName(), info.getStructureId());
+				if(logger.isDebugEnabled()) logger.debug(msg);
+				throw new RuntimeException(msg);
+			}
+			data.setStructure(structure);
+		}
+		BeanUtils.copyProperties(info, data);
+		data.setSerial(info.getItem().getSerial());
+		data.setScore(info.getItem().getScore());
+		Set<StructureShareItemScore> shareItemScores = null;
+		if(info.getItem().getType() == ItemType.SHARE_TITLE.getValue() || info.getItem().getType() == ItemType.SHARE_ANSWER.getValue()){
+			shareItemScores = new HashSet<>();
+		}
+		Item item = this.itemService.updateItem(info.getItem(), data, shareItemScores);
+		if(item == null){
+			msg = "更新试题内容失败！";
+			if(logger.isDebugEnabled()) logger.debug(msg);
+			throw new RuntimeException(msg);
+		}
+		data.setItem(item);
+		data.setShareItemScores(shareItemScores);
+		if(isAdded)this.structureItemDao.save(data);
+		return info;
+	}
+	/*
+	 * 删除试卷结构下的数据。
+	 * @see com.examw.test.service.library.IPaperService#deleteStructureItem(java.lang.String, java.lang.String, java.lang.String[])
+	 */
+	@Override
+	public void deleteStructureItem(String[] ids) {
+		if(logger.isDebugEnabled()) logger.debug("删除试卷下试题数据...");
+		if(ids == null || ids.length == 0) return;
+		for(int i = 0; i < ids.length; i++){
+			if(StringUtils.isEmpty(ids[i])) continue;
+			if(logger.isDebugEnabled()) logger.debug("删除试卷下试题：" + ids[i]);
+			StructureItem data = this.structureItemDao.load(StructureItem.class, ids[i]);
+			if(data != null) this.structureItemDao.delete(data);
 		}
 	}
 }

@@ -49,8 +49,9 @@ public class CategoryController {
 	 */
 	@RequiresPermissions({ModuleConstant.SETTINGS_CATEGORY + ":" + Right.UPDATE})
 	@RequestMapping(value="/edit", method = RequestMethod.GET)
-	public String edit(String pid,Model model){
-		model.addAttribute("CURRENT_CATEGORY_ID", pid);
+	public String edit(String pid,String id,Model model){
+		model.addAttribute("CURRENT_CATEGORY_PID", pid);
+		model.addAttribute("CURRENT_CATEGORY_ID", id);
 		return "settings/category_edit";
 	}
 	/**
@@ -69,8 +70,8 @@ public class CategoryController {
 	 */
 	@RequestMapping(value = "/tree", method = {RequestMethod.GET,RequestMethod.POST})
 	@ResponseBody
-	public List<TreeNode> tree(){
-		return this.categroyService.loadAllCategorys();
+	public List<TreeNode> tree(String ignoreCategoryId){
+		return this.categroyService.loadAllCategorys(ignoreCategoryId);
 	}
 	/**
 	 * 考试类别-考试树。

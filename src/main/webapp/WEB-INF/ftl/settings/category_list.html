@@ -78,7 +78,9 @@ $(function(){
 	//edit
 	function edit_window(title,row,code){
 		var c_id = current_category_id;
+		var id = "";
 		if(row){
+			id = row.id;
 			if(row.pid)
 				c_id = row.pid;
 			else
@@ -88,7 +90,7 @@ $(function(){
 			title:title,
 			width:400,
 			height:300,
-			href:"<@s.url '/settings/category/edit'/>?pid="+c_id,
+			href:"<@s.url '/settings/category/edit'/>?pid="+c_id+"&id="+id,
 			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">      

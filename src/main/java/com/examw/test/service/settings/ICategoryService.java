@@ -22,7 +22,7 @@ public interface ICategoryService extends IBaseDataService<CategoryInfo>{
 	 * 查询所有的考试分类
 	 * @return
 	 */
-	List<TreeNode> loadAllCategorys();
+	List<TreeNode> loadAllCategorys(String ignoreCategoryId);
 	/**
 	 * 加载考试类型下考试设置树数据。
 	 * @return

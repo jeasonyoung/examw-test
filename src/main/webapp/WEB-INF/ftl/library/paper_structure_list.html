@@ -5,7 +5,8 @@
 <script type="text/javascript">
 <!--
 $(function(){
-	var current_structure_id = "";
+	var current_structure_id = current_item_type_value = "";
+	var is_load = false;
 	//structure_tree
 	var structure_tree = $("#${module}_tree").tree({
 		url:"<@s.url '/library/paper/structure/tree/${CURRENT_PAPER_ID}'/>",
@@ -13,6 +14,7 @@ $(function(){
 		onContextMenu:function(e, node){
 			e.preventDefault();
 			current_structure_id = node.id;
+			current_item_type_value = node.attributes.type;
 			// select the node
 			structure_tree.tree("select", node.target);
 			// display context menu
@@ -25,13 +27,20 @@ $(function(){
 			<@error_dialog "e"/>
 		},
 		onBeforeLoad:function(){
-			current_structure_id = "";
+			current_structure_id = current_item_type_value = "";
+			if(is_load)$("#${dg}_toobar_add").menubutton("disable"); 
 		},
 		onClick:function(node){
+			is_load = true;
 			current_structure_id = node.id;
+			current_item_type_value = node.attributes.type;
+			$("#${dg}_toobar_add").menubutton(($.trim(current_item_type_value) == "") ? "disable" : "enable"); 
+			${dg}_search();
 		},
 		onDblClick:function(node){
+			is_load = true;
 			current_structure_id = node.id;
+			current_item_type_value = node.attributes.type;
 			structure_edit("编辑试卷结构",node.attributes);
 		}
 	});
@@ -139,6 +148,7 @@ $(function(){
 		});
 	};
 	</@shiro.hasPermission>
+//=========================================================================================
 	//items_dg
 	var dg = $("#${dg}").datagrid({
 		//url
@@ -167,11 +177,12 @@ $(function(){
 	});
 	//items_search
 	${dg}_search = function(){
-		
+		alert("seach");
 	};
 	//items_add
-	${dg}_add = function(){
-		
+	${dg}_add = function(obj){
+		alert($(obj).attr("value"));
+		alert($(obj).text());
 	};
 	//items_delete
 	${dg}_delete = function(){
@@ -185,7 +196,7 @@ $(function(){
 			iconCls:'icon-reload',
 			handler:function(){
 				$('#${module}_tree').tree('reload');
-				//TODO::刷新列表数据
+				${dg}_search();
 			}
 		}
 		<@shiro.hasPermission name='${PER_UPDATE}'>
@@ -211,7 +222,11 @@ $(function(){
 		<table id="${dg}"></table>
 		<div id="${dg}_toobar">
 			<@shiro.hasPermission name="${PER_UPDATE}">
-			<a id="${dg}_toobar_add" href="#" class="easyui-linkbutton" onclick="${dg}_add()" data-options="iconCls:'icon-add',plain:true,disabled:true" style="float:left;">添加</a>
+			<a id="${dg}_toobar_add" href="#" class="easyui-menubutton" data-options="iconCls:'icon-add',menu:'#${dg}_toobar_menu',plain:true,disabled:true" style="float:left;">添加</a>
+			<div id="${dg}_toobar_menu" style="width:120px;">
+				<div onclick="${dg}_add(this)" value="new">新增试题</div>
+				<div onclick="${dg}_add(this)" value="import">从题库中导入</div>
+			</div>
 			</@shiro.hasPermission>
 			<span>|</span>
 			<@shiro.hasPermission name="${PER_DELETE}">
