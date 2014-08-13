@@ -1,0 +1,68 @@
+package com.examw.test.dao.library.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.springframework.util.StringUtils;
+
+import com.examw.test.dao.impl.BaseDaoImpl;
+import com.examw.test.dao.library.IStructureItemDao;
+import com.examw.test.domain.library.StructureItem;
+import com.examw.test.model.library.StructureItemInfo;
+
+/**
+ * 结构下试题数据接口实现类。
+ * 
+ * @author yangyong
+ * @since 2014年8月13日
+ */
+public class StructureItemDaoImpl extends BaseDaoImpl<StructureItem> implements IStructureItemDao {
+	private static final Logger logger = Logger.getLogger(StructureItemDaoImpl.class);
+	/*
+	 * 查询数据。
+	 * @see com.examw.test.dao.library.IStructureItemDao#findStructureItems(java.lang.String, com.examw.test.model.library.StructureItemInfo)
+	 */
+	@Override
+	public List<StructureItem> findStructureItems(String paperId, StructureItemInfo info) {
+		if(logger.isDebugEnabled()) logger.debug("查询数据...");
+		String hql = "from StructureItem s where 1=1 ";
+		Map<String, Object> parameters = new HashMap<>();
+		hql = this.addWhere(paperId, info, hql, parameters);
+		if(!StringUtils.isEmpty(info.getSort())){
+			hql += " order by s." + info.getSort() + " " + info.getOrder();
+		}
+		if(logger.isDebugEnabled()) logger.debug(hql);
+		return this.find(hql, parameters, info.getPage(), info.getRows());
+	}
+	/*
+	 * 查询数据统计。
+	 * @see com.examw.test.dao.library.IStructureItemDao#total(com.examw.test.model.library.StructureItemInfo)
+	 */
+	@Override
+	public Long total(String paperId, StructureItemInfo info) {
+		if(logger.isDebugEnabled()) logger.debug("查询数据统计...");
+		String hql = "select count(*) from StructureItem s where 1=1 ";
+		Map<String, Object> parameters = new HashMap<>();
+		hql = this.addWhere(paperId, info, hql, parameters);
+		if(logger.isDebugEnabled()) logger.debug(hql);
+		return this.count(hql, parameters);
+	}
+	//添加查询条件。
+	private String addWhere(String paperId, StructureItemInfo info,String hql,Map<String,Object> parameters){
+		if(!StringUtils.isEmpty(paperId)){
+			hql += " and (s.structure.id in (select st.id from Structure st  where st.paper.id = :paperId)) ";
+			parameters.put("paperId", paperId);
+		}
+		if(!StringUtils.isEmpty(info.getStructureId())){
+			hql += " and (s.structure.id = :structureId) ";
+			parameters.put("structureId", info.getStructureId());
+		}
+		if(!StringUtils.isEmpty(info.getContent())){
+			hql += " and (s.item.content like :content) ";
+			parameters.put("content", "%"+ info.getContent() +"%");
+		}
+		return hql;
+	}
+}

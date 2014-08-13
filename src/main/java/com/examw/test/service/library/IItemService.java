@@ -1,6 +1,10 @@
 package com.examw.test.service.library;
 
+import java.util.Set;
+
 import com.examw.test.domain.library.Item;
+import com.examw.test.domain.library.StructureItem;
+import com.examw.test.domain.library.StructureShareItemScore;
 import com.examw.test.model.library.ItemInfo;
 import com.examw.test.service.IBaseDataService;
 
@@ -58,5 +62,5 @@ public interface IItemService extends IBaseDataService<ItemInfo> {
 	 * @return
 	 * 题目对象。
 	 */
-	Item updateItem(ItemInfo info);
+	Item updateItem(ItemInfo info,StructureItem structureItem,Set<StructureShareItemScore> shareItemScores);
 }
