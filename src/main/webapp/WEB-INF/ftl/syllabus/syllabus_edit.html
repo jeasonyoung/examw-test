@@ -49,7 +49,6 @@ $(function(){
 		onLoadSuccess:function(){
 			subject_cbb.combobox("clear");
 			var id = "${CURRENT_SUBJECT_ID}";
-			console.info(id);
 			if($.trim(id) == "") return;
 			subject_cbb.combobox("setValue",id);
 		},

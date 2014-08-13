@@ -1,12 +1,12 @@
-<#--出版社列表-->
+<#--行政地区设置列表-->
 <#include "comm.ftl"/>
 <#assign module="syllabus_press"/>
-<#assign dg="${module}_list_dg"/>
+<#assign dg="${module}_dg"/>
 <script type="text/javascript">
 <!--
 $(function(){
 	//dg
-	var dg = $("#${dg}").datagrid({
+	var dg=$("#${dg}").datagrid({
 		url:"<@s.url '/syllabus/press/datagrid'/>",
 		fit:true,
 		fitColumns:true,
@@ -19,14 +19,13 @@ $(function(){
 		striped:true,
 		idField:"id",
 		sortName:"name",
-		sortOrder:"asc",
 		columns:[[{
 			field:"id",
 			checkbox:true
 		},{
 			title:"出版社名称",
 			field:"name",
-			width:30,
+			width:20,
 			align:"left",
 			sortable:true
 		}]],
@@ -35,7 +34,7 @@ $(function(){
 			<@error_dialog "e"/>
 		},
 		onDblClickRow:function(rowIndex,rowData){
-			edit_window("修改出版社",rowIndex,rowData);
+			edit_window("编辑出版社",rowIndex,rowData,null);
 		}
 	});
 	//add
@@ -47,12 +46,12 @@ $(function(){
 		var d = $("<div/>").dialog({
 			title:title,
 			width:400,
-			height:130,
+			height:140,
 			href:"<@s.url '/syllabus/press/edit'/>",
 			modal:true,
 			buttons:[
-			<@shiro.hasPermission name="${PER_UPDATE}">  
-			{
+			 <@shiro.hasPermission name="${PER_UPDATE}">
+			  {
 				text:"保存",
 				iconCls:"icon-save",
 				handler:function(){
@@ -106,7 +105,7 @@ $(function(){
 	//search
 	${dg}_search = function(){
 		dg.datagrid("load",{
-			name:$("#${dg}_toobar input[name='name']").val()
+			  name:$("#${dg}_toobar input[name='name']").val()
 		});
 	};
 	<@shiro.hasPermission name="${PER_DELETE}">
@@ -157,12 +156,12 @@ $(function(){
 <table id="${dg}"></table>
 <div id="${dg}_toobar">
 	<@shiro.hasPermission name="${PER_UPDATE}">
-	<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"  onclick="${dg}_add()" style="float:left;">新增</a>
+	<a href="#" class="easyui-linkbutton" onclick="${dg}_add()" data-options="iconCls:'icon-add',plain:true" style="float:left;">新增</a>
 	</@shiro.hasPermission>
 	<span>|</span>
 	<@shiro.hasPermission name="${PER_DELETE}">
-	<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="${dg}_delete()">删除</a>
+	<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
 	</@shiro.hasPermission>
 	<label>出版社名称：<input name="name" type="text" style="width:198px;"/></label>
-	<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="${dg}_search()" style="margin-left:10px;">查询</a>
+	<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
 </div>

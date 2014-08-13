@@ -9,6 +9,7 @@ $(function(){
 	//tree
 	var t = $("#${module}_tree").tree({
 		url:"<@s.url '/syllabus/syllabus/trees'/>",
+		lines:true,
 		onLoadError:function(e){
 			<@error_dialog "e"/>
 		},

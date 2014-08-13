@@ -14,7 +14,7 @@ $(function(){
 			<@error_dialog "e"/>
 		},
 		onBeforeLoad:function(){
-			current_subject_id = "";
+			current_exam_id = current_subject_id = "";
 		},
 		onClick:function(node){
 			current_exam_id = current_subject_id = "";
@@ -217,7 +217,7 @@ $(function(){
 //-->
 </script>
 <div class="easyui-layout" data-options="fit:true">
-	<div data-options="region:'west',title:'考试类别—考试—科目树',split:true,tools:[{
+	<div data-options="region:'west',title:'所属科目',split:true,tools:[{
 			iconCls:'icon-reload',
 		 	handler:function(){
 		 		$('#${module}_exam_tree').tree('reload');

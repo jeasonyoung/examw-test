@@ -107,8 +107,6 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 		if(!StringUtils.isEmpty(info.getPid()) && (data.getParent() == null || !data.getParent().getId().equalsIgnoreCase(info.getPid()))){
 			Syllabus parent = this.syllabusDao.load(Syllabus.class, info.getPid());
 			if(parent != null && !parent.getId().equalsIgnoreCase(data.getId())) data.setParent(parent);
-		}else {
-			data.setParent(null);
 		}
 		if(!StringUtils.isEmpty(info.getSubId())){
 			if(data.getParent() != null && data.getParent().getSubject() != null)
