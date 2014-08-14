@@ -38,6 +38,7 @@ public interface ISyllabusDao extends IBaseDao<Syllabus>{
 	/**
 	 * 加载所有的大纲要点。
 	 * @return
+	 * 查询结果。
 	 */
 	List<Syllabus> loadFristSyllabus();
 }

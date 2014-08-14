@@ -169,6 +169,7 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 	 */
 	@Override
 	public List<TreeNode> loadAllSyllabuss(String ignore) {
+		if(logger.isDebugEnabled())logger.debug("加载所有的大纲要点...");
 		List<TreeNode> treeNodes = new ArrayList<>();
 		List<Syllabus> list = this.syllabusDao.loadFristSyllabus();
 		if(list != null){

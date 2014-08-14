@@ -65,7 +65,7 @@ public class PressServiceImpl extends BaseDataServiceImpl<Press, PressInfo> impl
 	 */
 	@Override
 	public PressInfo update(PressInfo info) {
-		if (logger.isDebugEnabled())	logger.debug("更新数据...");
+		if (logger.isDebugEnabled())logger.debug("更新数据...");
 		if(info == null) return null;
 		boolean isAdded = false;
 		Press  data = StringUtils.isEmpty(info.getId()) ?  null : this.pressDao.load(Press.class, info.getId());
@@ -92,7 +92,7 @@ public class PressServiceImpl extends BaseDataServiceImpl<Press, PressInfo> impl
 			if(StringUtils.isEmpty(ids[i])) continue;
 			Press data = this.pressDao.load(Press.class, ids[i]);
 			if(data != null){
-				if(logger.isDebugEnabled()) logger.debug("更新数据：" + ids[i]);
+				if(logger.isDebugEnabled()) logger.debug("删除数据：" + ids[i]);
 				this.pressDao.delete(data);
 			}
 		}

@@ -1,5 +1,9 @@
 package com.examw.test.controllers.syllabus;
-
+/**
+ * 考试大纲模块菜单常量。
+ * @author lq.
+ * @since 2014-08-06.
+ */
 public final class ModuleConstant {
 	/**
 	 * 出版社管理ID。
