@@ -30,13 +30,19 @@ public class ChannelServiceImpl extends BaseDataServiceImpl<Channel,ChannelInfo>
 	public void setChannelDao(IChannelDao channelDao) {
 		this.channelDao = channelDao;
 	}
-
+	/*
+	 * 查询数据
+	 * @see com.examw.test.service.impl.BaseDataServiceImpl#find(java.lang.Object)
+	 */
 	@Override
 	protected List<Channel> find(ChannelInfo info) {
 		if (logger.isDebugEnabled())	logger.debug("查询[渠道]数据...");
 		return this.channelDao.findChannels(info);
 	}
-
+	/*
+	 * 数据模型转化
+	 * @see com.examw.test.service.impl.BaseDataServiceImpl#changeModel(java.lang.Object)
+	 */
 	@Override
 	protected ChannelInfo changeModel(Channel data) {
 		if (logger.isDebugEnabled())	logger.debug("[渠道]数据模型转换...");
@@ -46,13 +52,19 @@ public class ChannelServiceImpl extends BaseDataServiceImpl<Channel,ChannelInfo>
 		BeanUtils.copyProperties(data, info);
 		return info;
 	}
-
+	/*
+	 * 查询数据统计
+	 * @see com.examw.test.service.impl.BaseDataServiceImpl#total(java.lang.Object)
+	 */
 	@Override
 	protected Long total(ChannelInfo info) {
 		if (logger.isDebugEnabled())	logger.debug("查询统计...");
 		return channelDao.total(info);
 	}
-
+	/*
+	 * 插入更新数据
+	 * @see com.examw.test.service.impl.BaseDataServiceImpl#update(java.lang.Object)
+	 */
 	@Override
 	public ChannelInfo update(ChannelInfo info) {
 		if (logger.isDebugEnabled())	logger.debug("更新数据...");
@@ -70,7 +82,10 @@ public class ChannelServiceImpl extends BaseDataServiceImpl<Channel,ChannelInfo>
 		if(isAdded) this.channelDao.save(data);
 		return info;
 	}
-
+	/*
+	 * 删除数据
+	 * @see com.examw.test.service.impl.BaseDataServiceImpl#delete(java.lang.String[])
+	 */
 	@Override
 	public void delete(String[] ids) {
 		if (logger.isDebugEnabled())
@@ -87,7 +102,10 @@ public class ChannelServiceImpl extends BaseDataServiceImpl<Channel,ChannelInfo>
 			}
 		}
 	}
-	
+	/*
+	 * 加载最大代码值
+	 * @see com.examw.test.service.products.IChannelService#loadMaxCode()
+	 */
 	@Override
 	public Integer loadMaxCode() {
 		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");

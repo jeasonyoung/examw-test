@@ -1,0 +1,92 @@
+<#--注册码日志列表-->
+<#include "comm.ftl"/>
+<#assign module="products_registration_log"/>
+<#assign dg="${module}_list_dg"/>
+<script type="text/javascript">
+<!--
+$(function(){
+	//dg
+	var dg=$("#${dg}").datagrid({
+		url:"<@s.url '/products/registration/log/datagrid'/>",
+		fit:true,
+		fitColumns:true,
+		rownumbers:true,
+		pagination:true,
+		pagePosition:"bottom",
+		pageSize:20,
+		pageList:[20,30,40],
+		border:true,
+		striped:true,
+		idField:"id",
+		sortName:"createTime",
+		sortOrder:"desc",
+		columns:[[{
+			field:"id",
+			checkbox:true
+		},{
+			title:"注册码",
+			field:"registrationCode",
+			width:10,
+			align:"left"
+		},{
+			title:"软件名称",
+			field:"softwareName",
+			width:30,
+			align:"center"
+		},{
+			title:"机器码",
+			field:"machineCode",
+			width:8,
+			align:"center",
+			sortable:true
+		},{
+			title:"IP",
+			field:"ip",
+			width:8,
+			align:"center",
+			sortable:true
+		},{
+			title:"类型",
+			field:"typeName",
+			width:8,
+			align:"center"
+		},{
+			title:"记录时间",
+			field:"createTime",
+			width:12,
+			align:"center",
+			sortable:true
+		},{
+			title:"机器详情",
+			field:"detail",
+			width:12,
+			align:"center"
+		}]],
+		toolbar:"#${dg}_toobar",
+		onLoadError:function(e){
+			<@error_dialog "e"/>
+		}
+	});
+	//search
+	${dg}_search = function(){
+		dg.datagrid("load",{
+			  code:$("#${dg}_toobar input[name='code']").val(),
+			  status: $("#${dg}_type").combobox("getValue");
+		});
+	};
+});
+//-->
+</script>
+		<table id="${dg}"></table>
+		<div id="${dg}_toobar">
+			<label>注册码:</label>
+			<input name="code" type="text" style="width:198px;"/>
+			<label>操作类型</label>
+			<select id="${dg}_type" class="easyui-combobox" name="status" style="width:200px;">
+				<#list TYPE_MAP?keys as key>  
+    				<option value="${key}">${TYPE_MAP[key]}</option>
+    			</#list>
+			</select> 
+
+			<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
+		</div>

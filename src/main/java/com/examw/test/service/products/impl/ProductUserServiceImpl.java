@@ -77,8 +77,9 @@ public class ProductUserServiceImpl extends BaseDataServiceImpl<ProductUser,Prod
 				info.setId(UUID.randomUUID().toString());
 			}
 			data = new ProductUser();
-			info.setCreateTime(new Date());
+			data.setCreateTime(new Date());
 		}
+		info.setCreateTime(data.getCreateTime());
 		BeanUtils.copyProperties(info, data);
 		//新增数据。
 		if(isAdded){
