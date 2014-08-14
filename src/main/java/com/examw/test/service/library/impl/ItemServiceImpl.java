@@ -254,6 +254,7 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 			data = new Item();
 		}
 		if(!isAdded){
+			info.setId(data.getId());
 			info.setCreateTime(data.getCreateTime());
 		}
 		info.setCheckCode(checkCode);

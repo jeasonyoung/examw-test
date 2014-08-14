@@ -82,6 +82,7 @@ public class StructureItemDaoImpl extends BaseDaoImpl<StructureItem> implements 
 		final String hql = "select max(s.orderNo) from StructureItem s where s.structure.id = :structureId order by s.orderNo desc";
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("structureId", structureId);
-		return this.count(hql, parameters);
+		Object obj = this.uniqueResult(hql, parameters);
+		return obj == null ? null : (long)((int)obj);
 	}
 }
