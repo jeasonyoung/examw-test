@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -170,13 +171,19 @@ public class PaperController {
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.VIEW})
-	@RequestMapping(value="/structure/{paperId}/{examId}/{subjectId}", method = RequestMethod.GET)
-	public String structureList(@PathVariable String paperId,@PathVariable String examId,@PathVariable String subjectId, Model model){
+	@RequestMapping(value="/structure/{paperId}/{examId}/{subjectId}/{pageStatusValue}/{pageType}/{sourceId}", method = RequestMethod.GET)
+	public String structureList(@PathVariable String paperId,@PathVariable String examId,@PathVariable String subjectId,
+			@PathVariable Integer pageStatusValue,@PathVariable Integer pageType,@PathVariable String sourceId,  Model model){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［paperId = %s］结构列表页面...", paperId));
 		
 		model.addAttribute("CURRENT_PAPER_ID", paperId);
 		model.addAttribute("CURRENT_EXAM_ID", examId);
 		model.addAttribute("CURRENT_SUBJECT_ID", subjectId);
+		model.addAttribute("CURRENT_PAGE_TYPE_VALUE", pageType);
+		model.addAttribute("CURRENT_PAGE_STATUS_VALUE", pageStatusValue);
+		model.addAttribute("CURRENT_PAGE_SOURCE_ID", sourceId);
+		
+		model.addAttribute("PAGE_STATUS_NONE_VALUE", PaperStatus.NONE.getValue());
 		
 		model.addAttribute("PER_UPDATE", ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE);
 		model.addAttribute("PER_DELETE", ModuleConstant.LIBRARY_PAPER + ":" + Right.DELETE);
@@ -222,6 +229,7 @@ public class PaperController {
 		attributes.put("id", source.getId());
 		attributes.put("title", source.getTitle());
 		attributes.put("type", source.getType());
+		attributes.put("typeName", this.itemService.loadTypeName(source.getType()));
 		attributes.put("score", source.getScore());
 		attributes.put("orderNo", source.getOrderNo());
 		target.setAttributes(attributes);
@@ -314,7 +322,7 @@ public class PaperController {
 		if(logger.isDebugEnabled()) logger.debug(String.format("删除试卷［%1$s］结构数据［%2$s］...", paperId, structureId));
 		Json result = new Json();
 		try {
-			this.paperService.deleteStructure(paperId, structureId);
+			this.paperService.deleteStructure(structureId.split("\\|"));
 			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);
@@ -336,6 +344,19 @@ public class PaperController {
 		return this.paperService.loadStructureItems(paperId, info);
 	}
 	/**
+	 * 加载试卷结构下最大排序号。
+	 * @param structureId
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_SOURCE + ":" + Right.VIEW})
+	@RequestMapping(value="/structure/items/order/{structureId}", method = RequestMethod.GET)
+	@ResponseBody
+	public String[] loadstructureItemsMaxOrderNo(@PathVariable String structureId){
+		Long max = this.paperService.loadStructureItemMaxOrderNo(structureId);
+		if(max == null) max = 0L;
+		return new String[]{ String.format("%02d", max+1)};
+	}
+	/**
 	 * 更新试卷结构下试题数据。
 	 * @param paperId
 	 * 所属试卷ID。
@@ -346,7 +367,7 @@ public class PaperController {
 	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE})
 	@RequestMapping(value = "/structure/items/update/{paperId}", method = RequestMethod.POST)
 	@ResponseBody
-	public Json structureItemsUpdate(@PathVariable String paperId,StructureItemInfo info){
+	public Json structureItemsUpdate(@PathVariable String paperId,@RequestBody StructureItemInfo info){
 		if(logger.isDebugEnabled()) logger.debug(String.format("更新试卷［%s］结构下试题数据...", paperId));
 		Json result = new Json();
 		try {

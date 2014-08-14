@@ -98,7 +98,7 @@ public class ItemController {
 	 */
 	@RequiresPermissions({ModuleConstant.LIBRARY_ITEM + ":" + Right.UPDATE})
 	@RequestMapping(value = "/edit/{type}", method = RequestMethod.GET)
-	public String edit(@PathVariable Integer type,String examId,Boolean opts,Boolean isChild,Model model){
+	public String edit(@PathVariable Integer type,String examId,Boolean opts,Boolean isChild,Boolean isStructure, Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
 		
 		model.addAttribute("PER_UPDATE", ModuleConstant.LIBRARY_ITEM + ":" + Right.UPDATE);
@@ -113,6 +113,7 @@ public class ItemController {
 		model.addAttribute("CURRENT_EXAM_ID", StringUtils.isEmpty(examId) ? "" : examId);
 		model.addAttribute("CURRENT_OPTS_STATUS", opts == null ? true : opts);
 		model.addAttribute("CURRENT_ITEM_ISCHILD", isChild == null ? false : isChild);
+		model.addAttribute("CURRENT_IS_STRUCTURE", isStructure == null ? false : isStructure);
 		
 		model.addAttribute("OPT_REAL_VALUE", Paper.TYPE_REAL);
 		model.addAttribute("OPT_REAL_NAME", this.itemService.loadOptName(Paper.TYPE_REAL));

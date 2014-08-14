@@ -71,4 +71,18 @@ public class StructureItemDaoImpl extends BaseDaoImpl<StructureItem> implements 
 		}
 		return hql;
 	}
+	/*
+	 * 加载指定结构下的最大的排序号。
+	 * @see com.examw.test.dao.library.IStructureItemDao#loadMaxOrderNo(java.lang.String)
+	 */
+	@Override
+	public Long loadMaxOrderNo(String structureId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载指定结构［%s］下的最大排序号...", structureId));
+		if(StringUtils.isEmpty(structureId)) return null;
+		final String hql = "select max(s.orderNo) from StructureItem s where s.structure.id = :structureId order by s.orderNo desc";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("structureId", structureId);
+		Object obj = this.uniqueResult(hql, parameters);
+		return obj == null ? null : (long)((int)obj);
+	}
 }

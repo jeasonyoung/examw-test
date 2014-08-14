@@ -14,6 +14,12 @@ import com.examw.test.model.library.StructureItemInfo;
  */
 public interface IStructureItemDao extends IBaseDao<StructureItem> {
 	/**
+	 * 获取指定结构下最大的排序号。
+	 * @param structureId
+	 * @return
+	 */
+	Long loadMaxOrderNo(String structureId);
+	/**
 	 * 查询数据。
 	 * @param paperId
 	 * 所属试卷ID。

@@ -120,7 +120,7 @@ $(function(){
 	};
 	</@shiro.hasPermission>
 	//edit_window
-	function edit_window(title,inde,row,type){
+	function edit_window(title,index,row,type){
 		var exam_id = current_exam_id;
 		var opts = true;
 		if(row){
@@ -149,7 +149,7 @@ $(function(){
 					var post = eval("${module}_"+type+"_update()");
 					if(!post){
 						$.messager.progress("close");
-						$.messager.alert("提示","试题数据失败！");
+						$.messager.alert("提示","获取试题数据失败！");
 						return;
 					}
 					$.ajax({
@@ -165,15 +165,17 @@ $(function(){
 						success:function(data,textStatus){
 							$.messager.progress("close");
 							if(data.success){
-								dg.datagrid("load");
-								dg.datagrid("unselectAll");
+								dg.datagrid(row ? "updateRow" : "insertRow",{
+									index:index,
+									row:data.data
+								});
+								d.dialog("close");
 							}else{
 								$.messager.show({
 									title:"提示",
 									msg:data.msg
 								});
 							}
-							d.dialog("close");
 						}
 					});
 				}

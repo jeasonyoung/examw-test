@@ -56,12 +56,10 @@ public interface IPaperService extends IBaseDataService<PaperInfo> {
 	void updateStructure(String paperId, StructureInfo info);
 	/**
 	 * 删除试卷结构。
-	 * @param paperId
-	 * 所属试卷ID。
-	 * @param structureId
+	 * @param structureIds
 	 * 试卷结构ID。
 	 */
-	void deleteStructure(String paperId,String... structureId);
+	void deleteStructure(String[] structureIds);
 	/**
 	 * 加载结构下试题数据。
 	 * @param paperId
@@ -70,6 +68,13 @@ public interface IPaperService extends IBaseDataService<PaperInfo> {
 	 * @return
 	 */
 	DataGrid<StructureItemInfo> loadStructureItems(String paperId, StructureItemInfo info);
+	/**
+	 * 加载试卷结构下最大的排序号。
+	 * @param structureId
+	 * 所属结构ID。
+	 * @return
+	 */
+	Long loadStructureItemMaxOrderNo(String structureId);
 	/**
 	 * 更新结构下试题数据。
 	 * @param paperId

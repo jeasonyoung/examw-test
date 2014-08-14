@@ -20,6 +20,15 @@ $(function(){
 		post["year"] = $("#${form} input[name='year']").val();
 		post["opt"] = $("#${form} input[name='opt']:checked").val();
 		</#if>
+		<#if CURRENT_IS_STRUCTURE>
+		post["structureItemId"] = $("#${form} input[name='structureItemId']").val();
+		post["structureId"] = $("#${form} input[name='structureId']").val();
+		post["serial"] = $("#${form} input[name='serial']").val();
+		post["score"] = $("#${form} input[name='score']").val();
+		<#if !CURRENT_ITEM_ISCHILD>
+		post["orderNo"] = $("#${form} input[name='orderNo']").val();
+		</#if>
+		</#if>
 		post["content"] = $.trim($("#${form} textarea[name='content']").val());
 		if($.trim(post["content"]) == ""){
 			$.messager.alert("警告","请输入试题内容！");
@@ -53,10 +62,10 @@ $(function(){
 //-->
 </script>
 <form id="${form}" method="POST" class="easyui-layout" data-options="fit:true,border:false">
-	<div data-options="region:'north',collapsible:false,height:209,border:false">
+	<div data-options="region:'north',collapsible:false,height:210,border:false">
 		<@item_base />
-		<div style="float:left;margin-left:10px;margin-top:3px;">
-			<textarea style="float:left" name="content" class="easyui-kindeditor"  data-options="minWidth:762,minHeight:<#if CURRENT_ITEM_ISCHILD>165<#else>82</#if>" rows="5" cols="20" />
+		<div style="float:left;margin-left:10px;margin-top:2px;">
+			<textarea style="float:left" name="content" class="easyui-kindeditor"  data-options="minWidth:762,minHeight:<#if CURRENT_ITEM_ISCHILD>140<#else>82</#if>" rows="5" cols="20" />
 		</div>
 	</div>
 	<div data-options="region:'center',title:'正确答案',border:false">

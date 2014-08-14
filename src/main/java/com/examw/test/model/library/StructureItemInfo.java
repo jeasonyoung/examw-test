@@ -8,6 +8,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 import org.springframework.util.StringUtils;
 
 import com.examw.model.Paging;
+import com.examw.support.CustomDateSerializer;
 /**
  * 结构下题目信息。
  * 
@@ -50,6 +51,13 @@ public class StructureItemInfo extends Paging {
 	 */
 	public String getTypeName(){
 		return (this.getItem() == null) ? null : this.getItem().getTypeName();
+	}
+	/**
+	 *  获取试题状态值。
+	 * @return
+	 */
+	public Integer getStatus(){
+		return (this.getItem() == null) ? null : this.getItem().getStatus();
 	}
 	/**
 	 * 获取所属结构ID。
@@ -146,6 +154,7 @@ public class StructureItemInfo extends Paging {
 	 * 获取创建时间。
 	 * @return 创建时间。
 	 */
+	@JsonSerialize(using = CustomDateSerializer.class)
 	public Date getCreateTime() {
 		return createTime;
 	}

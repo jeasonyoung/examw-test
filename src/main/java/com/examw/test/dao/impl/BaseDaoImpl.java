@@ -151,11 +151,24 @@ public class BaseDaoImpl<T> implements IBaseDao<T> {
 	 * @return 数据总数。
 	 * */
 	protected Long count(String hql, Map<String, Object> parameters) {
+		 Object  obj = this.uniqueResult(hql, parameters);
+		 return obj == null ? null : (long)obj;
+	}
+	/**
+	 * 查询唯一结果数据。
+	 * @param hql
+	 * HQL语句。
+	 * @param parameters
+	 * 参数集合。
+	 * @return
+	 * 结果数据对象。
+	 */
+	protected Object uniqueResult(String hql, Map<String, Object> parameters){
 		if(hql == null || hql.isEmpty()) return null;
 		Query query = this.getCurrentSession().createQuery(hql);
 		if(query != null){
 			this.addParameters(query, parameters);
-			return (Long)query.uniqueResult();
+			return query.uniqueResult();
 		}
 		return null;
 	}

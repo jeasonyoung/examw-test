@@ -96,7 +96,7 @@ $(function(){
 			formatter:function(value,data,index){
 				var href = "<a class='paper-list-opt-preview' href='#' onclick='${dg}_paper_preview(\""+data["id"]+"\")'/>"
 				if(data.status == ${PAPER_STATUS_NONE}){
-					href = "<a class='paper-list-opt-add' href='#' onclick='${dg}_paper_structure(\""+ data["id"] +"\",\"试卷［"+data["name"]+"］试题管理\",\"" + data["examId"] +"\",\"" + data["subjectId"] + "\")'/>";
+					href = "<a class='paper-list-opt-add' href='#' onclick='${dg}_paper_structure(\""+ data["id"] +"\",\"试卷［"+data["name"]+"］试题管理\",\"" + data["examId"] +"\",\"" + data["subjectId"] + "\",\"" + data["status"] +"\",\"" + data["type"] +"\",\"" + data["sourceId"] +"\")'/>";
 				}
 				return href;
 			}
@@ -122,12 +122,12 @@ $(function(){
 		///TODO:预览试卷
 	};
 	//paper_structure
-	${dg}_paper_structure = function(paperId,title,examId,subjectId){
+	${dg}_paper_structure = function(paperId,title,examId,subjectId,status,type,sourceId){
 		var d = $("<div/>").dialog({
 			title:title,
 			width:800,
 			height:600,
-			href:"<@s.url '/library/paper/structure/'/>" + paperId +"/" + examId + "/" + subjectId,
+			href:"<@s.url '/library/paper/structure/'/>" + paperId +"/" + examId + "/" + subjectId + "/" + status + "/" + type + "/" + sourceId,
 			modal:true,
 			buttons:[{
 				text:"关闭",
