@@ -256,8 +256,11 @@ $(function(){
 		post["year"] = $("#${form} input[name='year']").val();
 		post["opt"] = $("#${form} input[name='opt']:checked").val();
 		<#if CURRENT_IS_STRUCTURE>
+		post["structureItemId"] = $("#${form} input[name='structureItemId']").val();
+		post["structureId"] = $("#${form} input[name='structureId']").val();
 		post["serial"] = $("#${form} input[name='serial']").val();
 		post["score"] = $("#${form} input[name='score']").val();
+		post["orderNo"] = $("#${form} input[name='orderNo']").val();
 		</#if>
 		post["content"] = $.trim($("#${form} textarea[name='content']").val());
 		if($.trim(post["content"]) == ""){

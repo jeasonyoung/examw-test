@@ -69,6 +69,13 @@ public interface IPaperService extends IBaseDataService<PaperInfo> {
 	 */
 	DataGrid<StructureItemInfo> loadStructureItems(String paperId, StructureItemInfo info);
 	/**
+	 * 加载试卷结构下最大的排序号。
+	 * @param structureId
+	 * 所属结构ID。
+	 * @return
+	 */
+	Long loadStructureItemMaxOrderNo(String structureId);
+	/**
 	 * 更新结构下试题数据。
 	 * @param paperId
 	 * 所属试卷ID。

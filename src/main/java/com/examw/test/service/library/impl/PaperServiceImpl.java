@@ -368,6 +368,15 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		}
 	}
 	/*
+	 * 加载试卷结构下最大的排序号。
+	 * @see com.examw.test.service.library.IPaperService#loadStructureItemMaxOrderNo(java.lang.String)
+	 */
+	@Override
+	public Long loadStructureItemMaxOrderNo(String structureId) {
+		if(logger.isDebugEnabled()) logger.debug("加载试卷结构下最大的排序号...");
+		return this.structureItemDao.loadMaxOrderNo(structureId);
+	}
+	/*
 	 * 查询试卷结构试题查询。
 	 * @see com.examw.test.service.library.IPaperService#loadStructureItems(java.lang.String, com.examw.test.model.library.StructureItemInfo)
 	 */
@@ -391,7 +400,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	private StructureItemInfo changeModel(StructureItem source){
 		if(source == null || source.getItem() == null) return null;
 		StructureItemInfo target = new StructureItemInfo();
-		BeanUtils.copyProperties(source, target);
+		BeanUtils.copyProperties(source, target, new String[]{"item"});
 		if(source.getStructure() != null) target.setStructureId(source.getStructure().getId());
 		target.setItem(this.changeModel(source.getItem(), source.getShareItemScores()));
 		if(!StringUtils.isEmpty(source.getSerial())){
@@ -480,17 +489,18 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		StructureItem data = StringUtils.isEmpty(info.getId()) ? null : this.structureItemDao.load(StructureItem.class, info.getId());
 		if(isAdded = (data == null)){
 			if(StringUtils.isEmpty(info.getId())) info.setId(UUID.randomUUID().toString());
-			 info.setCreateTime(new Date());
+			info.setCreateTime(new Date());
 			data = new StructureItem(); 
-			Structure structure = this.structureDao.load(Structure.class, info.getStructureId());
-			if(structure == null){
-				msg = String.format("试卷［%1$s］下未找到结构［structureId = %2$s］！", paper.getName(), info.getStructureId());
-				if(logger.isDebugEnabled()) logger.debug(msg);
-				throw new RuntimeException(msg);
-			}
-			data.setStructure(structure);
 		}
-		BeanUtils.copyProperties(info, data);
+		if(!isAdded) info.setCreateTime(data.getCreateTime());
+		Structure structure = StringUtils.isEmpty(info.getStructureId()) ? null : this.structureDao.load(Structure.class, info.getStructureId());
+		if(structure == null){
+			msg = String.format("试卷［%1$s］下未找到结构［structureId = %2$s］！", paper.getName(), info.getStructureId());
+			if(logger.isDebugEnabled()) logger.debug(msg);
+			throw new RuntimeException(msg);
+		}
+		data.setStructure(structure);
+		BeanUtils.copyProperties(info, data, new String[]{"item"});
 		data.setSerial(info.getItem().getSerial());
 		data.setScore(info.getItem().getScore());
 		Set<StructureShareItemScore> shareItemScores = null;

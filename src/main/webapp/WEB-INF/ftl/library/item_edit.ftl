@@ -10,6 +10,10 @@
 	<input name="type" type="hidden" value="${CURRENT_ITEM_TYPE_VALUE}" />
 	<input name="typeName" type="hidden" value="${CURRENT_ITEM_TYPE_NAME}" />
 	<input name="status" type="hidden" value="${CURRENT_ITEM_STATUS_VALUE}" />
+	<#if CURRENT_IS_STRUCTURE>
+	<input name="structureId" type="hidden" />
+	<input name="structureItemId" type="hidden" />
+	</#if>
 </div>
 <#if !CURRENT_ITEM_ISCHILD>
 <div style="float:left;margin-top:7px;width:100%;">
@@ -50,21 +54,27 @@
 	<#if CURRENT_ITEM_ISCHILD><div style="float:left;margin-top:2px;width:100%;"></#if>
 	<div style="float:left;margin-top:2px;">
 		<label style="<#if CURRENT_ITEM_ISCHILD>margin-left:10px;<#else>width:75px;</#if>"> 题序：</label>
-		<input name="serial" type="text" class="easyui-validatebox" data-options="required:true" style="width:120px;"/>
+		<input name="serial" type="text" class="easyui-validatebox" data-options="required:true" style="width:90px;"/>
 	</div>
-	<div style="float:left;margin-top:2px;margin-right:30px;">
-		<label style="width:75px;">分数：</label>
-		<input name="score" type="text" class="easyui-numberbox" data-options="required:true,min:0,value:0" style="text-align:right;width:80px;"/>
+	<div style="float:left;margin-top:2px;">
+		<label style="width:60px;">分数：</label>
+		<input name="score" type="text" class="easyui-numberbox" data-options="required:true,min:0,value:0" style="text-align:right;width:50px;"/>
 	</div>
+	<#if !CURRENT_ITEM_ISCHILD>
+	<div style="float:left;margin-top:2px;">
+		<label style="width:60px;">排序号：</label>
+		<input name="orderNo" type="text" class="easyui-numberbox" data-options="required:true,min:0,value:0" style="text-align:right;width:30px;"/>
+	</div>
+	</#if>
 	<#if CURRENT_ITEM_ISCHILD></div></#if>
 	</#if>
 <#if !CURRENT_ITEM_ISCHILD>
 	<#if CURRENT_IS_STRUCTURE><div style="float:left;"></#if>
 	<label style="margin-top:5px;width:75px;">所属类型：</label>
-	<label style="padding-top:0px;"><input type="radio" name="opt" value="${OPT_REAL_VALUE}" <#if CURRENT_IS_STRUCTURE>disabled="disabled"</#if>  />${OPT_REAL_NAME}</label>
-	<label style="padding-top:0px;margin-left:15px;"><input type="radio" name="opt" <#if CURRENT_IS_STRUCTURE>disabled="disabled"</#if> value="${OPT_SIMU_VALUE}" />${OPT_SIMU_NAME}</label>
-	<label style="padding-top:0px;margin-left:15px;"><input type="radio" name="opt" <#if CURRENT_IS_STRUCTURE>disabled="disabled"</#if> value="${OPT_FORECAST_VALUE}" />${OPT_FORECAST_NAME}</label>
-	<label style="padding-top:0px;margin-left:15px;"><input type="radio" name="opt" <#if CURRENT_IS_STRUCTURE>disabled="disabled"</#if> value="${OPT_PRACTICE_VALUE}" checked="checked" />${OPT_PRACTICE_NAME}</label>
+	<label style="padding-top:0px;"><input type="radio" name="opt" value="${OPT_REAL_VALUE}"/>${OPT_REAL_NAME}</label>
+	<label style="padding-top:0px;margin-left:15px;"><input type="radio" name="opt" value="${OPT_SIMU_VALUE}" />${OPT_SIMU_NAME}</label>
+	<label style="padding-top:0px;margin-left:15px;"><input type="radio" name="opt" value="${OPT_FORECAST_VALUE}" />${OPT_FORECAST_NAME}</label>
+	<label style="padding-top:0px;margin-left:15px;"><input type="radio" name="opt" value="${OPT_PRACTICE_VALUE}" checked="checked" />${OPT_PRACTICE_NAME}</label>
 	<#if CURRENT_IS_STRUCTURE></div></#if>
 </div>
 <div style="float:left;margin-top:7px;width:100%;">
@@ -72,9 +82,6 @@
 		<label style="width:75px;">试题来源：</label>
 		<input name="sourceId" class="easyui-combobox" data-options="
 				url:'<@s.url '/library/source/all'/>',
-				<#if CURRENT_IS_STRUCTURE>
-				readonly:true,
-				</#if>
 				valueField:'id',
 				textField:'name',
 				onLoadError:function(e){
@@ -223,8 +230,13 @@ $(function(){
 		post["opt"] = $("#${form} input[name='opt']:checked").val();
 		</#if>
 		<#if CURRENT_IS_STRUCTURE>
+		post["structureItemId"] = $("#${form} input[name='structureItemId']").val();
+		post["structureId"] = $("#${form} input[name='structureId']").val();
 		post["serial"] = $("#${form} input[name='serial']").val();
 		post["score"] = $("#${form} input[name='score']").val();
+		<#if !CURRENT_ITEM_ISCHILD>
+		post["orderNo"] = $("#${form} input[name='orderNo']").val();
+		</#if>
 		</#if>
 		post["content"] = $.trim($("#${form} textarea[name='content']").val());
 		if($.trim(post["content"]) == ""){

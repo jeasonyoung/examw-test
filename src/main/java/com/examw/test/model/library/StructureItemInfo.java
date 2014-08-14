@@ -8,6 +8,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 import org.springframework.util.StringUtils;
 
 import com.examw.model.Paging;
+import com.examw.support.CustomDateSerializer;
 /**
  * 结构下题目信息。
  * 
@@ -153,6 +154,7 @@ public class StructureItemInfo extends Paging {
 	 * 获取创建时间。
 	 * @return 创建时间。
 	 */
+	@JsonSerialize(using = CustomDateSerializer.class)
 	public Date getCreateTime() {
 		return createTime;
 	}

@@ -200,7 +200,7 @@ $(function(){
 			<@error_dialog "e"/>
 		},
 		onDblClickRow:function(rowIndex,rowData){
-			edit_items_window("编辑试题［"+ rowData["typeName"] +"］",rowIndex,rowData);
+			edit_structure_items_window("编辑试题［"+ rowData["typeName"] +"］",rowIndex,rowData,null);
 		}
 	});
 	//items_search
@@ -212,10 +212,16 @@ $(function(){
 	};
 	<@shiro.hasPermission name="${PER_UPDATE}">
 	//items_add
+	var show = false;
 	${dg}_add = function(obj){
 		//new
 		if($(obj).attr("value") == "new"){
-			edit_structure_items_window("新增试题["+current_item_type_name+"]",0,null);
+			if(show) return;
+			show = true;
+			$.getJSON("<@s.url '/library/paper/structure/items/order/'/>" + current_structure_id,function(data){
+				show = false;
+				edit_structure_items_window("新增试题["+current_item_type_name+"]",0,null, data[0]);
+			});
 			return;
 		}
 		//import
@@ -225,7 +231,7 @@ $(function(){
 	};
 	</@shiro.hasPermission>
 	//edit structure items windows.
-	function edit_structure_items_window(title,index,row){
+	function edit_structure_items_window(title,index,row,order){
 		var structure_id = current_structure_id, type = current_item_type_value;
 		var opts = ("${CURRENT_PAGE_STATUS_VALUE}" == "${PAGE_STATUS_NONE_VALUE}");
 		if(row){
@@ -248,7 +254,45 @@ $(function(){
 					var valid = eval("library_item_"+type+"_validate()");
 					if(!valid) return;
 					var post = eval("library_item_"+type+"_update()");
-					alert(post);console.info(post);
+					var data = {};
+					data["id"] = post["structureItemId"];
+					data["serial"] = post["serial"];
+					data["structureId"] = post["structureId"];
+					data["score"] = post["score"];
+					data["orderNo"] = post["orderNo"];
+					data["item"] = {};
+					for(var key in post){
+						if((key != "structureItemId") && (key !="structureId")){
+							data["item"][key] = post[key];
+						}
+					}
+					//alert(data);console.info(data);return;
+					$.ajax({
+						url:"<@s.url '/library/paper/structure/items/update/${CURRENT_PAPER_ID}'/>",
+						type:"POST",
+						data:JSON.stringify(data),
+						dataType:"json",
+						contentType:"application/json;charset=UTF-8",
+						error:function(e){
+							$.messager.progress("close");
+							<@error_dialog "e"/>
+						},
+						success:function(callback,textStatus){
+							$.messager.progress("close");
+							if(callback.success){
+								dg.datagrid(row ? "updateRow" : "insertRow",{
+									index:index,
+									row:callback.data
+								});
+								d.dialog("close");
+							}else{
+								$.messager.show({
+									title:"提示",
+									msg:callback.msg
+								});
+							}
+						}
+					});
 				}
 			},
 			</@shiro.hasPermission>
@@ -263,7 +307,20 @@ $(function(){
 				$(this).dialog("destroy");
 			},
 			onLoad:function(){
-				var data = (row ? row : {"examId":"${CURRENT_EXAM_ID}","subjectId":"${CURRENT_SUBJECT_ID}","opt":${CURRENT_PAGE_TYPE_VALUE},"sourceId":"${CURRENT_PAGE_SOURCE_ID}"});
+				var data = {};
+				if(row){
+					data = row["item"];
+					data["structureId"] = row["structureId"];
+					data["structureItemId"] = row["id"];
+					data["orderNo"] = row["orderNo"];
+				}else{
+					data["structureId"] = structure_id;
+					data["examId"] = "${CURRENT_EXAM_ID}";
+					data["subjectId"] = "${CURRENT_SUBJECT_ID}";
+					data["opt"] = "${CURRENT_PAGE_TYPE_VALUE}";
+					data["sourceId"] = "${CURRENT_PAGE_SOURCE_ID}";
+					data["orderNo"] = order
+				}
 				eval("library_item_"+type+"_load(data)");
 			}
 		});

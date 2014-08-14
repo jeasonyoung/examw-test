@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -343,6 +344,19 @@ public class PaperController {
 		return this.paperService.loadStructureItems(paperId, info);
 	}
 	/**
+	 * 加载试卷结构下最大排序号。
+	 * @param structureId
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_SOURCE + ":" + Right.VIEW})
+	@RequestMapping(value="/structure/items/order/{structureId}", method = RequestMethod.GET)
+	@ResponseBody
+	public String[] loadstructureItemsMaxOrderNo(@PathVariable String structureId){
+		Long max = this.paperService.loadStructureItemMaxOrderNo(structureId);
+		if(max == null) max = 0L;
+		return new String[]{ String.format("%02d", max+1)};
+	}
+	/**
 	 * 更新试卷结构下试题数据。
 	 * @param paperId
 	 * 所属试卷ID。
@@ -353,7 +367,7 @@ public class PaperController {
 	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE})
 	@RequestMapping(value = "/structure/items/update/{paperId}", method = RequestMethod.POST)
 	@ResponseBody
-	public Json structureItemsUpdate(@PathVariable String paperId,StructureItemInfo info){
+	public Json structureItemsUpdate(@PathVariable String paperId,@RequestBody StructureItemInfo info){
 		if(logger.isDebugEnabled()) logger.debug(String.format("更新试卷［%s］结构下试题数据...", paperId));
 		Json result = new Json();
 		try {
