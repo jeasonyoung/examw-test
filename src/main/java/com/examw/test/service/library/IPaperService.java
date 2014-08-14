@@ -56,12 +56,10 @@ public interface IPaperService extends IBaseDataService<PaperInfo> {
 	void updateStructure(String paperId, StructureInfo info);
 	/**
 	 * 删除试卷结构。
-	 * @param paperId
-	 * 所属试卷ID。
-	 * @param structureId
+	 * @param structureIds
 	 * 试卷结构ID。
 	 */
-	void deleteStructure(String paperId,String... structureId);
+	void deleteStructure(String[] structureIds);
 	/**
 	 * 加载结构下试题数据。
 	 * @param paperId

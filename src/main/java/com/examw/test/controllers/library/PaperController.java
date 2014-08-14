@@ -321,7 +321,7 @@ public class PaperController {
 		if(logger.isDebugEnabled()) logger.debug(String.format("删除试卷［%1$s］结构数据［%2$s］...", paperId, structureId));
 		Json result = new Json();
 		try {
-			this.paperService.deleteStructure(paperId, structureId);
+			this.paperService.deleteStructure(structureId.split("\\|"));
 			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);

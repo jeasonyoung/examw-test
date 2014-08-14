@@ -11,6 +11,10 @@
 	<bean id="paperDao" class="com.examw.test.dao.library.impl.PaperDaoImpl">
 		<property name="sessionFactory"  ref="sessionFactory" />
 	</bean>
+	<!-- 试卷结构数据接口 -->
+	<bean id="structureDao" class="com.examw.test.dao.library.impl.StructureDaoImpl">
+	    <property name="sessionFactory"  ref="sessionFactory" />
+	</bean>
 	<!-- 试卷结构下试题 -->
 	<bean id="structureItemDao" class="com.examw.test.dao.library.impl.StructureItemDaoImpl">
 	    <property name="sessionFactory"  ref="sessionFactory" />

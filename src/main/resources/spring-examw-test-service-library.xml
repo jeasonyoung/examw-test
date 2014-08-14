@@ -25,6 +25,8 @@
 		<property name="sourceDao" ref="sourceDao" />
 		<!-- 考试科目数据接口 -->
 		<property name="subjectDao" ref="subjectDao" />
+		<!-- 试卷结构数据接口 -->
+		<property name="structureDao" ref="structureDao" />
 		<!-- 试卷结构下试题数据接口 -->
 		<property name="structureItemDao" ref="structureItemDao" />
 		<!-- 试题服务接口 -->
