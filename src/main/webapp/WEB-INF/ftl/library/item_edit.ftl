@@ -17,6 +17,10 @@
 	<input name="examId" class="easyui-combotree" data-options="
 			url:'<@s.url '/settings/category/exams-tree'/>',
 			required:true,
+			lines:true,
+			<#if CURRENT_IS_STRUCTURE>
+			readonly:true,
+			</#if>
 			onLoadError:function(e){
 					<@error_dialog 'e'/>
 			},
@@ -30,6 +34,9 @@
 		     url:'<@s.url '/settings/subject/all'/>?examId=${CURRENT_EXAM_ID}',
 		   </#if>
 			required:true,
+			<#if CURRENT_IS_STRUCTURE>
+			readonly:true,
+			</#if>
 			valueField:'id',
 			textField:'name',
 			onLoadError:function(e){
@@ -38,17 +45,36 @@
 	" style="width:298px;"/>
 </div>
 <div style="float:left;margin-top:2px;width:100%;">
+</#if>
+	<#if CURRENT_IS_STRUCTURE>
+	<#if CURRENT_ITEM_ISCHILD><div style="float:left;margin-top:2px;width:100%;"></#if>
+	<div style="float:left;margin-top:2px;">
+		<label style="<#if CURRENT_ITEM_ISCHILD>margin-left:10px;<#else>width:75px;</#if>"> 题序：</label>
+		<input name="serial" type="text" class="easyui-validatebox" data-options="required:true" style="width:120px;"/>
+	</div>
+	<div style="float:left;margin-top:2px;margin-right:30px;">
+		<label style="width:75px;">分数：</label>
+		<input name="score" type="text" class="easyui-numberbox" data-options="required:true,min:0,value:0" style="text-align:right;width:80px;"/>
+	</div>
+	<#if CURRENT_ITEM_ISCHILD></div></#if>
+	</#if>
+<#if !CURRENT_ITEM_ISCHILD>
+	<#if CURRENT_IS_STRUCTURE><div style="float:left;"></#if>
 	<label style="margin-top:5px;width:75px;">所属类型：</label>
-	<label style="padding-top:0px;"><input type="radio" name="opt" value="${OPT_REAL_VALUE}" />${OPT_REAL_NAME}</label>
-	<label style="padding-top:0px;margin-left:15px;"><input type="radio" name="opt" value="${OPT_SIMU_VALUE}" />${OPT_SIMU_NAME}</label>
-	<label style="padding-top:0px;margin-left:15px;"><input type="radio" name="opt" value="${OPT_FORECAST_VALUE}" />${OPT_FORECAST_NAME}</label>
-	<label style="padding-top:0px;margin-left:15px;"><input type="radio" name="opt" value="${OPT_PRACTICE_VALUE}" checked="checked" />${OPT_PRACTICE_NAME}</label>
+	<label style="padding-top:0px;"><input type="radio" name="opt" value="${OPT_REAL_VALUE}" <#if CURRENT_IS_STRUCTURE>disabled="disabled"</#if>  />${OPT_REAL_NAME}</label>
+	<label style="padding-top:0px;margin-left:15px;"><input type="radio" name="opt" <#if CURRENT_IS_STRUCTURE>disabled="disabled"</#if> value="${OPT_SIMU_VALUE}" />${OPT_SIMU_NAME}</label>
+	<label style="padding-top:0px;margin-left:15px;"><input type="radio" name="opt" <#if CURRENT_IS_STRUCTURE>disabled="disabled"</#if> value="${OPT_FORECAST_VALUE}" />${OPT_FORECAST_NAME}</label>
+	<label style="padding-top:0px;margin-left:15px;"><input type="radio" name="opt" <#if CURRENT_IS_STRUCTURE>disabled="disabled"</#if> value="${OPT_PRACTICE_VALUE}" checked="checked" />${OPT_PRACTICE_NAME}</label>
+	<#if CURRENT_IS_STRUCTURE></div></#if>
 </div>
 <div style="float:left;margin-top:7px;width:100%;">
 	<div style="float:left;">
 		<label style="width:75px;">试题来源：</label>
 		<input name="sourceId" class="easyui-combobox" data-options="
 				url:'<@s.url '/library/source/all'/>',
+				<#if CURRENT_IS_STRUCTURE>
+				readonly:true,
+				</#if>
 				valueField:'id',
 				textField:'name',
 				onLoadError:function(e){
@@ -196,6 +222,10 @@ $(function(){
 		post["year"] = $("#${form} input[name='year']").val();
 		post["opt"] = $("#${form} input[name='opt']:checked").val();
 		</#if>
+		<#if CURRENT_IS_STRUCTURE>
+		post["serial"] = $("#${form} input[name='serial']").val();
+		post["score"] = $("#${form} input[name='score']").val();
+		</#if>
 		post["content"] = $.trim($("#${form} textarea[name='content']").val());
 		if($.trim(post["content"]) == ""){
 			$.messager.alert("警告","请输入试题内容！");
@@ -268,8 +298,8 @@ $(function(){
 <form id="${form}" method="POST" class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'north',collapsible:false,height:210,border:false">
 		<@item_base />
-		<div style="float:left;margin-left:10px;margin-top:5px;">
-			<textarea style="float:left" name="content" class="easyui-kindeditor"  data-options="minWidth:762,minHeight:<#if CURRENT_ITEM_ISCHILD>162<#else>82</#if>" rows="5" cols="20" />
+		<div style="float:left;margin-left:10px;margin-top:2px;">
+			<textarea style="float:left" name="content" class="easyui-kindeditor"  data-options="minWidth:762,minHeight:<#if CURRENT_ITEM_ISCHILD>140<#else>82</#if>" rows="5" cols="20" />
 		</div>
 	</div>
 	<div data-options="region:'center',title:'选项',

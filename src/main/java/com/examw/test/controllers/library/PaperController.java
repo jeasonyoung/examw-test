@@ -170,13 +170,19 @@ public class PaperController {
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.VIEW})
-	@RequestMapping(value="/structure/{paperId}/{examId}/{subjectId}", method = RequestMethod.GET)
-	public String structureList(@PathVariable String paperId,@PathVariable String examId,@PathVariable String subjectId, Model model){
+	@RequestMapping(value="/structure/{paperId}/{examId}/{subjectId}/{pageStatusValue}/{pageType}/{sourceId}", method = RequestMethod.GET)
+	public String structureList(@PathVariable String paperId,@PathVariable String examId,@PathVariable String subjectId,
+			@PathVariable Integer pageStatusValue,@PathVariable Integer pageType,@PathVariable String sourceId,  Model model){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［paperId = %s］结构列表页面...", paperId));
 		
 		model.addAttribute("CURRENT_PAPER_ID", paperId);
 		model.addAttribute("CURRENT_EXAM_ID", examId);
 		model.addAttribute("CURRENT_SUBJECT_ID", subjectId);
+		model.addAttribute("CURRENT_PAGE_TYPE_VALUE", pageType);
+		model.addAttribute("CURRENT_PAGE_STATUS_VALUE", pageStatusValue);
+		model.addAttribute("CURRENT_PAGE_SOURCE_ID", sourceId);
+		
+		model.addAttribute("PAGE_STATUS_NONE_VALUE", PaperStatus.NONE.getValue());
 		
 		model.addAttribute("PER_UPDATE", ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE);
 		model.addAttribute("PER_DELETE", ModuleConstant.LIBRARY_PAPER + ":" + Right.DELETE);
@@ -222,6 +228,7 @@ public class PaperController {
 		attributes.put("id", source.getId());
 		attributes.put("title", source.getTitle());
 		attributes.put("type", source.getType());
+		attributes.put("typeName", this.itemService.loadTypeName(source.getType()));
 		attributes.put("score", source.getScore());
 		attributes.put("orderNo", source.getOrderNo());
 		target.setAttributes(attributes);

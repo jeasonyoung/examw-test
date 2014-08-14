@@ -52,6 +52,13 @@ public class StructureItemInfo extends Paging {
 		return (this.getItem() == null) ? null : this.getItem().getTypeName();
 	}
 	/**
+	 *  获取试题状态值。
+	 * @return
+	 */
+	public Integer getStatus(){
+		return (this.getItem() == null) ? null : this.getItem().getStatus();
+	}
+	/**
 	 * 获取所属结构ID。
 	 * @return 所属结构ID。
 	 */

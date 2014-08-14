@@ -5,7 +5,7 @@
 <script type="text/javascript">
 <!--
 $(function(){
-	var current_structure_id = current_item_type_value = "";
+	var current_structure_id = current_item_type_value = current_item_type_name = "";
 	var is_load = false;
 	//structure_tree
 	var structure_tree = $("#${module}_tree").tree({
@@ -15,6 +15,7 @@ $(function(){
 			e.preventDefault();
 			current_structure_id = node.id;
 			current_item_type_value = node.attributes.type;
+			current_item_type_name = node.attributes.typeName;
 			// select the node
 			structure_tree.tree("select", node.target);
 			// display context menu
@@ -27,13 +28,14 @@ $(function(){
 			<@error_dialog "e"/>
 		},
 		onBeforeLoad:function(){
-			current_structure_id = current_item_type_value = "";
+			current_structure_id = current_item_type_value = current_item_type_name = "";
 			if(is_load)$("#${dg}_toobar_add").menubutton("disable"); 
 		},
 		onClick:function(node){
 			is_load = true;
 			current_structure_id = node.id;
 			current_item_type_value = node.attributes.type;
+			current_item_type_name = node.attributes.typeName;
 			$("#${dg}_toobar_add").menubutton(($.trim(current_item_type_value) == "") ? "disable" : "enable"); 
 			${dg}_search();
 		},
@@ -41,6 +43,7 @@ $(function(){
 			is_load = true;
 			current_structure_id = node.id;
 			current_item_type_value = node.attributes.type;
+			current_item_type_name = node.attributes.typeName;
 			structure_edit("编辑试卷结构",node.attributes);
 		}
 	});
@@ -175,7 +178,7 @@ $(function(){
 			sortable:true
 		},{
 			title:"题型",
-			field:"TypeName",
+			field:"typeName",
 			width:12,
 			align:"center",
 			sortable:true
@@ -197,7 +200,7 @@ $(function(){
 			<@error_dialog "e"/>
 		},
 		onDblClickRow:function(rowIndex,rowData){
-			//edit_items_window("编辑试题",rowIndex,rowData,null);
+			edit_items_window("编辑试题［"+ rowData["typeName"] +"］",rowIndex,rowData);
 		}
 	});
 	//items_search
@@ -207,15 +210,106 @@ $(function(){
 			"content":$("#${dg}_toobar input[name='content']").val()
 		});
 	};
+	<@shiro.hasPermission name="${PER_UPDATE}">
 	//items_add
 	${dg}_add = function(obj){
-		alert($(obj).attr("value"));
-		alert($(obj).text());
+		//new
+		if($(obj).attr("value") == "new"){
+			edit_structure_items_window("新增试题["+current_item_type_name+"]",0,null);
+			return;
+		}
+		//import
+		if($(obj).attr("value") == "import"){
+			alert($(obj).attr("value") + $(obj).text());	
+		}
 	};
+	</@shiro.hasPermission>
+	//edit structure items windows.
+	function edit_structure_items_window(title,index,row){
+		var structure_id = current_structure_id, type = current_item_type_value;
+		var opts = ("${CURRENT_PAGE_STATUS_VALUE}" == "${PAGE_STATUS_NONE_VALUE}");
+		if(row){
+			structure_id = row.structureId;
+			type = row.type;
+			if(row.status) opts = (row.status == ${PAGE_STATUS_NONE_VALUE});
+		}
+		var d = $("<div/>").dialog({
+			title:title,
+			width:800,
+			height:600,
+			href:"<@s.url '/library/item/edit/'/>" + type + "?isStructure=true&examId=${CURRENT_EXAM_ID}&opts=" + opts,
+			modal:true,
+			buttons:[
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			{
+				text:"保存",
+				iconCls:"icon-save",
+				handler:function(){
+					var valid = eval("library_item_"+type+"_validate()");
+					if(!valid) return;
+					var post = eval("library_item_"+type+"_update()");
+					alert(post);console.info(post);
+				}
+			},
+			</@shiro.hasPermission>
+			{
+				text:"关闭",
+				iconCls:"icon-cancel",
+				handler:function(){
+					d.dialog("close");
+				}
+			}],
+			onClose:function(){
+				$(this).dialog("destroy");
+			},
+			onLoad:function(){
+				var data = (row ? row : {"examId":"${CURRENT_EXAM_ID}","subjectId":"${CURRENT_SUBJECT_ID}","opt":${CURRENT_PAGE_TYPE_VALUE},"sourceId":"${CURRENT_PAGE_SOURCE_ID}"});
+				eval("library_item_"+type+"_load(data)");
+			}
+		});
+	};
+	<@shiro.hasPermission name="${PER_DELETE}">
 	//items_delete
 	${dg}_delete = function(){
-		
+		var rows = dg.datagrid("getChecked");
+		if(rows && rows.length > 0){
+			$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
+				if(!r)return;
+				$.messager.progress();
+				var ids = [];
+				for(var i = 0; i < rows.length; i++){
+					ids.push(rows[i].id);
+				}
+				$.ajax({
+					url:"<@s.url '/library/paper/structure/items/delete'/>",
+					type:"POST",
+					data:{
+						id:ids.join("|")
+					},
+					dataType:"json",
+					error:function(e){
+						$.messager.progress("close");
+						<@error_dialog "e"/>
+					},
+					success:function(data,textStatus){
+						$.messager.progress("close");
+						if(data.success){
+							dg.datagrid("load");
+							dg.datagrid("unselectAll");
+						}else{
+							$.messager.show({
+								title:"提示",
+								msg:data.msg
+							});
+						}
+					}
+				});
+			});
+		}else{
+			$.messager.alert("提示","未选中须删除的数据！");
+		}
 	};
+	</@shiro.hasPermission>
 });
 //-->
 </script>
