@@ -12,7 +12,7 @@ import com.examw.test.service.IBaseDataService;
  */
 public interface ISyllabusService extends IBaseDataService<SyllabusInfo> {
 	/**
-	 * 加载科目大纲树数据。
+	 * 加载科目下大纲树数据。
 	 * @param sudId
 	 * 查询条件。
 	 * @param ignore
@@ -22,7 +22,7 @@ public interface ISyllabusService extends IBaseDataService<SyllabusInfo> {
 	 */
 	 List<TreeNode> loadSyllabuss(String sudId,String ignore);
 	 /**
-	 * 加载最大代码值
+	 * 加载最大代码值。
 	 * @return
 	 */
 	Integer loadMaxCode();

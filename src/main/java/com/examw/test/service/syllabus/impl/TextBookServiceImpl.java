@@ -61,6 +61,7 @@ public class TextBookServiceImpl extends BaseDataServiceImpl<TextBook, TextBookI
 	 * 大纲要点数据接口。
 	 */
 	public void setSyllabusDao(ISyllabusDao syllabusDao) {
+		if(logger.isDebugEnabled())logger.debug("注入大纲要点数据接口...");
 		this.syllabusDao = syllabusDao;
 	}
 	/**
@@ -69,6 +70,7 @@ public class TextBookServiceImpl extends BaseDataServiceImpl<TextBook, TextBookI
 	 * 知识点数据接口。
 	 */
 	public void setKnowDao(IKnowledgeDao knowDao) {
+		if(logger.isDebugEnabled())logger.debug("注入知识点数据接口...");
 		this.knowDao = knowDao;
 	}
 	/**
@@ -120,6 +122,7 @@ public class TextBookServiceImpl extends BaseDataServiceImpl<TextBook, TextBookI
 				info.setExamName(data.getSubject().getExam().getName());
 			}
 		}
+		//知识点的类型转换。
 		if(data.getKnowledges() != null && data.getKnowledges().size() > 0){
 			Set<KnowledgeInfo> knows = new HashSet<KnowledgeInfo>();
 			for(Knowledge know : data.getKnowledges()){
@@ -222,12 +225,12 @@ public class TextBookServiceImpl extends BaseDataServiceImpl<TextBook, TextBookI
 		return info;
 	}
 	/*
-	 * 更新知识点。
+	 * 更新知识点数据。
 	 * @see com.examw.test.service.syllabus.ITextBookService#updateKnowledge(java.lang.String, com.examw.test.model.syllabus.KnowledgeInfo)
 	 */
 	@Override
 	public KnowledgeInfo updateKnowledge(String bookId, KnowledgeInfo info) {
-		if(logger.isDebugEnabled())logger.debug("更新知识点...");
+		if(logger.isDebugEnabled())logger.debug("更新知识点数据...");
 		if(StringUtils.isEmpty(bookId) || info == null) return null;
 		boolean isAdded = false;
 		Knowledge data = StringUtils.isEmpty(info.getId()) ?  null : this.knowDao.load(Knowledge.class, info.getId());

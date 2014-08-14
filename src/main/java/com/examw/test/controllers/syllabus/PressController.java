@@ -108,7 +108,7 @@ public class PressController {
 		return result;
 	}
 	/**
-	 * 加载全部数据。
+	 * 加载全部出版社数据。
 	 * @return
 	 */
 	@RequestMapping(value = "/all", method = {RequestMethod.GET,RequestMethod.POST})
