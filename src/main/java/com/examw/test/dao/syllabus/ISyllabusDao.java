@@ -6,7 +6,7 @@ import com.examw.test.dao.IBaseDao;
 import com.examw.test.domain.syllabus.Syllabus;
 import com.examw.test.model.syllabus.SyllabusInfo;
 /**
- * 大纲数据接口。
+ * 大纲设置数据接口。
  * @author lq.
  * @since 2014-08-06.
  */

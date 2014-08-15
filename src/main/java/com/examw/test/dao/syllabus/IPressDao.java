@@ -6,7 +6,7 @@ import com.examw.test.dao.IBaseDao;
 import com.examw.test.domain.syllabus.Press;
 import com.examw.test.model.syllabus.PressInfo;
 /**
- * 出版社数据接口。
+ * 出版社管理数据接口。
  * @author lq.
  * @since 2014-08-06.
  */

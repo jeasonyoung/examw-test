@@ -103,7 +103,7 @@ public class PressController {
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
-			logger.error("删除数据["+id+"]时发生异常:", e);
+			logger.error("删除数据出版社["+id+"]时发生异常:", e);
 		}
 		return result;
 	}

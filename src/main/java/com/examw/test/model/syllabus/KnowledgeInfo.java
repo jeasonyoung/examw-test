@@ -44,8 +44,7 @@ public class KnowledgeInfo extends Paging {
 	}
 	/**
 	 * 获取知识点内容。
-	 * @return
-	 * 知识点内容。
+	 * @return 知识点内容。
 	 */
 	public String getContent() {
 		return content;

@@ -99,10 +99,6 @@ public class SubjectController {
 		return this.subjectService.datagrid(new SubjectInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
-			public Integer getPage(){return null;}
-			@Override
-			public Integer getRows(){return null;}
-			@Override
 			public String getExamId(){return examId;}
 			@Override
 			public String getSort(){return "code";}

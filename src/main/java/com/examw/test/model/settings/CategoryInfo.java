@@ -16,7 +16,7 @@ public class CategoryInfo extends Paging {
 	private static final long serialVersionUID = 1L;
 	private String id,name,code,abbr,pid;
 	private List<CategoryInfo> children;
-	
+	private String fullName;
 	/**
 	 * 获取类别ID。
 	 * @return 类别ID。
@@ -108,6 +108,22 @@ public class CategoryInfo extends Paging {
 	 */
 	public void setChildren(List<CategoryInfo> children) {
 		this.children = children;
+	}
+	/**
+	 * 获取 全称
+	 * @return fullName
+	 * 
+	 */
+	public String getFullName() {
+		return fullName;
+	}
+	/**
+	 * 设置 全称
+	 * @param fullName
+	 * 
+	 */
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 	
 }
