@@ -31,9 +31,6 @@ public class KnowledgeDaoImpl extends BaseDaoImpl<Knowledge> implements IKnowled
 			if(info.getSort().equalsIgnoreCase("subName")){
 				info.setSort("subject.name");
 			}
-			if(info.getSort().equalsIgnoreCase("syllName")){
-				info.setSort("press.name");
-			}
 			hql += " order by k." + info.getSort() + " " + info.getOrder();
 		}
 		if(logger.isDebugEnabled()) logger.debug(hql);

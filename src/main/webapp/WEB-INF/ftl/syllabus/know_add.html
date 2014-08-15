@@ -23,17 +23,17 @@ $(function(){
 //-->
 </script>
 <form id="${form}" method="POST" style="padding:10px;">
-	<div style="float:left;margin-top:12px;width:100%;">
+	<div style="float:left;margin-top:2px;width:100%;">
 		<label style="width:75px;">所属要点：</label>
-		<input type="text" name="syllId" style="width:370px;"/>
+		<input type="text" name="syllId" style="width:404px;"/>
 		<input type="hidden" name="id">
 		<input type="hidden" name="bookId" value="${CURRENT_BOOK_ID}">
 	</div> 
 	<div style="float:left; margin-top:12px; width:100%;">
 		<label style="width:75px;">要点代码：</label>
-		<input type="text" name="code" class="easyui-validatebox"  data-options="required:true" style="width:370px;"/>
+		<input type="text" name="code" class="easyui-validatebox"  data-options="required:true" style="width:400px;"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
-		<textarea type="text" name="content" class="easyui-kindeditor" data-options="minWidth:510,minHeight:160" row="15" cols="20"/>
+		<textarea type="text" name="content" class="easyui-kindeditor" data-options="minWidth:510,minHeight:200" row="15" cols="20"/>
 	</div>
 </form>

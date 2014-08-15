@@ -44,13 +44,11 @@ $(function(){
 			field:"syllName",
 			width:25,
 			align:"left",
-			sortable:true
 		},{
 			title:"知识点内容",
 			field:"content",
 			width:30,
 			align:"left",
-			sortable:true
 		}]],
 		toolbar:"#${dg}_toobar",
 		onLoadError:function(e){
@@ -75,7 +73,7 @@ $(function(){
 		var d = $("<div/>").dialog({
 			title:title,
 			width:550,
-			height:380,
+			height:400,
 			href:"<@s.url'/syllabus/textbook/add'/>?bookId="+"${CURRENT_BOOK_ID}"+"&syllId="+current_syllabus_id,
 			modal:true,
 			buttons:[

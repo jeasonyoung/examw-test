@@ -6,7 +6,7 @@ import com.examw.test.dao.IBaseDao;
 import com.examw.test.domain.syllabus.Knowledge;
 import com.examw.test.model.syllabus.KnowledgeInfo;
 /**
- * 知识点数据接口。
+ * 知识点管理数据接口。
  * @author lq.
  * @since 2014-08-07.
  */
