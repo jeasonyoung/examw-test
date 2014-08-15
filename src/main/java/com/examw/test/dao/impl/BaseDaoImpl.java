@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.Cache;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -171,5 +172,16 @@ public class BaseDaoImpl<T> implements IBaseDao<T> {
 			return query.uniqueResult();
 		}
 		return null;
+	}
+	/*
+	 * 手动清除二级缓存。
+	 * @see com.examw.test.dao.IBaseDao#evict(java.lang.Class)
+	 */
+	@Override
+	public void evict(Class<?> persistentClass) {
+		if(this.sessionFactory != null){
+			Cache cache = this.sessionFactory.getCache();
+			if(cache != null) cache.evictEntityRegion(persistentClass);
+		}
 	}
 }

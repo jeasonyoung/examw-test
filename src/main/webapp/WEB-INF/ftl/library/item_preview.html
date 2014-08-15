@@ -1,0 +1,37 @@
+<#--试题预览-->
+<#include "library/item_view.ftl"/>
+<!-- css end -->
+<div class="easyui-layout container" data-options="fit:true,border:false">
+	<div data-options="region:'north',border:false,split:false" style="height:80px;">
+		<#if item??>
+			<@item_header item/>
+		</#if>
+	</div>
+	<div data-options="region:'center',border:false">
+	<#if item??>
+		<#switch item.type>
+			<#case 1><#--单选-->
+				<@single item/>
+			<#break>
+			<#case 2><#--多选-->
+				<@multy item/>
+			<#break>
+			<#case 3><#--不定向选-->
+				<@uncertain item/>
+			<#break>
+			<#case 4><#--判断题-->
+				<@judge item/>
+			<#break>
+			<#case 5><#--问答题-->
+				<@qanda item/>
+			<#break>
+			<#case 6><#--共享题干题-->
+				<@share_title item/>
+			<#break>
+			<#case 7><#--共享答案题-->
+				<@share_answer item/>
+			<#break>
+		</#switch>
+	</#if>
+</div>
+</div>

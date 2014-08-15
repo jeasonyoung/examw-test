@@ -350,4 +350,19 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 			}
 		}
 	}
+	/*
+	 * 加载试题预览。
+	 * @see com.examw.test.service.library.IItemService#loadItemPreview(java.lang.String)
+	 */
+	@Override
+	public ItemInfo loadItemPreview(String itemId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试题［id = %s］预览....", itemId));
+		if(StringUtils.isEmpty(itemId)) return null;
+		Item item = this.itemDao.load(Item.class, itemId);
+		if(item == null){
+			if(logger.isDebugEnabled()) logger.debug(String.format("试题［id = %s］不存在！", itemId));
+			return null;
+		}
+		return this.changeModel(item);
+	}
 }

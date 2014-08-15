@@ -402,4 +402,16 @@ public class PaperController {
 		}
 		return result;
 	}
+	/**
+	 * 试卷预览。
+	 * @param paperId
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.VIEW})
+	@RequestMapping(value="/preview/{paperId}", method = {RequestMethod.GET, RequestMethod.POST})
+	public String paperPreview(@PathVariable String paperId,Model model){
+		PaperInfo paper = this.paperService.loadPaperPreview(paperId);
+		model.addAttribute("Paper", paper);
+		return "library/paper_preview";
+	}
 }

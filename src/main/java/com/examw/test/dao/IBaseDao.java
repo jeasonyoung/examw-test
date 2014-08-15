@@ -41,4 +41,10 @@ public interface IBaseDao<T> {
 	 * 	数据对象。
 	 * */
 	void delete(T data);
+	/**
+	 * 手动清除实体对象的二级缓存。
+	 * @param clazz
+	 * 实体对象。
+	 */
+	void evict(Class<?> clazz);
 }

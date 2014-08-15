@@ -63,4 +63,12 @@ public interface IItemService extends IBaseDataService<ItemInfo> {
 	 * 题目对象。
 	 */
 	Item updateItem(ItemInfo info,StructureItem structureItem,Set<StructureShareItemScore> shareItemScores);
+	/**
+	 * 加载试题预览。
+	 * @param itemId
+	 * 试题ID。
+	 * @return
+	 * 试题预览信息。
+	 */
+	ItemInfo loadItemPreview(String itemId);
 }
