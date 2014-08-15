@@ -76,9 +76,9 @@ public class ExamController {
 		 return this.examService.datagrid(new ExamInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
-			public Integer getPage(){return null;}
+			public String getSort(){return "code";}
 			@Override
-			public Integer getRows(){return null;}
+			public String getOrder(){return "asc";}
 			@Override
 			public String getCategoryId(){return categoryId;}
 		 }).getRows();

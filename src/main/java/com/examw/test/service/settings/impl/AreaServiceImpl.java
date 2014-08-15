@@ -25,9 +25,8 @@ public class AreaServiceImpl extends BaseDataServiceImpl<Area, AreaInfo>
 
 	/**
 	 * 设置 地区数据接口
-	 * 
 	 * @param areaDao
-	 * 
+	 * 地区数据接口
 	 */
 	public void setAreaDao(IAreaDao areaDao) {
 		this.areaDao = areaDao;

@@ -31,6 +31,7 @@ $(function(){
 		onSelect:function(record){
 			current_category_select = true;
 			if(subject_cbb && "${CURRENT_EXAM_ID}"!= record.id ){
+				subject_cbb.combobox("clear");
 				subject_cbb.combobox("reload","<@s.url '/settings/subject/all'/>?examId=" + record.id);
 			}
 		}

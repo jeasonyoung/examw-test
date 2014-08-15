@@ -22,7 +22,8 @@ $(function(){
 		},
 		onSelect:function(record){
 			current_category_select = true;
-			if(s_t && "${CURRENT_EXAM_ID}"!= record.id ){
+			if(s_t){
+				s_t.combobox("clear");
 				s_t.combobox("reload","<@s.url '/settings/subject/all'/>?examId=" + record.id);
 			}
 		}

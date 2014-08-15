@@ -87,5 +87,10 @@
 		    </map>
 		</property>
 	</bean>
+	<!-- 注册码绑定记录服务 -->
+	<bean id="registrationBindRecordService" class="com.examw.test.service.products.impl.RegistrationBindRecordServiceImpl">
+		<!-- 软件类型数据操作接口 -->
+		<property name="registrationBindRecordDao" ref="registrationBindRecordDao" />
+	</bean>
 	<!-- 产品管理  服务接口实现 end -->
 </beans>

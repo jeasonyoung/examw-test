@@ -68,7 +68,17 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 				info.setChildren(children);
 			}
 		}
+		info.setFullName(this.loadFullName(data));
 		return info;
+	}
+	
+	//加载类别全称。
+	private String loadFullName(Category data){
+		if(data == null) return null;
+		if(data.getParent() == null) return data.getName();
+		StringBuilder builder = new StringBuilder(data.getName());
+		builder.insert(0, this.loadFullName(data.getParent()) + " >> ");
+		return builder.toString();
 	}
 	/*
 	 * 查询数据总数
@@ -117,6 +127,8 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 			if(data != null && (data.getChildren() == null || data.getChildren().size() == 0)){
 				this.categoryDao.delete(data); 
 				if(logger.isDebugEnabled()) logger.debug("删除数据:" + data.getName());
+			}else{
+				throw new RuntimeException("数据不存在或者请先删除子类");
 			}
 		}
 	}
@@ -163,10 +175,6 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		List<TreeNode> result = new ArrayList<>();
 		List<Category> list = this.categoryDao.findCategorys(new CategoryInfo(){
 			private static final long serialVersionUID = 1L;
-			@Override
-			public Integer getPage() {return null;}
-			@Override
-			public Integer getRows() {return null;}
 			@Override
 			public String getOrder() {return "asc";}
 			@Override
@@ -225,7 +233,10 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 				if(e == null) continue;
 				TreeNode tv_exam = new TreeNode();
 				tv_exam.setId(e.getId());
-				tv_exam.setText(e.getName());
+				if(e.getArea()==null)
+					tv_exam.setText(e.getName());
+				else
+					tv_exam.setText(e.getName()+"["+e.getArea().getName()+"]");
 				attributes = new HashMap<>();
 				attributes.put("type", "exam");
 				tv_exam.setAttributes(attributes);
@@ -235,7 +246,10 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 						for(Subject s : e.getSubjects()){
 							TreeNode tv_subject = new TreeNode();
 							tv_subject.setId(s.getId());
-							tv_subject.setText(s.getName());
+							if(s.getArea()==null)
+								tv_subject.setText(s.getName());
+							else
+								tv_subject.setText(s.getName()+"["+s.getArea().getName()+"]");
 							attributes = new HashMap<>();
 							attributes.put("type", "subject");
 							tv_subject.setAttributes(attributes);
@@ -267,10 +281,6 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		List<Category> list = this.find(new CategoryInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
-			public Integer getPage() {return null;}
-			@Override
-			public Integer getRows() {return null;}
-			@Override
 			public String getOrder() {return "asc";}
 			@Override
 			public String getSort() {return "code";};
@@ -294,10 +304,6 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		List<TreeNode> treeNodes = new ArrayList<>();
 		List<Category> list = this.find(new CategoryInfo(){
 			private static final long serialVersionUID = 1L;
-			@Override
-			public Integer getPage() {return null;}
-			@Override
-			public Integer getRows() {return null;}
 			@Override
 			public String getOrder() {return "asc";}
 			@Override

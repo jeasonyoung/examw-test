@@ -4,7 +4,7 @@
 <script type="text/javascript">
 <!--
 $(function(){
-	var current_category_select = false;
+	var current_category_select = 0;
 	//分类树
 	//category_tree
 	var c_t = $("#${module}_edit_form input[name='categoryId']").combotree({
@@ -21,8 +21,9 @@ $(function(){
 			c_t.combotree("setValue",id);
 		},
 		onSelect:function(record){
-			current_category_select = true;
-			if(e_t && "${CURRENT_CATEGORY_ID}"!= record.id ){
+			current_category_select = current_category_select + 1;
+			if(current_category_select == 1 && "${CURRENT_CATEGORY_ID}" == record.id) return;
+			if(e_t){
 				e_t.combobox("reload","<@s.url '/settings/exam/all'/>?categoryId=" + record.id);
 			}
 		}
@@ -40,7 +41,7 @@ $(function(){
 		onLoadSuccess:function(){
 			e_t.combobox("clear");
 			var id = "${CURRENT_EXAM_ID}";
-			if($.trim(id) == "") return;
+			if($.trim(id) == "" || current_category_select > 1) return;
 			e_t.combobox("setValue",id);
 		},
 		onSelect:function(record){
@@ -59,6 +60,7 @@ $(function(){
 			<@error_dialog "e"/>
 		},
 		onLoadSuccess:function(){
+			a_t.combobox("clear");
 			var id = "${CURRENT_AREA_ID}";
 			if($.trim(id) == "") return;
 			a_t.combobox("setValue",id);

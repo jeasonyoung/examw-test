@@ -18,7 +18,7 @@ import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.settings.IExamService;
 
 /**
- * 
+ * 考试服务接口实现类
  * @author fengwei.
  * @since 2014年8月7日 上午10:00:32.
  */
