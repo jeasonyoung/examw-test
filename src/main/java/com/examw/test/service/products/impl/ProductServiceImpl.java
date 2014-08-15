@@ -130,8 +130,9 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 				info.setId(UUID.randomUUID().toString());
 			}
 			data = new Product();
-			info.setCreateTime(new Date());
+			data.setCreateTime(new Date());
 		}
+		info.setCreateTime(data.getCreateTime());
 		BeanUtils.copyProperties(info, data);
 		if(data.getStatus() == null){
 			data.setStatus(Product.STATUS_NONE);
@@ -139,9 +140,12 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 		}
 		if(info.getExamId()!=null && (data.getExam()==null || !data.getExam().getId().equalsIgnoreCase(info.getExamId()))){
 			Exam exam = this.examDao.load(Exam.class, info.getExamId());
-			data.setExam(exam);
-			info.setExamId(exam.getId());
-			info.setExamName(exam.getName());
+			if(exam!=null)
+			{
+				data.setExam(exam);
+				info.setExamId(exam.getId());
+				info.setExamName(exam.getName());
+			}
 		}
 		Set<Subject> subjects = new HashSet<Subject>();
 		if(info.getSubjectId()!=null && info.getSubjectId().length>0){

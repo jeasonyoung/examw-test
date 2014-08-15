@@ -24,5 +24,25 @@
 	<bean id="softwareDao"  class="com.examw.test.dao.products.impl.SoftwareDaoImpl">
 	   <property name="sessionFactory"  ref="sessionFactory" />
 	</bean>
+	<!-- 注册码Dao -->
+	<bean id="registrationDao"  class="com.examw.test.dao.products.impl.RegistrationDaoImpl">
+	   <property name="sessionFactory"  ref="sessionFactory" />
+	</bean>
+	<!-- 注册码日志Dao -->
+	<bean id="registrationLogDao"  class="com.examw.test.dao.products.impl.RegistrationLogDaoImpl">
+	   <property name="sessionFactory"  ref="sessionFactory" />
+	</bean>
+	<!-- 注册码绑定记录Dao -->
+	<bean id="registrationBindRecordDao"  class="com.examw.test.dao.products.impl.RegistrationBindRecordDaoImpl">
+	   <property name="sessionFactory"  ref="sessionFactory" />
+	</bean>
+	<!-- 软件类型限制Dao -->
+	<bean id="softwareTypeLimitDao"  class="com.examw.test.dao.products.impl.SoftwareTypeLimitDaoImpl">
+	   <property name="sessionFactory"  ref="sessionFactory" />
+	</bean>
+	<!-- 注册码关联产品Dao -->
+	<bean id="relationProductDao"  class="com.examw.test.dao.products.impl.RelationProductDaoImpl">
+	   <property name="sessionFactory"  ref="sessionFactory" />
+	</bean>
 	<!-- 产品管理  数据接口实现end -->
 </beans>

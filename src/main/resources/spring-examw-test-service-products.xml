@@ -60,5 +60,32 @@
 		    </map>
 		</property>
 	</bean>
+	<!-- 注册码服务 -->
+	<bean id="registrationService" class="com.examw.test.service.products.impl.RegistrationServiceImpl">
+		<!-- 注册码数据操作接口 -->
+		<property name="registrationDao" ref="registrationDao" />
+		<!-- 状态-名称映射 -->
+		<property name="statusMap">
+		    <map>
+		        <entry key="0" value="未激活"/>
+		        <entry key="1" value="激活"/>
+		        <entry key="-1" value="停用"/>
+		        <entry key="-2" value="注销"/>
+		    </map>
+		</property>
+	</bean>
+	<!-- 注册码日志服务 -->
+	<bean id="registrationLogService" class="com.examw.test.service.products.impl.RegistrationLogServiceImpl">
+		<!-- 注册码数据操作接口 -->
+		<property name="registrationLogDao" ref="registrationLogDao" />
+		<!-- 状态-名称映射 -->
+		<property name="typeMap">
+		    <map>
+		        <entry key="1" value="绑定注册码"/>
+		        <entry key="2" value="更新数据"/>
+		        <entry key="3" value="软件升级"/>
+		    </map>
+		</property>
+	</bean>
 	<!-- 产品管理  服务接口实现 end -->
 </beans>

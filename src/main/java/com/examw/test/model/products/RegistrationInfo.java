@@ -26,6 +26,7 @@ public class RegistrationInfo extends Paging{
 	private Date startTime;
 	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private Date endTime;
+	private String statusName;
 	/**
 	 * 获取注册码ID。
 	 * @return 注册码ID。
@@ -243,6 +244,22 @@ public class RegistrationInfo extends Paging{
 	 */
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+	/**
+	 * 获取 状态名称
+	 * @return statusName
+	 * 
+	 */
+	public String getStatusName() {
+		return statusName;
+	}
+	/**
+	 * 设置 状态名称
+	 * @param statusName
+	 * 
+	 */
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
 	}
 	
 }

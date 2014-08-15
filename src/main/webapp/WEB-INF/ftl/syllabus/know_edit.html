@@ -142,7 +142,7 @@ $(function(){
 	${dg}_search = function(){
 		dg.datagrid("load",{
 			syllId:current_syllabus_id,
-			syllName:$("#${dg}_toobar input[name='titles']").val()
+			syllName:$("#${dg}_toobar input[name='title']").val()
 		});
 	};
 	<@shiro.hasPermission name="${PER_DELETE}">
@@ -204,7 +204,7 @@ $(function(){
 			<@shiro.hasPermission name="${PER_DELETE}">
 			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="${dg}_delete()">删除</a>
 			</@shiro.hasPermission>
-			<label>知识要点：<input name="titles" type="text" style="width:198px;"/></label>
+			<label>知识要点：<input name="title" type="text" style="width:198px;"/></label>
 			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="${dg}_search()" style="margin-left:10px;">查询</a>
 		</div>
 	</div>

@@ -67,6 +67,7 @@ $(function(){
 		onSelect:function(record){
 			current_category_select = true;
 			if(p_t && "${CURRENT_EXAM_ID}"!= record.id ){
+				p_t.combobox("clear");
 				p_t.combobox("reload","<@s.url '/products/product/combo'/>?examId=" + record.id);
 			}
 		}
@@ -74,7 +75,7 @@ $(function(){
 	//产品下拉
 	//product_tree
 	var p_t = $("#${module}_edit_form input[name='productId']").combobox({
-		url:"<@s.url '/products/product/combo'/>?categoryId=${CURRENT_EXAM_ID}",
+		url:"<@s.url '/products/product/combo'/>?examId=${CURRENT_EXAM_ID}",
 		required:true,
 		valueField:"id",
 		textField:"name",
@@ -82,8 +83,7 @@ $(function(){
 			<@error_dialog "e"/>
 		},
 		onLoadSuccess:function(){
-			p_t.combobox("clear");
-			var id = "${CURRENT_EXAM_ID}";
+			var id = "${CURRENT_PRODUCT_ID}";
 			if($.trim(id) == "") return;
 			p_t.combobox("setValue",id);
 		}
@@ -125,7 +125,7 @@ $(function(){
 		<div style="float:left;width:205px;height:190px;margin-left:5px;padding:1px;text-align:center;border:solid 1px #ccc;">
 			<div style="width:200px;height:160px;">
 				<div id="${form}_file_queue"  style="position:absolute;border:solid 0px red;"></div>
-				<img src="http://image.s1979.com/allimg/100310/24_100310154041_1.jpg" alt="宣传图片" width="200" height="150" style="border:solid 1px red;">
+				<img src="http://c.hiphotos.baidu.com/image/pic/item/48540923dd54564e58890687b1de9c82d0584fa4.jpg" alt="宣传图片" width="200" height="150" style="border:solid 1px red;">
 			</div>
 			<input id="${form}_file_upload" name="file" type="file"/>
 			<input type="hidden" name="imgUrl" />

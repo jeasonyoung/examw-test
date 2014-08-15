@@ -149,8 +149,9 @@ public class SoftwareServiceImpl extends BaseDataServiceImpl<Software,SoftwareIn
 				info.setId(UUID.randomUUID().toString());
 			}
 			data = new Software();
-			info.setCreateTime(new Date());
+			data.setCreateTime(new Date());
 		}
+		info.setCreateTime(data.getCreateTime());
 		BeanUtils.copyProperties(info, data);
 		if(data.getStatus() == null){
 			data.setStatus(Product.STATUS_NONE);
@@ -158,21 +159,35 @@ public class SoftwareServiceImpl extends BaseDataServiceImpl<Software,SoftwareIn
 		}
 		if(info.getProductId()!=null && (data.getProduct()==null || !data.getProduct().getId().equalsIgnoreCase(info.getProductId()))){
 			Product product = this.productDao.load(Product.class, info.getProductId());
-			data.setProduct(product);
-			info.setProductId(product.getId());
-			info.setProductName(product.getName());
+			if(product!=null)
+			{
+				data.setProduct(product);
+				info.setProductId(product.getId());
+				info.setProductName(product.getName());
+				if(product.getExam()!=null)
+				{
+					info.setExamId(product.getExam().getId());
+					info.setExamName(product.getExam().getName());
+				}
+			}
 		}
 		if(info.getChannelId()!=null && (data.getChannel()==null || !data.getChannel().getId().equalsIgnoreCase(info.getChannelId()))){
 			Channel channel = this.channelDao.load(Channel.class, info.getChannelId());
-			data.setChannel(channel);
-			info.setChannelId(channel.getId());
-			info.setChannelName(channel.getName());
+			if(channel!=null)
+			{
+				data.setChannel(channel);
+				info.setChannelId(channel.getId());
+				info.setChannelName(channel.getName());
+			}
 		}
 		if(info.getSoftTypeId()!=null && (data.getType()==null || !data.getType().getId().equalsIgnoreCase(info.getSoftTypeId()))){
 			SoftwareType type = this.softwareTypeDao.load(SoftwareType.class, info.getSoftTypeId());
-			data.setType(type);
-			info.setSoftTypeId(type.getId());
-			info.setSoftTypeName(type.getName());
+			if(type!=null)
+			{
+				data.setType(type);
+				info.setSoftTypeId(type.getId());
+				info.setSoftTypeName(type.getName());
+			}
 		}
 		//新增数据。
 		if(isAdded) this.softwareDao.save(data);

@@ -1,0 +1,108 @@
+<#--注册码设置列表-->
+<#include "comm.ftl"/>
+<#assign module="products_registration"/>
+<#assign dg="${module}_list_dg"/>
+<script type="text/javascript">
+<!--
+$(function(){
+	//dg
+	var dg=$("#${dg}").datagrid({
+		url:"<@s.url '/products/registration/datagrid'/>",
+		fit:true,
+		fitColumns:true,
+		rownumbers:true,
+		pagination:true,
+		pagePosition:"bottom",
+		pageSize:20,
+		pageList:[20,30,40],
+		border:true,
+		striped:true,
+		idField:"id",
+		sortName:"code",
+		sortOrder:"asc",
+		columns:[[{
+			field:"id",
+			checkbox:true
+		},{
+			title:"注册码",
+			field:"code",
+			width:10,
+			align:"left"
+		},{
+			title:"原价",
+			field:"price",
+			width:8,
+			align:"center",
+			sortable:true
+		},{
+			title:"优惠价",
+			field:"discount",
+			width:8,
+			align:"center",
+			sortable:true
+		},{
+			title:"使用期限",
+			field:"limitTime",
+			width:8,
+			align:"center",
+			sortable:true
+		},{
+			title:"状态",
+			field:"statusName",
+			width:8,
+			align:"center"
+		},{
+			title:"创建时间",
+			field:"createTime",
+			width:12,
+			align:"center",
+			sortable:true
+		},{
+			title:"激活时间",
+			field:"startTime",
+			width:12,
+			align:"center",
+			sortable:true
+		},{
+			title:"到期时间",
+			field:"endTime",
+			width:12,
+			align:"center",
+			sortable:true
+		}]],
+		toolbar:"#${dg}_toobar",
+		onLoadError:function(e){
+			<@error_dialog "e"/>
+		}
+	});
+	//search
+	${dg}_search = function(){
+		dg.datagrid("load",{
+			  code:$("#${dg}_toobar input[name='code']").val(),
+			  status: $("#${dg}_status").combobox("getValue")
+		});
+	};
+});
+//-->
+</script>
+		<table id="${dg}"></table>
+		<div id="${dg}_toobar">
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			<a href="#" class="easyui-linkbutton" onclick="${dg}_add()" data-options="iconCls:'icon-add',plain:true" style="float:left;">新增</a>
+			</@shiro.hasPermission>
+			<span>|</span>
+			<@shiro.hasPermission name="${PER_DELETE}">
+			<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
+			</@shiro.hasPermission>
+			
+			<label>注册码:</label>
+			<input name="code" type="text" style="width:198px;"/>
+			<label>状态</label>
+			<select id="${dg}_status" class="easyui-combobox" name="status" style="width:200px;">
+				<#list STATUS_MAP?keys as key>  
+    				<option value="${key}">${STATUS_MAP[key]}</option>
+    			</#list>
+			</select> 
+
+			<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
+		</div>

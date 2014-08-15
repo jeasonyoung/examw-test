@@ -126,10 +126,11 @@ public class SyllabusController {
 		return result;
 	}
 	/**
-	 * 加载科目下的大纲树.
-	 * @param deptId
+	 * 加载科目下的大纲树结构数据。
+	 * @param subId
 	 * 加载条件。
 	 * @param ignore
+	 * 加载条件。
 	 * @return
 	 */
 	@RequestMapping(value="/tree/{subId}", method = {RequestMethod.GET, RequestMethod.POST})
@@ -139,7 +140,7 @@ public class SyllabusController {
 		return this.syllabusService.loadSyllabuss(subId, ignore);
 	}
 	/**
-	 * 大纲树结构数据。
+	 * 加载所有大纲树结构数据。
 	 * @return
 	 */
 	@RequestMapping(value = "/trees", method = {RequestMethod.GET,RequestMethod.POST})

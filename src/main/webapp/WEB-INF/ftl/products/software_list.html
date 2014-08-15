@@ -51,25 +51,47 @@ $(function(){
 		},{
 			title:"所属考试",
 			field:"examName",
-			width:30,
+			width:10,
 			align:"left"
 		},{
-			title:"产品软件名称",
+			title:"软件名称",
 			field:"name",
-			width:40,
+			width:15,
 			align:"left",
 			sortable:true
 		},{
-			title:"产品软件代码",
+			title:"代码",
 			field:"code",
-			width:10,
+			width:5,
 			align:"center",
 			sortable:true
 		},{
-			title:"所属地区",
-			field:"areaName",
+			title:"软件类型",
+			field:"softTypeName",
+			width:8,
+			align:"center"
+		},{
+			title:"所属产品",
+			field:"productName",
 			width:10,
 			align:"center"
+		},{
+			title:"状态",
+			field:"statusName",
+			width:8,
+			align:"center"
+		},{
+			title:"创建时间",
+			field:"createTime",
+			width:12,
+			align:"center",
+			sortable:true
+		},{
+			title:"修改时间",
+			field:"lastTime",
+			width:12,
+			align:"center",
+			sortable:true
 		}]],
 		toolbar:"#${dg}_toobar",
 		onLoadError:function(e){

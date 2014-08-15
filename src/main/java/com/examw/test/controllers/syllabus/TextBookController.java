@@ -62,7 +62,7 @@ public class TextBookController {
 	@RequiresPermissions({ModuleConstant.SYLLABUS_TEXTBOOK+ ":" + Right.VIEW})
 	@RequestMapping(value="/syll/edit/{bookId}", method = RequestMethod.GET)
 	public String editKnow(@PathVariable String bookId,Model model){
-		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
+		if(logger.isDebugEnabled()) logger.debug("加载知识点编辑页面...");
 		model.addAttribute("CURRENT_BOOK_ID", bookId);
 		model.addAttribute("PER_UPDATE",ModuleConstant.SYLLABUS_TEXTBOOK + ":" + Right.UPDATE);
 		model.addAttribute("PER_DELETE",ModuleConstant.SYLLABUS_TEXTBOOK + ":" + Right.DELETE);
@@ -140,7 +140,7 @@ public class TextBookController {
 	@RequestMapping(value="/{bookId}/update", method = RequestMethod.POST)
 	@ResponseBody
 	public Json updateStructure(@PathVariable String bookId, KnowledgeInfo info){
-		if(logger.isDebugEnabled()) logger.debug("更新试卷结构数据...");
+		if(logger.isDebugEnabled()) logger.debug("更新知识点数据...");
 		Json result = new Json();
 		try {
 			result.setData(this.bookService.updateKnowledge(bookId, info));
@@ -148,12 +148,12 @@ public class TextBookController {
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
-			logger.error("更新数据发生异常", e);
+			logger.error("更新知识点数据发生异常", e);
 		}
 		return result;
 	}
 	/**
-	 * 加载源代码值。
+	 * 加载代码值。
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.SYLLABUS_TEXTBOOK + ":" + Right.VIEW})
@@ -162,7 +162,7 @@ public class TextBookController {
 	public String[] code(){
 		Integer max = this.bookService.loadMaxCode();
 		if(max == null) max = 0;
-		return new String[]{ String.format("%02d", max + 1) };
+		return new String[]{ String.format("%04d", max + 1) };
 	}
 	/**
 	 * 删除数据。
