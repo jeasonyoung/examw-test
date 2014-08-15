@@ -55,7 +55,7 @@ $(function(){
 		},{
 			title:"题型",
 			field:"typeName",
-			width:12,
+			width:13,
 			align:"center",
 			sortable:true
 		},{
@@ -96,6 +96,14 @@ $(function(){
 			width:10,
 			align:"center",
 			sortable:true
+		},{
+			title:"预览",
+			field:"opt",
+			width:10,
+			align:"center",
+			formatter:function(value,row,index){
+				return "<a href=\"javascript:${dg}_preview('"+row["id"] +"'," +row["status"]+ ");\">预览</a>";
+			}
 		}]],
 		toolbar:"#${dg}_toobar",
 		onLoadError:function(e){
@@ -105,6 +113,58 @@ $(function(){
 			edit_window("编辑试题［"+rowData.typeName+"］",rowIndex,rowData);
 		}
 	});
+	//preview
+	${dg}_preview = function(itemId,status){
+		var isAudit = (status == ${ITEM_STATUS_NONE_VALUE});
+		var d = $("<div/>").dialog({
+			title:"试题预览",
+			width:800,
+			height:600,
+			href:"<@s.url '/library/item/preview/'/>" +itemId,
+			modal:true,
+			buttons:[{
+				text:(isAudit ? "审核":"反审核"),
+				iconCls:"icon-save",
+				handler:function(){
+					$.messager.confirm("确认","您是否确认进行［"+$(this).text() +"］?",function(r){
+						if(!r)return;
+						$.messager.progress();
+						$.ajax({
+							url:"<@s.url '/library/item/'/>" + (isAudit?"audit" :"unaudit") + "/" +itemId,
+							type:"GET",
+							dataType:"json",
+							error:function(e){
+								$.messager.progress("close");
+								<@error_dialog "e"/>
+							},
+							success:function(data,textStatus){
+								$.messager.progress("close");
+								if(data.success){
+									dg.datagrid("load");
+									dg.datagrid("unselectAll");
+									d.dialog("close");
+								}else{
+									$.messager.show({
+										title:"提示",
+										msg:data.msg
+									});
+								}
+							}
+						});
+					});
+				}
+			},{
+				text:"关闭",
+				iconCls:"icon-cancel",
+				handler:function(){
+					d.dialog("close");
+				}
+			}],
+			onClose:function(){
+				$(this).dialog("destroy");
+			}
+		});
+	};
 	//search
 	${dg}_search = function(){
 		dg.datagrid("load",{

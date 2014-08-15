@@ -216,4 +216,62 @@ public class ItemController {
 		}
 		return result;
 	}
+	/**
+	 * 试题预览。
+	 * @param itemId
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_ITEM + ":" + Right.VIEW})
+	@RequestMapping(value="/preview/{itemId}", method = {RequestMethod.GET, RequestMethod.POST})
+	public String itemPreview(@PathVariable String itemId,Model model){
+		model.addAttribute("ItemJudgeAnswer_Right_Value", ItemJudgeAnswer.RIGTH.getValue());
+		model.addAttribute("ItemJudgeAnswer_Right_Name", this.itemService.loadJudgeAnswerName(ItemJudgeAnswer.RIGTH.getValue()));
+
+		model.addAttribute("ItemJudgeAnswer_Wrong_Value", ItemJudgeAnswer.WRONG.getValue());
+		model.addAttribute("ItemJudgeAnswer_Wrong_Name", this.itemService.loadJudgeAnswerName(ItemJudgeAnswer.WRONG.getValue()));
+		
+		model.addAttribute("item", this.itemService.loadItemPreview(itemId));
+		return "library/item_preview";
+	}
+	/**
+	 * 试题审核。
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_ITEM + ":" + Right.UPDATE})
+	@RequestMapping(value="/audit/{itemId}", method = RequestMethod.GET)
+	@ResponseBody
+	public Json audit(@PathVariable String itemId){
+		if(logger.isDebugEnabled()) logger.debug("审核试题［"+ itemId +"］...");
+		Json result = new Json();
+		try {
+			 this.itemService.updateStatus(itemId, ItemStatus.AUDIT);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("审核数据["+itemId+"]时发生异常:", e);
+		}
+		return result;
+	}
+	/**
+	 * 试题反审核。
+	 * @param itemId。
+	 * 试题ID。
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_ITEM + ":" + Right.UPDATE})
+	@RequestMapping(value="/unaudit/{itemId}", method = RequestMethod.GET)
+	@ResponseBody
+	public Json unAudit(@PathVariable String itemId){
+		if(logger.isDebugEnabled()) logger.debug("反审核试题［"+ itemId +"］...");
+		Json result = new Json();
+		try {
+			 this.itemService.updateStatus(itemId, ItemStatus.NONE);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("反审核数据["+itemId+"]时发生异常:", e);
+		}
+		return result;
+	}
 }

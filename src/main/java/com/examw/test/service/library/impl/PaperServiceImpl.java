@@ -533,4 +533,20 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 			if(data != null) this.structureItemDao.delete(data);
 		}
 	}
+	/*
+	 * 加载试卷预览。
+	 * @see com.examw.test.service.library.IPaperService#loadPaperPreview(java.lang.String)
+	 */
+	@Override
+	public PaperInfo loadPaperPreview(String paperId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［id = %s］预览...", paperId));
+		if(StringUtils.isEmpty(paperId)) return null;
+		this.paperDao.evict(Paper.class);
+		Paper paper = this.paperDao.load(Paper.class, paperId);
+		if(paper == null) {
+			if(logger.isDebugEnabled()) logger.debug(String.format("试卷［id = %s］不存在！", paperId));
+			return null;
+		}
+		return this.changeModel(paper);
+	}
 }

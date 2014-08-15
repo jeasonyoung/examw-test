@@ -189,7 +189,7 @@ public class TextBookServiceImpl extends BaseDataServiceImpl<TextBook, TextBookI
 		}	
 	}
 	/*
-	 * 加载最大代码。
+	 * 加载知识点最大代码。
 	 * @see com.examw.test.service.syllabus.ITextBookService#loadMaxCode()
 	 */
 	@Override

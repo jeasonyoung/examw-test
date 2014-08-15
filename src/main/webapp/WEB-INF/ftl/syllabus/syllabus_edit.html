@@ -5,16 +5,6 @@
 <script type="text/javascript">
 <!--
 $(function(){
-	//parent syllabus
-	var parent_syllabus_cbt = $("#${form} input[name='pid']").combotree({
-		<#if (CURRENT_SUBJECT_ID?length>0)>
-		url:"<@s.url '/syllabus/syllabus/tree/${CURRENT_SUBJECT_ID}?ignore='/><#if (CURRENT_SYLL_ID?length > 0)>${CURRENT_SYLL_ID}</#if>",
-		</#if>
-		lines:true,
-		onLoadError:function(e){
-			<@error_dialog "e"/>
-		}
-	});
 	//exam-tree
 	var current_category_select = false;
 	var exam_tree = $("#${form} input[name='examId']").combotree({
@@ -23,16 +13,10 @@ $(function(){
 		onLoadError:function(e){
 				<@error_dialog "e"/>
 		},
-		onLoadSuccess:function(){
-			var id = "${CURRENT_EXAM_ID}";
-			if($.trim(id) == "") return;
-			exam_tree.combotree("setValue",id);
-		},
-		onSelect:function(record){
-			current_category_select = true;
-			if(subject_cbb && "${CURRENT_EXAM_ID}"!= record.id ){
+		onChange:function(n,o){
+			if(subject_cbb){
 				subject_cbb.combobox("clear");
-				subject_cbb.combobox("reload","<@s.url '/settings/subject/all'/>?examId=" + record.id);
+				subject_cbb.combobox("reload","<@s.url '/settings/subject/all'/>?examId=" + n);
 			}
 		}
 	});
@@ -47,32 +31,43 @@ $(function(){
 		onLoadError:function(e){
 			<@error_dialog 'e'/>
 		},
-		onLoadSuccess:function(){
-			subject_cbb.combobox("clear");
-			var id = "${CURRENT_SUBJECT_ID}";
-			if($.trim(id) == "") return;
-			subject_cbb.combobox("setValue",id);
-		},
+		onChange:function(n,o){
+			if(parent_syllabus_cbt){
+				parent_syllabus_cbt.combotree("clear");
+				if($.trim(n) == "") return;
+				parent_syllabus_cbt.combotree("reload","<@s.url '/syllabus/syllabus/tree/'/>" + n);
+			}
+		}
+	});
+	//parent syllabus
+	var parent_syllabus_cbt = $("#${form} input[name='pid']").combotree({
+		<#if (CURRENT_SUBJECT_ID?length>0)>
+		url:"<@s.url '/syllabus/syllabus/tree/${CURRENT_SUBJECT_ID}?ignore='/><#if (CURRENT_SYLL_ID?length > 0)>${CURRENT_SYLL_ID}</#if>",
+		</#if>
+		lines:true,
+		onLoadError:function(e){
+			<@error_dialog "e"/>
+		}
 	});
 });
 //-->
 </script>
 <form id="${form}" method="POST" style="padding:10px;">
-	<div style="float:left;margin-top:12px;width:100%;">
+	<div style="float:left;margin-top:2px;width:100%;">
 		<label style="width:75px;">上级要点：</label>
 		<input type="text" name="pid" style="width:319px;"/>
 	</div>
-	<div style="float:left;margin-top:12px;width:100%;">
+	<div style="float:left;margin-top:15px;width:100%;">
 		<label style="width:75px;">所属科目：</label>
 		<input name="examId" type="text"  style="width:154px;"/>
 		<input name="subId" type="text"  style="width:160px;"/>
 		<input type="hidden" name="id">
 	</div> 
-	<div style="float:left; margin-top:12px; width:100%;">
+	<div style="float:left; margin-top:15px; width:100%;">
 		<label style="width:75px;">要点代码：</label>
 		<input type="text" name="code" class="easyui-validatebox"  data-options="required:true" style="width:315px;"/>
 	</div>
-	<div style="float:left; margin-top:12px; width:100%;">
+	<div style="float:left; margin-top:15px; width:100%;">
 		<label style="width:75px;">要点名称：</label>
 		<input type="text" name="title" class="easyui-validatebox"  data-options="required:true" style="width:315px;"/>
 	</div>

@@ -89,4 +89,12 @@ public interface IPaperService extends IBaseDataService<PaperInfo> {
 	 * 结构下试题ID。
 	 */
 	void deleteStructureItem(String[] ids);
+	/**
+	 * 加载试卷预览。
+	 * @param paperId
+	 * 试卷ID。
+	 * @return
+	 * 试卷信息。
+	 */
+	PaperInfo loadPaperPreview(String paperId);
 }

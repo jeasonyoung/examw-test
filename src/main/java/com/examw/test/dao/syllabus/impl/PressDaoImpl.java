@@ -47,7 +47,7 @@ public class PressDaoImpl extends BaseDaoImpl<Press> implements IPressDao{
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.count(hql, parameters);
 	}
-	//添加查询条件到HQL。
+	//查询条件
 	private String addWhere(PressInfo info, String hql, Map<String, Object> parameters){
 		if(!StringUtils.isEmpty(info.getName())){
 			hql += "  and (p.name like :name)";

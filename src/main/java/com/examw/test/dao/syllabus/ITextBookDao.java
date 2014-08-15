@@ -6,7 +6,7 @@ import com.examw.test.dao.IBaseDao;
 import com.examw.test.domain.syllabus.TextBook;
 import com.examw.test.model.syllabus.TextBookInfo;
 /**
- * 教材数据接口。
+ * 教材设置数据接口。
  * @author lq.
  * @since 2014-08-07.
  */
