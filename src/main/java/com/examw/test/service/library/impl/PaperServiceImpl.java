@@ -30,11 +30,13 @@ import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.library.ItemInfo;
 import com.examw.test.model.library.ItemScoreInfo;
 import com.examw.test.model.library.PaperInfo;
+import com.examw.test.model.library.PaperPreview;
 import com.examw.test.model.library.StructureInfo;
 import com.examw.test.model.library.StructureItemInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperService;
+import com.examw.test.service.library.ItemStatus;
 import com.examw.test.service.library.ItemType;
 import com.examw.test.service.library.PaperStatus;
 
@@ -154,7 +156,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		if(logger.isDebugEnabled()) logger.debug("类型转换...");
 		if(data == null) return null;
 		PaperInfo info = new PaperInfo();
-		BeanUtils.copyProperties(data, info);
+		BeanUtils.copyProperties(data, info, new String[]{"structures"});
 		if(data.getSubject() != null){
 			info.setSubjectId(data.getSubject().getId());
 			info.setSubjectName(data.getSubject().getName());
@@ -207,7 +209,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		}
 		info.setLastTime(new Date());
 		
-		BeanUtils.copyProperties(info, data);
+		BeanUtils.copyProperties(info, data,new String[]{"structures"});
 		
 		if(!StringUtils.isEmpty(info.getSubjectId()) && (data.getSubject() == null || !data.getSubject().getId().equalsIgnoreCase(info.getSubjectId()))){
 			data.setSubject(this.subjectDao.load(Subject.class, info.getSubjectId()));
@@ -264,11 +266,31 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 			msg = String.format("试卷［id=%s］不存在！", id);
 		}
 		data.setStatus(status.getValue());
-		data.setLastTime(new Date());
+		if(status == PaperStatus.AUDIT){
+			//将试卷下未审核的题目批量审核。
+			this.auditPaperItems(data.getStructures());
+		}
 		if(status == PaperStatus.PUBLISH){
 			data.setPublishTime(new Date());
 		}
+		data.setLastTime(new Date());
 		if(logger.isDebugEnabled()) logger.debug(String.format("更新状态［%1$s,%2$s］%3$s ＝> %4$s", data.getId(),data.getName(), PaperStatus.convert(data.getStatus()),  status));
+	}
+	//审核试卷下的题目。
+	private void auditPaperItems(Set<Structure> structures){
+		if(structures == null || structures.size() == 0) return;
+		for(Structure structure : structures){
+			if(structure == null) continue;
+			if(structure.getItems() != null && structure.getItems().size() > 0){
+				for(StructureItem structureItem : structure.getItems()){
+					if(structureItem == null) continue;
+					if(structureItem.getItem() != null && structureItem.getItem().getStatus() != ItemStatus.AUDIT.getValue()){
+						structureItem.getItem().setStatus(ItemStatus.AUDIT.getValue());
+					}
+				}
+			}
+			this.auditPaperItems(structure.getChildren());
+		}
 	}
 	/*
 	 * 加载试卷结构集合。
@@ -288,7 +310,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		if(list != null && list.size() > 0){
 			for(Structure s : list){
 				StructureInfo info = new StructureInfo();
-				if(this.changeModel(s, info)){
+				if(this.changeModel(s, info, false)){
 					results.add(info);
 				}
 			}
@@ -296,9 +318,23 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		return results;
 	}
 	//试卷结构类型转换。
-	private boolean changeModel(Structure source, StructureInfo target){
+	private boolean changeModel(Structure source, StructureInfo target, boolean isChangeItems){
 		if(source == null || target == null) return false;
-		BeanUtils.copyProperties(source, target, new String[]{"children"});
+		BeanUtils.copyProperties(source, target, new String[]{"items","children"});
+		if(isChangeItems && source.getItems() != null && source.getItems().size() > 0){
+			Set<StructureItemInfo> items = new TreeSet<StructureItemInfo>(new Comparator<StructureItemInfo>(){
+				@Override
+				public int compare(StructureItemInfo o1, StructureItemInfo o2) {
+					return o1.getOrderNo() - o2.getOrderNo();
+				}
+			});
+			for(StructureItem structureItem : source.getItems()){
+				 if(structureItem == null) continue;
+				 StructureItemInfo structureItemInfo = this.changeModel(structureItem);
+				 if(structureItemInfo != null) items.add(structureItemInfo);
+			}
+			target.setItems(items);
+		}
 		if(source.getChildren() != null && source.getChildren().size() > 0){
 			Set<StructureInfo> children = new TreeSet<StructureInfo>(new Comparator<StructureInfo>(){
 				@Override
@@ -310,7 +346,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 				if(s == null) continue;
 				 StructureInfo e = new StructureInfo();
 				 e.setPid(target.getId());
-				 if(this.changeModel(s, e)){
+				 if(this.changeModel(s, e, isChangeItems)){
 					 children.add(e);
 				 }
 			}
@@ -538,7 +574,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	 * @see com.examw.test.service.library.IPaperService#loadPaperPreview(java.lang.String)
 	 */
 	@Override
-	public PaperInfo loadPaperPreview(String paperId) {
+	public PaperPreview loadPaperPreview(String paperId) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［id = %s］预览...", paperId));
 		if(StringUtils.isEmpty(paperId)) return null;
 		this.paperDao.evict(Paper.class);
@@ -547,6 +583,24 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 			if(logger.isDebugEnabled()) logger.debug(String.format("试卷［id = %s］不存在！", paperId));
 			return null;
 		}
-		return this.changeModel(paper);
+		PaperPreview paperPreview = this.changeModel(paper);
+		//List<Structure> structures = this.structureDao.finaStructures(paperId);
+		if(paperPreview != null && paper.getStructures() != null && paper.getStructures().size() > 0){
+			 Set<StructureInfo> structureInfos = new TreeSet<StructureInfo>(new Comparator<StructureInfo>(){
+				@Override
+				public int compare(StructureInfo o1, StructureInfo o2) {
+					return o1.getOrderNo() - o2.getOrderNo();
+				}
+			 });
+			 for(Structure structure : paper.getStructures()){
+				 if(structure == null) continue;
+				 StructureInfo structureInfo = new StructureInfo();
+				 if(this.changeModel(structure, structureInfo, true)){
+					 structureInfos.add(structureInfo);
+				 }
+			 }
+			 paperPreview.setStructures(structureInfos);
+		}
+		return paperPreview;
 	}
 }

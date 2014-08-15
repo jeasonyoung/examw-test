@@ -1,10 +1,100 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
+<#--试卷预览-->
+<#include "library/item_view.ftl"/>
+<#if paper??>
+<div class="container" style="float:left;width:99%;">
+	<div style="float:left;margin-top:2px;width:100%;">
+		<center><h2>${paper.name}</h2></center>
+		<center><small>${paper.description}</small></center>
+		<center><hr/></center>
+	</div>
+	<div style="float:left;margin-top:5px;width:100%;">
+		<div style="float:left;">
+			<label style="width:75px;">所属考试：</label>
+			<span style="width:168px;">${paper.examName}<br/></span>
+		</div>
+		<div style="float:left;">
+			<label style="width:75px;">所属科目：</label>
+			<span style="width:168px;">${paper.subjectName}<br/></span>
+		</div>
+		<div style="float:left;">
+			<label style="width:75px;">试卷类型：</label>
+			<span style="width:168px;">${paper.typeName}<br/></span>
+		</div>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<div style="float:left;">
+			<label style="width:75px;">卷面总分：</label>
+			<span style="width:50px;text-align:center;">${paper.score}<br/></span>
+		</div>
+		<div style="float:left;">
+			<label style="width:68px;">考试时长：</label>
+			<span style="width:50px;text-align:center;">${paper.time}<br/></span>
+		</div>
+		<div style="float:left;">
+			<label style="width:75px;">使用年份：</label>
+			<span style="width:34px;text-align:center;">${paper.year?string("0000")}<br/></span>
+		</div>
+		<div style="float:left;">
+			<label style="width:100px;">价格(考试币)：</label>
+			<span style="width:34px;text-align:center;">${paper.price}<br/></span>
+		</div>
+		<div style="float:left;">
+			<label style="width:75px;">试题来源：</label>
+			<span style="width:168px;">${paper.sourceName}<br/></span>
+		</div>
+	</div>
+	<#if paper.structures??>
+		 <#list paper.structures as s>
+		 	<@paper_structure s/>
+		 </#list>
+	</#if>
+</div>
+</#if>
 
-</body>
-</html>
+<#--试卷结构-->
+<#macro paper_structure structure>
+<div style="float:left;margin-top:12px;width:100%;">
+	<label style="margin-left:10px"><h3>${structure.title}<#if ((structure.score??) && (structure.score > 0))>(${structure.score} 分)</#if></h3></label>
+</div>
+<#if structure.items??>
+	<#list structure.items?sort_by(["orderNo"]) as st>
+		<#if ((st??) && (st.item??))>
+			<@paper_structure_item st.item/>
+		</#if>
+	</#list>
+</#if>
+<#if structure.structures ??>
+	<#list structure.structures?sort_by(["orderNo"]) as s>
+	 	<@paper_structure s/>
+	 </#list>
+</#if>
+</#macro>
+
+<#--试卷结构下题目-->
+<#macro paper_structure_item item>
+<#if item??>
+	<#switch item.type>
+		<#case 1><#--单选-->
+			<@single item/>
+		<#break>
+		<#case 2><#--多选-->
+			<@multy item/>
+		<#break>
+		<#case 3><#--不定向选-->
+			<@uncertain item/>
+		<#break>
+		<#case 4><#--判断题-->
+			<@judge item/>
+		<#break>
+		<#case 5><#--问答题-->
+			<@qanda item/>
+		<#break>
+		<#case 6><#--共享题干题-->
+			<@share_title item/>
+		<#break>
+		<#case 7><#--共享答案题-->
+			<@share_answer item/>
+		<#break>
+	</#switch>
+</#if>
+</#macro>

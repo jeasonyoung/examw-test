@@ -25,7 +25,7 @@ public class StructureDaoImpl extends BaseDaoImpl<Structure> implements IStructu
 	@Override
 	public List<Structure> finaStructures(String paperId) {
 		if(logger.isDebugEnabled()) logger.debug("加载试卷下的结构数据...");
-		final String hql = "from Structure s where (s.parent is null) and (s.paper.id = :paperId)";
+		final String hql = "from Structure s where (s.parent is null) and (s.paper.id = :paperId) order by s.orderNo";
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("paperId", paperId);
 		if(logger.isDebugEnabled()) logger.debug(hql);

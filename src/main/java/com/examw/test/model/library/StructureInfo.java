@@ -17,6 +17,7 @@ public class StructureInfo implements Serializable {
 	private String pid,id,title;
 	private Integer type,orderNo;
 	private BigDecimal score;
+	private Set<StructureItemInfo> items;
 	private Set<StructureInfo> children;
 	/**
 	 * 获取父结构ID。
@@ -122,5 +123,20 @@ public class StructureInfo implements Serializable {
 	 */
 	public void setChildren(Set<StructureInfo> children) {
 		this.children = children;
+	}
+	/**
+	 * 获取结构上试题信息集合。
+	 * @return 结构上试题信息集合。
+	 */
+	public Set<StructureItemInfo> getItems() {
+		return items;
+	}
+	/**
+	 * 设置结构上试题信息集合。
+	 * @param items 
+	 *	  结构上试题信息集合。
+	 */
+	public void setItems(Set<StructureItemInfo> items) {
+		this.items = items;
 	}
 }

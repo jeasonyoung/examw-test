@@ -45,11 +45,14 @@
 	float:left;
 	margin-left:15px;
 }
-h1,.h2 {
+h2,h3 {
   margin-top: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: normal;
   color: #333;
+}
+hr {
+	color:#f5f5f5;
 }
 -->
 </style>
@@ -96,7 +99,7 @@ h1,.h2 {
 <div style="float:left;width:100%;">
 	<dl style="float:left;">
 		<dt style="margin-left:10px;">
-			<pre>${item.content}</pre>
+			<pre><#if item.serial??>${item.serial}</#if>${item.content}<#if ((item.score??)&&(item.score > 0))>(${item.score} 分)</#if></pre>
 		</dt>
 		<#nested>
 	</dl>

@@ -86,12 +86,12 @@ $(function(){
 			title:"来源",
 			field:"sourceName",
 			width:25,
-			align:"center",
+			align:"left",
 			sortable:true
 		},{
 			title:"操作",
 			field:"opt",
-			width:20,
+			width:22,
 			align:"center",
 			formatter:function(value,data,index){
 				var href = "<a class='paper-list-opt-preview' href='#' onclick='${dg}_paper_preview(\""+data["id"]+"\")'/>"
@@ -99,6 +99,14 @@ $(function(){
 					href = "<a class='paper-list-opt-add' href='#' onclick='${dg}_paper_structure(\""+ data["id"] +"\",\"试卷［"+data["name"]+"］试题管理\",\"" + data["examId"] +"\",\"" + data["subjectId"] + "\",\"" + data["status"] +"\",\"" + data["type"] +"\",\"" + data["sourceId"] +"\")'/>";
 				}
 				return href;
+			}
+		},{
+			title:"预览",
+			field:"preview",
+			width:10,
+			align:"center",
+			formatter:function(value,row,index){
+				return "<a href=\"javascript:${dg}_paper_preview('"+row["id"] +"'," +row["status"]+ ");\">预览</a>";
 			}
 		}]],
 		toolbar:"#${dg}_toobar",
@@ -118,8 +126,56 @@ $(function(){
 		$(".paper-list-opt-add").linkbutton({text:"试题管理",plain:true,iconCls:"icon-add"});
 	};
 	//paper_preview
-	${dg}_paper_preview = function(paperId){
-		///TODO:预览试卷
+	${dg}_paper_preview = function(paperId,status){
+		var isAudit = (status == ${PAPER_STATUS_NONE});
+		var d = $("<div/>").dialog({
+			title:"试题预览",
+			width:800,
+			height:600,
+			href:"<@s.url '/library/paper/preview/'/>" +paperId,
+			modal:true,
+			buttons:[{
+				text:(isAudit ? "审核":"反审核"),
+				iconCls:"icon-save",
+				handler:function(){
+					$.messager.confirm("确认","您是否确认进行［"+$(this).text() +"］?",function(r){
+						if(!r)return;
+						$.messager.progress();
+						$.ajax({
+							url:"<@s.url '/library/paper/'/>" + (isAudit?"audit" :"unaudit") + "/" +paperId,
+							type:"GET",
+							dataType:"json",
+							error:function(e){
+								$.messager.progress("close");
+								<@error_dialog "e"/>
+							},
+							success:function(data,textStatus){
+								$.messager.progress("close");
+								if(data.success){
+									dg.datagrid("load");
+									dg.datagrid("unselectAll");
+									d.dialog("close");
+								}else{
+									$.messager.show({
+										title:"提示",
+										msg:data.msg
+									});
+								}
+							}
+						});
+					});
+				}
+			},{
+				text:"关闭",
+				iconCls:"icon-cancel",
+				handler:function(){
+					d.dialog("close");
+				}
+			}],
+			onClose:function(){
+				$(this).dialog("destroy");
+			}
+		});
 	};
 	//paper_structure
 	${dg}_paper_structure = function(paperId,title,examId,subjectId,status,type,sourceId){

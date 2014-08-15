@@ -31,6 +31,7 @@ import com.examw.test.model.library.StructureInfo;
 import com.examw.test.model.library.StructureItemInfo;
 import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperService;
+import com.examw.test.service.library.ItemJudgeAnswer;
 import com.examw.test.service.library.PaperStatus;
 
 /**
@@ -410,8 +411,54 @@ public class PaperController {
 	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.VIEW})
 	@RequestMapping(value="/preview/{paperId}", method = {RequestMethod.GET, RequestMethod.POST})
 	public String paperPreview(@PathVariable String paperId,Model model){
-		PaperInfo paper = this.paperService.loadPaperPreview(paperId);
-		model.addAttribute("Paper", paper);
+		model.addAttribute("ItemJudgeAnswer_Right_Value", ItemJudgeAnswer.RIGTH.getValue());
+		model.addAttribute("ItemJudgeAnswer_Right_Name", this.itemService.loadJudgeAnswerName(ItemJudgeAnswer.RIGTH.getValue()));
+
+		model.addAttribute("ItemJudgeAnswer_Wrong_Value", ItemJudgeAnswer.WRONG.getValue());
+		model.addAttribute("ItemJudgeAnswer_Wrong_Name", this.itemService.loadJudgeAnswerName(ItemJudgeAnswer.WRONG.getValue()));
+		
+		model.addAttribute("paper",  this.paperService.loadPaperPreview(paperId));
 		return "library/paper_preview";
+	}
+	/**
+	 * 试卷审核。
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE})
+	@RequestMapping(value="/audit/{paperId}", method = RequestMethod.GET)
+	@ResponseBody
+	public Json audit(@PathVariable String paperId){
+		if(logger.isDebugEnabled()) logger.debug("审核试卷［"+ paperId +"］...");
+		Json result = new Json();
+		try {
+			this.paperService.updateStatus(paperId, PaperStatus.AUDIT);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("审核试卷数据["+paperId+"]时发生异常:", e);
+		}
+		return result;
+	}
+	/**
+	 * 试卷反审核。
+	 * @param itemId。
+	 * 试卷ID。
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE})
+	@RequestMapping(value="/unaudit/{paperId}", method = RequestMethod.GET)
+	@ResponseBody
+	public Json unAudit(@PathVariable String paperId){
+		if(logger.isDebugEnabled()) logger.debug("反审核试卷［"+ paperId +"］...");
+		Json result = new Json();
+		try {
+			this.paperService.updateStatus(paperId, PaperStatus.NONE);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("反审核试卷数据["+paperId+"]时发生异常:", e);
+		}
+		return result;
 	}
 }

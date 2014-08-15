@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.examw.model.DataGrid;
 import com.examw.test.model.library.PaperInfo;
+import com.examw.test.model.library.PaperPreview;
 import com.examw.test.model.library.StructureInfo;
 import com.examw.test.model.library.StructureItemInfo;
 import com.examw.test.service.IBaseDataService;
@@ -32,12 +33,12 @@ public interface IPaperService extends IBaseDataService<PaperInfo> {
 	String loadStatusName(Integer status);
 	/**
 	 * 更新试卷状态。
-	 * @param id
+	 * @param paperId
 	 * 试卷ID。
 	 * @param status
 	 * 试卷状态。
 	 */
-	void updateStatus(String id,PaperStatus status);
+	void updateStatus(String paperId,PaperStatus status);
 	/**
 	 * 获取试卷结构集合。
 	 * @param paperId
@@ -96,5 +97,5 @@ public interface IPaperService extends IBaseDataService<PaperInfo> {
 	 * @return
 	 * 试卷信息。
 	 */
-	PaperInfo loadPaperPreview(String paperId);
+	PaperPreview loadPaperPreview(String paperId);
 }
