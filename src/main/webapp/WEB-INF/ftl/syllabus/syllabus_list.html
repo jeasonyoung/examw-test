@@ -90,17 +90,22 @@ $(function(){
 	};
 	//edit
 	function edit_window(title,index,row,code){
-		var exam_id = current_exam_id,syll_id = "";
+		var exam_id = current_exam_id,syll_id = "",syll_pid = "";
 		if(row && row.id){
 			exam_id = row.examId;
 			current_subject_id = row.subId;
-			syll_id = row.id;
+			if(!row.pid){
+				syll_id = row.id;
+			}else{
+				syll_pid = row.pid;
+				syll_id = row.id;
+			}
 		}
 		var d = $("<div/>").dialog({
 			title:title,
 			width:450,
 			height:250,
-			href:"<@s.url '/syllabus/syllabus/edit'/>?examId="+exam_id+"&subId=" + current_subject_id +"&syllId="+syll_id,
+			href:"<@s.url '/syllabus/syllabus/edit'/>?examId="+exam_id+"&subId=" + current_subject_id +"&syllId="+syll_id+"&syllPid="+syll_pid,
 			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">    

@@ -51,9 +51,10 @@ public class SyllabusController {
 	 */
 	@RequiresPermissions({ModuleConstant.SYLLABUSS_SYLLABUS+ ":" + Right.VIEW})
 	@RequestMapping(value="/edit", method = RequestMethod.GET)
-	public String edit(String syllId,String examId,String subId,Model model){
+	public String edit(String syllId,String syllPid,String examId,String subId,Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
 		model.addAttribute("CURRENT_SYLL_ID", syllId);
+		model.addAttribute("CURRENT_SYLL_PID", syllPid);
 		model.addAttribute("CURRENT_EXAM_ID", StringUtils.isEmpty(examId) ? "" : examId.trim());
 		model.addAttribute("CURRENT_SUBJECT_ID", StringUtils.isEmpty(subId) ? "" : subId.trim());
 		return "syllabus/syllabus_edit";
