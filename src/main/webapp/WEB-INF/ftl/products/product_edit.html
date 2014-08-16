@@ -4,7 +4,7 @@
 <script type="text/javascript">
 <!--
 $(function(){
-	var current_category_select = false;
+	var current_category_select = 0;
 	//分类树
 	//category__exam_tree
 	var c_t = $("#${module}_edit_form input[name='examId']").combotree({
@@ -21,7 +21,8 @@ $(function(){
 			c_t.combotree("setValue",id);
 		},
 		onSelect:function(record){
-			current_category_select = true;
+			current_category_select = current_category_select+1;
+			if(current_category_select == 1 && "${CURRENT_EXAM_ID}" == record.id) return;
 			if(s_t){
 				s_t.combobox("clear");
 				s_t.combobox("reload","<@s.url '/settings/subject/all'/>?examId=" + record.id);
@@ -40,6 +41,7 @@ $(function(){
 			<@error_dialog "e"/>
 		},
 		onLoadSuccess:function(){
+			
 		}
 	});
 });
