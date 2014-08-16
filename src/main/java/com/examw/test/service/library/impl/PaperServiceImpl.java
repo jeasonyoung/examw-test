@@ -584,23 +584,18 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 			return null;
 		}
 		PaperPreview paperPreview = this.changeModel(paper);
-		//List<Structure> structures = this.structureDao.finaStructures(paperId);
-		if(paperPreview != null && paper.getStructures() != null && paper.getStructures().size() > 0){
-			 Set<StructureInfo> structureInfos = new TreeSet<StructureInfo>(new Comparator<StructureInfo>(){
-				@Override
-				public int compare(StructureInfo o1, StructureInfo o2) {
-					return o1.getOrderNo() - o2.getOrderNo();
+		if(paperPreview == null) return null;
+		List<StructureInfo> structures = new ArrayList<>();
+		List<Structure> list = this.structureDao.finaStructures(paperId);
+		if(list != null && list.size() > 0){
+			for(Structure s : list){
+				StructureInfo info = new StructureInfo();
+				if(this.changeModel(s, info, true)){
+					structures.add(info);
 				}
-			 });
-			 for(Structure structure : paper.getStructures()){
-				 if(structure == null) continue;
-				 StructureInfo structureInfo = new StructureInfo();
-				 if(this.changeModel(structure, structureInfo, true)){
-					 structureInfos.add(structureInfo);
-				 }
-			 }
-			 paperPreview.setStructures(structureInfos);
+			}
 		}
+		paperPreview.setStructures(structures);
 		return paperPreview;
 	}
 }
