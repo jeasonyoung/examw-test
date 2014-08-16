@@ -4,7 +4,8 @@
 <script type="text/javascript">
 <!--
 $(function(){
-	var current_category_select = 0;
+	var current_category_select = false;
+	var first_category_id = "${CURRENT_CATEGORY_ID}";
 	//分类树
 	//category_tree
 	var c_t = $("#${module}_edit_form input[name='categoryId']").combotree({
@@ -20,9 +21,15 @@ $(function(){
 			if($.trim(id) == "") return;
 			c_t.combotree("setValue",id);
 		},
+		onChange:function(newId,oldId){
+			if(oldId != "")
+			{
+				current_category_select = true;
+				first_category_id = "";
+			}
+		},
 		onSelect:function(record){
-			current_category_select = current_category_select + 1;
-			if(current_category_select == 1 && "${CURRENT_CATEGORY_ID}" == record.id) return;
+			if( first_category_id == record.id) return;
 			if(e_t){
 				e_t.combobox("reload","<@s.url '/settings/exam/all'/>?categoryId=" + record.id);
 			}
@@ -30,6 +37,7 @@ $(function(){
 	});
 	//考试下拉
 	//exam_tree
+	var current_area_id = "${CURRENT_AREA_ID}";
 	var e_t = $("#${module}_edit_form input[name='examId']").combobox({
 		url:"<@s.url '/settings/exam/all'/>?categoryId=${CURRENT_CATEGORY_ID}",
 		required:true,
@@ -41,12 +49,22 @@ $(function(){
 		onLoadSuccess:function(){
 			e_t.combobox("clear");
 			var id = "${CURRENT_EXAM_ID}";
-			if($.trim(id) == "" || current_category_select > 1) return;
+			if($.trim(id) == "" || current_category_select) return;
 			e_t.combobox("setValue",id);
 		},
-		onSelect:function(record){
-			//同时默认选中该考试所属的地区
-			if(a_t && "${CURRENT_AREA_ID}"!= record.areaId ){
+		onChange:function(newId,oldId){
+			var data = e_t.combobox("getData");
+			var record;
+			$.each(data,function(i){
+				if(data[i].id == newId){
+					record = data[i];
+					return false;
+				}
+			});
+			if(current_area_id == "" ){
+				current_area_id = record.areaId;
+			}
+			if(a_t){
 				a_t.combobox("setValue",record.areaId);
 			}
 		}
@@ -60,8 +78,9 @@ $(function(){
 			<@error_dialog "e"/>
 		},
 		onLoadSuccess:function(){
+			console.info("load success........");
 			a_t.combobox("clear");
-			var id = "${CURRENT_AREA_ID}";
+			var id = current_area_id;
 			if($.trim(id) == "") return;
 			a_t.combobox("setValue",id);
 		}

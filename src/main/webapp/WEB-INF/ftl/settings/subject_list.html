@@ -87,15 +87,17 @@ $(function(){
 	//edit
 	function edit_window(title,index,row,code){
 		var c_id = current_category_id,e_id = current_exam_id;
+		var a_id = "";
 		if(row != null){
 			c_id = row.categoryId;
 			e_id = row.examId;
+			a_id = row.areaId;
 		}
 		var d = $("<div/>").dialog({
 			title:title,
 			width:440,
 			height:300,
-			href:"<@s.url '/settings/subject/edit'/>?categoryId="+c_id+"&examId=" + e_id,
+			href:"<@s.url '/settings/subject/edit'/>?categoryId="+c_id+"&examId=" + e_id + "&areaId="+a_id,
 			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
