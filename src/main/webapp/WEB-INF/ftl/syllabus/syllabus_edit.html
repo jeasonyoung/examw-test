@@ -6,17 +6,23 @@
 <!--
 $(function(){
 	//exam-tree
-	var current_category_select = false;
+	var current_category_select = 0;
 	var exam_tree = $("#${form} input[name='examId']").combotree({
 		url:"<@s.url '/settings/category/exams-tree'/>",
 		required:true,
 		onLoadError:function(e){
 				<@error_dialog "e"/>
 		},
-		onChange:function(n,o){
+		onLoadSuccess:function(){
+			var id = "${CURRENT_EXAM_ID}";
+			if($.trim(id) == "") return;
+			exam_tree.combotree("setValue",id);
+		},
+		onSelect:function(record){
+			current_category_select = current_category_select + 1;
+			if(current_category_select == 1 && "${CURRENT_EXAM_ID}" == record.id) return;
 			if(subject_cbb){
-				subject_cbb.combobox("clear");
-				subject_cbb.combobox("reload","<@s.url '/settings/subject/all'/>?examId=" + n);
+				subject_cbb.combobox("reload","<@s.url '/settings/subject/all'/>?examId=" + record.id);
 			}
 		}
 	});
@@ -31,15 +37,21 @@ $(function(){
 		onLoadError:function(e){
 			<@error_dialog 'e'/>
 		},
-		onChange:function(n,o){
-			if(parent_syllabus_cbt){
-				parent_syllabus_cbt.combotree("clear");
-				if($.trim(n) == "") return;
-				parent_syllabus_cbt.combotree("reload","<@s.url '/syllabus/syllabus/tree/'/>" + n);
+		onLoadSuccess:function(){
+			subject_cbb.combobox("clear");
+			var id = "${CURRENT_SUBJECT_ID}";
+			if($.trim(id) == "" || current_category_select > 1) return;
+			subject_cbb.combobox("setValue",id);
+		},
+		onSelect:function(record){
+			if(parent_syllabus_cbt && "${CURRENT_SUBJECT_ID}"!= record.id ){
+				syllabusId ="";
+				parent_syllabus_cbt.combotree("reload","<@s.url '/syllabus/syllabus/tree/'/>"+record.id);
 			}
 		}
 	});
 	//parent syllabus
+	var syllabusId = "${CURRENT_SYLL_PID}";
 	var parent_syllabus_cbt = $("#${form} input[name='pid']").combotree({
 		<#if (CURRENT_SUBJECT_ID?length>0)>
 		url:"<@s.url '/syllabus/syllabus/tree/${CURRENT_SUBJECT_ID}?ignore='/><#if (CURRENT_SYLL_ID?length > 0)>${CURRENT_SYLL_ID}</#if>",
@@ -47,6 +59,12 @@ $(function(){
 		lines:true,
 		onLoadError:function(e){
 			<@error_dialog "e"/>
+		},
+		onLoadSuccess:function(){
+			parent_syllabus_cbt.combotree("clear");
+			var id = syllabusId;
+			if($.trim(id) == "") return;
+			parent_syllabus_cbt.combotree("setValue",id);
 		}
 	});
 });
