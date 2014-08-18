@@ -268,7 +268,12 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		data.setStatus(status.getValue());
 		if(status == PaperStatus.AUDIT){
 			//将试卷下未审核的题目批量审核。
-			this.auditPaperItems(data.getStructures());
+			List<Structure> structures = this.structureDao.finaStructures(data.getId());
+			if(structures != null && structures.size() > 0){
+				for(Structure structure : structures){
+					this.auditPaperItems(structure);
+				}
+			}
 		}
 		if(status == PaperStatus.PUBLISH){
 			data.setPublishTime(new Date());
@@ -277,19 +282,20 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		if(logger.isDebugEnabled()) logger.debug(String.format("更新状态［%1$s,%2$s］%3$s ＝> %4$s", data.getId(),data.getName(), PaperStatus.convert(data.getStatus()),  status));
 	}
 	//审核试卷下的题目。
-	private void auditPaperItems(Set<Structure> structures){
-		if(structures == null || structures.size() == 0) return;
-		for(Structure structure : structures){
-			if(structure == null) continue;
-			if(structure.getItems() != null && structure.getItems().size() > 0){
-				for(StructureItem structureItem : structure.getItems()){
-					if(structureItem == null) continue;
-					if(structureItem.getItem() != null && structureItem.getItem().getStatus() != ItemStatus.AUDIT.getValue()){
-						structureItem.getItem().setStatus(ItemStatus.AUDIT.getValue());
-					}
+	private void auditPaperItems(Structure structure){
+		if(structure == null) return;
+		if(structure.getItems() != null && structure.getItems().size() > 0){
+			for(StructureItem structureItem : structure.getItems()){
+				if(structureItem == null) continue;
+				if(structureItem.getItem() != null && structureItem.getItem().getStatus() != ItemStatus.AUDIT.getValue()){
+					structureItem.getItem().setStatus(ItemStatus.AUDIT.getValue());
 				}
 			}
-			this.auditPaperItems(structure.getChildren());
+		}
+		if(structure.getChildren() != null && structure.getChildren().size() > 0){
+			for(Structure s : structure.getChildren()){
+				this.auditPaperItems(s);
+			}
 		}
 	}
 	/*

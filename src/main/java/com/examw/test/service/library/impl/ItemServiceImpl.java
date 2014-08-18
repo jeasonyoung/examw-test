@@ -260,8 +260,10 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		info.setCheckCode(checkCode);
 		info.setLastTime(new Date());
 		this.changeModel(info, data,structureItem,shareItemScores);
-		
-		if(isAdded) this.itemDao.save(data);
+		if(isAdded)
+			this.itemDao.save(data);
+//		else
+//			this.itemDao.merge(data);
 		return data;
 	}
 	//类型转换(ItemInfo => Item)。
@@ -286,19 +288,24 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 				shareItemScores.add(shareItemScore);
 			}
 		}
-		
+		if(target.getChildren() != null) target.getChildren().clear();
 		if(source.getChildren() != null && source.getChildren().size() > 0){
-			Set<Item> children = new HashSet<>();
+			if(target.getChildren()== null) target.setChildren(new HashSet<Item>());
 			for(ItemInfo info : source.getChildren()){
 				if(info == null) continue;
-				if(StringUtils.isEmpty(info.getId())) info.setId(UUID.randomUUID().toString());
-				Item item = new Item();
+				Item item = StringUtils.isEmpty(info.getId()) ?  null : this.itemDao.load(Item.class, info.getId());
+				if(item != null){
+					if(item.getChildren() != null) item.getChildren().clear();
+				}
+				if(item == null){
+					if(StringUtils.isEmpty(info.getId())) info.setId(UUID.randomUUID().toString());
+					item = new Item();
+				}
 				item.setParent(target);
 				if(this.changeModel(info, item, structureItem, shareItemScores)){
-					children.add(item);
+					target.getChildren().add(item);
 				}
 			}
-			if(children.size() > 0) target.setChildren(children);
 		}
 		return true;
 	}

@@ -184,4 +184,13 @@ public class BaseDaoImpl<T> implements IBaseDao<T> {
 			if(cache != null) cache.evictEntityRegion(persistentClass);
 		}
 	}
+	/*
+	 * 对象状态融合。
+	 * @see com.examw.test.dao.IBaseDao#merge(java.lang.Object)
+	 */
+	@Override
+	public void merge(Object object){
+		if(object == null) return;
+		this.getCurrentSession().merge(object);
+	}
 }
