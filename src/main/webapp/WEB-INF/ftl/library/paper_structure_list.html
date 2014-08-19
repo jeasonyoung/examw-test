@@ -218,7 +218,7 @@ $(function(){
 		if($(obj).attr("value") == "new"){
 			if(show) return;
 			show = true;
-			$.getJSON("<@s.url '/library/paper/structure/items/order/'/>" + current_structure_id,function(data){
+			$.getJSON("<@s.url '/library/paper/structure/items/order/'/>?random="+new Date().getTime() + current_structure_id,function(data){
 				show = false;
 				edit_structure_items_window("新增试题["+current_item_type_name+"]",0,null, data[0]);
 			});
@@ -267,7 +267,8 @@ $(function(){
 							data["item"][key] = post[key];
 						}
 					}
-					//alert(data);console.info(data);return;
+					alert(data);
+					//console.info(data);return;
 					$.ajax({
 						url:"<@s.url '/library/paper/structure/items/update/${CURRENT_PAPER_ID}'/>",
 						type:"POST",

@@ -48,7 +48,7 @@ $(function(){
 	${dg}_add = function(){
 		if(m) return;
 		m = true;
-		$.getJSON("<@s.url '/library/source/code'/>",function(data){
+		$.getJSON("<@s.url '/library/source/code'/>?random="+new Date().getTime(),function(data){
 			m = false;
 			edit_window("新增来源",0,null,data[0]);
 		});

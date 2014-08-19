@@ -21,7 +21,7 @@ $(function(){
 		queueID:"${form}_file_queue",
 		onUploadError : function(file, errorCode, errorMsg){
 			alert(file);
-			console.info(file);
+			//console.info(file);
 			$.messager.show({
 				title:"上传文件异常",
 				msg:errorCode + "|" + errorMsg
