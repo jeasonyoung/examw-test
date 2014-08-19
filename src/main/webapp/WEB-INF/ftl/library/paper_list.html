@@ -270,7 +270,7 @@ $(function(){
 			},
 			onLoad:function(){
 					$("#${module}_edit_form").form("load",(row ? row : {"examId":current_exam_id,"subjectId":current_subject_id}));
-					if(row && row.description) $("#${module}_edit_form textarea").kindeditor("setValue",row.description);
+					//if(row && row.description) $("#${module}_edit_form textarea").kindeditor("setValue",row.description);
 			}
 		});
 	};

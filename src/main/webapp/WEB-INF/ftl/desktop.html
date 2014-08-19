@@ -1,4 +1,7 @@
 <#--桌面信息-->
 
 <div>桌面</div>
-<div class="easyui-ueditor" data-options="initialFrameWidth:600,initialFrameHeight:400"></div>
+<!-- <div id="desktop_ueditor" class="easyui-ueditor" data-options="width:600"/> -->
+<p>
+<button onclick="javascript:alert($('.easyui-ueditor').ueditor('getValue'));">获得内容</button>
+<button onclick="javascript:($('.easyui-ueditor').ueditor('setValue','你好'));">设置内容</button>
