@@ -27,6 +27,8 @@ public class RegistrationInfo extends Paging{
 	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private Date endTime;
 	private String statusName;
+	private String[] relationProductId;
+	private String relationProductName;
 	/**
 	 * 获取注册码ID。
 	 * @return 注册码ID。
@@ -260,6 +262,38 @@ public class RegistrationInfo extends Paging{
 	 */
 	public void setStatusName(String statusName) {
 		this.statusName = statusName;
+	}
+	/**
+	 * 获取 关联产品ID
+	 * @return relationProductId
+	 * 
+	 */
+	public String[] getRelationProductId() {
+		return relationProductId;
+	}
+	/**
+	 * 设置 关联产品ID
+	 * @param relationProductId
+	 * 
+	 */
+	public void setRelationProductId(String[] relationProductId) {
+		this.relationProductId = relationProductId;
+	}
+	/**
+	 * 获取 关联产品名称
+	 * @return relationProductName
+	 * 
+	 */
+	public String getRelationProductName() {
+		return relationProductName;
+	}
+	/**
+	 * 设置 关联产品名称
+	 * @param relationProductName
+	 * 
+	 */
+	public void setRelationProductName(String relationProductName) {
+		this.relationProductName = relationProductName;
 	}
 	
 }

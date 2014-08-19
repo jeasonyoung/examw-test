@@ -49,30 +49,34 @@ $(function(){
 </script>
 
 <form id="${module}_edit_form" method="POST" style="padding:10px;">
-	<div style="float:left;margin-top:2px;width:100%;">
-		<label style="width:75px;">所属考试：</label>
-		<input type="text" name="examId"  style="width:415px;"/>
-	</div>
-	<div style="float:left;margin-top:12px;width:100%;">
-		<label style="width:75px;">包含科目：</label>
-		<input type="text" name="subjectId"  style="width:415px;"/>
+	<div style="float:left;margin-top:2px;width:100%;"">
+		<div style="float:left;">
+			<label style="width:75px;">所属考试：</label>
+			<input type="text" name="examId"  style="width:200px;"/>
+		</div>
+		<div style="float:left;margin-left:5px;">
+			<label style="width:75px;">包含科目：</label>
+			<input type="text" name="subjectId"  style="width:200px;"/>
+		</div>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">产品代码：</label>
-		<input type="text" name="code" class="easyui-validatebox" style="width:410px;" data-options="required:true"/>
+		<input type="text" name="code" class="easyui-validatebox" style="width:480px;" data-options="required:true"/>
 		<input type="hidden" name="id"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">产品名称：</label>
-		<input type="text" name="name" class="easyui-validatebox" style="width:410px;" data-options="required:true"/>
+		<input type="text" name="name" class="easyui-validatebox" style="width:480px;" data-options="required:true"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
-		<label style="width:75px;">原价：</label>
-		<input type="text" name="price" class="easyui-numberbox" value="100" data-options="min:0,precision:2" style="width:414px;" />
-	</div>
-	<div style="float:left;margin-top:12px;width:100%;">
-		<label style="width:75px;">优惠价：</label>
-		<input type="text" name="discount"class="easyui-numberbox" value="0" data-options="min:0,precision:2" style="width:414px;" />
+		<div style="float:left;">
+			<label style="width:75px;">原价：</label>
+			<input type="text" name="price" class="easyui-numberbox" value="100" data-options="min:0,precision:2" style="width:200px;" />
+		</div>
+		<div style="float:left;margin-left:8px;">
+			<label style="width:75px;">优惠价：</label>
+			<input type="text" name="discount"class="easyui-numberbox" value="0" data-options="min:0,precision:2" style="width:200px;" />
+		</div>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">产品介绍：</label>

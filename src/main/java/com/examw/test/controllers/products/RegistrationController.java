@@ -51,4 +51,11 @@ public class RegistrationController {
 		if(logger.isDebugEnabled()) logger.debug("加载列表数据...");
 		return this.registrationService.datagrid(info);
 	}
+	
+	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE})
+	@RequestMapping(value = "/edit", method = RequestMethod.GET)
+	public String edit(Model model){
+		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
+		return "products/registration_edit";
+	}
 }
