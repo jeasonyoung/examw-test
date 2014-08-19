@@ -75,7 +75,7 @@ $(function(){
 			<@error_dialog "e"/>
 		},
 		onDblClickRow:function(row){
-			console.info(row);
+			//console.info(row);
 			edit_window("编辑考试分类",row,null);
 		}
 	});
@@ -156,7 +156,7 @@ $(function(){
 	${menu}_append = ${dg}_add = function(){
 		if(!current_category_id)	//顶级的才传
 		{
-			$.getJSON("<@s.url '/settings/category/code'/>?pid="+current_category_id,function(data){
+			$.getJSON("<@s.url '/settings/category/code'/>?pid="+current_category_id+"&random="+new Date().getTime(),function(data){
 				edit_window("新增考试分类",null,data[0]);
 			});
 		}else{

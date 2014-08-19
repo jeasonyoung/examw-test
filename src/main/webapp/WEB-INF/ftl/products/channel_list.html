@@ -119,7 +119,7 @@ $(function(){
 	${dg}_add = function(){
 		if(m) return;
 		m = true;
-		$.getJSON("<@s.url '/products/channel/code'/>",function(data){
+		$.getJSON("<@s.url '/products/channel/code'/>?random="+new Date().getTime(),function(data){
 			m = false;
 			edit_window("新增渠道",0,null,data[0]);
 		});

@@ -5,10 +5,11 @@
 <script type="text/javascript">
 <!--
 $(function(){
-	var current_subject_id = "" ,current_exam_id = "";
-	//tree
-	var tree = $("#${module}_tree").tree({
+	var current_exam_id = current_subject_id = "";
+	//exam tree
+	var exam_tree = $("#${module}_exam_tree").tree({
 		url:"<@s.url '/settings/category/subject-tree'/>",
+		lines:true,
 		onLoadError:function(e){
 			<@error_dialog "e"/>
 		},
@@ -16,16 +17,15 @@ $(function(){
 			current_exam_id = current_subject_id = "";
 		},
 		onClick:function(node){
-			if(node.attributes.type ==  "exam"){
-				current_exam_id = node.id;
-				current_subject_id = "";
-			}else if(node.attributes.type == "subject"){
+			current_exam_id = current_subject_id = "";
+			if(node.attributes.type =="subject"){
 				current_subject_id = node.id;
-				current_exam_id = "";
+				var parent = exam_tree.tree("getParent",node.target);
+				if(parent) current_exam_id = parent.id;
 			}else{
-				current_subject_id = current_exam_id = "";
+				current_exam_id = node.id;
 			}
-			 ${dg}_search();
+			${dg}_search();
 		}
 	});
 	//dg
@@ -88,16 +88,16 @@ $(function(){
 	};
 	//edit
 	function edit_window(title,index,row){
-		var sub_id = current_subject_id,exam_id = current_exam_id;
-		if(row && row.id){
+		var exam_id = current_exam_id;
+		if(row){
 			exam_id = row.examId;
-			sub_id = row.subId;
+			current_subject_id = row.subId;
 		}
 		var d = $("<div/>").dialog({
 			title:title,
 			width:450,
 			height:250,
-			href:"<@s.url '/syllabus/textbook/edit'/>?examId="+exam_id+"&subId=" + sub_id,
+			href:"<@s.url '/syllabus/textbook/edit'/>?examId="+exam_id+"&subId=" + current_subject_id,
 			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">      
@@ -155,6 +155,8 @@ $(function(){
 	//search
 	${dg}_search = function(){
 		dg.datagrid("load",{
+			"examId":current_exam_id,
+			"subId":current_subject_id,
 			name:$("#${dg}_toobar input[name='name']").val()
 		});
 	};
@@ -203,15 +205,28 @@ $(function(){
 });
 //-->
 </script>
-<table id="${dg}"></table>
-<div id="${dg}_toobar">
-	<@shiro.hasPermission name="${PER_UPDATE}">
-	<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"  onclick="${dg}_add()" style="float:left;">新增</a>
-	</@shiro.hasPermission>
-	<span>|</span>
-	<@shiro.hasPermission name="${PER_DELETE}">
-	<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="${dg}_delete()">删除</a>
-	</@shiro.hasPermission>
-	<label>教材名称：<input name="name" type="text" style="width:198px;"/></label>
-	<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="${dg}_search()" style="margin-left:10px;">查询</a>
+<div class="easyui-layout" data-options="fit:true">
+	<div data-options="region:'west',title:'所属科目',split:true,tools:[{
+			iconCls:'icon-reload',
+		 	handler:function(){
+		 		$('#${module}_exam_tree').tree('reload');
+		 		${dg}_search();
+		 	}
+		}]"  style="padding:5px;width:195px;">
+		<ul id="${module}_exam_tree"></ul>
+	</div>
+	<div data-options="region:'center',title:'大纲列表'">
+		<table id="${dg}"></table>
+		<div id="${dg}_toobar">
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"  onclick="${dg}_add()" style="float:left;">新增</a>
+			</@shiro.hasPermission>
+			<span>|</span>
+			<@shiro.hasPermission name="${PER_DELETE}">
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="${dg}_delete()">删除</a>
+			</@shiro.hasPermission>
+			<label>教材名称：<input name="name" type="text" style="width:198px;"/></label>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="${dg}_search()" style="margin-left:10px;">查询</a>
+		</div>
+	</div>
 </div>

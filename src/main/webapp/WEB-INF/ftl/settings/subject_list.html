@@ -169,7 +169,7 @@ $(function(){
 	${dg}_add = function(){
 		if(m) return;
 		m = true;
-		$.getJSON("<@s.url '/settings/subject/code'/>",function(data){
+		$.getJSON("<@s.url '/settings/subject/code'/>?random="+new Date().getTime(),function(data){
 			m = false;
 			edit_window("新增科目",0,null,data[0]);
 		});
@@ -226,7 +226,7 @@ $(function(){
 			 		$('#${module}_list_category_exam_tree').tree('reload');
 			 		${dg}_search();
 		 	}
-	 	}]" style="padding:5px;width:190px;">
+	 	}]" style="padding:5px;width:195px;">
 	 	<ul id="${module}_list_category_exam_tree"></ul>
 	 </div>
 	 <div data-options="region:'center',title:'科目列表'">
