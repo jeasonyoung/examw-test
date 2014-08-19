@@ -6,7 +6,7 @@
 <!--
 $(function(){
 	//exam-tree
-	var current_category_select = 0;
+	var current_exam_select = 0;
 	var exam_tree = $("#${form} input[name='examId']").combotree({
 		url:"<@s.url '/settings/category/exams-tree'/>",
 		required:true,
@@ -19,8 +19,8 @@ $(function(){
 			exam_tree.combotree("setValue",id);
 		},
 		onSelect:function(record){
-			current_category_select = current_category_select + 1;
-			if(current_category_select == 1 && "${CURRENT_EXAM_ID}" == record.id) return;
+			current_exam_select = current_exam_select + 1;
+			if(current_exam_select == 1 && "${CURRENT_EXAM_ID}" == record.id) return;
 			if(subject_cbb){
 				subject_cbb.combobox("reload","<@s.url '/settings/subject/all'/>?examId=" + record.id);
 			}
@@ -40,7 +40,7 @@ $(function(){
 		onLoadSuccess:function(){
 			subject_cbb.combobox("clear");
 			var id = "${CURRENT_SUBJECT_ID}";
-			if($.trim(id) == "" || current_category_select > 1) return;
+			if($.trim(id) == "" || current_exam_select > 1) return;
 			subject_cbb.combobox("setValue",id);
 		},
 		onSelect:function(record){

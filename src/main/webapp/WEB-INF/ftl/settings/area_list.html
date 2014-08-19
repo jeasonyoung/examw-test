@@ -125,7 +125,7 @@ $(function(){
 	${dg}_add = function(){
 		if(m) return;
 		m = true;
-		$.getJSON("<@s.url '/settings/area/code'/>",function(data){
+		$.getJSON("<@s.url '/settings/area/code'/>?random="+new Date().getTime(),function(data){
 			m = false;
 			edit_window("新增地区",0,null,data[0]);
 		});

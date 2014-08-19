@@ -82,6 +82,81 @@ $(function(){
 			  status: $("#${dg}_status").combobox("getValue")
 		});
 	};
+	//edit
+	function edit_window(title,index,row,code){
+		var d = $("<div/>").dialog({
+			title:title,
+			width:550,
+			height:350,
+			href:"<@s.url '/products/registration/edit'/>",
+			modal:true,
+			buttons:[
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			  {
+				text:"保存",
+				iconCls:"icon-save",
+				handler:function(){
+					$.messager.progress();
+					$("#${module}_edit_form").form("submit",{
+						url:"<@s.url '/products/product/update'/>",
+						onSubmit: function(){
+							var isValid = $(this).form("validate");
+							if (!isValid)$.messager.progress("close");
+							return isValid;
+						},
+						onLoadError:function(e){
+							$.messager.progress("close");
+							<@error_dialog "e"/>
+						},
+						success:function(data){
+							$.messager.progress("close");
+							var data = $.parseJSON(data);
+							if(data.success){
+								dg.datagrid(row ? "updateRow" : "insertRow",{
+									index:index,
+									row:data.data
+								});
+								d.dialog("close");
+							}else{
+								$.messager.show({
+									title:"保存异常",
+									msg:data.msg
+								});
+							}
+						}
+					});
+				}
+			},
+			</@shiro.hasPermission>
+			{
+				text:"关闭",
+				iconCls:"icon-cancel",
+				handler:function(){
+					d.dialog("close");
+				}
+			}],
+			onClose:function(){
+				$(this).dialog("destroy");
+			},
+			onLoad:function(){
+				if(code && !row){
+					$("#${module}_edit_form").form("load",{"code":code});
+					return;
+				}
+				if(row) $("#${module}_edit_form").form("load",row);
+			}
+	  });
+	};
+	//add
+	var m = false;
+	${dg}_add = function(){
+		//if(m) return;
+		//m = true;
+		//$.getJSON("<@s.url '/products/product/code'/>",function(data){
+		//	m = false;
+			edit_window("新增注册码",0,null,null);
+		//});
+	};
 });
 //-->
 </script>
