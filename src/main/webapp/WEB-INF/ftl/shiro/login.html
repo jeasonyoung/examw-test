@@ -103,11 +103,15 @@
  					});
 				};
 				//enter
-				$(window).keydown(function(e){
-					if(e.keyCode == 13){
-						form_submit();
-					}
-				});
+				document.onkeydown=function(e){
+					e = e ? e :(window.event ? window.event : null);  
+			        var currKey=0;  
+			        currKey=e.keyCode||e.which||e.charCode;  
+			        if(currKey==13){  
+			            //执行的方法  
+			            form_submit(); 
+			        }  
+				} 	
 			});
 			//-->
 			</script>

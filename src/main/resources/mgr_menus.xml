@@ -19,7 +19,7 @@
   		<module id="ETS0000103" icon="" name="来源管理" uri="/library/source" order="1"/>
   		<module id="ETS0000203" icon="" name="试卷管理" uri="/library/paper" order="2"/>
   		<module id="ETS0000303" icon="" name="试题管理" uri="/library/item" order="3"/>
-  		<module id="ETS0000403" icon="" name="试卷发布" uri="/library/publish" order="4"/>
+  		<!-- <module id="ETS0000403" icon="" name="试卷发布" uri="/library/publish" order="4"/> -->
   	</module>
   	<module id="ETS0000004" icon="" name="考试大纲" uri="" order="4">
   		<module id="ETS0000104" icon="" name="出版社管理" uri="/syllabus/press" order="1"/>

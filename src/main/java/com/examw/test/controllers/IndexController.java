@@ -95,4 +95,14 @@ public class IndexController implements IUserAware {
 		if(logger.isDebugEnabled()) logger.debug("加载workspace...");
 		return "/workspace";
 	}
+	/**
+	 * 加载桌面页面。
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/desktop", method = RequestMethod.GET)
+	public String desktop(Model model){
+		if(logger.isDebugEnabled()) logger.debug("加载桌面页面portal...");
+		return "/desktop";
+	}
 }

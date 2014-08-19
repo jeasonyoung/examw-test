@@ -17,7 +17,7 @@
 		<!-- 试卷ID -->
 		<id name="id"  type="string"  length="64" />
 		<!-- 试卷名称 -->
-		<property name="name" type="string" length="32" not-null="true" />
+		<property name="name" type="string" length="128" not-null="true" />
 		<!-- 试卷描述 -->
 		 <property name="description" type="text" />
 		<!-- 类型（1-真题，2-模拟题，3-预测题，4-练习题） -->
@@ -43,10 +43,10 @@
 		<!-- 发布时间 -->
 		<property name="publishTime" column="publish_time" type="timestamp" />
 		<!-- 试卷结构集合 -->
-		<set name="structures" inverse="false" cascade="save-update" order-by="orderNo asc">
+		<!-- <set name="structures" inverse="false" cascade="save-update" order-by="orderNo asc">
 			<key column="paper_id" />
 			<one-to-many class="Structure"/>
-		</set>
+		</set> -->
 	</class>
 	<!-- 试卷结构 -->
 	<class name="Structure" table="tbl_Examw_Test_Library_Structures">
@@ -149,7 +149,7 @@
 		<!-- 父题目 -->
 		<many-to-one name="parent" column="pid" class="Item" />
 		<!-- 子题目集合 -->
-		<set name="children" inverse="true" cascade="save-update" order-by="orderNo asc">
+		<set name="children" inverse="true" cascade="all-delete-orphan" order-by="orderNo asc">
 			<key column="pid" />
 			<one-to-many class="Item"/>
 		</set>
@@ -163,5 +163,19 @@
 			<key column="item_id" />
 			<one-to-many class="StructureItem"/>
 		</set>
+	</class>
+	<!-- 试卷发布 -->
+	<class name="PaperRelease" table="tbl_Examw_Test_Library_PapersRelease">
+	    <cache usage="read-write" />
+	    <!-- 试卷发布ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 试卷名称 -->
+		<property name="title" type="string" length="128" not-null="true" />
+		<!-- 所属试卷 -->
+		<many-to-one name="paper" column="paper_id" class="Paper" />
+		<!-- 试卷内容（JSON格式） -->
+		<property name="content" type="text" />
+		<!-- 发布时间 -->
+		<property name="createTime" column="create_time" type="timestamp" />
 	</class>
 </hibernate-mapping>

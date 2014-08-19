@@ -3,7 +3,7 @@ package com.examw.test.model.library;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
@@ -23,7 +23,7 @@ public class PaperPreview implements Serializable {
 	private Integer type,status,price,time,year;
 	private BigDecimal score;
 	private Date createTime,lastTime,publishTime;
-	private Set<StructureInfo> structures;
+	private List<StructureInfo> structures;
 	/**
 	 * 获取试卷ID。
 	 * @return 试卷ID。
@@ -331,7 +331,7 @@ public class PaperPreview implements Serializable {
 	 * 获取试卷结构集合。
 	 * @return 试卷结构集合。
 	 */
-	public Set<StructureInfo> getStructures() {
+	public List<StructureInfo> getStructures() {
 		return structures;
 	}
 	/**
@@ -339,7 +339,7 @@ public class PaperPreview implements Serializable {
 	 * @param structures 
 	 *	  试卷结构集合。
 	 */
-	public void setStructures(Set<StructureInfo> structures) {
+	public void setStructures(List<StructureInfo> structures) {
 		this.structures = structures;
 	}
 }
