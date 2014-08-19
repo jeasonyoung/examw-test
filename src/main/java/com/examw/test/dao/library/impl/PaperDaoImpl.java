@@ -77,6 +77,10 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 			hql += " and (p.subject.id = :subjectId) ";
 			parameters.put("subjectId", info.getSubjectId());
 		}
+		if(info.getStatus() != null && info.getStatus() > -1){
+			hql += " and (p.status = :status) ";
+			parameters.put("status", info.getStatus());
+		}
 		return hql;
 	}
 	/*

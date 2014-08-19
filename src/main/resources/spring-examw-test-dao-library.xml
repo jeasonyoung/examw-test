@@ -23,5 +23,9 @@
 	<bean id="itemDao" class="com.examw.test.dao.library.impl.ItemDaoImpl">
 		<property name="sessionFactory"  ref="sessionFactory" />
 	</bean>
+	<!-- 试卷发布 -->
+	<bean id="paperReleaseDao" class="com.examw.test.dao.library.impl.PaperReleaseDaoImpl">
+	    <property name="sessionFactory"  ref="sessionFactory" />
+	</bean>
 	<!--  题库管理  数据接口实现 end -->
 </beans>

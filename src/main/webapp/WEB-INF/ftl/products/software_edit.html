@@ -48,7 +48,7 @@ $(function(){
 			$("#${form} img").attr("src", root + $(data.target).val());	
 		}
 	});
-	var current_category_select = false;
+	var current_category_select = 0;
 	//分类树
 	//category__exam_tree
 	var c_t = $("#${module}_edit_form input[name='examId']").combotree({
@@ -65,8 +65,9 @@ $(function(){
 			c_t.combotree("setValue",id);
 		},
 		onSelect:function(record){
-			current_category_select = true;
-			if(p_t && "${CURRENT_EXAM_ID}"!= record.id ){
+			current_category_select = current_category_select+1;
+			if(current_category_select == 1 && "${CURRENT_EXAM_ID}" == record.id) return;
+			if(p_t){
 				p_t.combobox("clear");
 				p_t.combobox("reload","<@s.url '/products/product/combo'/>?examId=" + record.id);
 			}

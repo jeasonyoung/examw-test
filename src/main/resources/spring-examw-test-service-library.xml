@@ -79,5 +79,14 @@
 			</map>
 		</property>
 	</bean>
+	<!-- 试卷发布服务 -->
+	<bean id="paperReleaseService" class="com.examw.test.service.library.impl.PaperReleaseServiceImpl">
+	    <!-- 试卷发布数据接口 -->
+	    <property name="paperReleaseDao" ref="paperReleaseDao" />
+	    <!-- 试卷数据接口 -->
+	    <property name="paperDao" ref="paperDao" />
+	    <!-- 试卷服务接口 -->
+	    <property name="paperService" ref="paperService" />
+	</bean>
 	<!-- 题库管理 服务接口实现 end-->
 </beans>

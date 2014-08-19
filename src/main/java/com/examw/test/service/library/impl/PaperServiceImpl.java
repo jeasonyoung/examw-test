@@ -268,7 +268,12 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		data.setStatus(status.getValue());
 		if(status == PaperStatus.AUDIT){
 			//将试卷下未审核的题目批量审核。
-			this.auditPaperItems(data.getStructures());
+			List<Structure> structures = this.structureDao.finaStructures(data.getId());
+			if(structures != null && structures.size() > 0){
+				for(Structure structure : structures){
+					this.auditPaperItems(structure);
+				}
+			}
 		}
 		if(status == PaperStatus.PUBLISH){
 			data.setPublishTime(new Date());
@@ -277,19 +282,20 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		if(logger.isDebugEnabled()) logger.debug(String.format("更新状态［%1$s,%2$s］%3$s ＝> %4$s", data.getId(),data.getName(), PaperStatus.convert(data.getStatus()),  status));
 	}
 	//审核试卷下的题目。
-	private void auditPaperItems(Set<Structure> structures){
-		if(structures == null || structures.size() == 0) return;
-		for(Structure structure : structures){
-			if(structure == null) continue;
-			if(structure.getItems() != null && structure.getItems().size() > 0){
-				for(StructureItem structureItem : structure.getItems()){
-					if(structureItem == null) continue;
-					if(structureItem.getItem() != null && structureItem.getItem().getStatus() != ItemStatus.AUDIT.getValue()){
-						structureItem.getItem().setStatus(ItemStatus.AUDIT.getValue());
-					}
+	private void auditPaperItems(Structure structure){
+		if(structure == null) return;
+		if(structure.getItems() != null && structure.getItems().size() > 0){
+			for(StructureItem structureItem : structure.getItems()){
+				if(structureItem == null) continue;
+				if(structureItem.getItem() != null && structureItem.getItem().getStatus() != ItemStatus.AUDIT.getValue()){
+					structureItem.getItem().setStatus(ItemStatus.AUDIT.getValue());
 				}
 			}
-			this.auditPaperItems(structure.getChildren());
+		}
+		if(structure.getChildren() != null && structure.getChildren().size() > 0){
+			for(Structure s : structure.getChildren()){
+				this.auditPaperItems(s);
+			}
 		}
 	}
 	/*
@@ -584,23 +590,18 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 			return null;
 		}
 		PaperPreview paperPreview = this.changeModel(paper);
-		//List<Structure> structures = this.structureDao.finaStructures(paperId);
-		if(paperPreview != null && paper.getStructures() != null && paper.getStructures().size() > 0){
-			 Set<StructureInfo> structureInfos = new TreeSet<StructureInfo>(new Comparator<StructureInfo>(){
-				@Override
-				public int compare(StructureInfo o1, StructureInfo o2) {
-					return o1.getOrderNo() - o2.getOrderNo();
+		if(paperPreview == null) return null;
+		List<StructureInfo> structures = new ArrayList<>();
+		List<Structure> list = this.structureDao.finaStructures(paperId);
+		if(list != null && list.size() > 0){
+			for(Structure s : list){
+				StructureInfo info = new StructureInfo();
+				if(this.changeModel(s, info, true)){
+					structures.add(info);
 				}
-			 });
-			 for(Structure structure : paper.getStructures()){
-				 if(structure == null) continue;
-				 StructureInfo structureInfo = new StructureInfo();
-				 if(this.changeModel(structure, structureInfo, true)){
-					 structureInfos.add(structureInfo);
-				 }
-			 }
-			 paperPreview.setStructures(structureInfos);
+			}
 		}
+		paperPreview.setStructures(structures);
 		return paperPreview;
 	}
 }

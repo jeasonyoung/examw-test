@@ -47,4 +47,9 @@ public interface IBaseDao<T> {
 	 * 实体对象。
 	 */
 	void evict(Class<?> clazz);
+	/**
+	 * 对象状态融合。
+	 * @param object
+	 */
+	 void merge(Object object);
 }
