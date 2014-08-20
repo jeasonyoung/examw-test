@@ -164,7 +164,7 @@ $(function(){
 		var open = false;
 		if(!open){
 			pop = true;
-			$.getJSON("<@s.url '/library/item/uuid'/>?count=2"+"&random="+new Date().getTime(),function(data){
+			$.getJSON("<@s.url '/library/item/uuid'/>?count=2",function(data){
 				pop = false;
 				$("#${form} input[name='items_id']").val(data[0]);
 				//current_items_id = data[0];

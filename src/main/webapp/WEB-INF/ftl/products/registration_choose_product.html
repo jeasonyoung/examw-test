@@ -1,0 +1,153 @@
+<#--产品设置列表-->
+<#include "comm.ftl"/>
+<#assign module="products_registration_choose"/>
+<#assign dg="${module}_list_dg"/>
+<script type="text/javascript">
+<!--
+$(function(){
+	var current_category_id = "",current_exam_id = "";
+	//category-exam-tree
+	var t = $("#${module}_list_category_exam_tree").tree({
+		url:"<@s.url '/settings/category/exams-tree'/>",
+		onLoadError:function(e){
+			<@error_dialog "e"/>
+		},
+		onBeforeLoad:function(){
+			current_category_id = current_exam_id = "";
+		},
+		onClick:function(node){
+			 if(node.attributes.type == "category"){
+				 current_category_id = node.id;
+				 current_exam_id = "";
+			 }else if(node.attributes.type == "exam"){
+				 var parent = t.tree("getParent",node.target);
+				 current_category_id = parent.id;
+				 current_exam_id = node.id;
+			 }else{
+				 current_category_id = current_exam_id = "";
+			 }
+			 //search;
+			 ${dg}_search();
+		}
+	});
+	//dg
+	var dg=$("#${dg}").datagrid({
+		url:"<@s.url '/products/product/datagrid'/>",
+		fit:true,
+		fitColumns:true,
+		rownumbers:true,
+		pagination:true,
+		pagePosition:"bottom",
+		pageSize:20,
+		pageList:[20,30,40],
+		border:true,
+		striped:true,
+		idField:"id",
+		sortName:"code",
+		sortOrder:"asc",
+		columns:[[{
+			field:"id",
+			checkbox:true
+		},{
+			title:"所属考试",
+			field:"examName",
+			width:10,
+			align:"left"
+		},{
+			title:"产品代码",
+			field:"code",
+			width:5,
+			align:"center",
+			sortable:true
+		},{
+			title:"产品名称",
+			field:"name",
+			width:30,
+			align:"center",
+			sortable:true
+		},{
+			title:"定价",
+			field:"price",
+			width:8,
+			align:"center",
+			sortable:true
+		},{
+			title:"优惠价",
+			field:"discount",
+			width:8,
+			align:"center",
+			sortable:true
+		},{
+			title:"状态",
+			field:"statusName",
+			width:8,
+			align:"center"
+		},{
+			title:"创建时间",
+			field:"createTime",
+			width:12,
+			align:"center",
+			sortable:true
+		},{
+			title:"修改时间",
+			field:"lastTime",
+			width:12,
+			align:"center",
+			sortable:true
+		}]],
+		toolbar:"#${dg}_toobar",
+		onLoadError:function(e){
+			<@error_dialog "e"/>
+		},
+		onLoadSuccess:function(data){
+			var ids = "${CURRENT_CHOOSE_PRODUCT_ID}";
+			if(ids == ""){
+				return;
+			}
+			ids = ids.split(",");
+			$.each(ids,function(i){
+				dg.datagrid("selectRecord",ids[i]);
+			});
+		}
+	});
+	//search
+	${dg}_search = function(){
+		dg.datagrid("load",{
+			  name:$("#${dg}_toobar input[name='name']").val(),
+			  examId:current_exam_id
+		});
+	};
+	${dg}_get_value = function(t){
+		var rows = dg.datagrid("getSelections");
+		if(!rows || rows.length == 0){
+			return 0;
+		}
+		var value = [];
+		$.each(rows,function(i){
+			value.push(rows[i][t]);
+		});
+		return value.join(",");
+	}
+});
+//-->
+</script>
+<div class="easyui-layout" data-options="fit:true" id="${dg}_layout">
+	 <div data-options="region:'west',title:'所属考试',split:true,tools: [{
+		 	iconCls:'icon-reload',
+		 	handler:function(){
+			 		$('#${module}_list_category_exam_tree').tree('reload');
+			 		${dg}_search();
+		 	}
+	 	}]" style="padding:5px;width:190px;">
+	 	<ul id="${module}_list_category_exam_tree"></ul>
+	 </div>
+	 <div data-options="region:'center',title:'产品列表'">
+		<table id="${dg}"></table>
+		<div id="${dg}_toobar">
+			<label>产品名称:</label>
+			<input name="name" type="text" style="width:198px;"/>
+
+			<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
+		</div>
+	</div>
+</div>

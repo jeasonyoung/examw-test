@@ -27,6 +27,7 @@ $(function(){
 		}
 	});
 	//subject-tree
+	var syllabusId = "${CURRENT_SYLL_PID}";
 	var subject_cbb = $("#${form} input[name='subId']").combobox({
 		<#if ((CURRENT_EXAM_ID?length) > 0)>
 	     url:"<@s.url '/settings/subject/all'/>?examId=${CURRENT_EXAM_ID}",
@@ -44,14 +45,13 @@ $(function(){
 			subject_cbb.combobox("setValue",id);
 		},
 		onSelect:function(record){
-			if(parent_syllabus_cbt && "${CURRENT_SUBJECT_ID}"!= record.id ){
+			if(parent_syllabus_cbt){
 				syllabusId ="";
 				parent_syllabus_cbt.combotree("reload","<@s.url '/syllabus/syllabus/tree/'/>"+record.id);
 			}
 		}
 	});
 	//parent syllabus
-	var syllabusId = "${CURRENT_SYLL_PID}";
 	var parent_syllabus_cbt = $("#${form} input[name='pid']").combotree({
 		<#if (CURRENT_SUBJECT_ID?length>0)>
 		url:"<@s.url '/syllabus/syllabus/tree/${CURRENT_SUBJECT_ID}?ignore='/><#if (CURRENT_SYLL_ID?length > 0)>${CURRENT_SYLL_ID}</#if>",

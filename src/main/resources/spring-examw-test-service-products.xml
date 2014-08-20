@@ -64,6 +64,12 @@
 	<bean id="registrationService" class="com.examw.test.service.products.impl.RegistrationServiceImpl">
 		<!-- 注册码数据操作接口 -->
 		<property name="registrationDao" ref="registrationDao" />
+		<!-- 产品数据操作接口 -->
+		<property name="productDao" ref="productDao" />
+		<!-- 关联产品数据操作接口 -->
+		<property name="relationProductDao" ref="relationProductDao" />
+		<!-- 渠道数据操作接口 -->
+		<property name="channelDao" ref="channelDao" />
 		<!-- 状态-名称映射 -->
 		<property name="statusMap">
 		    <map>
