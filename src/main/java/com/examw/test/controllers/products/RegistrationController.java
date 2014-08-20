@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.model.DataGrid;
+import com.examw.model.Json;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.products.RegistrationInfo;
 import com.examw.test.service.products.IRegistrationService;
@@ -51,11 +52,69 @@ public class RegistrationController {
 		if(logger.isDebugEnabled()) logger.debug("加载列表数据...");
 		return this.registrationService.datagrid(info);
 	}
-	
+	/*
+	 * 编辑页面
+	 */
 	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE})
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
 	public String edit(Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
 		return "products/registration_edit";
+	}
+	/**
+	 * 选择产品
+	 * @param model
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE})
+	@RequestMapping(value = "/chooseproduct", method = RequestMethod.GET)
+	public String chooseProduct(String productId,Model model){
+		if(logger.isDebugEnabled()) logger.debug("加载选择产品页面...");
+		model.addAttribute("CURRENT_CHOOSE_PRODUCT_ID", productId);
+		return "products/registration_choose_product";
+	}
+	/**
+	 * 更新数据。
+	 * @param info
+	 * 更新源数据。
+	 * @return
+	 * 更新后数据。
+	 */
+	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE})
+	@RequestMapping(value="/update", method = RequestMethod.POST)
+	@ResponseBody
+	public Json update(RegistrationInfo info){
+		if(logger.isDebugEnabled()) logger.debug("更新数据...");
+		Json result = new Json();
+		try {
+			 result.setData(this.registrationService.update(info));
+			 result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("更新产品数据发生异常", e);
+		}
+		return result;
+	}
+	/**
+	 * 删除数据。
+	 * @param id
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.DELETE})
+	@RequestMapping(value="/delete", method = RequestMethod.POST)
+	@ResponseBody
+	public Json delete(String id){
+		if(logger.isDebugEnabled()) logger.debug("删除数据［"+ id +"］...");
+		Json result = new Json();
+		try {
+			this.registrationService.delete(id.split("\\|"));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("删除数据["+id+"]时发生异常:", e);
+		}
+		return result;
 	}
 }

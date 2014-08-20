@@ -68,21 +68,50 @@ module="products_registration"/> <#assign form="${module}_edit_form"/>
 				ch_t.combobox("setValue", id);
 			}
 		});
-		//软件类型下拉
-		var r_t = $("#${module}_edit_form input[name='softTypeId']").combobox({
-			url : "<@s.url '/products/softwaretype/combo'/>",
-			valueField : "id",
-			textField : "name",
-			onLoadError : function(e) {
-				<@error_dialog "e"/>
-			},
-			onLoadSuccess : function() {
-				var id = "${CURRENT_TYPE_ID}";
-				if ($.trim(id) == "")
-					return;
-				r_t.combobox("setValue", id);
-			}
-		});
+		${module}_chooseProduct = function(){
+			var code = "";
+			var row = null;
+			var d = $("<div/>").dialog({
+				title:'选择产品',
+				width:800,
+				height:600,
+				href:"<@s.url '/products/registration/chooseproduct'/>?productId="+$("#${module}_edit_form input[name='relationProductId']").val(),
+				modal:true,
+				buttons:[
+				  {
+					text:"保存",
+					iconCls:"icon-save",
+					handler:function(){
+						var ids = products_registration_choose_list_dg_get_value("id");
+						if(ids == 0){ 
+							d.dialog("close");
+							return; 
+						}
+						var names = products_registration_choose_list_dg_get_value("name");
+						$("#${module}_edit_form input[name='relationProductId']").val(ids);
+						$("#${module}_edit_form input[name='relationProductName']").val(names);
+						d.dialog("close");
+					}
+				},
+				{
+					text:"关闭",
+					iconCls:"icon-cancel",
+					handler:function(){
+						d.dialog("close");
+					}
+				}],
+				onClose:function(){
+					$(this).dialog("destroy");
+				},
+				onLoad:function(){
+					if(code && !row){
+						$("#${module}_edit_form").form("load",{"code":code});
+						return;
+					}
+					if(row) $("#${module}_edit_form").form("load",row);
+				}
+			});
+		}
 	});
 //-->
 </script>
@@ -90,7 +119,9 @@ module="products_registration"/> <#assign form="${module}_edit_form"/>
 <form id="${module}_edit_form" method="POST" style="padding: 10px;">
 		<div style="float: left;">
 			<label style="width: 100px;">关联产品：</label> 
-			<input type="text"	name="name" class="easyui-validatebox" style="width: 270px;" data-options="required:true" /> 
+			<input type="hidden" name="relationProductId"/>
+			<input type="text"	name="relationProductName" class="easyui-validatebox" style="width: 270px;" data-options="required:true" />
+			<a href="#" class="easyui-linkbutton" onclick="${module}_chooseProduct()" style="width: 50px;" >选择</a> 
 			<input type="hidden" name="id" />
 		</div>
 		<div style="float: left; margin-top: 12px;">
@@ -100,10 +131,6 @@ module="products_registration"/> <#assign form="${module}_edit_form"/>
 		<div style="float: left; margin-top: 12px;">
 			<label style="width: 100px;">渠道：</label> 
 			<input name="channelId"	id="${module}_channel_combobox" style="width: 274px;" />
-		</div>
-		<div style="float: left; margin-top: 12px;">
-			<label style="width: 100px;">代码：</label> 
-			<input type="text"	name="code" class="easyui-validatebox" style="width: 270px;" data-options="required:true" />
 		</div>
 		<div style="float: left; margin-top: 12px;">
 			<label style="width: 100px;">原价：</label> 
