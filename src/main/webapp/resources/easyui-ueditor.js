@@ -30,21 +30,18 @@
 			return;
 		}
 		var state = $.data(target,'ueditor'),
-			   targetId = state['editorId'] =  _getTargetId(target);
-		state['editor'] = UE.getEditor(targetId,state.options); 
+			   targetId = _getTargetId(target);
+		state['editor'] = UE.getEditor(targetId,state.options);
 		//初始化事件
 		_initEvents(target);
 	};
 	//获取ueditor的ID。
 	function _getTargetId(target){
-		var t =  $(target);
+		var t =  $(target),name =  t.attr('name');
 		if($.trim(t.attr('id')) != '') return  t.attr('id');
-		var targetId  = target.nodeName +'_'+ _getRandom(9999);
-		var name =  t.attr('name'),frm = $(target).closest('form');
+		var targetId  = target.nodeName +'_'+ _getRandom(9999),frm = t.closest('form');
 		if(frm && $.trim(frm.attr('id')) != '' && ($.trim(name) != '')){
-			targetId =  frm.attr('id') + '_' + name; 
-			var state = $.data(target,'ueditor');
-			state['editorName'] = name;
+			targetId =  frm.attr('id') + '_' + name;
 		}
 		t.attr('id', targetId);
 		return targetId;
@@ -77,21 +74,29 @@
 	};
 	//设置内容
 	function _setValue(target,value){
-		var state = $.data(target,'ueditor');
-		state.editor.setContent(value);
+		//alert('_setValue_id=' + $(target).attr('id'));
+		if(target && $(target).attr('id')){//解决直接引用赋值时editor的body报错
+			var editor = UE.getEditor($(target).attr('id'));
+			editor.ready(function(){
+				editor.setContent(value);
+			});
+		}
 	};
 	//同步数据
 	function _sync(target){
 		var state = $.data(target,'ueditor');
-		state.editor.sync();
+		if(state && state.editor){
+			state.editor.sync();
+		}
 	};
 	//销毁编辑器对象
 	function _destroy(target){
+		if(!target) return;
 		var state = $.data(target,'ueditor');
-		if(state && state.editor){
-			state.editor.destroy();
-		}
+		if(!state || !state.editor) return;
+		state.editor.destroy();
 		$(target).remove();
+		//alert('_destroy_ok');
 	};
 	//方法定义
 	$.fn.ueditor.methods = {
@@ -104,11 +109,6 @@
 			editor:function(jq){
 				var state = $.data(jq[0],'ueditor');
 				return state['editor'];
-			},
-			//获取编辑器对象name
-			getName:function(jq){
-				var state = $.data(jq[0],'ueditor');
-				return state['editorName']
 			},
 			//获取编辑器内容
 			getValue:function(jq){
@@ -153,18 +153,30 @@
 		return opts;
 	};
 	//挂钩panel的自动销毁
-	$.extend($.fn.panel.defaults,{
-		onDestroy:function(){
+	$.extend($.fn.dialog.defaults,{
+		onBeforeDestroy:function(){
 			$('.easyui-ueditor').ueditor('destroy');
 		}
 	});
 	//挂钩form的加载数据
-//	$.extend($.fn.form.defaults,{
-//		onLoadSuccess:function(data){
-//			alert(data);console.info(data);
-//			//alert($('.easyui-ueditor').ueditor('getName'));
-//		}
-//	});
+	$.extend($.fn.form.defaults,{
+		onLoadSuccess:function(data){
+			if(!data) return;
+			var editors = $('textarea[class=easyui-ueditor]');
+			if(editors){
+				$.each(editors,function(){
+					var n = $(this).attr('name');
+					if(n && data[n]){
+						var editor = $(this).prev('.easyui-ueditor');
+						if(editor && $(editor).attr('id')){
+							//alert('editor=' + editor + ',id=' +$(editor).attr('id') + ',value=' +data[n]);
+							$(editor).ueditor('setValue',data[n]);
+						}
+					}
+				});
+			}
+		}
+	});
 	//添加到插件管理器中
 	$.parser.plugins.push("ueditor");
 })(jQuery,UE);

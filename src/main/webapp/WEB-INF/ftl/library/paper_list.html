@@ -94,11 +94,7 @@ $(function(){
 			width:22,
 			align:"center",
 			formatter:function(value,data,index){
-				var href = "<a class='paper-list-opt-preview' href='#' onclick='${dg}_paper_preview(\""+data["id"]+"\")'/>"
-				if(data.status == ${PAPER_STATUS_NONE}){
-					href = "<a class='paper-list-opt-add' href='#' onclick='${dg}_paper_structure(\""+ data["id"] +"\",\"试卷［"+data["name"]+"］试题管理\",\"" + data["examId"] +"\",\"" + data["subjectId"] + "\",\"" + data["status"] +"\",\"" + data["type"] +"\",\"" + data["sourceId"] +"\")'/>";
-				}
-				return href;
+				return "<a class='paper-list-opt-add' href='#' onclick='${dg}_paper_structure(\""+ data["id"] +"\",\"试卷［"+data["name"]+"］试题管理\",\"" + data["examId"] +"\",\"" + data["subjectId"] + "\",\"" + data["status"] +"\",\"" + data["type"] +"\",\"" + data["sourceId"] +"\")'/>";
 			}
 		},{
 			title:"预览",
@@ -106,7 +102,7 @@ $(function(){
 			width:10,
 			align:"center",
 			formatter:function(value,row,index){
-				return "<a href=\"javascript:${dg}_paper_preview('"+row["id"] +"'," +row["status"]+ ");\">预览</a>";
+				return "<a class='paper-list-opt-preview' href=\"javascript:${dg}_paper_preview('"+row["id"] +"'," +row["status"]+ ");\">预览</a>";
 			}
 		}]],
 		toolbar:"#${dg}_toobar",
@@ -270,7 +266,7 @@ $(function(){
 			},
 			onLoad:function(){
 					$("#${module}_edit_form").form("load",(row ? row : {"examId":current_exam_id,"subjectId":current_subject_id}));
-					//if(row && row.description) $("#${module}_edit_form textarea").kindeditor("setValue",row.description);
+					//if(row && row.description) $("#${module}_edit_form_description").ueditor("setValue",row.description);
 			}
 		});
 	};
