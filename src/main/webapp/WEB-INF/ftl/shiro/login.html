@@ -4,101 +4,44 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="zh-cn">
 <head>
-			<title>${systemName}-系统登录</title>
-			<#include "loadPageJS.ftl" />
-		</head>
-		<body >
-		 	<div id="${module}_dialog">
-				 	<form method="POST" style="padding:5px;">
-				 		<div style="float:left;margin-top:7px;">
-				 			<label style="width:65px;">用户账号：</label>
-				 			<input type="text" name="account" class="easyui-validatebox" data-options="required:true" style="width:168px;"/>
-				 		</div>
-				 		<div style="float:left;margin-top:5px;">
-				 			<label style="width:65px;">用户密码：</label>
-				 			<input type="password" name="password" class="easyui-validatebox" data-options="required:true" style="width:168px;"/>
-				 		</div>
-				 		<div style="float:left;margin-top:5px;">
-				 			<label style="width:65px;">验证码：</label>
-				 			<div style="float:left;">
-				 				<input type="text" name="verifycode" class="easyui-validatebox" data-options="required:true,tipPosition:'left'" style="width:60px;"/>
-				 			</div>
-				 			<div class="easyui-tooltip"  title="看不清楚？换一个" style="float:left;margin-left:12px;width:90px;height:30px;cursor:pointer;text-align:right;border:solid 1px #cfd7e2;">
-				 				<img src="<@s.url '/verifyCodeImage'/>" alt="验证码" />
-				 			</div>
-				 		</div>
-				 	</form>
-			</div>
-			<script type="text/javascript">
-			<!--
-			$(function(){
-				//render
-				$.parser.parse("#${module}_dialog");
-				//refresh
-				$("#${module}_dialog img").bind("click",function(){
-					 $(this).attr("src","<@s.url '/verifyCodeImage? _='/>"+ Math.random());
+	<title>${systemName}-系统登录</title>
+	<#include "loadPageJS.ftl" />
+</head>
+<body >
+ 	<div id="${module}_dialog" class="easyui-dialog" data-options="title:'${systemName}-用户登录',width:300,height:260,resizable:false,closable:false,modal:true,onClose:function(){$(this).dialog('destroy');}">
+		 	<form id="${module}_form" method="POST"  class="easyui-form"  data-options="url:'<@s.url '/login'/>',onSubmit:function(){var isValid = $(this).form('validate');if (!isValid){$.messager.progress('close');}return isValid;},onLoadError:function(e){<@error_dialog 'e'/>},success: function(data){$.messager.progress('close');var o = $.parseJSON(data);if(o.success){window.location.href='<@s.url '/index'/>?_' + Math.random();}else{$.messager.alert('登录失败',o.msg);}}" style="padding:5px;">
+		 		<div style="float:left;margin-top:12px;width:100%">
+		 			<center>
+			 			<input name="account" class="easyui-textbox" data-options="required:true,iconCls:'icon-man',prompt:'用户账号',missingMessage:'请输入用户账号',icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}}],width:198,height:36"/>
+			 		</center>
+			 	</div>
+			 	<div style="float:left;margin-top:8px;width:100%">
+			 		<center>
+			 			<input name="password" class="easyui-textbox" data-options="type:'password',required:true,iconCls:'icon-lock',prompt:'用户密码',missingMessage:'请输入用户密码',icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}}],width:198,height:36"/>
+		 			</center>
+		 		</div>
+		 		<div style="float:left;margin-top:8px;width:100%">
+		 			<center>
+		 				<input name="verifycode" class="easyui-textbox VerifyCode-textbox" data-options="required:true,prompt:'验证码',missingMessage:'请输入验证码',icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}}],width:198,height:36"/>
+		 			</center>
+		 		</div>
+		 		<div style="float:left;margin-top:8px;width:100%">
+		 			<center>
+		 				<a class="easyui-linkbutton" data-options="iconCls:'icon-lock',plain:false,onClick:function(){$.messager.progress();$('#${module}_form').form('submit');},width:198,height:36" >登录</a>
+		 			</center>
+		 		</div>
+		 		<script type="text/javascript">
+				<!--
+				$(function($){
+					/*render*/
+					$.parser.parse("#${module}_dialog");
+		 			/*add verify_code*/
+		 			var p = $("#${module}_form input[name=verifycode]").parent().find("span:first");if(p){var html = "<a class='textbox-icon' icon-index='1' href='javascript:void(0)' title='看不清？换一张' style='width:92px;height:34px;border:solid 1px #ccc;'><img name='code' height='30' width='90' src='<@s.url '/verifyCodeImage'/>?_" +Math.random() +"'  alt='验证码'/></a>";p.append(html);p.find("img[name=code]").bind("click",function(){$(this).attr("src","<@s.url '/verifyCodeImage? _='/>"+ Math.random());});};
 				});
-				//dialog
-				var d = $("#${module}_dialog").dialog({
-					title:"${systemName}-用户登录",
-					width:300,
-					height:200,
-					resizable:false,
-					closable:false,
-					modal:true,
-					onClose:function(){
-						$(this).dialog("destroy");
-					},
-					buttons:[{
-						text:'登录',
-		 				iconCls:"icon-save",
-		 				handler:function(){
-		 					form_submit();
-		 				}
-					}]
-				});
-				//submit
-				function form_submit(){
-					$.messager.progress();
- 					var f = $("#${module}_dialog form").form("submit",{
- 						url:"<@s.url '/login'/>",
- 						onSubmit:function(){
- 							var isValid = $(this).form("validate");
-							if (!isValid){
-								$.messager.progress("close");
-							}
-							return isValid;
- 						},
- 						onLoadError:function(e){
- 							<@error_dialog "e"/>
- 						},
- 						success: function(data){
-							$.messager.progress("close");
-							var o = $.parseJSON(data);
-							if(o.success){
-								window.location.href="<@s.url '/index'/>";
-							}else{
-								$("#${module}_form img").click();
-								$.messager.alert("登录失败",o.msg);
-								$("#${module}_form input[name=verifycode]").val("");
-								$("#${module}_form input[name=password]").val("");
-								$("#${module}_dialog img").click();
-							}
-						}
- 					});
-				};
-				//enter
-				document.onkeydown=function(e){
-					e = e ? e :(window.event ? window.event : null);  
-			        var currKey=0;  
-			        currKey=e.keyCode||e.which||e.charCode;  
-			        if(currKey==13){  
-			            //执行的方法  
-			            form_submit(); 
-			        }  
-				} 	
-			});
-			//-->
-			</script>
-		</body>
+				//-->
+				</script>
+		 	</form>
+	</div>
+	
+</body>
 </html>
