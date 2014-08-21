@@ -29,7 +29,7 @@ $(function(){
 		},
 		onBeforeLoad:function(){
 			current_structure_id = current_item_type_value = current_item_type_name = "";
-			if(is_load)$("#${dg}_toobar_add").menubutton("disable"); 
+			if(is_load){$("#${dg}_toobar_add").menubutton("disable");};
 		},
 		onClick:function(node){
 			is_load = true;
@@ -214,6 +214,10 @@ $(function(){
 	//items_add
 	var show = false;
 	${dg}_add = function(obj){
+		if($.trim(current_structure_id) == ''){
+			$.messager.alert("警告"," 请先选择所属［试卷结构］！");
+			return;
+		}
 		//new
 		if($(obj).attr("value") == "new"){
 			if(show) return;
@@ -402,7 +406,7 @@ $(function(){
 		<table id="${dg}"></table>
 		<div id="${dg}_toobar">
 			<@shiro.hasPermission name="${PER_UPDATE}">
-			<a id="${dg}_toobar_add" href="#" class="easyui-menubutton" data-options="iconCls:'icon-add',menu:'#${dg}_toobar_menu',plain:true,disabled:true" style="float:left;">添加</a>
+			<a id="${dg}_toobar_add" href="#" class="easyui-menubutton" data-options="iconCls:'icon-add',menu:'#${dg}_toobar_menu',plain:true" style="float:left;">添加</a>
 			<div id="${dg}_toobar_menu" style="width:120px;">
 				<div onclick="${dg}_add(this)" value="new">新增试题</div>
 				<div onclick="${dg}_add(this)" value="import">从题库中导入</div>
