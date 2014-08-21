@@ -91,11 +91,11 @@
 	</div>
 	<div style="float:left;">
 		<label style="width:70px;">难度值：</label>
-		<input name="level" type="text" class="easyui-numberbox" data-options="min:0,value:0" style="text-align:right;width:80px;"/>
+		<input name="level" type="text" class="easyui-numberbox" data-options="min:0,value:0" style="width:80px;"/>
 	</div>
 	<div style="float:left;">
 		<label style="width:75px;">使用年份：</label>
-		<input name="year" type="text" class="easyui-numberbox" data-options="min:0,value:${CURRENT_YEAR}" style="text-align:right;width:75px;"/>
+		<input name="year" type="text" class="easyui-numberbox" data-options="min:0,value:${CURRENT_YEAR}" style="width:75px;"/>
 	</div>
 </div>
 </#if>
@@ -150,7 +150,7 @@ $(function(){
 	function edit_window(title,index,row){
 		var d = $("<div/>").dialog({
 			title:title,
-			width:500,
+			width:550,
 			height:200,
 			href:"<@s.url '/library/item/edit/option/${CURRENT_ITEM_TYPE_VALUE}'/>",
 			modal:true,
@@ -188,7 +188,6 @@ $(function(){
 			onLoad:function(){
 				if(row){
 					$("#${module}_edit_opt_form").form("load",row);
-					$("#${module}_edit_opt_form textarea").kindeditor("setValue",row.opt_content);
 				}
 			}
 		});
@@ -285,7 +284,6 @@ $(function(){
 	${module}_load = function(row){
 		if(!row)return;
 		$("#${form}").form("load",row);
-		if(row.content)$("#${form} textarea[name='content']").kindeditor("setValue",row.content);
 		if(row.children && $.isArray(row.children)){
 			$.each(row.children,function(i,n){
 				var opt = {};
@@ -301,7 +299,6 @@ $(function(){
 				}
 			});
 		}
-		if(row.analysis)$("#${form} textarea[name='analysis']").kindeditor("setValue",row.analysis);
 	};
 	//============================================================================================
 });
@@ -311,7 +308,7 @@ $(function(){
 	<div data-options="region:'north',collapsible:false,height:210,border:false">
 		<@item_base />
 		<div style="float:left;margin-left:10px;margin-top:2px;">
-			<textarea style="float:left" name="content" class="easyui-kindeditor"  data-options="minWidth:762,minHeight:<#if CURRENT_ITEM_ISCHILD>140<#else>82</#if>" rows="5" cols="20" />
+			<textarea style="float:left" name="content" class="easyui-ueditor"  data-options="required:true,width:762,height:<#if CURRENT_ITEM_ISCHILD>140<#else>65</#if>" rows="5" cols="20" />
 		</div>
 	</div>
 	<div data-options="region:'center',title:'选项',
@@ -341,8 +338,8 @@ $(function(){
 		<table id="${dg}"></table>
 	</div>
 	<div data-options="region:'south',title:'答案解析',collapsible:false,height:150,border:false">
-		<div style="float:left;margin-left:10px;margin-top:5px;">
-			<textarea style="float:left" name="analysis" class="easyui-kindeditor"  data-options="minWidth:762,minHeight:75" rows="5" cols="20"/>
+		<div style="float:left;margin-left:10px;margin-top:2px;">
+			<textarea style="float:left" name="analysis" class="easyui-ueditor"  data-options="required:true,width:762,height:60" rows="5" cols="20"/>
 		</div>
 	</div>
 </form>

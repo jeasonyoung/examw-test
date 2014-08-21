@@ -66,12 +66,13 @@
 		var state = $.data(target,'ueditor'),
 			   opts =  state.options,
 			   validPanel = state.validPanel;
+		var required = opts['required'] || false;
 		$.each($.fn.ueditor.events,function(i,n){
 			var event = 'on' + n, e = opts[event];
 			state.editor.addListener(n,function(){
 				if(n == 'contentChange'){
 					$(target).val($(target).ueditor('getValue'));
-					validPanel.validatebox('validate');
+					if(required)validPanel.validatebox('validate');
 				}
 				 if($.isFunction(e)){
 					 e.apply(target,arguments);
@@ -83,21 +84,23 @@
 	function _initializeValidate(target){
 		var state = $.data(target,'ueditor');
 		var opts = state.options;
-		var isValid = opts['required'];
+		var required = opts['required'] || false;
 		var panel = state.validPanel;
 		var edr = $('#' + state.targetId);
 		var child = edr.children(':first');
 		$(panel).validatebox($.extend({},opts,{
 			missingMessage:'编辑器内容不能为空！',
 			onBeforeValidate:function(){
+				if(!required)return;
 				var box = $(this);
 				if(!edr.is(':focus')){
 					var val = $(target).val();
 					box.val((val == 'undefined' || $.trim(val)) == '' ? false : true);
+					//alert('onBeforeValidate-val:' + val);
 				}
 			},
 			onValidate:function(valid){
-				if(!isValid){
+				if(!required){
 					edr.removeClass("validatebox-invalid");
 					return;
 				}
@@ -213,17 +216,18 @@
 		if(opts["height"]) opts["initialFrameHeight"] = opts["height"];
 		return opts;
 	};
-	//挂钩panel的自动销毁
+	//挂钩模态窗口的自动销毁
 	$.extend($.fn.dialog.defaults,{
 		onBeforeDestroy:function(){
-			$('.easyui-ueditor').ueditor('destroy');
+			//alert('$.fn.dialog.onBeforeDestroy-' + this);console.info('$.fn.dialog.onBeforeDestroy-' + this);console.info(this);
+			$(this).find('.easyui-ueditor').ueditor('destroy');
 		}
 	});
 	//挂钩form的加载数据
 	$.extend($.fn.form.defaults,{
 		onLoadSuccess:function(data){
 			if(!data) return;
-			var editors = $('textarea[class=easyui-ueditor]');
+			var editors = $(this).find('textarea[class=easyui-ueditor]');
 			if(editors){
 				$.each(editors,function(){
 					var n = $(this).attr('name');

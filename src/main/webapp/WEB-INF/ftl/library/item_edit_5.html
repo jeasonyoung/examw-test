@@ -54,9 +54,6 @@ $(function(){
 	${module}_load = function(row){
 		if(!row)return;
 		$("#${form}").form("load",row);
-		if(row.content)$("#${form} textarea[name='content']").kindeditor("setValue",row.content);
-		if(row.answer) $("#${form} textarea[name='answer']").kindeditor("setValue",row.answer);
-		if(row.analysis)$("#${form} textarea[name='analysis']").kindeditor("setValue",row.analysis);
 	};
 });
 //-->
@@ -64,18 +61,18 @@ $(function(){
 <form id="${form}" method="POST" class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'north',collapsible:false,height:210,border:false">
 		<@item_base />
-		<div style="float:left;margin-left:10px;margin-top:2px;">
-			<textarea style="float:left" name="content" class="easyui-kindeditor"  data-options="minWidth:762,minHeight:<#if CURRENT_ITEM_ISCHILD>140<#else>82</#if>" rows="5" cols="20" />
+		<div style="float:left;margin-left:6px;margin-top:2px;">
+			<textarea style="float:left" name="content" class="easyui-ueditor"  data-options="required:true,width:762,height:<#if CURRENT_ITEM_ISCHILD>140<#else>65</#if>" rows="5" cols="20" />
 		</div>
 	</div>
 	<div data-options="region:'center',title:'正确答案',border:false">
-		<div style="float:left;margin-left:10px;margin-top:2px;">
-			<textarea style="float:left" name="answer" class="easyui-kindeditor"  data-options="minWidth:762,minHeight:96" rows="5" cols="20"/>
+		<div style="float:left;margin-left:6px;margin-top:2px;">
+			<textarea style="float:left" name="answer" class="easyui-ueditor"  data-options="required:true,width:762,height:96" rows="5" cols="20"/>
 		</div>
 	</div>
 	<div data-options="region:'south',title:'答案解析',collapsible:false,height:150,border:false">
-		<div style="float:left;margin-left:10px;margin-top:2px;">
-			<textarea style="float:left" name="analysis" class="easyui-kindeditor"  data-options="minWidth:762,minHeight:80" rows="5" cols="20"/>
+		<div style="float:left;margin-left:6px;margin-top:2px;">
+			<textarea style="float:left" name="analysis" class="easyui-ueditor"  data-options="required:true,width:762,height:80" rows="5" cols="20"/>
 		</div>
 	</div>
 </form>

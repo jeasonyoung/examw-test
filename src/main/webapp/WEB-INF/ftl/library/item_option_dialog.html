@@ -2,5 +2,7 @@
 <#assign module = "library_item_${CURRENT_ITEM_TYPE_VALUE}" />
 <form id="${module}_edit_opt_form"  method="POST" style="padding:1px;">
 	<input type="hidden" name="opt_id" value="${CURRENT_ID}"/>
-	<textarea style="float:left" name="opt_content" class="easyui-kindeditor"  data-options="minWidth:480,minHeight:82" rows="5" cols="20" />
+	<div style="float:left;margin-left:5px;">
+		<textarea style="float:left" name="opt_content" class="easyui-ueditor"  data-options="required:true,width:520" rows="5" cols="20" />
+	</div>
 </form>

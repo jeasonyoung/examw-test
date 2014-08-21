@@ -167,7 +167,6 @@ $(function(){
 	${module}_load = function(row){
 		if(!row)return;
 		$("#${form}").form("load",row);
-		if(row.content)$("#${form} textarea[name='content']").kindeditor("setValue",row.content);
 		if(row.children && $.isArray(row.children)){
 			$.each(row.children,function(i,n){
 				dg.datagrid("appendRow",n);

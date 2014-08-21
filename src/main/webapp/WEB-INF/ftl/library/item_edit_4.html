@@ -54,9 +54,7 @@ $(function(){
 	${module}_load = function(row){
 		if(!row)return;
 		$("#${form}").form("load",row);
-		if(row.content)$("#${form} textarea[name='content']").kindeditor("setValue",row.content);
 		if(row.answer) $("#${form} input[name='answer'][value='"+row.answer+"']").attr("checked",true);
-		if(row.analysis)$("#${form} textarea[name='analysis']").kindeditor("setValue",row.analysis);
 	};
 });
 //-->
@@ -64,8 +62,8 @@ $(function(){
 <form id="${form}" method="POST" class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'north',collapsible:false,border:false,height:242">
 		<@item_base />
-		<div style="float:left;margin-left:10px;margin-top:2px;border:false">
-			<textarea style="float:left" name="content" class="easyui-kindeditor"  data-options="minWidth:762,minHeight:<#if CURRENT_ITEM_ISCHILD>172<#else>110</#if>" rows="5" cols="20" />
+		<div style="float:left;margin-left:6px;margin-top:2px;border:false">
+			<textarea style="float:left" name="content" class="easyui-ueditor"  data-options="required:true,width:762,height:<#if CURRENT_ITEM_ISCHILD>172<#else>100</#if>" rows="5" cols="20" />
 		</div>
 	</div>
 	<div data-options="region:'center',title:'正确答案',border:false">
@@ -75,8 +73,8 @@ $(function(){
 		</div>
 	</div>
 	<div data-options="region:'south',title:'答案解析',collapsible:false,height:200,border:false">
-		<div style="float:left;margin-left:10px;margin-top:5px;">
-			<textarea style="float:left" name="analysis" class="easyui-kindeditor"  data-options="minWidth:762,minHeight:120" rows="5" cols="20"/>
+		<div style="float:left;margin-left:6px;margin-top:5px;">
+			<textarea style="float:left" name="analysis" class="easyui-ueditor"  data-options="required:true,width:762,height:100" rows="5" cols="20"/>
 		</div>
 	</div>
 </form>

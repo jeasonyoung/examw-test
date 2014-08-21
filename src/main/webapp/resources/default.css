@@ -43,3 +43,9 @@ select
 	border:solid 1px #d4d4d4;
 	clip:rect(0 80 20 0);
 }
+/*easy ui的扩展begin*/
+.numberbox > input
+{
+	text-align:right;	
+}
+/*easy ui的扩展end*/
