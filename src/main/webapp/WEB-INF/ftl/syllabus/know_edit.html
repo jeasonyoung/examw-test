@@ -131,7 +131,6 @@ $(function(){
 					$("#${module}_edit_form").form("load",{"code":code});
 					return;
 				};
-				if(row && row.content) $("#${module}_edit_form textarea").kindeditor("setValue",row.content);
 				if(row) $("#${module}_edit_form").form("load",row);
 			}
 	  });
