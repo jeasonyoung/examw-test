@@ -52,8 +52,10 @@ public class RegistrationController {
 		if(logger.isDebugEnabled()) logger.debug("加载列表数据...");
 		return this.registrationService.datagrid(info);
 	}
-	/*
+	/**
 	 * 编辑页面
+	 * @param model
+	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE})
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
