@@ -38,7 +38,7 @@ $(function(){
 	function edit_share_opts_window(title,index,row){
 		var d = $("<div/>").dialog({
 			title:title,
-			width:500,
+			width:550,
 			height:200,
 			href:"<@s.url '/library/item/edit/option/${CURRENT_ITEM_TYPE_VALUE}'/>",
 			modal:true,
@@ -313,7 +313,6 @@ $(function(){
 	${module}_load = function(row){
 		if(!row)return;
 		$("#${form}").form("load",row);
-		if(row.content)$("#${form} textarea[name='content']").kindeditor("setValue",row.content);
 		if(row.children && $.isArray(row.children)){
 			for(var i = 0; i < row.children.length - 1; i++){
 				var opt ={};
@@ -337,10 +336,10 @@ $(function(){
 //-->
 </script>
 <form id="${form}" method="POST" class="easyui-layout" data-options="fit:true,border:false">
-	<div data-options="region:'north',collapsible:false,height:188,border:false">
+	<div data-options="region:'north',collapsible:false,height:195,border:false">
 		<@item_base />
-		<div style="float:left;margin-left:10px;margin-top:2px;">
-			<textarea style="float:left" name="content" class="easyui-kindeditor"  data-options="minWidth:762,minHeight:25" rows="5" cols="20" />
+		<div style="float:left;margin-left:6px;margin-top:2px;">
+			<textarea style="float:left" name="content" class="easyui-ueditor"  data-options="required:true,width:762,height:15" rows="5" cols="20" />
 			<input name="items_id" type="hidden" />
 		</div>
 	</div>
@@ -370,7 +369,7 @@ $(function(){
 		border:false">
 		<table id="${dg}_share_opts"></table>
 	</div>
-	<div data-options="region:'south',title:'子题集合',collapsible:false,height:210,border:false">
+	<div data-options="region:'south',title:'子题集合',collapsible:false,height:200,border:false">
 		<table id="${dg}"></table>
 		<div id="${dg}_toobar">
 			<@shiro.hasPermission name="${PER_UPDATE}">
