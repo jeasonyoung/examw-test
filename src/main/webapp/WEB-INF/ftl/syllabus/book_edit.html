@@ -49,12 +49,6 @@ $(function(){
 </script>
 <form id="${form}" method="POST" style="padding:10px;">
 	<div style="float:left;margin-top:2px;width:100%;">
-		<label style="width:75px;">所属科目：</label>
-		<input type="text" name="examId" style="width:154px;"/>
-		<input type="text" name="subId" style="width:160px;"/>
-		<input type="hidden" name="id">
-	</div> 
-	<div style="float:left;margin-top:15px;width:100%;">
 		<label style="width:75px;">所属出版社：</label>
 		<input type="text" name="pressId" class="easyui-combobox" data-options="
 			url:'<@s.url '/syllabus/press/all'/>',
@@ -65,14 +59,20 @@ $(function(){
 			onLoadError:function(e){
 				<@error_dialog 'e'/>
 			}
-		" style="width:320px;">
+		" style="width:404px;">
 	</div>
+	<div style="float:left;margin-top:15px;width:100%;">
+		<label style="width:75px;">所属科目：</label>
+		<input type="text" name="examId" style="width:250px;"/>
+		<input type="text" name="subId" style="width:150px;"/>
+		<input type="hidden" name="id">
+	</div> 
 	<div style="float:left; margin-top:15px; width:100%;">
 		<label style="width:75px;">教材名称：</label>
-		<input type="text" name="name" class="easyui-validatebox"  data-options="required:true" style="width:315px;"/>
+		<input type="text" name="name" class="easyui-validatebox"  data-options="required:true" style="width:400px;"/>
 	</div>
 	<div style="float:left; margin-top:15px; width:100%;">
 		<label style="width:75px;">教材价格：</label>
-		<input type="text" name="price" class="easyui-validatebox"  data-options="required:true" style="width:315px;"/>
+		<input type="text" name="price" class="easyui-validatebox"  data-options="required:true" style="width:400px;"/>
 	</div>
 </form>
