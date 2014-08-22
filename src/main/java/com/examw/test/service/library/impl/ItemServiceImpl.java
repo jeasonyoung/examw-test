@@ -24,6 +24,7 @@ import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.library.ItemInfo;
 import com.examw.test.model.library.ItemScoreInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
+import com.examw.test.service.library.IItemDuplicateCheck;
 import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.ItemStatus;
 import com.examw.utils.MD5Util;
@@ -39,6 +40,7 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 	private IItemDao itemDao;
 	private ISubjectDao subjectDao;
 	private ISourceDao sourceDao;
+	private IItemDuplicateCheck itemDuplicateCheck;
 	private Map<Integer, String> typeMap,statusMap,optMap,judgeAnswerMap;
 	/**
 	 * 设置题目数据访问接口。
@@ -64,6 +66,14 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 	 */
 	public void setSourceDao(ISourceDao sourceDao) {
 		this.sourceDao = sourceDao;
+	}
+	/**
+	 * 设置题目去重复校验码生成算法接口。
+	 * @param itemDuplicateCheck 
+	 *	  题目去重复校验码生成算法接口。
+	 */
+	public void setItemDuplicateCheck(IItemDuplicateCheck itemDuplicateCheck) {
+		this.itemDuplicateCheck = itemDuplicateCheck;
 	}
 	/**
 	 * 设置题型名称集合。
@@ -237,7 +247,7 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		if(info == null) return null;
 		boolean isAdded = false;
 		Item data = StringUtils.isEmpty(info.getId()) ? null : this.itemDao.load(Item.class, info.getId());
-		String checkCode = this.computeCheckCode(info);
+		String checkCode = this.itemDuplicateCheck.computeCheckCode(info);
 		if(StringUtils.isEmpty(checkCode)){
 			String msg = "计算验证码为空！更新试题终止！";
 			if(logger.isDebugEnabled())logger.debug(msg);
@@ -309,37 +319,6 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		}
 		return true;
 	}
-	//计算题目校验值。
-		private String computeCheckCode(ItemInfo info) {
-			if(logger.isDebugEnabled()) logger.debug("计算题目校验值...");
-			if(info == null) return null;
-			StringBuilder builder = new StringBuilder();
-			this.createItemCheckValue(builder, info);
-			if(builder.length() == 0) return null;
-			String source = builder.toString();
-			if(logger.isDebugEnabled()) logger.debug("题目字符串：" + source);
-			String checkCode = MD5Util.MD5(builder.toString());
-			if(logger.isDebugEnabled()) logger.debug("校验值：" + checkCode);
-			return checkCode;
-		}
-		//创建题目字符串。
-		private void createItemCheckValue(StringBuilder builder,ItemInfo info){
-			if(info == null)return;
-			if(!StringUtils.isEmpty(info.getSubjectId())) builder.append("#").append(info.getSubjectId()).append("#");
-			if(!StringUtils.isEmpty(info.getType())) builder.append("$").append(info.getType()).append("$");
-			if(!StringUtils.isEmpty(info.getContent())) builder.append("#").append(info.getContent()).append("#");
-			if(!StringUtils.isEmpty(info.getAnswer())) builder.append("$").append(info.getAnswer()).append("$");
-			if(!StringUtils.isEmpty(info.getAnalysis())) builder.append("#").append(info.getAnalysis()).append("#");
-			if(info.getChildren() != null && info.getChildren().size() > 0){
-				builder.append("{");
-				for(ItemInfo e : info.getChildren()){
-					builder.append("[");
-					this.createItemCheckValue(builder, e);
-					builder.append("]");
-				}
-				builder.append("}");
-			}
-		}
 	/*
 	 * 删除数据。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#delete(java.lang.String[])
