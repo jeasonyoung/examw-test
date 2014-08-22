@@ -50,6 +50,10 @@
 		<property name="subjectDao" ref="subjectDao" />
 		<!-- 来源数据接口 -->
 		<property name="sourceDao" ref="sourceDao" />
+		<!-- 校验码生成接口 -->
+		<property name="itemDuplicateCheck">
+		    <bean class="com.examw.test.service.library.impl.ItemDuplicateCheckImpl" />
+		</property>
 		<!-- 题型数据接口 -->
 		<property name="typeMap">
 			<map>
