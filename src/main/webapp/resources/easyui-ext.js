@@ -58,6 +58,12 @@ $.extend($.fn.validatebox.defaults.rules,{
 		},
 		message : "请输入英文"
 	},
+	number : {// 验证数字
+		validator : function(value) {
+			return /^[0-9]*$/i.test(value);
+		},
+		message : "请输入数字"
+	},
 	account:{//验证账号
 		validator : function(value) {
 			return /^[A-Za-z0-9|\-|_]+$/i.test(value);
