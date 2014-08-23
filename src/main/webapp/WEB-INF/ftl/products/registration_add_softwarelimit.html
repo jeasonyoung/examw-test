@@ -1,0 +1,33 @@
+<!-- 页面 -->
+<#assign module="products_registration"/>
+<script type="text/javascript">
+<!--
+$(function(){
+	//软件类型下拉
+	var r_t = $("#${module}_edit_form input[name='softwareTypeId']").combobox({
+		url:"<@s.url '/products/softwaretype/combo'/>",
+		valueField:"id",
+		textField:"name",
+		onLoadError:function(e){
+			<@error_dialog "e"/>
+		},
+		onLoadSuccess:function(){
+			var id = "${CURRENT_TYPE_ID}";
+			if($.trim(id) == "") return;
+			r_t.combobox("setValue",id);
+		}
+	});
+});
+//-->
+</script>
+<form id="${module}_edit_form" method="POST" style="padding:10px;">
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">软件类型：</label>
+		<input type="text" name="softwareTypeId" style="width:268px;" />
+		<input type="hidden" name="id"/>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">绑定次数：</label>
+		<input type="text" name="time" class="easyui-numberbox" style="width:268px;" data-options="required:true"/>
+	</div>
+</form>

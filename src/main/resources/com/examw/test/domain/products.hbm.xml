@@ -123,9 +123,9 @@
 		<!-- 关联产品名称 -->
 		<property name="name" type="string" length="32" not-null="true" />
 		<!-- 所属产品 -->
-		<many-to-one name="product" column="product_id" class="Product" unique-key="uk_relationProduct" not-null="true"/>
+		<many-to-one name="product" column="product_id" class="Product" unique-key="uk_relationProduct"/>
 		<!-- 所属注册码 -->
-		<many-to-one name="registration" column="registration_id" class="Registration" unique-key="uk_relationProduct" not-null="true"/>
+		<many-to-one name="registration" column="registration_id" class="Registration" unique-key="uk_relationProduct"/>
 		<!-- 关联时间 -->
 		<property name="createTime" column="relation_time" type="timestamp" />
 	</class>
@@ -149,7 +149,7 @@
 		<!-- 注册码 -->
 		<property name="code" type="string" length="32" unique="true" not-null="true"/>
 		<!-- 关联产品集合 -->
-		<set name="products" inverse="false" cascade="save-update" order-by="createTime desc">
+		<set name="products" inverse="false" cascade="all-delete-orphan" order-by="createTime desc">
 			<key column="registration_id" />
 			<one-to-many class="RelationProduct"/>
 		</set>
@@ -160,7 +160,7 @@
 		<!-- 使用期限（月） -->
 		<property name="limitTime" type="integer" />
 		<!-- 软件限制集合 -->
-		<set name="typeLimits" inverse="false" cascade="save-update" order-by="time asc">
+		<set name="typeLimits" inverse="false" cascade="all-delete-orphan" order-by="time asc">
 			<key column="registration_id" />
 			<one-to-many class="SoftwareTypeLimit"/>
 		</set>
@@ -179,7 +179,7 @@
 		<!-- 过期时间 -->
 		<property name="endTime" column="end_time" type="timestamp" />
 		<!-- 绑定记录集合 -->
-		<set name="bindRecords" inverse="false" cascade="save-update" order-by="createTime desc">
+		<set name="bindRecords" inverse="false" cascade="all-delete-orphan" order-by="createTime desc">
 			<key column="registration_id" />
 			<one-to-many class="RegistrationBindRecord"/>
 		</set>

@@ -8,6 +8,7 @@ $(function(){
 	//dg
 	var dg=$("#${dg}").datagrid({
 		url:"<@s.url '/products/registration/datagrid'/>",
+		//url:"<@s.url '/products/channel/datagrid'/>",
 		fit:true,
 		fitColumns:true,
 		rownumbers:true,
@@ -19,7 +20,6 @@ $(function(){
 		striped:true,
 		idField:"id",
 		sortName:"code",
-		sortOrder:"asc",
 		columns:[[{
 			field:"id",
 			checkbox:true
@@ -90,7 +90,7 @@ $(function(){
 		var d = $("<div/>").dialog({
 			title:title,
 			width:550,
-			height:350,
+			height:500,
 			href:"<@s.url '/products/registration/edit'/>",
 			modal:true,
 			buttons:[
@@ -199,24 +199,24 @@ $(function(){
 });
 //-->
 </script>
-		<table id="${dg}"></table>
-		<div id="${dg}_toobar">
-			<@shiro.hasPermission name="${PER_UPDATE}">
-			<a href="#" class="easyui-linkbutton" onclick="${dg}_add()" data-options="iconCls:'icon-add',plain:true" style="float:left;">新增</a>
-			</@shiro.hasPermission>
-			<span>|</span>
-			<@shiro.hasPermission name="${PER_DELETE}">
-			<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
-			</@shiro.hasPermission>
+<table id="${dg}"></table>
+<div id="${dg}_toobar">
+	<@shiro.hasPermission name="${PER_UPDATE}">
+	<a href="#" class="easyui-linkbutton" onclick="${dg}_add()" data-options="iconCls:'icon-add',plain:true" style="float:left;">新增</a>
+	</@shiro.hasPermission>
+	<span>|</span>
+	<@shiro.hasPermission name="${PER_DELETE}">
+	<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
+	</@shiro.hasPermission>
 			
-			<label>注册码:</label>
-			<input name="code" type="text" style="width:198px;"/>
-			<label>状态</label>
-			<select id="${dg}_status" class="easyui-combobox" name="status" style="width:200px;">
-				<#list STATUS_MAP?keys as key>  
-    				<option value="${key}">${STATUS_MAP[key]}</option>
-    			</#list>
-			</select> 
+	<label>注册码:</label>
+	<input name="code" type="text" style="width:198px;"/>
+	<label>状态</label>
+	<select id="${dg}_status" class="easyui-combobox" name="status" style="width:200px;">
+		<#list STATUS_MAP?keys as key>  
+    		<option value="${key}">${STATUS_MAP[key]}</option>
+    	</#list>
+	</select> 
 
-			<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
-		</div>
+	<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
+</div>

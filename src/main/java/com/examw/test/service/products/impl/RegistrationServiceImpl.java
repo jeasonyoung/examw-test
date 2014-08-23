@@ -111,8 +111,8 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 			}
 		}
 		if(!"".equals(productId)){
-			info.setRelationProductId(productId.split(","));
-			info.setRelationProductName(productName);
+			info.setProductId(productId.split(","));
+			info.setProductName(productName);
 		}
 		info.setStatusName(this.loadStatusName(data.getStatus()));
 		return info;
@@ -127,68 +127,71 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 	}
 	@Override
 	public RegistrationInfo update(RegistrationInfo info) {
-		if (logger.isDebugEnabled())	logger.debug("更新数据...");
+		if (logger.isDebugEnabled())logger.debug("更新数据...");
 		if(info == null) return null;
 		boolean isAdded = false;
-		Registration  data = StringUtils.isEmpty(info.getId()) ?  null : this.registrationDao.load(Registration.class, info.getId());
+		Registration data = StringUtils.isEmpty(info.getId()) ?  null : this.registrationDao.load(Registration.class, info.getId());
 		if(isAdded = (data == null)){
-			if(StringUtils.isEmpty(info.getId())){
-				info.setId(UUID.randomUUID().toString());
-			}
+			if(StringUtils.isEmpty(info.getId())) info.setId(UUID.randomUUID().toString());
 			data = new Registration();
-			//TODO 生成注册码  先随便模拟一个
-			data.setCode(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
 			data.setCreateTime(new Date());
 		}
 		info.setCreateTime(data.getCreateTime());
-		//重新设置注册码
-		//data.setCode(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
-		//注册码
-		info.setCode(data.getCode());
+		if(info.getStatus() == null) info.setStatus(Registration.STATUS_NONE);
+		//TODO 生成注册码  先随便模拟一个
+		if(StringUtils.isEmpty(info.getCode()))info.setCode(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
 		BeanUtils.copyProperties(info, data);
-		if(data.getStatus() == null){	//未激活
-			data.setStatus(Registration.STATUS_NONE);
-			info.setStatus(Registration.STATUS_NONE);
-		}
 		//渠道
-		if(info.getChannelId()!=null && (data.getChannel()==null || !data.getChannel().getId().equalsIgnoreCase(info.getChannelId()))){
-			Channel channel = this.channelDao.load(Channel.class, info.getChannelId());
-			if(channel!=null){
-				data.setChannel(channel);
-			}
+		data.setChannel(this.channelDao.load(Channel.class,info.getChannelId()));
+		if(data.getChannel() != null){
+			info.setChannelName(data.getChannel().getName());
 		}
-		Set<RelationProduct> products = new HashSet<RelationProduct>();
-		if(info.getRelationProductId()!=null && info.getRelationProductId().length>0){
-			this.relationProductDao.delete(data.getId());
-			for(String id:info.getRelationProductId()){
-				Product s = this.productDao.load(Product.class, id);
-				if(s!=null && s.getStatus().equals(Product.STATUS_NONE)){
-					RelationProduct rp = this.relationProductDao.load(data.getId(), id);
-					if(rp==null)
-					{
-						rp = new RelationProduct();
-						rp.setRegistration(data);
-						rp.setProduct(s);
-						rp.setCreateTime(new Date());
-						rp.setName(s.getName());
-						rp.setId(UUID.randomUUID().toString());
-					}
-					products.add(rp);
+		///TODO:注册码软件限制
+		
+		//产品关联
+		if(data.getProducts() == null) data.setProducts(new HashSet<RelationProduct>());
+		//data.getProducts().clear();
+		Set<RelationProduct> old = data.getProducts();
+		if(info.getProductId() != null && info.getProductId().length > 0){
+			if(logger.isDebugEnabled())logger.debug("开始注册码产品关联...");
+			for(String productId : info.getProductId()){
+				if(StringUtils.isEmpty(productId))continue;
+				Product product = this.productDao.load(Product.class, productId);
+				if(product == null){
+					if(logger.isDebugEnabled()) logger.debug(String.format("产品[id = %s]不存在!", productId));
+					continue;
 				}
+				RelationProduct rp = createRelationProduct(old,data,product);
+				rp.setCreateTime(new Date());
+				if(logger.isDebugEnabled()) logger.debug(String.format("关联产品[%1$s,%2$s]...", productId, data.getId()));
+				data.getProducts().add(rp);
+			}
+			
+		}
+		if(isAdded)this.registrationDao.save(data);
+		info.setStatusName(this.loadStatusName(info.getStatus()));
+		return info;
+	}
+	private RelationProduct createRelationProduct(Set<RelationProduct> old,Registration reg,
+			Product product) {
+		RelationProduct data = null;
+		for(RelationProduct rp:old)
+		{
+			if(rp.getProduct().getId().equals(product.getId()) && rp.getRegistration().getId().equals(reg.getId()))
+			{
+				data = rp;
+				break;
 			}
 		}
-		data.setProducts(products);
-//		if(products.size() == 0){
-//			throw new RuntimeException("没有关联产品");
-//		}
-		//新增数据。
-		if(isAdded) this.registrationDao.save(data);
-		else{
-			data.setLastTime(new Date());
-			info.setLastTime(new Date());
+		if(data == null)
+		{
+			data = new RelationProduct();
+			data.setId(UUID.randomUUID().toString());
+			data.setName(product.getName());
+			data.setProduct(product);
+			data.setRegistration(reg);
 		}
-		info.setStatusName(this.loadStatusName(data.getStatus()));
-		return info;
+		return data;
 	}
 	@Override
 	public void delete(String[] ids) {
@@ -202,7 +205,6 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 			Registration data = this.registrationDao.load(Registration.class, ids[i]);
 			if (data != null) {
 				logger.debug("删除产品数据：" + ids[i]);
-				this.relationProductDao.delete(ids[i]);
 				this.registrationDao.delete(data);
 			}
 		}

@@ -1,58 +1,10 @@
-<#--科目设置编辑--> <#include "comm.ftl"/> <#assign
-module="products_registration"/> <#assign form="${module}_edit_form"/>
+<#--科目设置编辑--> <#include "comm.ftl"/> 
+<#assign module="products_registration"/> 
+<#assign form="${module}_edit_form"/>
+<#assign dg="${module}_softlimit_dg"/>
 <script type="text/javascript">
 <!--
 	$(function() {
-		var current_category_select = 0;
-		//分类树
-		//category__exam_tree
-		var c_t = $("#${module}_edit_form input[name='examId']").combotree(
-				{
-					url : "<@s.url '/settings/category/exams-tree'/>",
-					required : true,
-					valueField : "id",
-					textField : "name",
-					onLoadError : function(e) {
-						<@error_dialog "e"/>
-					},
-					onLoadSuccess : function() {
-						var id = "${CURRENT_EXAM_ID}";
-						if ($.trim(id) == "")
-							return;
-						c_t.combotree("setValue", id);
-					},
-					onSelect : function(record) {
-						current_category_select = current_category_select + 1;
-						if (current_category_select == 1
-								&& "${CURRENT_EXAM_ID}" == record.id)
-							return;
-						if (p_t) {
-							p_t.combobox("clear");
-							p_t.combobox("reload",
-									"<@s.url '/products/product/combo'/>?examId="
-											+ record.id);
-						}
-					}
-				});
-		//产品下拉
-		//product_tree
-		var p_t = $("#${module}_edit_form input[name='productId']")
-				.combobox(
-						{
-							url : "<@s.url '/products/product/combo'/>?examId=${CURRENT_EXAM_ID}",
-							required : true,
-							valueField : "id",
-							textField : "name",
-							onLoadError : function(e) {
-								<@error_dialog "e"/>
-							},
-							onLoadSuccess : function() {
-								var id = "${CURRENT_PRODUCT_ID}";
-								if ($.trim(id) == "")
-									return;
-								p_t.combobox("setValue", id);
-							}
-						});
 		//渠道下拉
 		var ch_t = $("#${module}_edit_form input[name='channelId']").combobox({
 			url : "<@s.url '/products/channel/combo'/>",
@@ -75,7 +27,7 @@ module="products_registration"/> <#assign form="${module}_edit_form"/>
 				title:'选择产品',
 				width:800,
 				height:600,
-				href:"<@s.url '/products/registration/chooseproduct'/>?productId="+$("#${module}_edit_form input[name='relationProductId']").val(),
+				href:"<@s.url '/products/registration/chooseproduct'/>?productId="+$("#${module}_edit_form input[name='productId']").val(),
 				modal:true,
 				buttons:[
 				  {
@@ -84,12 +36,14 @@ module="products_registration"/> <#assign form="${module}_edit_form"/>
 					handler:function(){
 						var ids = products_registration_choose_list_dg_get_value("id");
 						if(ids == 0){ 
+							$("#${module}_edit_form input[name='productId']").val("");
+							$("#${module}_product_name").textbox("clear");
 							d.dialog("close");
 							return; 
 						}
 						var names = products_registration_choose_list_dg_get_value("name");
-						$("#${module}_edit_form input[name='relationProductId']").val(ids);
-						$("#${module}_edit_form input[name='relationProductName']").val(names);
+						$("#${module}_edit_form input[name='productId']").val(ids);
+						$("#${module}_product_name").textbox("setValue",names);
 						d.dialog("close");
 					}
 				},
@@ -113,15 +67,47 @@ module="products_registration"/> <#assign form="${module}_edit_form"/>
 			});
 		}
 	});
+var dg=$("#${dg}").datagrid({
+	width:400,
+	heigth:100,
+	fitColumns:true,
+	rownumbers:true,
+	border:true,
+	striped:true,
+	idField:"opt_id",
+	columns:[[{
+		field:"opt_id",
+		checkbox:true
+	},{
+		title:"软件类型",
+		field:"softwareType",
+		width:20,
+		align:"left",
+		formatter: function(value,row,index){
+			return $.trim(value);
+		}
+	},{
+		title:"绑定次数",
+		field:"time",
+		width:10,
+		align:"center"
+	}]],
+	toolbar:"#${dg}_toolbar",
+	onLoadError:function(e){
+		<@error_dialog "e"/>
+	},
+	onDblClickRow:function(rowIndex,rowData){
+		edit_window("编辑选项",rowIndex,rowData);
+	}
+});
 //-->
 </script>
 
 <form id="${module}_edit_form" method="POST" style="padding: 10px;">
 		<div style="float: left;">
 			<label style="width: 100px;">关联产品：</label> 
-			<input type="hidden" name="relationProductId"/>
-			<input type="text"	name="relationProductName" class="easyui-validatebox" style="width: 270px;" data-options="required:true" />
-			<a href="#" class="easyui-linkbutton" onclick="${module}_chooseProduct()" style="width: 50px;" >选择</a> 
+			<input type="hidden" name="productId"/>
+			<input id = "${module}_product_name" name="productName" class="easyui-textbox" data-options="buttonText:'选择 ',prompt:'选择产品',missingMessage:'请选择产品',icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');$('#${module}_edit_form input[name=\'productId\']').val('');}}],width:274,onClickButton:${module}_chooseProduct" />
 			<input type="hidden" name="id" />
 		</div>
 		<div style="float: left; margin-top: 12px;">
@@ -143,5 +129,13 @@ module="products_registration"/> <#assign form="${module}_edit_form"/>
 		<div style="float: left; margin-top: 12px;">
 			<label style="width: 100px;">到期时间：</label>
 			<input type="text" name="endTime" class="easyui-datebox" data-options="panelWidth:270"	style="width: 270px;" />
+		</div>
+		<div style="float: left; margin-top: 12px;">
+		<table id="${dg}"></table>
+		<div id="${dg}_toolbar">
+			<a href="#" class="easyui-linkbutton" onclick="${dg}_add()" data-options="iconCls:'icon-add',plain:true" style="float:left;">新增软件限制</a>
+			<span>|</span>
+			<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
+		</div>
 		</div>
 </form>
