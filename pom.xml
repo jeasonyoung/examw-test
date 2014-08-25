@@ -6,6 +6,26 @@
   <packaging>war</packaging>
   <name>examw-test-web</name>
   <description>中华考试网考试系统</description>
+  
+  <profiles>
+      <profile>
+          <id>nexus</id>
+          <repositories>
+              <repository>
+                  <id>nexus</id>
+                  <name>local private nexus</name>
+                  <url>http://app.ipowerkit.net/nexus/content/groups/public/</url>
+              </repository>
+          </repositories>
+          <pluginRepositories>
+          		<pluginRepository>
+          			<id>nexus</id>
+          			<name>team nexus repo</name>
+          			<url>http://app.ipowerkit.net/nexus/content/groups/public/</url>
+          		</pluginRepository>
+          </pluginRepositories>
+      </profile>
+  </profiles>
 
   <!--定义参数变量-->
   <properties>
