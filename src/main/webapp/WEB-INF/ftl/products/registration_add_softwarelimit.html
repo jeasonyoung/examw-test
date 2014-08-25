@@ -1,10 +1,11 @@
 <!-- 页面 -->
+<#include "comm.ftl"/>
 <#assign module="products_registration"/>
 <script type="text/javascript">
 <!--
 $(function(){
 	//软件类型下拉
-	var r_t = $("#${module}_edit_form input[name='softwareTypeId']").combobox({
+	var r_t = $("#${module}_typelimit_edit_form input[name='typeId']").combobox({
 		url:"<@s.url '/products/softwaretype/combo'/>",
 		valueField:"id",
 		textField:"name",
@@ -15,19 +16,48 @@ $(function(){
 			var id = "${CURRENT_TYPE_ID}";
 			if($.trim(id) == "") return;
 			r_t.combobox("setValue",id);
+		},
+		onSelect:function(rec){
+			var limitData = ${module}_getLimitDate();
+			if(limitData.length>0){
+				var exist = false;
+				$.each(limitData,function(i){
+					if(rec.id == limitData[i].typeId)
+					{
+						exist = true;
+						$('#nn').numberbox('setValue',limitData[i].time);
+						return false;
+					}
+				});
+				if(!exist){
+					$('#nn').numberbox('setValue',1);
+				}
+			}
 		}
 	});
+	${module}_get_typelimit = function(){
+		var typeId = r_t.combobox("getValue");
+		if(typeId)
+		{
+			var data = {};
+			data.typeId = typeId;
+			data.typeName = r_t.combobox("getText");
+			data.time = $("#${module}_typelimit_edit_form input[name='time']").val();
+			return data;
+		}
+		return null;
+	}
 });
 //-->
 </script>
-<form id="${module}_edit_form" method="POST" style="padding:10px;">
+<form id="${module}_typelimit_edit_form" method="POST" style="padding:10px;">
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">软件类型：</label>
-		<input type="text" name="softwareTypeId" style="width:268px;" />
+		<input type="text" name="typeId" style="width:268px;" />
 		<input type="hidden" name="id"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">绑定次数：</label>
-		<input type="text" name="time" class="easyui-numberbox" style="width:268px;" data-options="required:true"/>
+		<input id="nn" type="text" name="time" class="easyui-numberbox" style="width:268px;" data-options="required:true,min:1"/>
 	</div>
 </form>

@@ -2,6 +2,7 @@ package com.examw.test.model.products;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Set;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -29,6 +30,7 @@ public class RegistrationInfo extends Paging{
 	private String statusName;
 	private String[] productId;
 	private String productName;
+	private Set<SoftwareTypeLimitInfo> limit;
 	/**
 	 * 获取注册码ID。
 	 * @return 注册码ID。
@@ -294,6 +296,22 @@ public class RegistrationInfo extends Paging{
 	 */
 	public void setProductName(String productName) {
 		this.productName = productName;
+	}
+	/**
+	 * 获取 软件类型限制
+	 * @return limit
+	 * 
+	 */
+	public Set<SoftwareTypeLimitInfo> getLimit() {
+		return limit;
+	}
+	/**
+	 * 设置 软件类型限制
+	 * @param limit
+	 * 
+	 */
+	public void setLimit(Set<SoftwareTypeLimitInfo> limit) {
+		this.limit = limit;
 	}
 	
 }

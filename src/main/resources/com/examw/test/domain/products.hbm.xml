@@ -137,7 +137,7 @@
 		<!-- 软件类型 -->
 		<many-to-one name="type" column="type_id" class="SoftwareType"  unique-key="uk_registration_type" not-null="true" />
 		<!-- 关联注册码 -->
-		<many-to-one name="registration" column="registration_id" class="Registration" unique-key="uk_registration_type" not-null="true" />
+		<many-to-one name="registration" column="registration_id" class="Registration" unique-key="uk_registration_type"/>
 		<!--  绑定次数 -->
 		<property name="time" type="integer" />
 	</class>

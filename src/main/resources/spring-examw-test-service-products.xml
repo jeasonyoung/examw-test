@@ -66,8 +66,8 @@
 		<property name="registrationDao" ref="registrationDao" />
 		<!-- 产品数据操作接口 -->
 		<property name="productDao" ref="productDao" />
-		<!-- 关联产品数据操作接口 -->
-		<property name="relationProductDao" ref="relationProductDao" />
+		<!-- 软件类型数据操作接口 -->
+		<property name="softwareTypeDao" ref="softwareTypeDao" />
 		<!-- 渠道数据操作接口 -->
 		<property name="channelDao" ref="channelDao" />
 		<!-- 状态-名称映射 -->

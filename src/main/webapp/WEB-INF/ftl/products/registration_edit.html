@@ -66,38 +66,146 @@
 				}
 			});
 		}
-	});
-var dg=$("#${dg}").datagrid({
-	width:400,
-	heigth:100,
-	fitColumns:true,
-	rownumbers:true,
-	border:true,
-	striped:true,
-	idField:"opt_id",
-	columns:[[{
-		field:"opt_id",
-		checkbox:true
-	},{
-		title:"软件类型",
-		field:"softwareType",
-		width:20,
-		align:"left",
-		formatter: function(value,row,index){
-			return $.trim(value);
+		var limitData = [];
+	var dg=$("#${dg}").datagrid({
+		width:400,
+		heigth:100,
+		fitColumns:true,
+		rownumbers:true,
+		border:true,
+		striped:true,
+		idField:"typeId",
+		columns:[[{
+			field:"typeId",
+			checkbox:true
+		},{
+			title:"软件类型",
+			field:"typeName",
+			width:20,
+			align:"left"
+		},{
+			title:"绑定次数",
+			field:"time",
+			width:10,
+			align:"center"
+		}]],
+		toolbar:"#${dg}_toolbar",
+		onLoadError:function(e){
+			<@error_dialog "e"/>
+		},
+		onDblClickRow:function(rowIndex,rowData){
+			edit_window("编辑类型限制",rowIndex,rowData);
 		}
-	},{
-		title:"绑定次数",
-		field:"time",
-		width:10,
-		align:"center"
-	}]],
-	toolbar:"#${dg}_toolbar",
-	onLoadError:function(e){
-		<@error_dialog "e"/>
-	},
-	onDblClickRow:function(rowIndex,rowData){
-		edit_window("编辑选项",rowIndex,rowData);
+	});
+	//add
+	${dg}_add = function(){
+		edit_window("新增类型限制",0,null);
+	};
+	${dg}_delete = function(){
+		var rows = dg.datagrid("getChecked");
+		if(rows && rows.length > 0){
+			$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
+				if(!r)return;
+				for(var i = 0; i < rows.length; i++){
+					var index = dg.datagrid("getRowIndex",rows[i]["typeId"]);
+					if(index > -1){
+						dg.datagrid("deleteRow",index);
+					}
+				}
+			});
+		}else{
+			$.messager.alert("提示","未选中须删除的数据！");
+		}
+		limitData = dg.datagrid("getData");
+	};
+	function edit_window(title,index,row){
+		var d = $("<div/>").dialog({
+			title:title,
+			width:400,
+			height:200,
+			href:"<@s.url '/products/registration/typelimit'/>",
+			modal:true,
+			buttons:[
+			{
+			    text:"保存",
+			    iconCls:"icon-save",
+			    handler:function(){
+			    	var data = ${module}_get_typelimit();
+			    	if(data){
+			    		dg.datagrid(row ? "updateRow" : "insertRow",{
+							index:index,
+							row:data
+						});
+			    		limitData = dg.datagrid("getRows");
+			    		console.info(limitData);
+						d.dialog("close");
+			    	}
+			    }
+			},
+			{
+				text:"关闭",
+				iconCls:"icon-cancel",
+				handler:function(){
+					d.dialog("close");
+				}
+			}],
+			onClose:function(){
+				$(this).dialog("destroy");
+			},
+			onLoad:function(){
+				if(row) $("#${module}_typelimit_edit_form").form("load",row);
+			}
+		});
+	}
+	var post = {};
+	//validate
+	${module}_validate = function(){
+		var valid = $("#${form}").form("validate");
+		if(!valid) return false;
+		post["id"] = $("#${form} input[name='id']").val();
+		var productId = $("#${form} input[name='productId']").val();
+		post["productId"] = [];
+		if(productId)
+			post["productId"] = productId.split(',');
+		post["productName"] = $("#${form} input[name='productName']").val();
+		post["limitTime"] = $("#${form} input[name='limitTime']").val();
+		post["channelId"] = $("#${form} input[name='channelId']").val();
+		post["price"] = $("#${form} input[name='price']").val();
+		post["discount"] = $("#${form} input[name='discount']").val();
+		post["endTime"] = $("#${form} input[name='endTime']").val();
+		return valid;
+	}
+	${module}_update = function(){
+		post["limit"] = [];
+		var rows = dg.datagrid("getRows");
+		if(rows){
+			$.each(rows,function(i,n){
+				var opt  = {};
+				opt["typeId"] = n["typeId"];
+				opt["typeName"] = n["typeName"];
+				opt["time"] = n["time"];
+				post["limit"].push(opt);
+			});
+		}
+		return post;
+	}
+	//load
+	${module}_load = function(row){
+		if(!row)return;
+		$("#${form}").form("load",row);
+		if(row.limit && $.isArray(row.limit)){
+			$.each(row.limit,function(i,n){
+				var opt = {};
+				opt["typeId"] = n["typeId"];
+				opt["typeName"] = n["typeName"]
+				opt["time"] = n["time"];
+				dg.datagrid("appendRow",opt);
+			});
+			limitData = row.limit;
+		}
+	}
+	${module}_getLimitDate = function(){
+		return limitData;
 	}
 });
 //-->

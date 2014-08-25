@@ -15,12 +15,15 @@ import org.springframework.util.StringUtils;
 import com.examw.test.dao.products.IChannelDao;
 import com.examw.test.dao.products.IProductDao;
 import com.examw.test.dao.products.IRegistrationDao;
-import com.examw.test.dao.products.IRelationProductDao;
+import com.examw.test.dao.products.ISoftwareTypeDao;
 import com.examw.test.domain.products.Channel;
 import com.examw.test.domain.products.Product;
 import com.examw.test.domain.products.Registration;
 import com.examw.test.domain.products.RelationProduct;
+import com.examw.test.domain.products.SoftwareType;
+import com.examw.test.domain.products.SoftwareTypeLimit;
 import com.examw.test.model.products.RegistrationInfo;
+import com.examw.test.model.products.SoftwareTypeLimitInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.products.IRegistrationService;
 
@@ -32,7 +35,7 @@ import com.examw.test.service.products.IRegistrationService;
 public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,RegistrationInfo> implements IRegistrationService{
 	private static final Logger logger = Logger.getLogger(RegistrationServiceImpl.class);
 	private IRegistrationDao registrationDao;
-	private IRelationProductDao relationProductDao;
+	private ISoftwareTypeDao softwareTypeDao;
 	private IProductDao productDao;
 	private IChannelDao channelDao;
 	private Map<String,String> statusMap;
@@ -43,15 +46,6 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 	 */
 	public void setRegistrationDao(IRegistrationDao registrationDao) {
 		this.registrationDao = registrationDao;
-	}
-	
-	/**
-	 * 设置 关联产品数据接口
-	 * @param relationProductDao
-	 * 
-	 */
-	public void setRelationProductDao(IRelationProductDao relationProductDao) {
-		this.relationProductDao = relationProductDao;
 	}
 	
 	/**
@@ -80,6 +74,16 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 	public void setStatusMap(Map<String, String> statusMap) {
 		this.statusMap = statusMap;
 	}
+	
+	/**
+	 * 设置 软件类型数据接口
+	 * @param softwareTypeDao
+	 * 
+	 */
+	public void setSoftwareTypeDao(ISoftwareTypeDao softwareTypeDao) {
+		this.softwareTypeDao = softwareTypeDao;
+	}
+
 	/*
 	 * 查询数据
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#find(java.lang.Object)
@@ -99,10 +103,12 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 			return null;
 		RegistrationInfo info = new RegistrationInfo();
 		BeanUtils.copyProperties(data, info);
+		//渠道
 		if(data.getChannel()!=null){
 			info.setChannelId(data.getChannel().getId());
 			info.setChannelName(data.getChannel().getName());
 		}
+		//关联产品
 		String productId ="", productName = "";
 		if(data.getProducts()!=null && data.getProducts().size()>0){
 			for(RelationProduct rp : data.getProducts()){
@@ -113,6 +119,20 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 		if(!"".equals(productId)){
 			info.setProductId(productId.split(","));
 			info.setProductName(productName);
+		}
+		//软件类型限制
+		if(data.getTypeLimits()!=null && data.getTypeLimits().size()>0)
+		{
+			Set<SoftwareTypeLimitInfo> limit = new HashSet<SoftwareTypeLimitInfo>();
+			for(SoftwareTypeLimit stl : data.getTypeLimits()){
+				SoftwareTypeLimitInfo stlInfo = new SoftwareTypeLimitInfo();
+				BeanUtils.copyProperties(stl, stlInfo);
+				stlInfo.setTypeId(stl.getType().getId());
+				stlInfo.setTypeName(stl.getType().getName());
+				stlInfo.setRegistrationId(stl.getRegistration().getId());
+				limit.add(stlInfo);
+			}
+			info.setLimit(limit);
 		}
 		info.setStatusName(this.loadStatusName(data.getStatus()));
 		return info;
@@ -146,8 +166,25 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 		if(data.getChannel() != null){
 			info.setChannelName(data.getChannel().getName());
 		}
-		///TODO:注册码软件限制
-		
+		//注册码软件限制
+		if(data.getTypeLimits() == null) data.setTypeLimits(new HashSet<SoftwareTypeLimit>());
+		Set<SoftwareTypeLimit> oldTypeLimit = data.getTypeLimits();
+		if(info.getLimit()!=null && info.getLimit().size()>0)
+		{
+			if(logger.isDebugEnabled())logger.debug("开始注册码软件限制...");
+			for(SoftwareTypeLimitInfo stlInfo : info.getLimit()){
+				SoftwareType type = this.softwareTypeDao.load(SoftwareType.class, stlInfo.getTypeId());
+				if(type == null){
+					if(logger.isDebugEnabled()) logger.debug(String.format("软件类型[id = %s]不存在!", stlInfo.getTypeId()));
+					continue;
+				}
+				SoftwareTypeLimit stl = createSoftwareTypeLimit(oldTypeLimit,data,type);
+				stl.setTime(stlInfo.getTime());
+				if(logger.isDebugEnabled()) logger.debug(String.format("限制软件类型[%1$s,%2$s]...", stlInfo.getTypeId(), data.getId()));
+				data.getTypeLimits().add(stl);
+			}
+		}else
+			data.getTypeLimits().clear();
 		//产品关联
 		if(data.getProducts() == null) data.setProducts(new HashSet<RelationProduct>());
 		//data.getProducts().clear();
@@ -167,11 +204,23 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 				data.getProducts().add(rp);
 			}
 			
-		}
+		}else
+			data.getProducts().clear();
 		if(isAdded)this.registrationDao.save(data);
+		else{
+			data.setLastTime(new Date());
+			info.setLastTime(data.getLastTime());
+		}
 		info.setStatusName(this.loadStatusName(info.getStatus()));
 		return info;
 	}
+	/**
+	 * 构造关联产品
+	 * @param old
+	 * @param reg
+	 * @param product
+	 * @return
+	 */
 	private RelationProduct createRelationProduct(Set<RelationProduct> old,Registration reg,
 			Product product) {
 		RelationProduct data = null;
@@ -193,6 +242,33 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 		}
 		return data;
 	}
+	/**
+	 * 构造软件类型限制
+	 * @param old
+	 * @param reg
+	 * @param type
+	 * @return
+	 */
+	private SoftwareTypeLimit createSoftwareTypeLimit(Set<SoftwareTypeLimit> old,Registration reg,
+			SoftwareType type) {
+		SoftwareTypeLimit data = null;
+		for(SoftwareTypeLimit stl:old)
+		{
+			if(stl.getType().getId().equals(type.getId()) && stl.getRegistration().getId().equals(reg.getId()))
+			{
+				data = stl;
+				break;
+			}
+		}
+		if(data == null)
+		{
+			data = new SoftwareTypeLimit();
+			data.setId(UUID.randomUUID().toString());
+			data.setType(type);
+			data.setRegistration(reg);
+		}
+		return data;
+	}
 	@Override
 	public void delete(String[] ids) {
 		if (logger.isDebugEnabled())
@@ -204,7 +280,7 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 				continue;
 			Registration data = this.registrationDao.load(Registration.class, ids[i]);
 			if (data != null) {
-				logger.debug("删除产品数据：" + ids[i]);
+				logger.debug("删除注册码数据：" + ids[i]);
 				this.registrationDao.delete(data);
 			}
 		}

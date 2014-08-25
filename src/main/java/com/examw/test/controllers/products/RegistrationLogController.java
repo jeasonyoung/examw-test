@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.model.DataGrid;
+import com.examw.model.Json;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.products.RegistrationLogInfo;
 import com.examw.test.service.products.IRegistrationLogService;
@@ -51,5 +52,26 @@ public class RegistrationLogController {
 	public DataGrid<RegistrationLogInfo> datagrid(RegistrationLogInfo info){
 		if(logger.isDebugEnabled()) logger.debug("加载列表数据...");
 		return this.registrationLogService.datagrid(info);
+	}
+	/**
+	 * 删除数据。
+	 * @param id
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION_LOG + ":" + Right.DELETE})
+	@RequestMapping(value="/delete", method = RequestMethod.POST)
+	@ResponseBody
+	public Json delete(String id){
+		if(logger.isDebugEnabled()) logger.debug("删除数据［"+ id +"］...");
+		Json result = new Json();
+		try {
+			this.registrationLogService.delete(id.split("\\|"));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("删除数据["+id+"]时发生异常:", e);
+		}
+		return result;
 	}
 }

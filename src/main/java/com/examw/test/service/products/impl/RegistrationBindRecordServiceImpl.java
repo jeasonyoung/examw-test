@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.products.IRegistrationBindRecordDao;
 import com.examw.test.domain.products.RegistrationBindRecord;
@@ -73,6 +74,19 @@ public class RegistrationBindRecordServiceImpl extends BaseDataServiceImpl<Regis
 	}
 	@Override
 	public void delete(String[] ids) {
+		if (logger.isDebugEnabled())
+			logger.debug("删除数据...");
+		if (ids == null || ids.length == 0)
+			return;
+		for (int i = 0; i < ids.length; i++) {
+			if (StringUtils.isEmpty(ids[i]))
+				continue;
+			RegistrationBindRecord data = this.registrationBindRecordDao.load(RegistrationBindRecord.class, ids[i]);
+			if (data != null) {
+				logger.debug("删除注册码绑定记录数据：" + ids[i]);
+				this.registrationBindRecordDao.delete(data);
+			}
+		}
 	}
 
 }
