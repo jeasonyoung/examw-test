@@ -30,7 +30,7 @@ public class RegistrationBindRecordDaoImpl extends BaseDaoImpl<RegistrationBindR
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
-			hql += " order by c." + info.getSort() + " " + info.getOrder();
+			hql += " order by rbr." + info.getSort() + " " + info.getOrder();
 		}
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.find(hql, parameters, info.getPage(), info.getRows());
