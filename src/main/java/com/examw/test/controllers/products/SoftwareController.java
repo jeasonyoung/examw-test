@@ -124,10 +124,6 @@ public class SoftwareController {
 		return this.softwareService.datagrid(new SoftwareInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
-			public Integer getPage(){return null;}
-			@Override
-			public Integer getRows(){return null;}
-			@Override
 			public String getSort(){ return "code"; }
 			@Override
 			public String getOrder() { return "asc"; }

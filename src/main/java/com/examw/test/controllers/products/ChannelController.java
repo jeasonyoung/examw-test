@@ -121,10 +121,6 @@ public class ChannelController {
 		return this.channelService.datagrid(new ChannelInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
-			public Integer getPage(){return null;}
-			@Override
-			public Integer getRows(){return null;}
-			@Override
 			public String getSort(){ return "code"; }
 			@Override
 			public String getOrder() { return "asc"; }

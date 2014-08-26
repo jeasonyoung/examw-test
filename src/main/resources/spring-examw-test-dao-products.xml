@@ -36,13 +36,5 @@
 	<bean id="registrationBindRecordDao"  class="com.examw.test.dao.products.impl.RegistrationBindRecordDaoImpl">
 	   <property name="sessionFactory"  ref="sessionFactory" />
 	</bean>
-	<!-- 软件类型限制Dao -->
-	<bean id="softwareTypeLimitDao"  class="com.examw.test.dao.products.impl.SoftwareTypeLimitDaoImpl">
-	   <property name="sessionFactory"  ref="sessionFactory" />
-	</bean>
-	<!-- 注册码关联产品Dao -->
-	<bean id="relationProductDao"  class="com.examw.test.dao.products.impl.RelationProductDaoImpl">
-	   <property name="sessionFactory"  ref="sessionFactory" />
-	</bean>
-	<!-- 产品管理  数据接口实现end -->
+<!-- 产品管理  数据接口实现end -->
 </beans>

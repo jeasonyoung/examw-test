@@ -53,7 +53,7 @@ public class RegistrationLogDaoImpl extends BaseDaoImpl<RegistrationLog> impleme
 	// 添加查询条件到HQL。
 	private String addWhere(RegistrationLogInfo info, String hql,Map<String, Object> parameters) {
 		if (!StringUtils.isEmpty(info.getRegistrationId())) {
-			hql += " and (rl.registration.id like :registrationId)";
+			hql += " and (rl.registration.id = :registrationId)";
 			parameters.put("registrationId", info.getRegistrationId());
 		}
 		if (!StringUtils.isEmpty(info.getRegistrationCode())) {

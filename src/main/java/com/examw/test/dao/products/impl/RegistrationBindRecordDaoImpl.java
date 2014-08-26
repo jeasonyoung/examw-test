@@ -26,7 +26,7 @@ public class RegistrationBindRecordDaoImpl extends BaseDaoImpl<RegistrationBindR
 	@Override
 	public List<RegistrationBindRecord> findRecords(RegistrationBindRecordInfo info) {
 		if(logger.isDebugEnabled()) logger.debug("查询[注册码绑定记录]数据...");
-		String hql = "from RegistrationBindRecord c where 1=1 ";
+		String hql = "from RegistrationBindRecord rbr where 1=1 ";
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
@@ -42,7 +42,7 @@ public class RegistrationBindRecordDaoImpl extends BaseDaoImpl<RegistrationBindR
 	@Override
 	public Long total(RegistrationBindRecordInfo info) {
 		if(logger.isDebugEnabled()) logger.debug("查询[注册码绑定记录]数据统计...");
-		String hql = "select count(*) from RegistrationBindRecord c where 1 = 1 ";
+		String hql = "select count(*) from RegistrationBindRecord rbr where 1 = 1 ";
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(logger.isDebugEnabled()) logger.debug(hql);
@@ -52,15 +52,15 @@ public class RegistrationBindRecordDaoImpl extends BaseDaoImpl<RegistrationBindR
 	// 添加查询条件到HQL。
 	private String addWhere(RegistrationBindRecordInfo info, String hql,Map<String, Object> parameters) {
 		if (!StringUtils.isEmpty(info.getRegistrationId())) {
-			hql += " and (rl.registration.id like :registrationId)";
+			hql += " and (rbr.registration.id = :registrationId)";
 			parameters.put("registrationId", info.getRegistrationId());
 		}
 		if (!StringUtils.isEmpty(info.getRegistrationCode())) {
-			hql += " and (rl.registration.code like :code)";
+			hql += " and (rbr.registration.code like :code)";
 			parameters.put("code", "%" + info.getRegistrationCode() + "%");
 		}
 		if (!StringUtils.isEmpty(info.getSoftwareTypeId())) {
-			hql += " and (rl.softwareType.id = :typeId)";
+			hql += " and (rbr.softwareType.id = :typeId)";
 			parameters.put("typeId", info.getSoftwareTypeId());
 		}
 		return hql;

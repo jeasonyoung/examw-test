@@ -26,7 +26,7 @@ import com.examw.test.service.products.IProductUserService;
 @RequestMapping("/products/user")
 public class ProductUserController {
 	private static final Logger logger = Logger.getLogger(ProductUserController.class);
-	//渠道服务接口。
+	//产品用户服务接口。
 	@Resource
 	private IProductUserService productUserService;
 	/**
