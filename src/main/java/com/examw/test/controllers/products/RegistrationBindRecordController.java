@@ -25,7 +25,7 @@ import com.examw.test.service.products.IRegistrationBindRecordService;
 @RequestMapping("/products/registration/bind")
 public class RegistrationBindRecordController {
 	private static final Logger logger = Logger.getLogger(RegistrationBindRecordController.class);
-	//注册码服务接口。
+	//注册码绑定记录服务接口。
 	@Resource
 	private IRegistrationBindRecordService registrationBindRecordService;
 	/**

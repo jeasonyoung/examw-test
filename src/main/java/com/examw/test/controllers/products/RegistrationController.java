@@ -120,7 +120,10 @@ public class RegistrationController {
 		}
 		return result;
 	}
-	
+	/**
+	 * 加载添加软件类型限制页面
+	 * @return
+	 */
 	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE})
 	@RequestMapping(value = "/typelimit", method = RequestMethod.GET)
 	public String typeLimit(){

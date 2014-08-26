@@ -121,10 +121,6 @@ public class ChannelController {
 		return this.channelService.datagrid(new ChannelInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
-			public Integer getPage(){return null;}
-			@Override
-			public Integer getRows(){return null;}
-			@Override
 			public String getSort(){ return "code"; }
 			@Override
 			public String getOrder() { return "asc"; }
@@ -141,6 +137,8 @@ public class ChannelController {
 	public String[] code(){
 		Integer max = this.channelService.loadMaxCode();
 		if(max == null) max = 0;
+		if(max.toString().length()<=2)
 		return new String[]{ String.format("%02d", max + 1) };
+		return new String[]{ String.format("%0"+max.toString().length()+"d", max + 1) };
 	}
 }

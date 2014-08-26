@@ -59,6 +59,10 @@ public class ProductDaoImpl extends BaseDaoImpl<Product> implements IProductDao{
 			hql += " and (p.exam.id = :examId)";
 			parameters.put("examId", info.getExamId());
 		}
+		if(info.getStatus()!=null){
+			hql += " and (p.status = :status)";
+			parameters.put("status", info.getStatus());
+		}
 		return hql;
 	}
 }

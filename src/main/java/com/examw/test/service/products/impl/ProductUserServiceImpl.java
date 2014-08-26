@@ -42,13 +42,19 @@ public class ProductUserServiceImpl extends BaseDataServiceImpl<ProductUser,Prod
 	public void setStatusMap(Map<Integer, String> statusMap) {
 		this.statusMap = statusMap;
 	}
-
+	/*
+	 * 查询数据
+	 * @see com.examw.test.service.impl.BaseDataServiceImpl#find(java.lang.Object)
+	 */
 	@Override
 	protected List<ProductUser> find(ProductUserInfo info) {
 		if (logger.isDebugEnabled())	logger.debug("查询[产品用户]数据...");
 		return this.productUserDao.findProductUsers(info);
 	}
-
+	/*
+	 * 数据模型转换
+	 * @see com.examw.test.service.impl.BaseDataServiceImpl#changeModel(java.lang.Object)
+	 */
 	@Override
 	protected ProductUserInfo changeModel(ProductUser data) {
 		if (logger.isDebugEnabled())	logger.debug("[产品用户]数据模型转换...");
@@ -59,13 +65,19 @@ public class ProductUserServiceImpl extends BaseDataServiceImpl<ProductUser,Prod
 		info.setStatusName(this.loadStatusName(data.getStatus()));
 		return info;
 	}
-
+	/*
+	 * 查询统计
+	 * @see com.examw.test.service.impl.BaseDataServiceImpl#total(java.lang.Object)
+	 */
 	@Override
 	protected Long total(ProductUserInfo info) {
 		if (logger.isDebugEnabled())	logger.debug("查询统计...");
 		return productUserDao.total(info);
 	}
-
+	/*
+	 * 新增或更新数据
+	 * @see com.examw.test.service.impl.BaseDataServiceImpl#update(java.lang.Object)
+	 */
 	@Override
 	public ProductUserInfo update(ProductUserInfo info) {
 		if (logger.isDebugEnabled())	logger.debug("更新数据...");
@@ -91,7 +103,10 @@ public class ProductUserServiceImpl extends BaseDataServiceImpl<ProductUser,Prod
 		info.setStatusName(this.loadStatusName(data.getStatus()));
 		return info;
 	}
-
+	/*
+	 * 删除数据
+	 * @see com.examw.test.service.impl.BaseDataServiceImpl#delete(java.lang.String[])
+	 */
 	@Override
 	public void delete(String[] ids) {
 		if (logger.isDebugEnabled())
@@ -108,7 +123,10 @@ public class ProductUserServiceImpl extends BaseDataServiceImpl<ProductUser,Prod
 			}
 		}
 	}
-	
+	/*
+	 * 加载最大的代码值
+	 * @see com.examw.test.service.products.IProductUserService#loadMaxCode()
+	 */
 	@Override
 	public Integer loadMaxCode() {
 		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");

@@ -88,10 +88,12 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 			return null;
 		ProductInfo info = new ProductInfo();
 		BeanUtils.copyProperties(data, info);
+		//所属考试
 		if(data.getExam()!=null){
 			info.setExamId(data.getExam().getId());
 			info.setExamName(data.getExam().getName());
 		}
+		//包含科目
 		if(data.getSubjects()!=null){
 			List<String> list = new ArrayList<>();
 			String name = "";
@@ -138,15 +140,16 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 			data.setStatus(Product.STATUS_NONE);
 			info.setStatus(Product.STATUS_NONE);
 		}
+		//所属考试
 		if(info.getExamId()!=null && (data.getExam()==null || !data.getExam().getId().equalsIgnoreCase(info.getExamId()))){
 			Exam exam = this.examDao.load(Exam.class, info.getExamId());
 			if(exam!=null)
 			{
 				data.setExam(exam);
-				info.setExamId(exam.getId());
 				info.setExamName(exam.getName());
 			}
 		}
+		//包含科目
 		Set<Subject> subjects = new HashSet<Subject>();
 		if(info.getSubjectId()!=null && info.getSubjectId().length>0){
 			for(String id:info.getSubjectId()){
@@ -204,7 +207,10 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 		}
 		return null;
 	}
-	
+	/*
+	 * 加载状态名称映射
+	 * @see com.examw.test.service.products.IProductService#loadStatusName(java.lang.Integer)
+	 */
 	@Override
 	public String loadStatusName(Integer status) {
 		if(status == null || statusMap == null)

@@ -121,10 +121,6 @@ public class SoftwareTypeController {
 		return this.softwareTypeService.datagrid(new SoftwareTypeInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
-			public Integer getPage(){return null;}
-			@Override
-			public Integer getRows(){return null;}
-			@Override
 			public String getSort(){ return "code"; }
 			@Override
 			public String getOrder() { return "asc"; }
@@ -140,6 +136,8 @@ public class SoftwareTypeController {
 	public String[] code(){
 		Integer max = this.softwareTypeService.loadMaxCode();
 		if(max == null) max = 0;
+		if(max.toString().length()<=2)
 		return new String[]{ String.format("%02d", max + 1) };
+		return new String[]{ String.format("%0"+max.toString().length()+"d", max + 1) };
 	}
 }

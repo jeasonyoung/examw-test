@@ -63,11 +63,16 @@ public class RegistrationLogServiceImpl extends BaseDataServiceImpl<Registration
 	protected Long total(RegistrationLogInfo info) {
 		return this.registrationLogDao.total(info);
 	}
+	//日志记录由前台生成
 	@Override
 	public RegistrationLogInfo update(RegistrationLogInfo info) {
 		
 		return null;
 	}
+	/*
+	 * 删除数据
+	 * @see com.examw.test.service.impl.BaseDataServiceImpl#delete(java.lang.String[])
+	 */
 	@Override
 	public void delete(String[] ids) {
 		if (logger.isDebugEnabled())

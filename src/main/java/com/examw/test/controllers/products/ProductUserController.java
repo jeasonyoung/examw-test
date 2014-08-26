@@ -26,7 +26,7 @@ import com.examw.test.service.products.IProductUserService;
 @RequestMapping("/products/user")
 public class ProductUserController {
 	private static final Logger logger = Logger.getLogger(ProductUserController.class);
-	//渠道服务接口。
+	//产品用户服务接口。
 	@Resource
 	private IProductUserService productUserService;
 	/**
@@ -123,6 +123,8 @@ public class ProductUserController {
 	public String[] code(){
 		Integer max = this.productUserService.loadMaxCode();
 		if(max == null) max = 0;
+		if(max.toString().length()<=2)
 		return new String[]{ String.format("%02d", max + 1) };
+		return new String[]{ String.format("%0"+max.toString().length()+"d", max + 1) };
 	}
 }

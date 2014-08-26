@@ -68,7 +68,7 @@
 		}
 		var limitData = [];
 	var dg=$("#${dg}").datagrid({
-		width:400,
+		width:470,
 		heigth:100,
 		fitColumns:true,
 		rownumbers:true,
@@ -213,32 +213,32 @@
 
 <form id="${module}_edit_form" method="POST" style="padding: 10px;">
 		<div style="float: left;">
-			<label style="width: 100px;">关联产品：</label> 
+			<label style="width: 75px;">关联产品：</label> 
 			<input type="hidden" name="productId"/>
-			<input id = "${module}_product_name" name="productName" class="easyui-textbox" data-options="buttonText:'选择 ',prompt:'选择产品',missingMessage:'请选择产品',icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');$('#${module}_edit_form input[name=\'productId\']').val('');}}],width:274,onClickButton:${module}_chooseProduct" />
+			<input id = "${module}_product_name" name="productName" class="easyui-textbox" data-options="buttonText:'选择 ',prompt:'选择产品',missingMessage:'请选择产品',icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');$('#${module}_edit_form input[name=\'productId\']').val('');}}],width:400,onClickButton:${module}_chooseProduct" />
 			<input type="hidden" name="id" />
 		</div>
 		<div style="float: left; margin-top: 12px;">
-			<label style="width: 100px;">期限(月)：</label> 
-			<input name="limitTime" class="easyui-numberbox" data-options="editable:true,min:0" style="width: 274px;" />
+			<label style="width: 75px;">期限(月)：</label> 
+			<input name="limitTime" class="easyui-numberbox" data-options="editable:true,min:0" style="width: 400px;" />
 		</div>
 		<div style="float: left; margin-top: 12px;">
-			<label style="width: 100px;">渠道：</label> 
-			<input name="channelId"	id="${module}_channel_combobox" style="width: 274px;" />
+			<label style="width: 75px;">渠道：</label> 
+			<input name="channelId"	id="${module}_channel_combobox" style="width: 400px;" />
 		</div>
 		<div style="float: left; margin-top: 12px;">
-			<label style="width: 100px;">原价：</label> 
-			<input type="text"	name="price" class="easyui-numberbox" data-options="editable:true,min:0,precision:2"	style="width: 274px;" />
+			<label style="width: 75px;">原价：</label> 
+			<input type="text"	name="price" class="easyui-numberbox" data-options="editable:true,min:0,precision:2"	style="width: 400px;" />
 		</div>
 		<div style="float: left; margin-top: 12px;">
-			<label style="width: 100px;">优惠价：</label>
-			<input type="text" name="discount" class="easyui-numberbox" data-options="editable:true,min:0,precision:2"	style="width: 270px;" />
+			<label style="width: 75px;">优惠价：</label>
+			<input type="text" name="discount" class="easyui-numberbox" data-options="editable:true,min:0,precision:2"	style="width: 400px;" />
 		</div>
 		<div style="float: left; margin-top: 12px;">
-			<label style="width: 100px;">到期时间：</label>
-			<input type="text" name="endTime" class="easyui-datebox" data-options="panelWidth:270"	style="width: 270px;" />
+			<label style="width: 75px;">到期时间：</label>
+			<input type="text" name="endTime" class="easyui-datebox" data-options="panelWidth:270"	style="width: 400px;" />
 		</div>
-		<div style="float: left; margin-top: 12px;">
+		<div style="float: left; margin-top: 12px;margin-left:5px">
 		<table id="${dg}"></table>
 		<div id="${dg}_toolbar">
 			<a href="#" class="easyui-linkbutton" onclick="${dg}_add()" data-options="iconCls:'icon-add',plain:true" style="float:left;">新增软件限制</a>

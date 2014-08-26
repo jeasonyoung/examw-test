@@ -162,7 +162,6 @@ public class SoftwareServiceImpl extends BaseDataServiceImpl<Software,SoftwareIn
 			if(product!=null)
 			{
 				data.setProduct(product);
-				info.setProductId(product.getId());
 				info.setProductName(product.getName());
 				if(product.getExam()!=null)
 				{
@@ -176,7 +175,6 @@ public class SoftwareServiceImpl extends BaseDataServiceImpl<Software,SoftwareIn
 			if(channel!=null)
 			{
 				data.setChannel(channel);
-				info.setChannelId(channel.getId());
 				info.setChannelName(channel.getName());
 			}
 		}
@@ -185,7 +183,6 @@ public class SoftwareServiceImpl extends BaseDataServiceImpl<Software,SoftwareIn
 			if(type!=null)
 			{
 				data.setType(type);
-				info.setSoftTypeId(type.getId());
 				info.setSoftTypeName(type.getName());
 			}
 		}

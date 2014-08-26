@@ -48,10 +48,12 @@ public class RegistrationBindRecordServiceImpl extends BaseDataServiceImpl<Regis
 		if(data == null) return null;
 		RegistrationBindRecordInfo info = new RegistrationBindRecordInfo();
 		BeanUtils.copyProperties(data, info);
+		//注册码
 		if(data.getRegistration()!=null){
 			info.setRegistrationId(data.getRegistration().getId());
 			info.setRegistrationCode(data.getRegistration().getCode());
 		}
+		//软件类型
 		if(data.getSoftwareType()!=null){
 			info.setSoftwareTypeId(data.getSoftwareType().getId());
 			info.setSoftwareTypeName(data.getSoftwareType().getName());
@@ -66,12 +68,16 @@ public class RegistrationBindRecordServiceImpl extends BaseDataServiceImpl<Regis
 	protected Long total(RegistrationBindRecordInfo info) {
 		return this.registrationBindRecordDao.total(info);
 	}
-	
+	//绑定记录由前台来生成
 	@Override
 	public RegistrationBindRecordInfo update(RegistrationBindRecordInfo info) {
 		
 		return null;
 	}
+	/*
+	 * 删除
+	 * @see com.examw.test.service.impl.BaseDataServiceImpl#delete(java.lang.String[])
+	 */
 	@Override
 	public void delete(String[] ids) {
 		if (logger.isDebugEnabled())
@@ -88,5 +94,4 @@ public class RegistrationBindRecordServiceImpl extends BaseDataServiceImpl<Regis
 			}
 		}
 	}
-
 }
