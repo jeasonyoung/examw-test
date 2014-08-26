@@ -137,6 +137,8 @@ public class ChannelController {
 	public String[] code(){
 		Integer max = this.channelService.loadMaxCode();
 		if(max == null) max = 0;
+		if(max.toString().length()<=2)
 		return new String[]{ String.format("%02d", max + 1) };
+		return new String[]{ String.format("%0"+max.toString().length()+"d", max + 1) };
 	}
 }
