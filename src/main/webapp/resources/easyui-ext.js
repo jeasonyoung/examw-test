@@ -60,7 +60,7 @@ $.extend($.fn.validatebox.defaults.rules,{
 	},
 	number : {// 验证数字
 		validator : function(value) {
-			return /^[0-9]*$/i.test(value);
+			return /^[-]?((\d+)|(\d+\.\d+))$/i.test(value);
 		},
 		message : "请输入数字"
 	},
