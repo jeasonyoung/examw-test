@@ -162,7 +162,7 @@ public class TextBookController {
 	public String[] code(){
 		Integer max = this.bookService.loadMaxCode();
 		if(max == null) max = 0;
-		return new String[]{ String.format("%04d", max + 1) };
+		return new String[]{ String.format("%06d", max + 1) };
 	}
 	/**
 	 * 删除数据。
