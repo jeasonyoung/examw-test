@@ -146,11 +146,9 @@ public class ProductController {
 	@RequiresPermissions({ModuleConstant.PRODUCTS_PRODUCT + ":" + Right.VIEW})
 	@RequestMapping(value="/code", method = RequestMethod.GET)
 	@ResponseBody
-	public String[] code(){
+	public Integer code(){
 		Integer max = this.productService.loadMaxCode();
 		if(max == null) max = 0;
-		if(max.toString().length()<=3)
-		return new String[]{ String.format("%03d", max + 1) };
-		return new String[]{ String.format("%0"+max.toString().length()+"d", max + 1) };
+		return max + 1;
 	}
 }

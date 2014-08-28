@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class Software implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id,code,name,content,img,url;
+	private String id,name,content,img,url;
 	private Product product;
 	private SoftwareType type;
 	private Channel channel;
@@ -18,6 +18,7 @@ public class Software implements Serializable {
 	private Date createTime,lastTime;
 	private Long count;
 	private Integer status;
+	private Integer code;
 	/**
 	 * 状态－正常。
 	 */
@@ -45,7 +46,7 @@ public class Software implements Serializable {
 	 * 获取软件代码。
 	 * @return 软件代码。
 	 */
-	public String getCode() {
+	public Integer getCode() {
 		return code;
 	}
 	/**
@@ -53,7 +54,7 @@ public class Software implements Serializable {
 	 * @param code 
 	 *	  软件代码。
 	 */
-	public void setCode(String code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 	/**

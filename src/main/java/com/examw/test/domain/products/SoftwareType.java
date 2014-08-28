@@ -10,9 +10,10 @@ import java.util.Set;
  */
 public class SoftwareType implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id,code,name;
+	private String id,name;
 	private Set<SoftwareTypeLimit> limits;
 	private Set<RegistrationBindRecord> records;
+	private Integer code;
 	/**
 	 * 获取类型ID。
 	 * @return 类型ID。
@@ -32,7 +33,7 @@ public class SoftwareType implements Serializable {
 	 * 获取类型代码。
 	 * @return 类型代码。
 	 */
-	public String getCode() {
+	public Integer getCode() {
 		return code;
 	}
 	/**
@@ -40,7 +41,7 @@ public class SoftwareType implements Serializable {
 	 * @param code 
 	 *	  类型代码。
 	 */
-	public void setCode(String code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 	/**

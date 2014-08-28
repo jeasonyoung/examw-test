@@ -14,9 +14,10 @@ import com.examw.model.Paging;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class CategoryInfo extends Paging {
 	private static final long serialVersionUID = 1L;
-	private String id,name,code,abbr,pid;
+	private String id,name,abbr,pid;
 	private List<CategoryInfo> children;
 	private String fullName;
+	private Integer code;
 	/**
 	 * 获取类别ID。
 	 * @return 类别ID。
@@ -36,7 +37,7 @@ public class CategoryInfo extends Paging {
 	 * 获取类别代码。
 	 * @return 类别代码。
 	 */
-	public String getCode() {
+	public Integer getCode() {
 		return code;
 	}
 	/**
@@ -44,7 +45,7 @@ public class CategoryInfo extends Paging {
 	 * @param code
 	 * 类别代码。
 	 */
-	public void setCode(String code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 	/**

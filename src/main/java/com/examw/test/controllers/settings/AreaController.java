@@ -135,11 +135,9 @@ public class AreaController {
 	@RequiresPermissions({ModuleConstant.SETTINGS_AREA + ":" + Right.VIEW})
 	@RequestMapping(value="/code", method = RequestMethod.GET)
 	@ResponseBody
-	public String[] code(){
+	public Integer code(){
 		Integer max = this.areaService.loadMaxCode();
 		if(max == null) max = 0;
-		if(max.toString().length()<=2)
-		return new String[]{ String.format("%02d", max + 1) };
-		return new String[]{ String.format("%0"+max.toString().length()+"d", max + 1) };
+		return max+1;
 	}
 }

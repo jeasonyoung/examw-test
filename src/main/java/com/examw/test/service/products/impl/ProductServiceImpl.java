@@ -203,7 +203,7 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 			public String getOrder() { return "desc";}
 		});
 		if(sources != null && sources.size() > 0){
-			return new Integer(sources.get(0).getCode());
+			return sources.get(0).getCode();
 		}
 		return null;
 	}

@@ -12,7 +12,8 @@ import com.examw.model.Paging;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class SourceInfo extends Paging {
 	private static final long serialVersionUID = 1L;
-	private String id,code,name;
+	private String id,name;
+	private Integer code;
 	/**
 	 * 获取来源ID。
 	 * @return 来源ID。
@@ -32,7 +33,7 @@ public class SourceInfo extends Paging {
 	 * 获取来源代码。
 	 * @return 来源代码。
 	 */
-	public String getCode() {
+	public Integer getCode() {
 		return code;
 	}
 	/**
@@ -40,7 +41,7 @@ public class SourceInfo extends Paging {
 	 * @param code
 	 * 来源代码。
 	 */
-	public void setCode(String code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 	/**

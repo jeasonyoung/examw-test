@@ -13,11 +13,10 @@ import com.examw.test.service.IBaseDataService;
  */
 public interface ICategoryService extends IBaseDataService<CategoryInfo>{
 	/**
-	 * 加载同级别最大代码值
-	 * @param pid 父ID
+	 * 加载最大代码值
 	 * @return
 	 */
-	String[] loadMaxCode(String pid);
+	Integer loadMaxCode();
 	/**
 	 * 查询所有的考试分类
 	 * @return

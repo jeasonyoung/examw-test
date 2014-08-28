@@ -171,7 +171,7 @@ $(function(){
 		m = true;
 		$.getJSON("<@s.url '/settings/subject/code'/>?random="+new Date().getTime(),function(data){
 			m = false;
-			edit_window("新增科目",0,null,data[0]);
+			edit_window("新增科目",0,null,data);
 		});
 	};
 	<@shiro.hasPermission name="${PER_DELETE}">

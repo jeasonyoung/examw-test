@@ -9,7 +9,8 @@ import java.io.Serializable;
  */
 public class Source implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id,code,name;
+	private String id,name;
+	private Integer code;
 	/**
 	 * 获取来源ID。
 	 * @return 来源ID。
@@ -29,7 +30,7 @@ public class Source implements Serializable {
 	 * 获取来源代码。
 	 * @return 来源代码。
 	 */
-	public String getCode() {
+	public Integer getCode() {
 		return code;
 	}
 	/**
@@ -37,7 +38,7 @@ public class Source implements Serializable {
 	 * @param code
 	 * 来源代码。
 	 */
-	public void setCode(String code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 	/**

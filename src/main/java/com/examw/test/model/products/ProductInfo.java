@@ -15,7 +15,7 @@ import com.examw.support.CustomDateSerializer;
  */
 public class ProductInfo extends Paging{
 	private static final long serialVersionUID = 1L;
-	private String id,code,name,content;
+	private String id,name,content;
 	private String examId,examName;
 	private String[] subjectId;
 	private String subjectName;
@@ -23,6 +23,7 @@ public class ProductInfo extends Paging{
 	private Date createTime,lastTime;
 	private Integer status;
 	private String statusName;
+	private Integer code;
 	/**
 	 * 获取产品ID。
 	 * @return 产品ID。
@@ -42,7 +43,7 @@ public class ProductInfo extends Paging{
 	 * 获取产品代码。
 	 * @return 产品代码。
 	 */
-	public String getCode() {
+	public Integer getCode() {
 		return code;
 	}
 	/**
@@ -50,7 +51,7 @@ public class ProductInfo extends Paging{
 	 * @param code 
 	 *	  产品代码。
 	 */
-	public void setCode(String code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 	/**

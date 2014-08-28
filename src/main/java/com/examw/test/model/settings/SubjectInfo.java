@@ -12,10 +12,11 @@ import com.examw.model.Paging;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class SubjectInfo extends Paging{
 	private static final long serialVersionUID = 1L;
-	private String id,code,name;
+	private String id,name;
 	private String examId,examName;
 	private String areaId,areaName;
 	private String categoryId,categoryName;
+	private Integer code;
 	/**
 	 * 获取科目ID。
 	 * @return 科目ID。
@@ -35,7 +36,7 @@ public class SubjectInfo extends Paging{
 	 * 获取科目代码。
 	 * @return 科目代码。
 	 */
-	public String getCode() {
+	public Integer getCode() {
 		return code;
 	}
 	/**
@@ -43,7 +44,7 @@ public class SubjectInfo extends Paging{
 	 * @param code
 	 * 科目代码。
 	 */
-	public void setCode(String code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 	/**

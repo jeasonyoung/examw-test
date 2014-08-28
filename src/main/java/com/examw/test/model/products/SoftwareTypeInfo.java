@@ -12,7 +12,8 @@ import com.examw.model.Paging;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class SoftwareTypeInfo extends Paging {
 	private static final long serialVersionUID = 1L;
-	private String id,code,name;
+	private String id,name;
+	private Integer code;
 	/**
 	 * 获取类型ID。
 	 * @return 类型ID。
@@ -32,7 +33,7 @@ public class SoftwareTypeInfo extends Paging {
 	 * 获取类型代码。
 	 * @return 类型代码。
 	 */
-	public String getCode() {
+	public Integer getCode() {
 		return code;
 	}
 	/**
@@ -40,7 +41,7 @@ public class SoftwareTypeInfo extends Paging {
 	 * @param code 
 	 *	  类型代码。
 	 */
-	public void setCode(String code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 	/**

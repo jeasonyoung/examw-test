@@ -9,7 +9,8 @@ import java.io.Serializable;
  */
 public class Channel implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id,code,name;
+	private String id,name;
+	private Integer code;
 	/**
 	 * 获取渠道ID。
 	 * @return 渠道ID。
@@ -29,7 +30,7 @@ public class Channel implements Serializable {
 	 * 获取渠道代码。
 	 * @return 渠道代码。
 	 */
-	public String getCode() {
+	public Integer getCode() {
 		return code;
 	}
 	/**
@@ -37,7 +38,7 @@ public class Channel implements Serializable {
 	 * @param code 
 	 *	  渠道代码。
 	 */
-	public void setCode(String code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 	/**

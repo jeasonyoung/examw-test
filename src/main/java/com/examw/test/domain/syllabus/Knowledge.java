@@ -8,9 +8,10 @@ import java.io.Serializable;
  */
 public class Knowledge implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id,code,content;
+	private String id,content;
 	private TextBook book;
 	private Syllabus syllabus;
+	private Integer code;
 	/**
 	 * 获取知识点ID。
 	 * @return 知识点ID。
@@ -30,7 +31,7 @@ public class Knowledge implements Serializable {
 	 * 获取知识点代码。
 	 * @return 知识点代码。
 	 */
-	public String getCode() {
+	public Integer getCode() {
 		return code;
 	}
 	/**
@@ -38,7 +39,7 @@ public class Knowledge implements Serializable {
 	 * @param code 
 	 *	  知识点代码。
 	 */
-	public void setCode(String code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 	/**

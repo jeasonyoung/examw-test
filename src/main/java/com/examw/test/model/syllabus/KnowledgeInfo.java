@@ -11,7 +11,8 @@ import com.examw.model.Paging;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class KnowledgeInfo extends Paging {
 	private static final long serialVersionUID = 1L;
-	private String id,code,content,bookId,syllId,syllName;
+	private String id,content,bookId,syllId,syllName;
+	private Integer code;
 	/**
 	 * 设置知识点ID。
 	 * @return 知识点ID。
@@ -31,7 +32,7 @@ public class KnowledgeInfo extends Paging {
 	 * 获取知识的代码。
 	 * @return 知识的代码。
 	 */
-	public String getCode() {
+	public Integer getCode() {
 		return code;
 	}
 	/**
@@ -39,7 +40,7 @@ public class KnowledgeInfo extends Paging {
 	 * @param code
 	 * 知识的代码。
 	 */
-	public void setCode(String code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 	/**

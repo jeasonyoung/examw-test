@@ -138,32 +138,18 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 	 * @see com.examw.test.service.settings.ICategoryService#loadMaxCode(java.lang.String)
 	 */
 	@Override
-	public String[] loadMaxCode(final String pid) {
+	public Integer loadMaxCode() {
 		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
-		Integer max = null;
-		String maxCode = null;
 		List<Category> sources = this.categoryDao.findCategorys(new CategoryInfo(){
 			private static final long serialVersionUID = 1L;
-			@Override
-			public String getPid() { return pid;}
 			@Override
 			public String getSort() {return "code"; } 
 			@Override
 			public String getOrder() { return "desc";}
 		});
-		if(sources != null && sources.size() > 0){
-			maxCode = sources.get(0).getCode();
-			max = new Integer(maxCode);
-		}
-		if(max == null)
-		{
-			max = 0;
-			if(StringUtils.isEmpty(pid))	//顶级
-				return new String[]{ String.format("%02d", max + 1) };
-			String code = this.categoryDao.load(Category.class, pid).getCode();
-			return new String[]{String.format("%0"+(code.length()+2)+"d", new Integer(code)*100+1)};
-		}
-		return new String[]{ String.format("%0"+maxCode.length()+"d", max + 1) };
+		if(sources != null && sources.size() > 0)
+			return sources.get(0).getCode();
+		return null;
 	}
 	
 	/*

@@ -15,13 +15,14 @@ import com.examw.test.domain.settings.Subject;
  */
 public class Product implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id,code,name,content;
+	private String id,name,content;
 	private Exam exam;
 	private Set<Subject> subjects;
 	private BigDecimal price,discount;
 	private Date createTime,lastTime;
 	private Integer status;
 	private Set<RelationProduct> relations;
+	private Integer code;
 	/**
 	 * 状态－正常。
 	 */
@@ -49,7 +50,7 @@ public class Product implements Serializable {
 	 * 获取产品代码。
 	 * @return 产品代码。
 	 */
-	public String getCode() {
+	public Integer getCode() {
 		return code;
 	}
 	/**
@@ -57,7 +58,7 @@ public class Product implements Serializable {
 	 * @param code 
 	 *	  产品代码。
 	 */
-	public void setCode(String code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 	/**

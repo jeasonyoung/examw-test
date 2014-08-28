@@ -9,9 +9,10 @@ import java.io.Serializable;
  */
 public class Subject implements Serializable{
 	private static final long serialVersionUID = 1L;
-	private String id,code,name;
+	private String id,name;
 	private Exam exam;
 	private Area area;
+	private Integer code;
 	/**
 	 * 获取科目ID。
 	 * @return 科目ID。
@@ -31,7 +32,7 @@ public class Subject implements Serializable{
 	 * 获取科目代码。
 	 * @return 科目代码。
 	 */
-	public String getCode() {
+	public Integer getCode() {
 		return code;
 	}
 	/**
@@ -39,7 +40,7 @@ public class Subject implements Serializable{
 	 * @param code
 	 * 科目代码。
 	 */
-	public void setCode(String code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 	/**

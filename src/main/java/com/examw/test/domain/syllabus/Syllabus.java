@@ -12,10 +12,11 @@ import com.examw.test.domain.settings.Subject;
  */
 public class Syllabus implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id,code,title;
+	private String id,title;
 	private Subject subject;
 	private Syllabus parent;
 	private Set<Syllabus> children;
+	private Integer code;
 	/**
 	 * 获取要点ID。
 	 * @return 要点ID。
@@ -35,7 +36,7 @@ public class Syllabus implements Serializable {
 	 * 获取要点代码。
 	 * @return 要点代码。
 	 */
-	public String getCode() {
+	public Integer getCode() {
 		return code;
 	}
 	/**
@@ -43,7 +44,7 @@ public class Syllabus implements Serializable {
 	 * @param code 
 	 *	 要点代码。
 	 */
-	public void setCode(String code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 	/**

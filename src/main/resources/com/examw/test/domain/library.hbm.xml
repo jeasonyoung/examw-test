@@ -7,7 +7,7 @@
 		<!-- 来源ID -->
 		<id name="id"  type="string"  length="64" />
 		<!-- 来源代码 -->
-		<property name="code" type="string" length="10" unique="true" not-null="true" />
+		<property name="code" type="integer" unique="true" not-null="true" />
 		<!-- 来源名称 -->
 		<property name="name" type="string" length="32" not-null="true" />
 	</class>

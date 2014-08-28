@@ -10,10 +10,11 @@ import java.util.Set;
  */
 public class Category implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id,code,name,abbr;
+	private String id,name,abbr;
 	private Category parent;
 	private Set<Category> children;
 	private Set<Exam> exams;
+	private Integer code;
 	/**
 	 * 获取类别ID。
 	 * @return 类别ID。
@@ -33,7 +34,7 @@ public class Category implements Serializable {
 	 * 获取类别代码。
 	 * @return 类别代码。
 	 */
-	public String getCode() {
+	public Integer getCode() {
 		return code;
 	}
 	/**
@@ -41,7 +42,7 @@ public class Category implements Serializable {
 	 * @param code
 	 * 类别代码。
 	 */
-	public void setCode(String code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 	/**

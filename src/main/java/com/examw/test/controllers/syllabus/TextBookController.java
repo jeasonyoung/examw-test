@@ -159,10 +159,10 @@ public class TextBookController {
 	@RequiresPermissions({ModuleConstant.SYLLABUS_TEXTBOOK + ":" + Right.VIEW})
 	@RequestMapping(value="/code", method = RequestMethod.GET)
 	@ResponseBody
-	public String[] code(){
+	public Integer code(){
 		Integer max = this.bookService.loadMaxCode();
 		if(max == null) max = 0;
-		return new String[]{ String.format("%04d", max + 1) };
+		return max + 1;
 	}
 	/**
 	 * 删除数据。

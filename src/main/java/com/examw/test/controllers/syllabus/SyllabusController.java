@@ -66,10 +66,10 @@ public class SyllabusController {
 	@RequiresPermissions({ModuleConstant.SYLLABUSS_SYLLABUS+ ":" + Right.VIEW})
 	@RequestMapping(value="/code", method=RequestMethod.GET)
 	@ResponseBody
-	public String[] loadMaxCode(){
+	public Integer loadMaxCode(){
 		Integer max = this.syllabusService.loadMaxCode();
 		if(max == null) max = 0;
-		return new String[]{ String.format("%02d", max + 1) };
+		return max + 1;
 	}
 	/**
 	 * 查询数据。

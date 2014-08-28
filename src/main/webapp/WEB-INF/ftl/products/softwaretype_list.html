@@ -121,7 +121,7 @@ $(function(){
 		m = true;
 		$.getJSON("<@s.url '/products/softwaretype/code'/>",function(data){
 			m = false;
-			edit_window("新增软件类型",0,null,data[0]);
+			edit_window("新增软件类型",0,null,data);
 		});
 	};
 	<@shiro.hasPermission name="${PER_DELETE}">

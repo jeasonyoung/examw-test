@@ -50,10 +50,10 @@ public class SourceController {
 	@RequiresPermissions({ModuleConstant.LIBRARY_SOURCE + ":" + Right.VIEW})
 	@RequestMapping(value="/code", method = RequestMethod.GET)
 	@ResponseBody
-	public String[] code(){
+	public Integer code(){
 		Integer max = this.sourceService.loadMaxCode();
 		if(max == null) max = 0;
-		return new String[]{ String.format("%02d", max + 1) };
+		return max + 1;
 	}
 	/**
 	 * 加载来源的全部数据。

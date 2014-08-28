@@ -65,7 +65,7 @@ $(function(){
 		m = true;
 		$.getJSON("<@s.url '/syllabus/textbook/code'/>?random="+new Date().getTime(),function(data){
 			m = false;
-			edit_window("新增知识点",0,null,data[0]);
+			edit_window("新增知识点",0,null,data);
 		});
 	};
 	//edit

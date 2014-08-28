@@ -9,7 +9,8 @@ import java.io.Serializable;
  */
 public class Area implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id,code,name,abbr;
+	private String id,name,abbr;
+	private Integer code;
 	/**
 	 * 获取地区ID。
 	 * @return 地区ID。
@@ -29,7 +30,7 @@ public class Area implements Serializable {
 	 * 获取地区代码。
 	 * @return 地区代码。
 	 */
-	public String getCode() {
+	public Integer getCode() {
 		return code;
 	}
 	/**
@@ -37,7 +38,7 @@ public class Area implements Serializable {
 	 * @param code
 	 * 地区代码。
 	 */
-	public void setCode(String code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 	/**

@@ -15,7 +15,7 @@
 		<!-- 要点ID -->
 		<id name="id"  type="string"  length="64" />
 		<!-- 要点代码 -->
-		<property name="code" type="string" length="10" unique="true" not-null="true"/>
+		<property name="code" type="integer" unique="true" not-null="true"/>
 		<!-- 要点 -->
 		<property name="title" type="string" length="1024" />
 		<!-- 所属科目 -->
@@ -53,7 +53,7 @@
 		<!-- 知识点ID -->
 		<id name="id"  type="string"  length="64" />
 		<!-- 知识点代码 -->
-		<property name="code" type="string" length="10" />
+		<property name="code" type="integer" />
 		<!-- 知识点内容 -->
 		<property name="content" type="text" />
 		<!-- 所属教材 -->

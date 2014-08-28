@@ -10,10 +10,11 @@ import java.util.Set;
  */
 public class Exam implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id,code,name,abbr;
+	private String id,name,abbr;
 	private Category category;
 	private Area area;
 	private Set<Subject> subjects;
+	private Integer code;
 	/**
 	 * 获取考试ID。
 	 * @return 考试ID。
@@ -33,7 +34,7 @@ public class Exam implements Serializable {
 	 * 获取考试代码。
 	 * @return 考试代码。
 	 */
-	public String getCode() {
+	public Integer getCode() {
 		return code;
 	}
 	/**
@@ -41,7 +42,7 @@ public class Exam implements Serializable {
 	 * @param code
 	 * 考试代码。
 	 */
-	public void setCode(String code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 	/**

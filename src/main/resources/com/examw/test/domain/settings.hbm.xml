@@ -7,7 +7,7 @@
 		<!-- 地区ID -->
 		<id name="id"  type="string"  length="64" />
 		<!-- 地区代码 -->
-		<property name="code" type="string" length="10" unique="true" not-null="true" />
+		<property name="code" type="integer" unique="true" not-null="true" />
 		<!-- 地区名称 -->
 		<property name="name" type="string" length="32" not-null="true" />
 		<!-- EN简称 -->
@@ -19,7 +19,7 @@
 		<!-- 考试类别ID -->
 		<id name="id"  type="string"  length="64" />
 		<!-- 考试类别代码 -->
-		<property name="code" type="string" length="10" unique="true" not-null="true" />
+		<property name="code" type="integer" unique="true" not-null="true" />
 		<!-- 考试类别名称 -->
 		<property name="name" type="string" length="32" not-null="true" />
 		<!-- 考试类别EN简称 -->
@@ -43,7 +43,7 @@
 		<!-- 考试ID -->
 		<id name="id"  type="string"  length="64" />
 		<!-- 考试代码 -->
-		<property name="code" type="string" length="10" unique="true" not-null="true" />
+		<property name="code" type="integer" unique="true" not-null="true" />
 		<!-- 考试名称 -->
 		<property name="name" type="string" length="32" not-null="true" />
 		<!-- 考试EN简称 -->
@@ -64,7 +64,7 @@
 		<!-- 科目ID -->
 		<id name="id"  type="string"  length="64" />
 		<!-- 科目代码 -->
-		<property name="code" type="string" length="10" unique="true" not-null="true" />
+		<property name="code" type="integer" unique="true" not-null="true" />
 		<!-- 科目名称 -->
 		<property name="name" type="string" length="32" not-null="true" />
 		<!-- 所属考试 -->

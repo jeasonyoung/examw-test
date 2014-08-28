@@ -140,7 +140,9 @@ public class CategoryController {
 	@RequiresPermissions({ModuleConstant.SETTINGS_AREA + ":" + Right.VIEW})
 	@RequestMapping(value="/code", method = RequestMethod.GET)
 	@ResponseBody
-	public String[] code(String pid){
-		return this.categroyService.loadMaxCode(pid);
+	public Integer code(){
+		Integer max = this.categroyService.loadMaxCode();
+		if(max == null) max = 0;
+		return max+1; 
 	}
 }
