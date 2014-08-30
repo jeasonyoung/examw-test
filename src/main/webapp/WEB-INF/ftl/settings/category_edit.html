@@ -13,9 +13,6 @@ $(function(){
 		    	   iconCls:'icon-clear',
 		    	   handler:function(e){
 		    		   c.combotree('clear');
-		    		   $.getJSON("<@s.url '/settings/category/code'/>?pid=",function(data){
-		   					$("#${module}_edit_form input[name='code']").val(data[0]);
-		   				});
 		    		}
 				}
 		],
@@ -26,11 +23,6 @@ $(function(){
 			var id = "${CURRENT_CATEGORY_PID}";
 			if($.trim(id) == "") return;
 			c.combotree("setValue",id);
-		},
-		onChange:function(newValue, oldValue){
-			$.getJSON("<@s.url '/settings/category/code'/>?pid="+newValue,function(data){
-				$("#${module}_edit_form input[name='code']").val(data[0]);
-			});
 		}
 	});
 	/* ${module}_clear_combotree = function(){
