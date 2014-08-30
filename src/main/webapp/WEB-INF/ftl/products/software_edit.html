@@ -6,9 +6,10 @@
 <!--
 $(function(){
 	//fileupload
+	var root = "<@s.url ''/>";
 	var upload = $("#${form}_file_upload").uploadify({
-		swf:"<@s.url '/resources/uploadify/uploadify.swf'/>",
-		uploader:"<@s.url '/upload'/>",
+		swf:"<@s.url '/resources/uploadify.3.2.1/uploadify.swf'/>",
+		uploader:"<@s.url '/uploads/upload'/>",
 		method:"POST",
 		fileObjName:"file",
 		buttonText:"上传图片",
@@ -20,7 +21,7 @@ $(function(){
 		auto:true,
 		queueID:"${form}_file_queue",
 		onUploadError : function(file, errorCode, errorMsg){
-			alert(file);
+			//alert(file);
 			//console.info(file);
 			$.messager.show({
 				title:"上传文件异常",
@@ -35,15 +36,15 @@ $(function(){
 				});
 				return;
 			}
-			var result = $.parseJSON(data)
+			var result = $.parseJSON(data);
 			if(result){
 				$("#${form} img").attr("src", root + result.url);
-				$("#${form} input[name='imgUrl']").val(result.url);
+				$("#${form} input[name='img']").val(result.url);
 			}
 		}
 	});
 	//change
-	$("#${module}_edit_form input[name='imgUrl']").change(function(data){
+	$("#${form} input[name='img']").change(function(data){
 		if(data){
 			$("#${form} img").attr("src", root + $(data.target).val());	
 		}
@@ -129,7 +130,7 @@ $(function(){
 				<img src="http://c.hiphotos.baidu.com/image/pic/item/48540923dd54564e58890687b1de9c82d0584fa4.jpg" alt="宣传图片" width="200" height="150" style="border:solid 1px red;">
 			</div>
 			<input id="${form}_file_upload" name="file" type="file"/>
-			<input type="hidden" name="imgUrl" />
+			<input type="hidden" name="img" />
 		</div>
 		<div style="float:left;margin-left:5px;width:380px;">
 			<div style="float:left;">

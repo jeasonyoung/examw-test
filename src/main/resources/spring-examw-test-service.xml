@@ -12,4 +12,9 @@
 	<import resource="spring-examw-test-service-syllabus.xml"/>
 	<!-- 产品管理 服务接口实现 -->
 	<import resource="spring-examw-test-service-products.xml"/>
+	
+	<!-- 文件上传服务 -->
+	<bean id="fileUploadService" class="com.examw.test.service.impl.FileUploadServiceImpl">
+		<property name="storagePath" value="${uploadFolder}" />
+	</bean>
 </beans>

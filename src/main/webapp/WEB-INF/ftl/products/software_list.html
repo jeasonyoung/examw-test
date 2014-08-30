@@ -167,7 +167,10 @@ $(function(){
 					$("#${module}_edit_form").form("load",{"code":code});
 					return;
 				}
-				if(row) $("#${module}_edit_form").form("load",row);
+				if(row){
+					$("#${module}_edit_form").form("load",row);
+					$("#${module}_edit_form input[name='img']").change();
+				}
 			}
 	  });
 	};
