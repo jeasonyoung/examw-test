@@ -74,10 +74,7 @@ $(function(){
 				$(this).dialog("destroy");
 			},
 			onLoad:function(){
-				if(row){
-					$("#${module}_edit_opt_form").form("load",row);
-					$("#${module}_edit_opt_form textarea").kindeditor("setValue",row.opt_content);
-				}
+				if(row)$("#${module}_edit_opt_form").form("load",row);
 			}
 		});
 	};

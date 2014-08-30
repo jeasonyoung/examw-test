@@ -27,7 +27,6 @@ import com.examw.test.domain.library.Structure;
 import com.examw.test.domain.library.StructureItem;
 import com.examw.test.domain.library.StructureShareItemScore;
 import com.examw.test.domain.settings.Subject;
-import com.examw.test.model.library.ItemInfo;
 import com.examw.test.model.library.ItemScoreInfo;
 import com.examw.test.model.library.PaperInfo;
 import com.examw.test.model.library.PaperPreview;
@@ -490,17 +489,17 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 			}
 		}
 		if(item.getChildren() != null && item.getChildren().size() > 0){
-			Set<ItemInfo> children = new TreeSet<ItemInfo>(new Comparator<ItemInfo>(){
+			Set<ItemScoreInfo> children = new TreeSet<ItemScoreInfo>(new Comparator<ItemScoreInfo>(){
 				@Override
-				public int compare(ItemInfo o1, ItemInfo o2) {
+				public int compare(ItemScoreInfo o1, ItemScoreInfo o2) {
 					return o1.getOrderNo() - o2.getOrderNo();
 				}
 			});
 			for(Item e : item.getChildren()){
-				ItemInfo itemInfo = this.changeModel(e, shareItemScores);
-				if(itemInfo != null){
-					itemInfo.setPid(info.getId());
-					children.add(itemInfo);
+				ItemScoreInfo itemScoreInfo = this.changeModel(e, shareItemScores);
+				if(itemScoreInfo != null){
+					itemScoreInfo.setPid(info.getId());
+					children.add(itemScoreInfo);
 				}
 			}
 			if(children.size() > 0) info.setChildren(children);	

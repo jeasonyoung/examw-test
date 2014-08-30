@@ -21,6 +21,7 @@ import com.examw.test.domain.library.Source;
 import com.examw.test.domain.library.StructureItem;
 import com.examw.test.domain.library.StructureShareItemScore;
 import com.examw.test.domain.settings.Subject;
+import com.examw.test.model.library.BaseItemInfo;
 import com.examw.test.model.library.ItemInfo;
 import com.examw.test.model.library.ItemScoreInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
@@ -242,7 +243,7 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 	 * @see com.examw.test.service.library.IItemService#updateItem(com.examw.test.model.library.ItemInfo)
 	 */
 	@Override
-	public Item updateItem(ItemInfo info,StructureItem structureItem,Set<StructureShareItemScore> shareItemScores) {
+	public Item updateItem(BaseItemInfo<?> info,StructureItem structureItem,Set<StructureShareItemScore> shareItemScores) {
 		if(logger.isDebugEnabled()) logger.debug("更新题目...");
 		if(info == null) return null;
 		boolean isAdded = false;
@@ -270,14 +271,11 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		info.setCheckCode(checkCode);
 		info.setLastTime(new Date());
 		this.changeModel(info, data,structureItem,shareItemScores);
-		if(isAdded)
-			this.itemDao.save(data);
-//		else
-//			this.itemDao.merge(data);
+		if(isAdded)this.itemDao.save(data);
 		return data;
 	}
 	//类型转换(ItemInfo => Item)。
-	private boolean changeModel(ItemInfo source,Item target,StructureItem structureItem,Set<StructureShareItemScore> shareItemScores){
+	private boolean changeModel(BaseItemInfo<?> source,Item target,StructureItem structureItem,Set<StructureShareItemScore> shareItemScores){
 		if(source == null || target == null) return false;
 		BeanUtils.copyProperties(source, target, new String[]{"children"});
 		if(!StringUtils.isEmpty(source.getSubjectId())){
@@ -301,10 +299,10 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		if(target.getChildren() != null) target.getChildren().clear();
 		if(source.getChildren() != null && source.getChildren().size() > 0){
 			if(target.getChildren()== null) target.setChildren(new HashSet<Item>());
-			for(ItemInfo info : source.getChildren()){
+			for(BaseItemInfo<?> info : source.getChildren()){
 				if(info == null) continue;
 				Item item = StringUtils.isEmpty(info.getId()) ?  null : this.itemDao.load(Item.class, info.getId());
-				if(item != null){
+				if(item != null) {
 					if(item.getChildren() != null) item.getChildren().clear();
 				}
 				if(item == null){

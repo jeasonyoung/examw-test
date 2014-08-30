@@ -94,6 +94,10 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 			hql += " and (i.opt = :opt) ";
 			parameters.put("opt", info.getOpt());
 		}
+		if(!StringUtils.isEmpty(info.getContent())){
+			hql += " and (i.content like :content) ";
+			parameters.put("content", "%"+ info.getContent() +"%");
+		}
 		return hql;
 	}
 	/*

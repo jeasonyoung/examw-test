@@ -1,6 +1,6 @@
 package com.examw.test.service.library;
 
-import com.examw.test.model.library.ItemInfo;
+import com.examw.test.model.library.BaseItemInfo;
 
 /**
  * 试题重复检查校验码计算接口。
@@ -14,5 +14,5 @@ public interface IItemDuplicateCheck {
 		 * @param itemInfo
 		 * @return
 		 */
-		String computeCheckCode(ItemInfo itemInfo);
+		String computeCheckCode(BaseItemInfo<?> itemInfo);
 }

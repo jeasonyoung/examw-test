@@ -1,6 +1,8 @@
 package com.examw.test.model.library;
 
 import java.math.BigDecimal;
+import java.util.Set;
+
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 /**
@@ -12,10 +14,11 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
  * @since 2014年8月13日
  */
 @JsonSerialize(include = Inclusion.NON_NULL)
-public class ItemScoreInfo extends ItemInfo {
+public class ItemScoreInfo extends BaseItemInfo<ItemScoreInfo> {
 	private static final long serialVersionUID = 1L;
 	private String serial;
 	private BigDecimal score;
+	private Set<ItemScoreInfo> children;
 	/**
 	 * 获取题号。
 	 * @return 题号。
@@ -45,5 +48,21 @@ public class ItemScoreInfo extends ItemInfo {
 	 */
 	public void setScore(BigDecimal score) {
 		this.score = score;
+	}
+	/*
+	 * 获取子题目集合。
+	 * @see com.examw.test.model.library.BaseItemInfo#getChildren()
+	 */
+	@Override
+	public Set<ItemScoreInfo> getChildren() {
+		return this.children;
+	}
+	/*
+	 * 设置子题目集合。
+	 * @see com.examw.test.model.library.BaseItemInfo#setChildren(java.util.Set)
+	 */
+	@Override
+	public void setChildren(Set<ItemScoreInfo> children) {
+		this.children = children;
 	}
 }

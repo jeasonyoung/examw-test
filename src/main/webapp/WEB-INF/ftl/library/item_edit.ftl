@@ -10,7 +10,7 @@
 	<input name="type" type="hidden" value="${CURRENT_ITEM_TYPE_VALUE}" />
 	<input name="typeName" type="hidden" value="${CURRENT_ITEM_TYPE_NAME}" />
 	<input name="status" type="hidden" value="${CURRENT_ITEM_STATUS_VALUE}" />
-	<#if CURRENT_IS_STRUCTURE>
+	<#if ((!CURRENT_ITEM_ISCHILD) && CURRENT_IS_STRUCTURE)>
 	<input name="structureId" type="hidden" />
 	<input name="structureItemId" type="hidden" />
 	</#if>
@@ -229,11 +229,11 @@ $(function(){
 		post["opt"] = $("#${form} input[name='opt']:checked").val();
 		</#if>
 		<#if CURRENT_IS_STRUCTURE>
-		post["structureItemId"] = $("#${form} input[name='structureItemId']").val();
-		post["structureId"] = $("#${form} input[name='structureId']").val();
 		post["serial"] = $("#${form} input[name='serial']").val();
 		post["score"] = $("#${form} input[name='score']").val();
 		<#if !CURRENT_ITEM_ISCHILD>
+		post["structureItemId"] = $("#${form} input[name='structureItemId']").val();
+		post["structureId"] = $("#${form} input[name='structureId']").val();
 		post["orderNo"] = $("#${form} input[name='orderNo']").val();
 		</#if>
 		</#if>
@@ -308,7 +308,7 @@ $(function(){
 	<div data-options="region:'north',collapsible:false,height:210,border:false">
 		<@item_base />
 		<div style="float:left;margin-left:10px;margin-top:2px;">
-			<textarea style="float:left" name="content" class="easyui-ueditor"  data-options="required:true,width:762,height:<#if CURRENT_ITEM_ISCHILD>140<#else>65</#if>" rows="5" cols="20" />
+			<textarea style="float:left" name="content" class="easyui-ueditor"  data-options="required:true,width:762,height:<#if CURRENT_ITEM_ISCHILD>120<#else>65</#if>" rows="5" cols="20" />
 		</div>
 	</div>
 	<div data-options="region:'center',title:'选项',

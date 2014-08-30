@@ -21,11 +21,11 @@ $(function(){
 		post["opt"] = $("#${form} input[name='opt']:checked").val();
 		</#if>
 		<#if CURRENT_IS_STRUCTURE>
-		post["structureItemId"] = $("#${form} input[name='structureItemId']").val();
-		post["structureId"] = $("#${form} input[name='structureId']").val();
 		post["serial"] = $("#${form} input[name='serial']").val();
 		post["score"] = $("#${form} input[name='score']").val();
 		<#if !CURRENT_ITEM_ISCHILD>
+		post["structureItemId"] = $("#${form} input[name='structureItemId']").val();
+		post["structureId"] = $("#${form} input[name='structureId']").val();
 		post["orderNo"] = $("#${form} input[name='orderNo']").val();
 		</#if>
 		</#if>

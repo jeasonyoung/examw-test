@@ -21,11 +21,11 @@ $(function(){
 		post["opt"] = $("#${form} input[name='opt']:checked").val();
 		</#if>
 		<#if CURRENT_IS_STRUCTURE>
-		post["structureItemId"] = $("#${form} input[name='structureItemId']").val();
-		post["structureId"] = $("#${form} input[name='structureId']").val();
 		post["serial"] = $("#${form} input[name='serial']").val();
 		post["score"] = $("#${form} input[name='score']").val();
 		<#if !CURRENT_ITEM_ISCHILD>
+		post["structureItemId"] = $("#${form} input[name='structureItemId']").val();
+		post["structureId"] = $("#${form} input[name='structureId']").val();
 		post["orderNo"] = $("#${form} input[name='orderNo']").val();
 		</#if>
 		</#if>
@@ -62,7 +62,7 @@ $(function(){
 	<div data-options="region:'north',collapsible:false,height:210,border:false">
 		<@item_base />
 		<div style="float:left;margin-left:6px;margin-top:2px;">
-			<textarea style="float:left" name="content" class="easyui-ueditor"  data-options="required:true,width:762,height:<#if CURRENT_ITEM_ISCHILD>140<#else>68</#if>" rows="5" cols="20" />
+			<textarea style="float:left" name="content" class="easyui-ueditor"  data-options="required:true,width:762,height:<#if CURRENT_ITEM_ISCHILD>140<#else>60</#if>" rows="5" cols="20" />
 		</div>
 	</div>
 	<div data-options="region:'center',title:'正确答案',border:false">

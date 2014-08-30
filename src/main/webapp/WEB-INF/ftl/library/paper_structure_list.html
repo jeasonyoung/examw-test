@@ -179,7 +179,7 @@ $(function(){
 		},{
 			title:"题型",
 			field:"typeName",
-			width:12,
+			width:18,
 			align:"center",
 			sortable:true
 		},{
@@ -285,6 +285,7 @@ $(function(){
 						success:function(callback,textStatus){
 							$.messager.progress("close");
 							if(callback.success){
+								//alert("index=" + index);
 								dg.datagrid(row ? "updateRow" : "insertRow",{
 									index:index,
 									row:callback.data

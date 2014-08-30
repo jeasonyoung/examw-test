@@ -8,7 +8,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
 
-import com.examw.test.model.library.ItemInfo;
+import com.examw.test.model.library.BaseItemInfo;
 import com.examw.test.service.library.IItemDuplicateCheck;
 import com.examw.utils.MD5Util;
 /**
@@ -43,7 +43,7 @@ public class ItemDuplicateCheckImpl implements IItemDuplicateCheck {
 	 * @see com.examw.test.service.library.IItemDuplicateCheck#computeCheckCode(com.examw.test.model.library.ItemInfo)
 	 */
 	@Override
-	public String computeCheckCode(ItemInfo info) {
+	public String computeCheckCode(BaseItemInfo<?> info) {
 		if(logger.isDebugEnabled()) logger.debug("开始计算校验码...");
 		if(info == null) return null;
 		List<String> topics = new ArrayList<>(), opts = new ArrayList<>(),
@@ -70,13 +70,15 @@ public class ItemDuplicateCheckImpl implements IItemDuplicateCheck {
 		return target;
 	}
 	//拆分字符数据
-	private void splitSymbol(ItemInfo info, List<String> topics, List<String> opts, List<String> answers,  List<String> analysis){
+	private void splitSymbol(BaseItemInfo<?> info, List<String> topics, List<String> opts, List<String> answers,  List<String> analysis){
 		if(info == null)return;
 		this.push(info.getAnswer(), answers);//答案数据；
 		this.push(info.getAnalysis(), analysis);//答案解析；
+		
 		if(info.getChildren() != null && info.getChildren().size() > 0){
 			this.push(info.getContent(), topics);
-			for(ItemInfo itemInfo : info.getChildren()){
+			for(BaseItemInfo<?> itemInfo : info.getChildren()){
+				if(itemInfo == null) continue;
 				this.splitSymbol(itemInfo, topics, opts, answers, analysis);
 			}
 			return;
