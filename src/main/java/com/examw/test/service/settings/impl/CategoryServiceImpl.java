@@ -111,6 +111,9 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 			//自己不能是自己的父类
 			if(parent != null && !parent.getId().equalsIgnoreCase(data.getId()))	data.setParent(parent);
 		}
+		if(StringUtils.isEmpty(info.getPid())){
+			data.setParent(null);
+		}
 		if(isAdded) this.categoryDao.save(data);
 		return info;
 	}
