@@ -70,14 +70,7 @@ $(function(){
 	<div style="float:left;margin-top:12px;width:100%;">
 		<div style="float:left;">
 			<label style="width:75px;">试卷来源：</label>
-			<input name="sourceId" class="easyui-combobox" data-options="
-					url:'<@s.url '/library/source/all'/>',
-					valueField:'id',
-					textField:'name',
-					onLoadError:function(e){
-						<@error_dialog 'e'/>
-					}
-				" style="width:298px;"/>
+			<input name="sourceId" class="easyui-combobox" data-options="required:true,url:'<@s.url '/library/source/all'/>',valueField:'id',textField:'name',onLoadError:function(e){<@error_dialog 'e'/>}" style="width:298px;"/>
 		</div>
 		<div style="float:left;">
 			<label style="width:95px;">价格(考试币)：</label>
