@@ -72,9 +72,8 @@ public class ItemDuplicateCheckImpl implements IItemDuplicateCheck {
 	//拆分字符数据
 	private void splitSymbol(BaseItemInfo<?> info, List<String> topics, List<String> opts, List<String> answers,  List<String> analysis){
 		if(info == null)return;
-		this.push(info.getAnswer(), answers);//答案数据；
-		this.push(info.getAnalysis(), analysis);//答案解析；
-		
+		//this.push(info.getAnswer(), answers);//答案数据；
+		//this.push(info.getAnalysis(), analysis);//答案解析；
 		if(info.getChildren() != null && info.getChildren().size() > 0){
 			this.push(info.getContent(), topics);
 			for(BaseItemInfo<?> itemInfo : info.getChildren()){
