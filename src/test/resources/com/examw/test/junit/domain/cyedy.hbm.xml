@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.examw.test.junit.domain">
+	<!-- 来源管理 -->
+	<!-- <class name="Question" table="ES_ShiTi">
+
+	    <id name="id" column="ID"  type="string"  length="64" />
+		
+		<property name="type" type="integer" column="TypeID" />
+		
+		<property name="content" type="string" column="Content" />
+		
+		<property name="analysis" type="string" column="Analysis" />
+		
+		<property name="answer" type="string"  column="Answer"/>
+	</class> -->
+	
+	<class name="ShiTi" table="ES_ShiTi">
+		<!-- 试题ID -->
+		<id name="id" type="integer" column="ID"/>
+		<!-- 科目ID -->
+		<property name="classId" type="integer" column="ClassID" />
+		<!-- 题目 -->
+		<property name="content" type="string" column="Content"/>
+		<!-- 试题答案解析 -->
+		<property name="analysis" type="string" column="Analysis"/>
+		<!-- 试题答案 -->
+		<property name="answer" type="string" column="Answer"/>
+		<!-- 试题类型 -->
+		<property name="type" type="integer" column="TypeID"/>
+	</class>
+	
+</hibernate-mapping>
