@@ -47,7 +47,6 @@
                         	<li class="out" onMouseOver="this.className='over'" onMouseOut="this.className='out'" data-examid="${child.id}">
                         		<div class="pic"><img src="<@s.url "/resources/front-default/image/class.png"/>" width="66" height="74"></div>
                             	<em>${child.name}</em>
-                            	<span></span>
                         	</li>
                        	</#list>
                     	</ul>
@@ -63,9 +62,7 @@
 </div>
 <div class="h30"></div>
 <#include "front/foot.html"/>
-<script type="text/javascript" src="http://img.examw.com/jquery.js"></script><script type="text/javascript" src="http://img.examw.com/SSlide.js"></script>
-<!-- <script language="javascript" src="http://img.examw.com/cfe/c.js"></script><script language="javascript" src="http://img.examw.com/e.js"></script>
- --></body>
+</body>
  <script type="text/javascript">
  	$(function(){
  		//点击顶级分类
@@ -87,9 +84,12 @@
  			{
  				$("#choosen_exams").html("");
  				var choosen = $("ul[name='category_children'] li span");
- 				$.each(choosen,function(i){
- 					$("#choosen_exams").append($(choosen[i]).parent("li").clone());
- 				});
+ 				if(choosen.length>0)
+ 					$.each(choosen,function(i){
+ 						$("#choosen_exams").append($(choosen[i]).parent("li").clone());
+ 					});
+ 				else
+ 					$("#choosen_exams").append("<li><em>您没有选择考试</em></li>");
  				$("#choosen_exams").show();
  			}
  		});
@@ -105,7 +105,9 @@
  		$("#choosen_exams").delegate("li","click",function(){
  			var id = $(this).attr("data-examid");
  			$("ul[name='category_children'] li[data-examid='"+id+"']").children("span").remove();
- 			$(this).remove();
+ 			if(id) $(this).remove();
+ 			if($("#choosen_exams").children("li").length==0) 
+ 				$("#choosen_exams").append("<li><em>您没有选择考试</em></li>");
  		});
  	});
  </script>
