@@ -94,7 +94,7 @@
     			/unauthorized = anon
     			/security/init = anon
     			/api/** = anon
-				/front/** = anon
+    			/front/** = anon
     			/** = user
     		</value>
     	</property>
