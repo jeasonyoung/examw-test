@@ -65,7 +65,8 @@ public class ClientImportsController {
 				result.setMsg(String.format("用户[%s]不存在！", username));
 				return result;
 			}
-			String ntoken = MD5Util.MD5(String.format("{0}{1}",username, MD5Util.MD5(String.format("{0}{1}", username, this.passwordHelper.decryptAESPassword(user)))));
+			String ntoken = MD5Util.MD5(String.format("%1$s%2$s",username, MD5Util.MD5(String.format("%1$s%2$s", username, this.passwordHelper.decryptAESPassword(user)))));
+			if(logger.isDebugEnabled()) logger.debug(String.format("=>%s", ntoken));
 			result.setSuccess(ntoken.equals(token));
 			if(!result.isSuccess()){
 				result.setMsg("密码错误！");
