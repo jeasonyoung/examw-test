@@ -217,4 +217,30 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 		return null;
 		return statusMap.get(status);
 	}
+	/*
+	 *  加载考试下所有的产品
+	 * @see com.examw.test.service.products.IProductService#loadProducts(java.lang.String)
+	 */
+	@Override
+	public List<ProductInfo> loadProducts(final String examId) {
+		if(logger.isDebugEnabled()) logger.debug("加载考试下所有的产品...");
+		return this.datagrid(new ProductInfo(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public String getExamId() {return examId;}
+			@Override
+			public Integer getStatus() {return Product.STATUS_NONE;}	//状态必须正常
+			@Override
+			public String getSort() {return "examId"; } 
+			@Override
+			public String getOrder() { return "desc";}}).getRows();
+	}
+	/*
+	 * 根据id加载产品
+	 * @see com.examw.test.service.products.IProductService#loadProduct(java.lang.String)
+	 */
+	@Override
+	public ProductInfo loadProduct(String id) {
+		return this.changeModel(this.productDao.load(Product.class, id));
+	}
 }
