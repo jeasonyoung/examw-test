@@ -7,4 +7,11 @@ import com.examw.test.service.IBaseDataService;
  * @author lq.
  * @since 2014-08-07.
  */
-public interface IKnowledgeService extends IBaseDataService<KnowledgeInfo> {}
+public interface IKnowledgeService extends IBaseDataService<KnowledgeInfo> {
+	/**
+	 * 根据大纲ID加载知识点内容[前台调用方法]
+	 * @param syllabusId
+	 * @return
+	 */
+	KnowledgeInfo loadKnowledge(String syllabusId);
+}

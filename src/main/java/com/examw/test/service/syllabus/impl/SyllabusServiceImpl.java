@@ -1,7 +1,9 @@
 package com.examw.test.service.syllabus.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -214,5 +216,27 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 			return sources.get(0).getCode();
 		}
 		return null;
+	}
+	
+	/*
+	 * 加载章节大纲信息
+	 * @see com.examw.test.service.syllabus.ISyllabusService#loadSysSyllabusInfo(java.lang.String)
+	 */
+	@Override
+	public SyllabusInfo loadSysSyllabusInfo(String id) {
+		Syllabus data = this.syllabusDao.load(Syllabus.class, id);
+		if(data==null)
+		return null;
+		SyllabusInfo info = this.changeModel(data);
+		if(data.getChildren()!=null){
+			Set<SyllabusInfo> children = new HashSet<SyllabusInfo>();
+			for(Syllabus s:data.getChildren()){
+				SyllabusInfo child = this.changeModel(s);
+				children.add(child);
+			}
+			info.setChildren(children);
+		}
+		info.setFullName(info.getSubName()+" > "+info.getFullName());
+		return info;
 	}
 }

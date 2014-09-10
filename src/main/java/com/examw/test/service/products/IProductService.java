@@ -23,13 +23,13 @@ public interface IProductService extends IBaseDataService<ProductInfo>{
 	 */
 	String loadStatusName(Integer status);
 	/**
-	 * 加载考试下所有的产品
+	 * 加载考试下所有的产品 [前台调用方法]
 	 * @param examId
 	 * @return
 	 */
 	List<ProductInfo> loadProducts(String examId);
 	/**
-	 * 根据id加载产品
+	 * 根据id加载产品 [前台调用方法]
 	 * @param id
 	 * @return
 	 */

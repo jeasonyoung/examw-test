@@ -247,4 +247,57 @@ public class ProductInfo extends Paging{
 		this.subjectName = subjectName;
 	}
 	
+	/* 前台显示需要的一些属性 2014-09-10 */
+	private Long paperNum; //试卷数量
+	private Long itemNum; //题目数量
+	private Boolean hasRealItem; //是否有真题
+	/**
+	 * 获取 试卷数量
+	 * @return paperNum
+	 * 
+	 */
+	public Long getPaperNum() {
+		return paperNum;
+	}
+	/**
+	 * 设置 试卷数量
+	 * @param paperNum
+	 * 
+	 */
+	public void setPaperNum(Long paperNum) {
+		this.paperNum = paperNum;
+	}
+	/**
+	 * 获取 题目数量
+	 * @return itemNum
+	 * 
+	 */
+	public Long getItemNum() {
+		return itemNum;
+	}
+	/**
+	 * 设置 题目数量
+	 * @param itemNum
+	 * 
+	 */
+	public void setItemNum(Long itemNum) {
+		this.itemNum = itemNum;
+	}
+	/**
+	 * 获取 是否有真题
+	 * @return hasRealItem
+	 * 
+	 */
+	public Boolean getHasRealItem() {
+		return hasRealItem;
+	}
+	/**
+	 * 设置 是否有真题
+	 * @param hasRealItem
+	 * 
+	 */
+	public void setHasRealItem(Boolean hasRealItem) {
+		this.hasRealItem = hasRealItem;
+	}
+	
 }

@@ -16,9 +16,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.examw.test.model.front.CategoryFrontInfo;
 import com.examw.test.model.products.ProductInfo;
 import com.examw.test.model.settings.SubjectInfo;
+import com.examw.test.model.syllabus.KnowledgeInfo;
+import com.examw.test.model.syllabus.SyllabusInfo;
+import com.examw.test.service.library.IItemService;
+import com.examw.test.service.library.IPaperService;
 import com.examw.test.service.products.IProductService;
 import com.examw.test.service.settings.ICategoryService;
 import com.examw.test.service.settings.ISubjectService;
+import com.examw.test.service.syllabus.IKnowledgeService;
 import com.examw.test.service.syllabus.ISyllabusService;
 
 /**
@@ -38,7 +43,12 @@ public class FrontDataController {
 	private ISubjectService subjectService;
 	@Resource
 	private ISyllabusService syllabusService;
-	
+	@Resource
+	private IPaperService paperService;
+	@Resource
+	private IItemService itemService;
+	@Resource
+	private IKnowledgeService knowledgeService;
 	/**
 	 * 加载所有考试分类和其下的所有考试
 	 * @param username
@@ -71,14 +81,15 @@ public class FrontDataController {
 	public ProductInfo loadProduct(String id){
 		if(logger.isDebugEnabled()) logger.debug("选中产品数据");
 		if(StringUtils.isEmpty(id)) return null;
-		return this.productService.loadProduct(id);
+		ProductInfo info = this.productService.loadProduct(id);
+		return info;
 	}
 	/**
 	 * 章节练习
 	 */
 	@RequestMapping(value = {"/chapter"}, method = {RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public Map<String,Object> loadChapter(final String examId,String subjectId){
+	public Map<String,Object> loadChapters(final String examId,String subjectId){
 		if(logger.isDebugEnabled()) logger.debug("章节数据");
 		if(StringUtils.isEmpty(examId)) return null;
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -99,5 +110,20 @@ public class FrontDataController {
 		map.put("CHAPTERLIST", this.syllabusService.loadSyllabuss(subjectId, null));
 		return map;
 	}
-	
+	/**
+	 * 章节详情
+	 * @param pid
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = {"/chapter/detail"}, method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public Map<String,Object> loadChapterDetail(final String pid,String id){
+		if(logger.isDebugEnabled()) logger.debug("章节详情数据");
+		if(StringUtils.isEmpty(pid)) return null;
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("CHAPTER",(SyllabusInfo) this.syllabusService.loadSysSyllabusInfo(pid));
+		map.put("KNOWLEDGE", this.knowledgeService.loadKnowledge(id));
+		return map;
+	}
 }
