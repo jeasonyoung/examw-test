@@ -62,30 +62,36 @@ public class MainTest {
 		session.getTransaction().commit();
 		session.close();
 		ItemInfo info = new ItemInfo();
-		for(ShiTi sts: shiTiList){
-			
+		//for(ShiTi sts: shiTiList){
 			//根据类型判断调用类型方法
-//			if(Item.TYPE_SINGLE == sts.getType()){
-//				//单选题
-//				//info = danXuan(sts);
-//			}
+			ShiTi sts = new ShiTi();
+			sts.setAnalysis("应付账款=(498000-345000-52000)-18000-16000-35000=32000(元)");
+			sts.setAnswer("B,C");
+			sts.setClassId("1");
+			sts.setId("1");
+			sts.setType(3);
+			sts.setContent("应付账款的金额是###28000###32000###45000###60000");
+			if(Item.TYPE_SINGLE == sts.getType()){
+				//单选题
+				info = danXuan(sts);
+			}
 			if(Item.TYPE_MULTY == sts.getType()){
 				//多选题
 				info = duoXuan(sts);
 			}
-//			if(Item.TYPE_UNCERTAIN == sts.getType()){
-//				//不定项题
-//				sts = new ShiTi();
-//				info = buDingXi(sts);
-//			}
-//			if (Item.TYPE_JUDGE == sts.getType()){
-//				//判断题
-//				info = panDuan(sts);
-//			}
-//			if(Item.TYPE_QANDA == sts.getType()){
-//				//问答题
-//				info = wenDa(sts);
-//			}
+			if(Item.TYPE_UNCERTAIN == sts.getType()){
+				//不定项题
+			
+				info = buDingXi(sts);
+			}
+			if (Item.TYPE_JUDGE == sts.getType()){
+				//判断题
+				info = panDuan(sts);
+			}
+			if(Item.TYPE_QANDA == sts.getType()){
+				//问答题
+				info = wenDa(sts);
+		//	}
 //			if(Item.TYPE_SHARE_TITLE == sts.getType()){
 //				//共享题干题
 //				if(Item.TYPE_JUDGE == sts.getType()){
@@ -110,9 +116,9 @@ public class MainTest {
 //				}
 //		}
 		}
-		if(null != info){
-			itemService.update(info);
-		}
+//		if(null != info){
+//			itemService.update(info);
+//		}
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.writeValue(System.out, info);
 	}
@@ -121,8 +127,12 @@ public class MainTest {
 		ItemInfo info = new ItemInfo();
 		String content = st.getContent();
 		String answer = st.getAnswer().toUpperCase();
-		if(answer == null) return null;
-		int answer_index = answer.charAt(0)-64;	
+		int answer_index = 0;
+		if(answer != null){
+			answer_index = answer.charAt(0)-64;	
+		}else{
+			return null;
+		}
 		String[] arr = content.split("###");
 		info.setContent(arr[0]);
 		Set<ItemInfo> children = new HashSet<ItemInfo>();
@@ -188,17 +198,17 @@ public class MainTest {
 		String[] arr = content.split("###");
 		info.setContent(arr[0]);
 		Set<ItemInfo> set= new HashSet<ItemInfo>();
-		String jieQu = null;
+		String jieQu = new String();
 		for(int i=1;i<arr.length;i++){
 			ItemInfo child = new ItemInfo();
 			child.setId(UUID.randomUUID().toString());
 			child.setContent(arr[i]); 
 			for(int j=0; j<a.length;j++){
-				String as = null;
+				String as = new String();
 				if(i == a[j]){
 					if(a.length == 1){
 						answer = child.getId();
-						as = answer;
+						jieQu = answer;
 					}
 					if(a.length == 2){
 						answer = answer + child.getId()+",";
@@ -324,7 +334,7 @@ public class MainTest {
 					if(i == a[j]){
 						if(a.length == 1){
 							answer = child.getId();
-							as = answer;
+							jieQu = answer;
 						}
 						if(a.length == 2){
 							answer = answer + child.getId()+",";
@@ -478,7 +488,7 @@ public class MainTest {
 				if(i == a[j]){
 					if(a.length == 1){
 						answer = children.getId();
-						as = answer;
+						jieQu = answer;
 					}
 					if(a.length == 2){
 						answer = answer + children.getId()+",";
@@ -580,7 +590,7 @@ public class MainTest {
 					if(i == a[j]){
 						if(a.length == 1){
 							answer = childs.getId();
-							as = answer;
+							jieQu = answer;
 						}
 						if(a.length == 2){
 							answer = answer + childs.getId()+",";

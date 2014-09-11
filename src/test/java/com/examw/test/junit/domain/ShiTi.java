@@ -7,7 +7,7 @@ package com.examw.test.junit.domain;
  */
 public class ShiTi {
 	private Integer type;
-	private String id,content,analysis,answer,classId;
+	private String id,content,analysis,answer,classId,examId,analyId;
 	/**
 	 * 获取试题类型。
 	 * @return 试题类型。
@@ -99,4 +99,17 @@ public class ShiTi {
 	public void setClassId(String classId) {
 		this.classId = classId;
 	}
+	public String getExamId() {
+		return examId;
+	}
+	public void setExamId(String examId) {
+		this.examId = examId;
+	}
+	public String getAnalyId() {
+		return analyId;
+	}
+	public void setAnalyId(String analyId) {
+		this.analyId = analyId;
+	}
+	
 }

@@ -6,7 +6,7 @@ package com.examw.test.junit.domain;
  * @since 2014-09-01.
  */
 public class CaiLianFenXi {
-	private String id,classId,content;
+	private String id,classId,content,cexamId;
 
 	public String getId() {
 		return id;
@@ -30,6 +30,14 @@ public class CaiLianFenXi {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public String getCexamId() {
+		return cexamId;
+	}
+
+	public void setCexamId(String cexamId) {
+		this.cexamId = cexamId;
 	}
 	
 }
