@@ -69,7 +69,7 @@
 		<!--hibernate配置文件-->
 		<property name="mappingLocations">
 			<list>
-				<value>file:src/test/resource/com/examw/test/junit/domain/*.hbm.xml</value>
+				<value>file:src/test/resources/com/examw/test/junit/domain/*.hbm.xml</value>
 			</list>
 		</property>
 	</bean>
