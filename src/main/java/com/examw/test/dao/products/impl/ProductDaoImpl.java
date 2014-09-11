@@ -30,7 +30,11 @@ public class ProductDaoImpl extends BaseDaoImpl<Product> implements IProductDao{
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
-			hql += " order by p." + info.getSort() + " " + info.getOrder();
+			if("examId".equals(info.getSort()))
+			{
+				hql += " order by p.exam.id " + info.getOrder();
+			}else
+				hql += " order by p." + info.getSort() + " " + info.getOrder();
 		}
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.find(hql, parameters, info.getPage(), info.getRows());
@@ -56,8 +60,13 @@ public class ProductDaoImpl extends BaseDaoImpl<Product> implements IProductDao{
 			parameters.put("name", "%" + info.getName() + "%");
 		}
 		if (!StringUtils.isEmpty(info.getExamId())) {
-			hql += " and (p.exam.id = :examId)";
-			parameters.put("examId", info.getExamId());
+			if(info.getExamId().contains(","))
+			{
+				hql += " and (p.exam.id in ("+info.getExamId().replaceAll("([a-z0-9-]{36})", "'$1'")+"))";
+			}else{
+				hql += " and (p.exam.id = :examId)";
+				parameters.put("examId", info.getExamId());
+			}
 		}
 		if(info.getStatus()!=null){
 			hql += " and (p.status = :status)";

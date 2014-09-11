@@ -15,7 +15,9 @@ import com.examw.test.dao.settings.ICategoryDao;
 import com.examw.test.domain.settings.Category;
 import com.examw.test.domain.settings.Exam;
 import com.examw.test.domain.settings.Subject;
+import com.examw.test.model.front.CategoryFrontInfo;
 import com.examw.test.model.settings.CategoryInfo;
+import com.examw.test.model.settings.ExamInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.settings.ICategoryService;
 
@@ -308,4 +310,81 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		}
 		return treeNodes;
 	}
+	/*
+	 * 前台加载考试分类
+	 * @see com.examw.test.service.settings.ICategoryService#loadAllCategoryAndExams()
+	 */
+	@Override
+	public List<CategoryFrontInfo> loadAllCategoryAndExams() {
+		List<Category> list = this.categoryDao.findCategorys(new CategoryInfo(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public String getOrder() {return "asc";}
+			@Override
+			public String getSort() {return "code";};
+		});
+		List<CategoryFrontInfo> result = new ArrayList<CategoryFrontInfo>();
+		if(list != null && list.size() > 0){
+			for(final Category data : list){
+				if(data == null) continue;
+				result.add(createCategoryFrontInfo(data));
+			}
+		}
+		return result;
+	}
+	/**
+	 * 构造前台分类对象
+	 * @param data	考试分类
+	 * @return
+	 */
+	private CategoryFrontInfo createCategoryFrontInfo(Category data)
+	{
+		CategoryFrontInfo info = new CategoryFrontInfo();
+		BeanUtils.copyProperties(data, info, new String[]{"exams"});
+		setExams(info,data);
+		if(data.getChildren()!=null){
+			for(Category category:data.getChildren()){
+				setExams(info,category);
+			}
+		}
+		return info;
+	}
+	/**
+	 * 设置分类下的所有的考试
+	 * @param info	
+	 * @param data
+	 */
+	private void setExams(CategoryFrontInfo info,Category data){
+		if(data.getExams()!=null){
+			List<ExamInfo> exams = new ArrayList<ExamInfo>();
+			for(Exam exam:data.getExams())
+			{
+				if(data == null)continue;
+				exams.add(changeExamModel(exam));
+			}
+			if(info.getExams()==null)
+				info.setExams(exams);
+			else
+				info.getExams().addAll(exams);
+		}
+	}
+	/**
+	 * 考试模型转换
+	 * @param data 考试
+	 * @return
+	 */
+	private ExamInfo changeExamModel(Exam data) {
+		if(data == null) return null;
+		ExamInfo info = new ExamInfo();
+		BeanUtils.copyProperties(data, info);
+		if(data.getCategory() != null){
+			info.setCategoryId(data.getCategory().getId());
+			info.setCategoryName(data.getCategory().getName());
+		}
+		if(data.getArea()!=null){
+			info.setAreaId(data.getArea().getId());
+			info.setAreaName(data.getArea().getName());
+		}
+		return info;
+	} 
 }

@@ -93,6 +93,7 @@
     			/verifyCodeImage = anon
     			/unauthorized = anon
     			/security/init = anon
+    			/api/** = anon
     			/** = user
     		</value>
     	</property>
