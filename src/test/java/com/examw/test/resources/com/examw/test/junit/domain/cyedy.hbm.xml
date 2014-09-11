@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.examw.test.junit.domain">	
+	<!--试题-->
+	<class name="ShiTi" table="ES_ShiTi">
+		<!-- 试题ID -->
+		<id name="id" type="string" column="ID"/>
+		<!-- 科目ID -->
+		<property name="classId" type="string" column="ClassID" />
+		<!-- 题目 -->
+		<property name="content" type="string" column="Content"/>
+		<!-- 试题答案解析 -->
+		<property name="analysis" type="string" column="Analysis"/>
+		<!-- 试题答案 -->
+		<property name="answer" type="string" column="Answer"/>
+		<!-- 试题类型 -->
+		<property name="type" type="integer" column="TypeID"/>
+		<!-- 考试ID -->
+		<property name="examId" type="string" column="ExamID"/>
+		<!-- 材料分析题ID -->
+		<property name="analyId" type="string" column="AnalysisID"/>
+	</class>
+	<!--材料分析题-->
+	<class name="CaiLianFenXi" table="ES_Analysis">
+		<!-- ID -->
+		<id name="id" type="string" column="ID"/>
+		<!-- 科目ID -->
+		<property name="classId" type="string" column="ClassID" />
+		<!-- 题目 -->
+		<property name="content" type="string" column="ContentStr"/>
+		<!-- 所以考试ID -->
+		<property name="cexamId" type="string" column="AllExamID"/>
+	</class>
+</hibernate-mapping>
