@@ -10,7 +10,7 @@
 	<import resource="spring-examw-test-service-library.xml"/>
 	<!-- 考试大纲 服务接口实现 -->
 	<import resource="spring-examw-test-service-syllabus.xml"/>
-	<!-- 产品管理 服务接口实现 -->
+	<!-- 产品管理 服务接口实现 [必须在library之下]-->
 	<import resource="spring-examw-test-service-products.xml"/>
 	
 	<!-- 文件上传服务 -->

@@ -45,6 +45,8 @@
 		        <entry key="-1" value="删除"/>
 		    </map>
 		</property>
+		<!-- 试卷类型 -->
+		<property name="paperTypeMap" ref="mapPaperTypes"/>
 	</bean>
 	<!-- 产品软件服务 -->
 	<bean id="softwareService" class="com.examw.test.service.products.impl.SoftwareServiceImpl">

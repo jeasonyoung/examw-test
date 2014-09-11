@@ -1,7 +1,9 @@
 package com.examw.test.service.products;
 
 import java.util.List;
+import java.util.Map;
 
+import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.products.ProductInfo;
 import com.examw.test.service.IBaseDataService;
 
@@ -34,4 +36,16 @@ public interface IProductService extends IBaseDataService<ProductInfo>{
 	 * @return
 	 */
 	ProductInfo loadProduct(String id);
+	/**
+	 * 根据产品ID,查询条件查询试卷列表[前台调用方法]
+	 * @param productId
+	 * @param info
+	 * @return
+	 */
+	List<Subject> loadSubjectList(String productId);
+	/**
+	 * 获取试卷类型映射
+	 * @return
+	 */
+	Map<String, String> getPaperTypeMap();
 }

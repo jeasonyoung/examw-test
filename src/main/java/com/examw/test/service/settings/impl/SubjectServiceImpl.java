@@ -1,5 +1,6 @@
 package com.examw.test.service.settings.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -163,5 +164,19 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 			return sources.get(0).getCode();
 		}
 		return null;
+	}
+	
+	@Override
+	public List<SubjectInfo> changeModel(List<Subject> list) {
+		List<SubjectInfo> results = new ArrayList<>();
+		if(list != null && list.size() > 0){
+			for(Subject data : list){
+				SubjectInfo info = this.changeModel(data);
+				if(info != null){
+					results.add(info);
+				}
+			}
+		}
+		return results;
 	}
 }

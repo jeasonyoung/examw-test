@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.examw.model.DataGrid;
+import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.front.CategoryFrontInfo;
+import com.examw.test.model.library.PaperInfo;
 import com.examw.test.model.products.ProductInfo;
 import com.examw.test.model.settings.SubjectInfo;
-import com.examw.test.model.syllabus.KnowledgeInfo;
 import com.examw.test.model.syllabus.SyllabusInfo;
 import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperService;
@@ -124,6 +126,30 @@ public class FrontDataController {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("CHAPTER",(SyllabusInfo) this.syllabusService.loadSysSyllabusInfo(pid));
 		map.put("KNOWLEDGE", this.knowledgeService.loadKnowledge(id));
+		return map;
+	}
+	/**
+	 * 加载产品下的试卷列表
+	 * @param productId
+	 * @param info
+	 * @return
+	 */
+	@RequestMapping(value = {"/papers"}, method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public Map<String,Object> loadPapers(String productId,PaperInfo info){
+		if(logger.isDebugEnabled()) logger.debug("试卷列表数据");
+		Map<String, Object> map = new HashMap<String, Object>();
+		if(StringUtils.isEmpty(productId)) return map;
+		List<Subject> list = this.productService.loadSubjectList(productId);
+		//科目集合
+		map.put("SUBJECTLIST", this.subjectService.changeModel(list));
+		//试卷类型映射
+		map.put("PAPERTYPE", this.productService.getPaperTypeMap());
+		//试卷列表
+		DataGrid<PaperInfo> dg = this.paperService.datagrid(info);
+		map.put("PAPERLIST", dg.getRows());
+		//总条数
+		map.put("TOTAL",dg.getTotal());
 		return map;
 	}
 }

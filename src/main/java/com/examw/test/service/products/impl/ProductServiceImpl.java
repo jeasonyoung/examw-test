@@ -17,6 +17,8 @@ import com.examw.test.dao.library.IPaperDao;
 import com.examw.test.dao.products.IProductDao;
 import com.examw.test.dao.settings.IExamDao;
 import com.examw.test.dao.settings.ISubjectDao;
+import com.examw.test.domain.library.Item;
+import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.products.Product;
 import com.examw.test.domain.settings.Exam;
 import com.examw.test.domain.settings.Subject;
@@ -39,6 +41,8 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 	private Map<Integer,String> statusMap;
 	private IItemDao itemDao;
 	private IPaperDao paperDao;
+	//试卷类型映射
+	private Map<String,String> paperTypeMap;//[前台调用数据]
 	/**
 	 * 设置 产品数据接口
 	 * @param productDao
@@ -91,6 +95,24 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 	 */
 	public void setStatusMap(Map<Integer, String> statusMap) {
 		this.statusMap = statusMap;
+	}
+	
+	/**
+	 * 获取 试卷类型映射[前台调用数据]
+	 * @return paperTypeMap
+	 * 
+	 */
+	public Map<String, String> getPaperTypeMap() {
+		return paperTypeMap;
+	}
+
+	/**
+	 * 设置 试卷类型映射[前台调用数据]
+	 * @param paperTypeMap
+	 * 
+	 */
+	public void setPaperTypeMap(Map<String, String> paperTypeMap) {
+		this.paperTypeMap = paperTypeMap;
 	}
 
 	/*
@@ -276,6 +298,8 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 			private static final long serialVersionUID = 1L;
 			@Override
 			public String getSubjectId() {return subjectIds;}
+			@Override
+			public Integer getStatus() {return Item.STATUS_AUDIT;} //已审核
 		}));
 	}
 	/*
@@ -291,12 +315,17 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 			private static final long serialVersionUID = 1L;
 			@Override
 			public String getSubjectId() {return subjectIds;}
+			@Override
+			public Integer getStatus() {return Paper.STATUS_AUDIT;} //已审核
 		}));
 		//试题数
 		info.setItemNum(this.itemDao.total(new ItemInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public String getSubjectId() {return subjectIds;}
+			@Override
+			public Integer getStatus() {return Item.STATUS_AUDIT;} //已审核
+			
 		}));
 		//是否包含真题
 		info.setHasRealItem(this.itemDao.hasRealItem(subjectIds));
@@ -316,4 +345,13 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 		}
 		return result;
 	}
+	
+	@Override
+	public List<Subject> loadSubjectList(String productId) {
+		if(logger.isDebugEnabled()) logger.debug("加载查询产品下包含的科目集合...");
+		Product product = this.productDao.load(Product.class, productId);
+		return new ArrayList<Subject>(product.getSubjects());
+	}
+	
+	
 }
