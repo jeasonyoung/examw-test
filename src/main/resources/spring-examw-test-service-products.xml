@@ -34,6 +34,10 @@
 		<property name="examDao" ref="examDao" />
 		<!-- 科目数据操作接口 -->
 		<property name="subjectDao" ref="subjectDao" />
+		<!-- 题目数据接口 -->
+		<property name="itemDao" ref="itemDao" />
+		<!-- 试卷数据接口 -->
+		<property name="paperDao" ref="paperDao" />
 		<!-- 状态-名称映射 -->
 		<property name="statusMap">
 		    <map>

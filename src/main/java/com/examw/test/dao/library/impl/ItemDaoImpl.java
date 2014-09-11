@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 import com.examw.test.dao.impl.BaseDaoImpl;
 import com.examw.test.dao.library.IItemDao;
 import com.examw.test.domain.library.Item;
+import com.examw.test.domain.library.Paper;
 import com.examw.test.model.library.ItemInfo;
 import com.examw.test.service.library.ItemStatus;
 
@@ -75,8 +76,14 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 			parameters.put("examId", info.getExamId());
 		}
 		if(!StringUtils.isEmpty(info.getSubjectId())){
-			hql += " and (i.subject.id = :subjectId) ";
-			parameters.put("subjectId", info.getSubjectId());
+			// 2014-09-10 fengwei 多个科目的情况一起查
+			if(info.getSubjectId().contains(","))
+			{
+				hql += " and (i.subject.id in ("+info.getSubjectId().replaceAll("([a-z0-9-]{36})", "'$1'")+"))";
+			}else{
+				hql += " and (i.subject.id = :subjectId) ";
+				parameters.put("subjectId", info.getSubjectId());
+			}
 		}
 		if(!StringUtils.isEmpty(info.getSourceId())){
 			hql += " and (i.source.id = :sourceId) ";
@@ -139,4 +146,16 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 		if(list == null || list.size() == 0) return null;
 		return list.get(0);
 	}
+	
+	@Override
+	public boolean hasRealItem(String subjectIds) {
+		if(logger.isDebugEnabled()) logger.debug("查询是否包含真题");
+		if(StringUtils.isEmpty(subjectIds)) return false;
+		subjectIds = subjectIds.replaceAll("([a-z0-9-]{36})", "'$1'");
+		final String hql = "from Item i where (i.parent is null) and i.subject.id in("+subjectIds+") and i.opt = "+Paper.TYPE_REAL;
+		@SuppressWarnings("unchecked")
+		List<Item> list = this.getCurrentSession().createQuery(hql).list();
+		return list!=null&&list.size()>0;
+	}
+	
 }

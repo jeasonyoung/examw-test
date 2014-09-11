@@ -12,12 +12,16 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
+import com.examw.test.dao.library.IItemDao;
+import com.examw.test.dao.library.IPaperDao;
 import com.examw.test.dao.products.IProductDao;
 import com.examw.test.dao.settings.IExamDao;
 import com.examw.test.dao.settings.ISubjectDao;
 import com.examw.test.domain.products.Product;
 import com.examw.test.domain.settings.Exam;
 import com.examw.test.domain.settings.Subject;
+import com.examw.test.model.library.ItemInfo;
+import com.examw.test.model.library.PaperInfo;
 import com.examw.test.model.products.ProductInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.products.IProductService;
@@ -33,6 +37,8 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 	private IExamDao examDao;
 	private ISubjectDao subjectDao;
 	private Map<Integer,String> statusMap;
+	private IItemDao itemDao;
+	private IPaperDao paperDao;
 	/**
 	 * 设置 产品数据接口
 	 * @param productDao
@@ -60,6 +66,24 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 		this.subjectDao = subjectDao;
 	}
 	
+	/**
+	 * 设置 题目数据接口
+	 * @param itemDao
+	 * 
+	 */
+	public void setItemDao(IItemDao itemDao) {
+		this.itemDao = itemDao;
+	}
+
+	/**
+	 * 设置 试卷数据接口
+	 * @param paperDao
+	 * 
+	 */
+	public void setPaperDao(IPaperDao paperDao) {
+		this.paperDao = paperDao;
+	}
+
 	/**
 	 * 设置 状态名称映射
 	 * @param statusMap
@@ -216,5 +240,80 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 		if(status == null || statusMap == null)
 		return null;
 		return statusMap.get(status);
+	}
+	/*
+	 *  加载考试下所有的产品
+	 * @see com.examw.test.service.products.IProductService#loadProducts(java.lang.String)
+	 */
+	@Override
+	public List<ProductInfo> loadProducts(final String examId) {
+		if(logger.isDebugEnabled()) logger.debug("加载考试下所有的产品...");
+		List<ProductInfo> list = this.datagrid(new ProductInfo(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public String getExamId() {return examId;}
+			@Override
+			public Integer getStatus() {return Product.STATUS_NONE;}	//状态必须正常
+			@Override
+			public String getSort() {return "examId"; } 
+			@Override
+			public String getOrder() { return "desc";}}).getRows();
+		if(list!=null && list.size()>0){
+			for(ProductInfo info:list){
+				//设置试题的数量
+				setItemNum(info);	
+			}
+		}
+		return list;
+	}
+	/**
+	 * 设置包含题目的数量
+	 * @param info
+	 */
+	private void setItemNum(ProductInfo info){
+		final String subjectIds = getSubjectIds(info.getSubjectId());
+		info.setItemNum(this.itemDao.total(new ItemInfo(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public String getSubjectId() {return subjectIds;}
+		}));
+	}
+	/*
+	 * 根据id加载产品
+	 * @see com.examw.test.service.products.IProductService#loadProduct(java.lang.String)
+	 */
+	@Override
+	public ProductInfo loadProduct(String id) {
+		ProductInfo info = this.changeModel(this.productDao.load(Product.class, id));
+		final String subjectIds = getSubjectIds(info.getSubjectId());
+		//试卷数
+		info.setPaperNum(this.paperDao.total(new PaperInfo(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public String getSubjectId() {return subjectIds;}
+		}));
+		//试题数
+		info.setItemNum(this.itemDao.total(new ItemInfo(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public String getSubjectId() {return subjectIds;}
+		}));
+		//是否包含真题
+		info.setHasRealItem(this.itemDao.hasRealItem(subjectIds));
+		return info;
+	}
+	//把科目ID数组转换成字符串
+	private String getSubjectIds(String[] subjectIds){
+		String result = null;
+		if(subjectIds!=null && subjectIds.length>0){
+			result = "";
+			for(String id:subjectIds){
+				result = result+id+",";
+			}
+		}
+		if(!StringUtils.isEmpty(result)){
+			result = result.substring(0,result.length()-1);
+		}
+		return result;
 	}
 }

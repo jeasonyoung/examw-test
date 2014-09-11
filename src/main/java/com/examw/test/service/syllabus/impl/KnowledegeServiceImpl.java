@@ -3,6 +3,7 @@ package com.examw.test.service.syllabus.impl;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.BeanUtils;
 
 import com.examw.test.dao.syllabus.IKnowledgeDao;
 import com.examw.test.domain.syllabus.Knowledge;
@@ -51,7 +52,18 @@ public class KnowledegeServiceImpl extends BaseDataServiceImpl<Knowledge, Knowle
 	@Override
 	protected KnowledgeInfo changeModel(Knowledge data) {
 		if(logger.isDebugEnabled())logger.debug("类型转换...");
-		return null;
+		if(logger.isDebugEnabled())logger.debug(" 知识点类型转换...");
+		if(data == null) return null;
+		KnowledgeInfo info = new KnowledgeInfo();
+		BeanUtils.copyProperties(data, info);
+		if(data.getSyllabus() != null){
+			info.setSyllId(data.getSyllabus().getId());
+			info.setSyllName(data.getSyllabus().getTitle());
+		}
+		if(data.getBook() != null){
+			info.setBookId(data.getBook().getId());
+		}
+		return info;
 	}
 	/*
 	 * 更新数据。
@@ -77,5 +89,20 @@ public class KnowledegeServiceImpl extends BaseDataServiceImpl<Knowledge, Knowle
 				this.knowDao.delete(data);
 			}
 		}
+	}
+	/*
+	 * 根据大纲加载知识点
+	 * @see com.examw.test.service.syllabus.IKnowledgeService#loadKnowledge(java.lang.String)
+	 */
+	@Override
+	public KnowledgeInfo loadKnowledge(final String syllabusId) {
+		List<Knowledge> knowList = this.knowDao.findKnowledges(null, new KnowledgeInfo(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public String getSyllId() { return syllabusId; }
+		});
+		if(knowList==null || knowList.size()==0)
+		return null;
+		return this.changeModel(knowList.get(0));
 	}
 }

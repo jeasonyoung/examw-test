@@ -37,4 +37,11 @@ public interface IItemDao extends IBaseDao<Item> {
 	 * 题目对象。
 	 */
 	Item loadItem(String checkCode);
+	
+	/**
+	 * 查询是否包含真题
+	 * @param subjectIds
+	 * @return
+	 */
+	boolean hasRealItem(String subjectIds);
 }

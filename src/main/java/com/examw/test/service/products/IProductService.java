@@ -1,5 +1,7 @@
 package com.examw.test.service.products;
 
+import java.util.List;
+
 import com.examw.test.model.products.ProductInfo;
 import com.examw.test.service.IBaseDataService;
 
@@ -20,4 +22,16 @@ public interface IProductService extends IBaseDataService<ProductInfo>{
 	 * @return
 	 */
 	String loadStatusName(Integer status);
+	/**
+	 * 加载考试下所有的产品 [前台调用方法]
+	 * @param examId
+	 * @return
+	 */
+	List<ProductInfo> loadProducts(String examId);
+	/**
+	 * 根据id加载产品 [前台调用方法]
+	 * @param id
+	 * @return
+	 */
+	ProductInfo loadProduct(String id);
 }

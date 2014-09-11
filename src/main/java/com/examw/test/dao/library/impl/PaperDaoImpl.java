@@ -74,8 +74,14 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 			parameters.put("examId", info.getExamId());
 		}
 		if(!StringUtils.isEmpty(info.getSubjectId())){
-			hql += " and (p.subject.id = :subjectId) ";
-			parameters.put("subjectId", info.getSubjectId());
+			// 2014-09-10 fengwei 多个科目的情况一起查
+			if(info.getSubjectId().contains(","))
+			{
+				hql += " and (p.subject.id in ("+info.getSubjectId().replaceAll("([a-z0-9-]{36})", "'$1'")+"))";
+			}else{
+				hql += " and (p.subject.id = :subjectId) ";
+				parameters.put("subjectId", info.getSubjectId());
+			}
 		}
 		if(info.getStatus() != null && info.getStatus() > -1){
 			hql += " and (p.status = :status) ";

@@ -31,4 +31,12 @@ public interface ISyllabusService extends IBaseDataService<SyllabusInfo> {
 	 * @return
 	 */
 	List<TreeNode> loadAllSyllabuss(String ignore);
+	
+	/**
+	 * 根据ID查找章节[把子章节调出来][前台调用方法]
+	 * @param id
+	 * @return
+	 * @since 2014-09-10
+	 */
+	SyllabusInfo loadSysSyllabusInfo(String id);
 }

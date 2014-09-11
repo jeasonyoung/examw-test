@@ -16,7 +16,7 @@ public interface IExamService  extends IBaseDataService<ExamInfo>{
 	 */
 	Integer loadMaxCode();
 	/**
-	 * 根据ID加载考试
+	 * 根据ID加载考试[前台调用方法]
 	 * @return
 	 */
 	Exam loadExam(String examId);
