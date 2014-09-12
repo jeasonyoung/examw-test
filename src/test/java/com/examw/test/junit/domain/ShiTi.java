@@ -99,17 +99,34 @@ public class ShiTi {
 	public void setClassId(String classId) {
 		this.classId = classId;
 	}
+	/**
+	 * 获取考试ID.
+	 * @return 考试ID.
+	 */
 	public String getExamId() {
 		return examId;
 	}
+	/**
+	 * 设置考试ID.
+	 * @param examId
+	 * 考试ID.
+	 */
 	public void setExamId(String examId) {
 		this.examId = examId;
 	}
+	/**
+	 * 获取分析题ID.
+	 * @return 分析题ID.
+	 */
 	public String getAnalyId() {
 		return analyId;
 	}
+	/**
+	 * 设置分析题ID.
+	 * @param analyId
+	 * 分析题ID.
+	 */
 	public void setAnalyId(String analyId) {
 		this.analyId = analyId;
 	}
-	
 }

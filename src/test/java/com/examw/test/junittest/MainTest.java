@@ -62,15 +62,15 @@ public class MainTest {
 		session.getTransaction().commit();
 		session.close();
 		ItemInfo info = new ItemInfo();
-		//for(ShiTi sts: shiTiList){
+		for(ShiTi sts: shiTiList){
 			//根据类型判断调用类型方法
-			ShiTi sts = new ShiTi();
-			sts.setAnalysis("应付账款=(498000-345000-52000)-18000-16000-35000=32000(元)");
-			sts.setAnswer("B,C");
-			sts.setClassId("1");
-			sts.setId("1");
-			sts.setType(3);
-			sts.setContent("应付账款的金额是###28000###32000###45000###60000");
+//			ShiTi sts = new ShiTi();
+//			sts.setAnalysis("应付账款=(498000-345000-52000)-18000-16000-35000=32000(元)");
+//			sts.setAnswer("C,D");
+//			sts.setClassId("1");
+//			sts.setId("1");
+//			sts.setType(3);
+//			sts.setContent("应付账款的金额是###28000###32000###45000###60000");
 			if(Item.TYPE_SINGLE == sts.getType()){
 				//单选题
 				info = danXuan(sts);
@@ -81,7 +81,6 @@ public class MainTest {
 			}
 			if(Item.TYPE_UNCERTAIN == sts.getType()){
 				//不定项题
-			
 				info = buDingXi(sts);
 			}
 			if (Item.TYPE_JUDGE == sts.getType()){
@@ -91,7 +90,7 @@ public class MainTest {
 			if(Item.TYPE_QANDA == sts.getType()){
 				//问答题
 				info = wenDa(sts);
-		//	}
+			}
 //			if(Item.TYPE_SHARE_TITLE == sts.getType()){
 //				//共享题干题
 //				if(Item.TYPE_JUDGE == sts.getType()){
@@ -114,11 +113,11 @@ public class MainTest {
 //					//不定项
 //					info = tiGanBuDingXiang(sts);
 //				}
-//		}
+//			}
 		}
-//		if(null != info){
-//			itemService.update(info);
-//		}
+		if(null != info){
+			itemService.update(info);
+		}
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.writeValue(System.out, info);
 	}
@@ -361,7 +360,7 @@ public class MainTest {
 			Integer level=Integer.parseInt(st.getId());
 			info.setLevel(level);
 			info.setAnalysis(st.getAnalysis());
-			info.setType(Item.TYPE_MULTY);
+			info.setType(Item.TYPE_UNCERTAIN);
 			if("1".equals( st.getClassId())){
 				info.setSubjectId("c0e6f25c-eec8-44aa-94e8-968443ce6af9");
 			}
