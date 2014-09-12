@@ -17,6 +17,7 @@ import com.examw.model.DataGrid;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.front.CategoryFrontInfo;
 import com.examw.test.model.library.PaperInfo;
+import com.examw.test.model.library.PaperPreview;
 import com.examw.test.model.products.ProductInfo;
 import com.examw.test.model.settings.SubjectInfo;
 import com.examw.test.model.syllabus.SyllabusInfo;
@@ -144,5 +145,29 @@ public class FrontDataController {
 		//总条数
 		map.put("TOTAL",dg.getTotal());
 		return map;
+	}
+	/**
+	 * 加载试卷基本信息数据
+	 * @param paperId
+	 * @return
+	 */
+	@RequestMapping(value = {"/paper"}, method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public PaperPreview loadPaperInfo(String paperId){
+		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据");
+		if(StringUtils.isEmpty(paperId)) return null;
+		return this.paperService.loadPaperInfo(paperId);
+	}
+	/**
+	 * 加载试卷的详细信息[包含题目数据]
+	 * @param paperId
+	 * @return
+	 */
+	@RequestMapping(value = {"/paper/do"}, method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public PaperPreview loadPaperDetail(String paperId){
+		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据[包含题目]");
+		if(StringUtils.isEmpty(paperId)) return null;
+		return this.paperService.loadPaperPreview(paperId);
 	}
 }

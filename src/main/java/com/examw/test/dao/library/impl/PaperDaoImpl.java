@@ -87,6 +87,16 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 			hql += " and (p.status = :status) ";
 			parameters.put("status", info.getStatus());
 		}
+		//类型
+		if(info.getType()!=null){
+			hql += " and (p.type = :type) ";
+			parameters.put("type", info.getType());
+		}
+		//年份
+		if(info.getYear()!=null){
+			hql += " and (p.year = :year) ";
+			parameters.put("year", info.getYear());
+		}
 		return hql;
 	}
 	/*

@@ -603,4 +603,34 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		paperPreview.setStructures(structures);
 		return paperPreview;
 	}
+	
+	/*
+	 * 加载试卷基本信息
+	 * @see com.examw.test.service.library.IPaperService#loadPaperInfo(java.lang.String)
+	 */
+	@Override
+	public PaperPreview loadPaperInfo(String paperId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［id = %s］预览...", paperId));
+		if(StringUtils.isEmpty(paperId)) return null;
+		this.paperDao.evict(Paper.class);
+		Paper paper = this.paperDao.load(Paper.class, paperId);
+		if(paper == null) {
+			if(logger.isDebugEnabled()) logger.debug(String.format("试卷［id = %s］不存在！", paperId));
+			return null;
+		}
+		PaperPreview paperPreview = this.changeModel(paper);
+		if(paperPreview == null) return null;
+		List<StructureInfo> structures = new ArrayList<>();
+		List<Structure> list = this.structureDao.finaStructures(paperId);
+		if(list != null && list.size() > 0){
+			for(Structure s : list){
+				StructureInfo info = new StructureInfo();
+				if(this.changeModel(s, info, false)){	//不加载题目
+					structures.add(info);
+				}
+			}
+		}
+		paperPreview.setStructures(structures);
+		return paperPreview;
+	}
 }
