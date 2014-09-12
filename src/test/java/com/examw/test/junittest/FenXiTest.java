@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.examw.test.dao.library.IItemDao;
@@ -32,6 +33,8 @@ import com.examw.test.service.library.IItemService;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:spring-examw-test-hibernate-2.xml","classpath:spring-examw-test.xml"})
+@Transactional
+@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
 public class FenXiTest {
 	@Resource
 	private IItemDao itemDao;
@@ -39,7 +42,6 @@ public class FenXiTest {
 	private IItemService itemService;
 	@Resource
 	private SessionFactory sessionFactorySql;
-	@Transactional
 	@Test
 	public void fenXi() throws JsonGenerationException, JsonMappingException, IOException{
 		Session session = sessionFactorySql.openSession();
@@ -49,21 +51,17 @@ public class FenXiTest {
 		System.out.println(list.size());
 		session.getTransaction().commit();
 		session.close();
-		CaiLianFenXi cai = new CaiLianFenXi();
-		cai.setCexamId("5565,5566,5567,5568");
-		cai.setId("1");
-		cai.setContent("A市是我国某直辖市，市政府因办公需要，拟通过政府采购购进一批办公用品，由办公室李主任具体进行此项工作。");
-		cai.setClassId("1");
-		ItemInfo info = fenXiTi(cai);
-//		for(CaiLianFenXi fx : list) {
-//			info = fenXiTi(fx) ;
-//		}
-//		itemService.update(info);
-		//ItemInfo info =fenXiTi(cai);
+		ItemInfo info = new ItemInfo();
+		for(CaiLianFenXi fx : list) {
+			
+			info = fenXiTi(fx) ;
+			
+		}
+		itemService.update(info);
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.writeValue(System.out, info);
 	}
-	
+	//分析题
 	public ItemInfo fenXiTi(CaiLianFenXi clfx){
 		ItemInfo info = new  ItemInfo();
 		String content=clfx.getContent();
@@ -72,34 +70,42 @@ public class FenXiTest {
 		content = content.replaceAll("</[p|P]><[p|P](.+?)>", "<br/>");
 		content = content.replaceAll("<(?!/?(?i)(img|br)).*?>", "");
 		info.setContent(content);
-		if("1".equals( clfx.getClassId())){
-			info.setSubjectId("c0e6f25c-eec8-44aa-94e8-968443ce6af9");
-		}
-		if("2".equals( clfx.getClassId())){
-			info.setSubjectId("ad20f907-9fbc-435d-8922-77c0eff1ff3e");
-		}
+//		if("1".equals( clfx.getClassId())){
+//			info.setSubjectId("c0e6f25c-eec8-44aa-94e8-968443ce6af9");
+//		}
+//		if("2".equals( clfx.getClassId())){
+//			info.setSubjectId("ad20f907-9fbc-435d-8922-77c0eff1ff3e");
+//		}
+		info.setSubjectId("53951b86-3578-4d72-8c81-00d6d111e9b1");
 		Set<ItemInfo> child = new HashSet<ItemInfo>();
+		Session session = sessionFactorySql.openSession();
+		session.beginTransaction();
+		@SuppressWarnings("unchecked")
+		List<ShiTi> list =session.createQuery("from ShiTi where examId in("+clfx.getCexamId()+")").list();
+		session.getTransaction().commit();
+		session.close();
 		ItemInfo children = new ItemInfo();
-		ShiTi shiTi = new ShiTi();
-		shiTi.setAnalysis("本题考核内部会计监督");
-		shiTi.setAnswer("AD");
-		shiTi.setExamId("5565");
-		shiTi.setType(1);
-		shiTi.setAnalyId("1");
-		shiTi.setContent("按照不同的会计期间，不属于结账的是()。###日结###月结###季结###年结");
-		String examId = clfx.getCexamId();
-		String[] ans = examId.split(",");
-		if(clfx.getId().equals(shiTi.getAnalyId())){
-			ItemInfo bu = BuDingXiang(children, shiTi, 0, info);
-			System.out.println(bu);
-		}
-		for(int i = 0; i < ans.length; i++){
-			if(ans[i].equals(shiTi.getExamId())){
-				ItemInfo buDing = BuDingXiang(children, shiTi, i, info);
-				System.out.println(buDing);
+		for (ShiTi shiTi : list) {
+			String examId = clfx.getCexamId();
+			if(examId == null){
+				if(clfx.getId().equals(shiTi.getAnalyId())){
+					ItemInfo bu = BuDingXiang(children, shiTi, 0, info);
+					int s=1;
+					children.setOrderNo(s++);
+					System.out.println(bu);
+				}
+			}else{
+				String[] ans = examId.split(",");
+				for(int i = 0; i < ans.length; i++){
+					children.setOrderNo(i);
+					if(ans[i].equals(shiTi.getExamId())){
+						ItemInfo buDing = BuDingXiang(children, shiTi, i, info);
+						System.out.println(buDing);
+					}
+				}
 			}
 		}
-		children.setType(7);
+		children.setType(Item.TYPE_UNCERTAIN);
 		child.add(children);
 		info.setChildren(child);
 		return info;
@@ -107,7 +113,7 @@ public class FenXiTest {
 	//不定项函数
 	public ItemInfo BuDingXiang(ItemInfo children,ShiTi shiTi,int i,ItemInfo info){
 			children.setAnalysis(shiTi.getAnalysis());
-			String answer = shiTi.getAnswer();
+			String answer = "ABC";
 			String contents = shiTi.getContent();
 			String[] arr = contents.split("###");
 			children.setContent(arr[0]);
@@ -125,59 +131,45 @@ public class FenXiTest {
 					a[j] = (int)an[j]-64;
 				}
 			}
-			if(a.length == 1){
-				Set<ItemInfo> childrens = new HashSet<ItemInfo>();
-				for (int j = 1; j < arr.length; j++) {
-					ItemInfo childs = new ItemInfo();
-					childs.setId(UUID.randomUUID().toString());
-					childs.setContent(arr[j]);
-					int answer_index= answer.charAt(0)-64;
-					if(j == answer_index){
-						answer = childs.getId();
-						children.setAnswer(answer);
-					}
-					childs.setOrder(String.valueOf(j));
-					childrens.add(childs);
-				}
-				children.setChildren(childrens);
-			}
-			if(a.length > 1){
-				Set<ItemInfo> set= new HashSet<ItemInfo>();
-				String jieQu = null;
-				for(int j=1;j<arr.length;j++){
-					ItemInfo childs = new ItemInfo();
-					childs.setId(UUID.randomUUID().toString());
-					childs.setContent(arr[j]);
-					for(int e=0;e<a.length;e++){
-						String as = null;
-						if(j == a[e]){
-							if(a.length == 1){
-								answer = childs.getId();
-								as = answer;
-							}
-							if(a.length == 2){
-								answer = answer + childs.getId()+",";
-								as = answer.substring(3);
-								jieQu = as.substring(0,as.length()-1);
-							}
-							if(a.length == 3){
-								answer = answer + childs.getId()+",";
-								as = answer.substring(5);
-								jieQu = as.substring(0,as.length()-1);
-							}
-							if(a.length ==4){
-								answer = answer + childs.getId()+",";
-								as = answer.substring(7);
-								jieQu = as.substring(0,as.length()-1);
-							}
+			Set<ItemInfo> set= new HashSet<ItemInfo>();
+			String jieQu = null;
+			for(int j=1;j<arr.length;j++){
+				ItemInfo childs = new ItemInfo();
+				childs.setId(UUID.randomUUID().toString());
+				childs.setContent(arr[j]);
+				childs.setOrderNo(j);
+				for(int e=0;e<a.length;e++){
+					String as = null;
+					if(j == a[e]){
+						if(a.length == 1){
+							answer = childs.getId();
+							jieQu = answer;
+						}
+						if(a.length == 2){
+							answer = answer + childs.getId()+",";
+							as = answer.substring(3);
+							jieQu = as.substring(0,as.length()-1);
+						}
+						if(a.length == 3){
+							answer = answer + childs.getId()+",";
+							as = answer.substring(5);
+							jieQu = as.substring(0,as.length()-1);
+							System.out.println(jieQu+"ff"+as+"FF");
+						}
+						
+						if(a.length ==4){
+							answer = answer + childs.getId()+",";
+							as = answer.substring(7);
+							jieQu = as.substring(0,as.length()-1);
+							
 						}
 					}
-					info.setOrder(String.valueOf(i));
-					set.add(childs);
 				}
-				children.setAnswer(jieQu);
-				children.setChildren(set);
+				info.setOrder(String.valueOf(i));
+				set.add(childs);
 			}
+			children.setAnswer(jieQu);
+			children.setChildren(set);
 		return null;
 	}
 }
