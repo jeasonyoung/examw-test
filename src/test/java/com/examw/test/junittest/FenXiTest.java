@@ -63,6 +63,7 @@ public class FenXiTest {
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.writeValue(System.out, info);
 	}
+	
 	public ItemInfo fenXiTi(CaiLianFenXi clfx){
 		ItemInfo info = new  ItemInfo();
 		String content=clfx.getContent();
@@ -177,9 +178,6 @@ public class FenXiTest {
 				children.setAnswer(jieQu);
 				children.setChildren(set);
 			}
-		
 		return null;
-		
 	}
-
 }
