@@ -91,25 +91,18 @@ public class FrontDataController {
 	 */
 	@RequestMapping(value = {"/chapter"}, method = {RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public Map<String,Object> loadChapters(final String examId,String subjectId){
+	public Map<String,Object> loadChapters(final String productId,String subjectId){
 		if(logger.isDebugEnabled()) logger.debug("章节数据");
-		if(StringUtils.isEmpty(examId)) return null;
+		if(StringUtils.isEmpty(productId)) return null;
 		Map<String,Object> map = new HashMap<String,Object>();
-		List<SubjectInfo> subjects = this.subjectService.datagrid(new SubjectInfo(){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public String getExamId() {return examId;}
-			@Override
-			public String getSort() {return "code"; } 
-			@Override
-			public String getOrder() { return "asc";}
-		}).getRows();
+		List<SubjectInfo> subjects = this.subjectService.changeModel(this.productService.loadSubjectList(productId));
 		map.put("SUBJECTLIST",subjects);
 		if(StringUtils.isEmpty(subjectId)){
 			if(subjects!=null && subjects.size()>0)
 				subjectId = subjects.get(0).getId();
 		}
 		map.put("CHAPTERLIST", this.syllabusService.loadSyllabuss(subjectId, null));
+		map.put("CURRENT_SUBJECT_ID", subjectId);
 		return map;
 	}
 	/**
