@@ -53,11 +53,9 @@ public class FenXiTest {
 		session.close();
 		ItemInfo info = new ItemInfo();
 		for(CaiLianFenXi fx : list) {
-			
 			info = fenXiTi(fx) ;
-			
+			itemService.update(info);
 		}
-		itemService.update(info);
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.writeValue(System.out, info);
 	}
@@ -70,6 +68,8 @@ public class FenXiTest {
 		content = content.replaceAll("</[p|P]><[p|P](.+?)>", "<br/>");
 		content = content.replaceAll("<(?!/?(?i)(img|br)).*?>", "");
 		info.setContent(content);
+		info.setOpt(4);
+		info.setStatus(Item.STATUS_NONE);
 //		if("1".equals( clfx.getClassId())){
 //			info.setSubjectId("c0e6f25c-eec8-44aa-94e8-968443ce6af9");
 //		}
@@ -77,7 +77,6 @@ public class FenXiTest {
 //			info.setSubjectId("ad20f907-9fbc-435d-8922-77c0eff1ff3e");
 //		}
 		info.setSubjectId("53951b86-3578-4d72-8c81-00d6d111e9b1");
-		Set<ItemInfo> child = new HashSet<ItemInfo>();
 		Session session = sessionFactorySql.openSession();
 		session.beginTransaction();
 		@SuppressWarnings("unchecked")
@@ -89,15 +88,12 @@ public class FenXiTest {
 			String examId = clfx.getCexamId();
 			if(examId == null){
 				if(clfx.getId().equals(shiTi.getAnalyId())){
-					ItemInfo bu = BuDingXiang(children, shiTi, 0, info);
-					int s=1;
-					children.setOrderNo(s++);
+					ItemInfo bu = this.BuDingXiang(children, shiTi, 0, info);
 					System.out.println(bu);
 				}
 			}else{
 				String[] ans = examId.split(",");
 				for(int i = 0; i < ans.length; i++){
-					children.setOrderNo(i);
 					if(ans[i].equals(shiTi.getExamId())){
 						ItemInfo buDing = BuDingXiang(children, shiTi, i, info);
 						System.out.println(buDing);
@@ -105,71 +101,110 @@ public class FenXiTest {
 				}
 			}
 		}
-		children.setType(Item.TYPE_UNCERTAIN);
-		child.add(children);
-		info.setChildren(child);
 		return info;
 	}
 	//不定项函数
 	public ItemInfo BuDingXiang(ItemInfo children,ShiTi shiTi,int i,ItemInfo info){
+			Set<ItemInfo> child = new HashSet<ItemInfo>();
 			children.setAnalysis(shiTi.getAnalysis());
-			String answer = "ABC";
+			String answer =shiTi.getAnswer().toUpperCase();
 			String contents = shiTi.getContent();
 			String[] arr = contents.split("###");
 			children.setContent(arr[0]);
 			int[] a= null;
+			Set<ItemInfo> set= new HashSet<ItemInfo>();
+			String jieQu = null;
 			if(answer.indexOf(",") != -1){
 				String[] an = answer.split(",");
 				a = new int[an.length];
 				for (int j = 0; j < an.length; j++) {
 					a[j] = an[j].toCharArray()[0]-64;
 				}	
+				for(int j=1;j<arr.length;j++){
+					ItemInfo childs = new ItemInfo();
+					childs.setId(UUID.randomUUID().toString());
+					childs.setContent(arr[j]);
+					childs.setOrderNo(j);
+					for(int e=0;e<a.length;e++){
+						String as = null;
+						if(j == a[e]){
+							if(a.length == 1){
+								answer = childs.getId();
+								jieQu = answer;
+							}
+							if(a.length == 2){
+								answer = answer + childs.getId()+",";
+								as = answer.substring(3);
+								jieQu = as.substring(0,as.length()-1);
+							}
+							if(a.length == 3){
+								answer = answer + childs.getId()+",";
+								as = answer.substring(5);
+								jieQu = as.substring(0,as.length()-1);
+								System.out.println(jieQu+"ff"+as+"FF");
+							}
+							if(a.length ==4){
+								answer = answer + childs.getId()+",";
+								as = answer.substring(7);
+								jieQu = as.substring(0,as.length()-1);
+							}
+						}
+					}
+					info.setOrder(String.valueOf(i));
+					set.add(childs);
+				}
+				children.setOrderNo(i);
+				children.setAnswer(jieQu);
+				children.setChildren(set);
+				children.setType(Item.TYPE_UNCERTAIN);
+				child.add(children);
+				info.setChildren(child);
 			}else{
 				char[] an=answer.toCharArray();
 				a = new int[an.length];
 				for (int j = 0; j < an.length; j++) {
 					a[j] = (int)an[j]-64;
 				}
-			}
-			Set<ItemInfo> set= new HashSet<ItemInfo>();
-			String jieQu = null;
-			for(int j=1;j<arr.length;j++){
-				ItemInfo childs = new ItemInfo();
-				childs.setId(UUID.randomUUID().toString());
-				childs.setContent(arr[j]);
-				childs.setOrderNo(j);
-				for(int e=0;e<a.length;e++){
-					String as = null;
-					if(j == a[e]){
-						if(a.length == 1){
-							answer = childs.getId();
-							jieQu = answer;
-						}
-						if(a.length == 2){
-							answer = answer + childs.getId()+",";
-							as = answer.substring(3);
-							jieQu = as.substring(0,as.length()-1);
-						}
-						if(a.length == 3){
-							answer = answer + childs.getId()+",";
-							as = answer.substring(5);
-							jieQu = as.substring(0,as.length()-1);
-							System.out.println(jieQu+"ff"+as+"FF");
-						}
-						
-						if(a.length ==4){
-							answer = answer + childs.getId()+",";
-							as = answer.substring(7);
-							jieQu = as.substring(0,as.length()-1);
-							
+				for(int j=1;j<arr.length;j++){
+					ItemInfo childs = new ItemInfo();
+					childs.setId(UUID.randomUUID().toString());
+					childs.setContent(arr[j]);
+					childs.setOrderNo(j);
+					for(int e=0;e<a.length;e++){
+						String as = null;
+						if(j == a[e]){
+							if(a.length == 1){
+								answer = childs.getId();
+								jieQu = answer;
+							}
+							if(a.length == 2){
+								answer = answer + childs.getId()+",";
+								as = answer.substring(2);
+								jieQu = as.substring(0,as.length()-1);
+							}
+							if(a.length == 3){
+								answer = answer + childs.getId()+",";
+								as = answer.substring(3);
+								jieQu = as.substring(0,as.length()-1);
+								System.out.println(jieQu+"ff"+as+"FF");
+							}
+							if(a.length ==4){
+								answer = answer + childs.getId()+",";
+								as = answer.substring(4);
+								jieQu = as.substring(0,as.length()-1);
+							}
 						}
 					}
+					info.setOrder(String.valueOf(i));
+					set.add(childs);
 				}
-				info.setOrder(String.valueOf(i));
-				set.add(childs);
+				children.setOrderNo(i);
+				children.setAnswer(jieQu);
+				children.setChildren(set);
+				children.setType(Item.TYPE_UNCERTAIN);
+				child.add(children);
+				info.setChildren(child);
 			}
-			children.setAnswer(jieQu);
-			children.setChildren(set);
-		return null;
+		return info;
 	}
 }
