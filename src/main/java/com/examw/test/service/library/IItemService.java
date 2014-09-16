@@ -1,6 +1,5 @@
 package com.examw.test.service.library;
 
-import java.util.List;
 import java.util.Set;
 
 import com.examw.test.domain.library.Item;
@@ -72,9 +71,4 @@ public interface IItemService extends IBaseDataService<ItemInfo> {
 	 * 试题预览信息。
 	 */
 	ItemInfo loadItemPreview(String itemId);
-	/**
-	 * 批量插入[从sqlserver导入试题调用方法]
-	 * @param list
-	 */
-	void insertItemList(List<ItemInfo> list);
 }

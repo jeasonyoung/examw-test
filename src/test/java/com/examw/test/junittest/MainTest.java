@@ -1,7 +1,6 @@
 package com.examw.test.junittest;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,13 +50,14 @@ public class MainTest {
 //		session.getTransaction().commit();
 //		transaction.commit();
 //		session.close();
-		ItemInfo info = new ItemInfo();
-		List<ItemInfo> list = new ArrayList<ItemInfo>();
+		//ItemInfo info = new ItemInfo();
+		//List<ItemInfo> list = new ArrayList<ItemInfo>();
 		for(ShiTi sts: shiTiList){
-			info = danXuan(sts);
-			if(info!=null) list.add(info);
+			ItemInfo info = danXuan(sts);
+			//if(info!=null) list.add(info);
+			this.itemService.update(info);
 		}
-		this.itemService.insertItemList(list);
+		//this.itemService.insertItemList(list);
 	}
 	//单选
 	public ItemInfo danXuan(ShiTi st){
