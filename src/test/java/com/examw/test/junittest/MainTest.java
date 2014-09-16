@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.examw.test.dao.library.IItemDao;
 import com.examw.test.domain.library.Item;
-import com.examw.test.junit.domain.ShiTi;
 import com.examw.test.model.library.ItemInfo;
 import com.examw.test.service.library.IItemService;
 /**

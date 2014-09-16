@@ -1,4 +1,4 @@
-package com.examw.test.junit.domain;
+package com.examw.test.junittest;
 
 /**
  * 试题实体类。

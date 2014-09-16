@@ -1,4 +1,4 @@
-package com.examw.test.junit.domain;
+package com.examw.test.junittest;
 
 /**
  * 材料分析题实体类

@@ -3,15 +3,6 @@
 <#assign module="library_paper_structure"/>
 <#assign form="${module}_edit_form" />
 <form id="${form}" method="POST" style="padding:10px;">
-	<div style="float:left;margin-top:2px;width:100%;">
-		<label style="width:50px;">上级：</label>
-		<input name="pid" class="easyui-combotree" data-options="
-				url:'<@s.url '/library/paper/structure/tree/${CURRENT_PAPER_ID}?ignoreStructureId=${IGNORE_STRUCTURE_ID}'/>',
-				onLoadError:function(e){
-					<@error_dialog 'e'/>
-				}
-			" style="width:302px;" />
-	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:50px;">标题：</label>
 		<textarea name="title" class="easyui-validatebox" data-options="required:true"  rows="10" cols="20" style="width:298px;height:50px;"/>
