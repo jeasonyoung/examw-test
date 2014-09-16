@@ -85,4 +85,17 @@ public class StructureItemDaoImpl extends BaseDaoImpl<StructureItem> implements 
 		Object obj = this.uniqueResult(hql, parameters);
 		return obj == null ? null : (long)((int)obj);
 	}
+	/*
+	 * 统计结构下题目总数。
+	 * @see com.examw.test.dao.library.IStructureItemDao#totalItems(java.lang.String)
+	 */
+	@Override
+	public Long totalItems(String structureId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("结构［structureId = %1$s］下题目总数...", structureId));
+		final String hql = "select count(s.id) from StructureItem s where s.structure.id = :structureId";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("structureId", structureId);
+		Object obj = this.uniqueResult(hql, parameters);
+		return obj == null ? null :((long)obj);
+	}
 }

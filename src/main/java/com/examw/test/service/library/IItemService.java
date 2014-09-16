@@ -1,10 +1,8 @@
 package com.examw.test.service.library;
 
-import java.util.List;
 import java.util.Set;
 
 import com.examw.test.domain.library.Item;
-import com.examw.test.domain.library.StructureItem;
 import com.examw.test.domain.library.StructureShareItemScore;
 import com.examw.test.model.library.BaseItemInfo;
 import com.examw.test.model.library.ItemInfo;
@@ -64,7 +62,7 @@ public interface IItemService extends IBaseDataService<ItemInfo> {
 	 * @return
 	 * 题目对象。
 	 */
-	Item updateItem(BaseItemInfo<?> info,StructureItem structureItem,Set<StructureShareItemScore> shareItemScores);
+	Item updateItem(BaseItemInfo<?> info,Set<StructureShareItemScore> shareItemScores);
 	/**
 	 * 加载试题预览。
 	 * @param itemId
@@ -73,9 +71,4 @@ public interface IItemService extends IBaseDataService<ItemInfo> {
 	 * 试题预览信息。
 	 */
 	ItemInfo loadItemPreview(String itemId);
-	/**
-	 * 批量插入[从sqlserver导入试题调用方法]
-	 * @param list
-	 */
-	void insertItemList(List<ItemInfo> list);
 }

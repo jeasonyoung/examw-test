@@ -20,6 +20,12 @@ public interface IStructureItemDao extends IBaseDao<StructureItem> {
 	 */
 	Long loadMaxOrderNo(String structureId);
 	/**
+	 * 统计指定结构下题目总数。
+	 * @param structureId
+	 * @return
+	 */
+	Long totalItems(String structureId);
+	/**
 	 * 查询数据。
 	 * @param paperId
 	 * 所属试卷ID。

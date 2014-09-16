@@ -54,7 +54,7 @@
 		<!-- 结构ID -->
 		<id name="id"  type="string"  length="64" />
 		<!-- 结构标题 -->
-		<property name="title" type="string" length="32" />
+		<property name="title" type="string" length="512" />
 		<!-- 题型 -->
 		<property name="type" type="integer" />
 		<!-- 题目总数 -->
