@@ -44,18 +44,19 @@ public class MainTest {
 	@Test
 	public void ShiTis() throws JsonGenerationException, JsonMappingException, IOException{
 		Session session = sessionFactorySql.openSession();
-		session.beginTransaction();
+//		Transaction transaction= session.beginTransaction();
+//		transaction.begin();
 		@SuppressWarnings("unchecked")
 		List<ShiTi> shiTiList = session.createQuery("from ShiTi where type =1 and id not in(1392,1413,3021,3284,3285)").list();
 		System.out.println(shiTiList.size());
-		session.getTransaction().commit();
-		session.close();
+//		session.getTransaction().commit();
+//		transaction.commit();
+//		session.close();
 		ItemInfo info = new ItemInfo();
 		for(ShiTi sts: shiTiList){
 			info = danXuan(sts);
 			itemService.update(info);
 		}
-		
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.writeValue(System.out, info);
 	}
