@@ -70,13 +70,12 @@ public class FenXiTest {
 		info.setContent(content);
 		info.setOpt(4);
 		info.setStatus(Item.STATUS_NONE);
-//		if("1".equals( clfx.getClassId())){
-//			info.setSubjectId("c0e6f25c-eec8-44aa-94e8-968443ce6af9");
-//		}
-//		if("2".equals( clfx.getClassId())){
-//			info.setSubjectId("ad20f907-9fbc-435d-8922-77c0eff1ff3e");
-//		}
-		info.setSubjectId("53951b86-3578-4d72-8c81-00d6d111e9b1");
+		if("1".equals( clfx.getClassId())){
+			info.setSubjectId("c0e6f25c-eec8-44aa-94e8-968443ce6af9");
+		}
+		if("2".equals( clfx.getClassId())){
+			info.setSubjectId("ad20f907-9fbc-435d-8922-77c0eff1ff3e");
+		}
 		Session session = sessionFactorySql.openSession();
 		session.beginTransaction();
 		@SuppressWarnings("unchecked")
@@ -128,6 +127,7 @@ public class FenXiTest {
 					for(int e=0;e<a.length;e++){
 						String as = null;
 						if(j == a[e]){
+							System.out.println(j +"dd"+a[e]);
 							if(a.length == 1){
 								answer = childs.getId();
 								jieQu = answer;

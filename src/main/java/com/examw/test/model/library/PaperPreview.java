@@ -342,4 +342,24 @@ public class PaperPreview implements Serializable {
 	public void setStructures(List<StructureInfo> structures) {
 		this.structures = structures;
 	}
+	
+	/*前台需要数据 题目的总个数  2014-09-15 by FW.*/
+	private Integer total; //总的题目数
+	/**
+	 * 获取 题目总数
+	 * @return total
+	 * 
+	 */
+	public Integer getTotal() {
+		return total;
+	}
+	/**
+	 * 设置 题目总数
+	 * @param total
+	 * 
+	 */
+	public void setTotal(Integer total) {
+		this.total = total;
+	}
+	
 }

@@ -329,14 +329,28 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 					return o1.getOrderNo() - o2.getOrderNo();
 				}
 			});
+			int total = 0;	//计算总题目数 2014.09.15
 			for(StructureItem structureItem : source.getItems()){
 				 if(structureItem == null) continue;
 				 StructureItemInfo structureItemInfo = this.changeModel(structureItem);
-				 if(structureItemInfo != null) items.add(structureItemInfo);
+				 if(structureItemInfo != null){ 
+					 items.add(structureItemInfo);
+					 total += calculateStructureTotal(structureItemInfo);	//计算总题目数2014.09.15
+				 }
 			}
-			target.setItems(items);
+			target.setItems(items);	
+			target.setTotal(total);	//计算总题目数2014.09.15
 		}
 		return true;
+	}
+	private Integer calculateStructureTotal(StructureItemInfo info){
+		switch(info.getType()){
+		case Item.TYPE_SHARE_ANSWER:
+		case Item.TYPE_SHARE_TITLE:
+			return info.getItem().getChildren().size();
+		default:
+			return 1;
+		}
 	}
 	/*
 	 * 更新试卷结构。
@@ -591,15 +605,18 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		if(paperPreview == null) return null;
 		List<StructureInfo> structures = new ArrayList<>();
 		List<Structure> list = this.structureDao.finaStructures(paperId);
+		int total = 0;	//总题数
 		if(list != null && list.size() > 0){
 			for(Structure s : list){
 				StructureInfo info = new StructureInfo();
 				if(this.changeModel(s, info, true)){
 					structures.add(info);
+					total += info.getTotal();	//计算题目的总数
 				}
 			}
 		}
 		paperPreview.setStructures(structures);
+		paperPreview.setTotal(total); 	//设置题目的总数
 		return paperPreview;
 	}
 	

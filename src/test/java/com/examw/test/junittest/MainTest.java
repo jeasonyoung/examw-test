@@ -46,44 +46,21 @@ public class MainTest {
 		Session session = sessionFactorySql.openSession();
 		session.beginTransaction();
 		@SuppressWarnings("unchecked")
-		List<ShiTi> shiTiList = session.createQuery("from ShiTi").list();
+		List<ShiTi> shiTiList = session.createQuery("from ShiTi where type =1 and id not in(1392,1413,3021,3284,3285)").list();
 		System.out.println(shiTiList.size());
 		session.getTransaction().commit();
 		session.close();
 		ItemInfo info = new ItemInfo();
 		for(ShiTi sts: shiTiList){
-//			if(Item.TYPE_SINGLE == sts.getType()){
-//				//单选题
-//				info = danXuan(sts);
-//				itemService.update(info);
-//			}
-			if(Item.TYPE_MULTY == sts.getType()){
-				//多选题
-				info = duoXuan(sts);
-				
-			}
-//			if(Item.TYPE_UNCERTAIN == sts.getType()){
-//				//不定项题
-//				//info = buDingXi(sts);
-//				//itemService.update(info);
-//			}
-//			if (Item.TYPE_JUDGE == sts.getType()){
-//				//判断题
-//				info = panDuan(sts);
-//				itemService.update(info);
-//			}
-//			if(Item.TYPE_QANDA == sts.getType()){
-//				//问答题
-//				//info = wenDa(sts);
-//			}
+			info = danXuan(sts);
+			itemService.update(info);
 		}
-		itemService.update(info);
+		
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.writeValue(System.out, info);
 	}
 	//单选
 	public ItemInfo danXuan(ShiTi st){
-		if(st.getAnalyId() != null || st.getAnswer() == null)return null;
 		ItemInfo info = new ItemInfo();
 		String content = st.getContent();
 		String answer = st.getAnswer().toUpperCase();
@@ -119,7 +96,16 @@ public class MainTest {
 		info.setLevel(level);
 		info.setAnalysis(st.getAnalysis());
 		info.setType(Item.TYPE_SINGLE);
-		info.setSubjectId("53951b86-3578-4d72-8c81-00d6d111e9b1");
+		info.setSubjectId("ad20f907-9fbc-435d-8922-77c0eff1ff3e");
+//		if("1".equals( st.getClassId())){
+//			info.setSubjectId("c0e6f25c-eec8-44aa-94e8-968443ce6af9");
+//		}
+//		if("2".equals( st.getClassId())){
+//			
+//		}
+//		if("3".equals( st.getClassId())){
+//			info.setSubjectId("9502b22d-3831-4eed-ad39-00c502618e64");
+//		}
 		info.setOpt(4);
 		info.setYear(2014);
 		info.setStatus(Item.STATUS_NONE);
@@ -142,66 +128,62 @@ public class MainTest {
 	}
 	//多选题
 	public ItemInfo duoXuan(ShiTi st){
-		if(st.getAnalyId() != null || st.getAnswer() == null)return null;
 		ItemInfo info = new ItemInfo();
-		String content = "kkkkkkkkkkkkkkkkk###hhh";
+		String content = st.getContent();
 		String answer = st.getAnswer().toUpperCase();
+		int[] a= null;
 		String[] arr = content.split("###");
 		info.setContent(arr[0]);
 		Set<ItemInfo> set= new HashSet<ItemInfo>();
 		String jieQu = null;
-		int[] a= null;
-		if(st.getAnswer().indexOf(",") !=-1){
-		String[] ans = answer.split(",");
-		a = new int[ans.length];
-		for (int j = 0; j < ans.length; j++) {
-			a[j] = ans[j].toCharArray()[0]-64;
-		}	
-		for(int i=1;i<arr.length;i++){
-			ItemInfo child = new ItemInfo();
-			child.setOrderNo(i);
-			child.setId(UUID.randomUUID().toString());
-			child.setContent(arr[i]);
-			for(int j=0; j<a.length;j++){
-				String as = null;
-				if(i == a[j]){
-					if(a.length == 1){
-						answer = child.getId();
-						jieQu = answer;
-					}
-					if(a.length == 2){
-						answer = answer + child.getId()+",";
-						as = answer.substring(3);
-						jieQu = as.substring(0,as.length()-1);
-					}
-					if(a.length == 3){
-						answer = answer + child.getId()+",";
-						as = answer.substring(5);
-						jieQu = as.substring(0,as.length()-1);
-					}
-					if(a.length ==4){
-						answer = answer + child.getId()+",";
-						as = answer.substring(7);
-						jieQu = as.substring(0,as.length()-1);
-						System.out.println(jieQu+"dddddddd");
+		if(answer.indexOf(",") != -1){
+			String[] ans = answer.split(",");
+			a = new int[ans.length];
+			for (int j = 0; j < ans.length; j++) {
+				a[j] = ans[j].toCharArray()[0]-64;
+			}	
+			for(int i=1;i<arr.length;i++){
+				ItemInfo child = new ItemInfo();
+				child.setOrderNo(i);
+				child.setId(UUID.randomUUID().toString());
+				child.setContent(arr[i]);
+				for(int j=0; j<a.length;j++){
+					String as = null;
+					if(i == a[j]){
+						if(a.length == 1){
+							answer = child.getId();
+							jieQu = answer;
+						}
+						if(a.length == 2){
+							answer = answer + child.getId()+",";
+							as = answer.substring(3);
+							jieQu = as.substring(0,as.length()-1);
+						}
+						if(a.length == 3){
+							answer = answer + child.getId()+",";
+							as = answer.substring(5);
+							jieQu = as.substring(0,as.length()-1);
+						}
+						if(a.length ==4){
+							answer = answer + child.getId()+",";
+							as = answer.substring(7);
+							jieQu = as.substring(0,as.length()-1);
+						}
 					}
 				}
+				info.setOrder(String.valueOf(i));
+				set.add(child);
 			}
-			info.setOrder(String.valueOf(i));
-			set.add(child);
-		}
 		}
 		info.setChildren(set);
 		info.setAnswer(jieQu);
-		
 		Integer level=Integer.parseInt(st.getId());
 		info.setLevel(level);
 		info.setAnalysis(st.getAnalysis());
 		info.setType(Item.TYPE_MULTY);
-		info.setSubjectId("53951b86-3578-4d72-8c81-00d6d111e9b1");
+		info.setSubjectId("ad20f907-9fbc-435d-8922-77c0eff1ff3e");
 		info.setOpt(4);
 		info.setStatus(Item.STATUS_NONE);
-
 		return info;
 	}
 	//问答题
