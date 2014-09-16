@@ -226,7 +226,6 @@ public class PaperController {
 		target.setText(source.getTitle());
 		
 		Map<String, Object> attributes = new HashMap<String, Object>();
-		attributes.put("pid", source.getPid());
 		attributes.put("id", source.getId());
 		attributes.put("title", source.getTitle());
 		attributes.put("type", source.getType());
@@ -235,17 +234,6 @@ public class PaperController {
 		attributes.put("orderNo", source.getOrderNo());
 		target.setAttributes(attributes);
 		
-		if(source.getChildren() != null && source.getChildren().size() > 0){
-			List<TreeNode> children = new ArrayList<>();
-			for(StructureInfo info : source.getChildren()){
-				if(info == null) continue;
-				TreeNode node = new TreeNode();
-				if(this.createStructureTree(info, node, ignoreStructureId)){
-					children.add(node);
-				}
-			}
-			if(children.size() > 0) target.setChildren(children);
-		}
 		return true;
 	}
 	/**

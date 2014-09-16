@@ -14,26 +14,10 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class StructureInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String pid,id,title;
-	private Integer type,orderNo;
-	private BigDecimal score;
+	private String id,title;
+	private Integer total,type,orderNo;
+	private BigDecimal score,min;
 	private Set<StructureItemInfo> items;
-	private Set<StructureInfo> children;
-	/**
-	 * 获取父结构ID。
-	 * @return 父结构ID。
-	 */
-	public String getPid() {
-		return pid;
-	}
-	/**
-	 * 设置父结构ID。
-	 * @param pid 
-	 *	  父结构ID。
-	 */
-	public void setPid(String pid) {
-		this.pid = pid;
-	}
 	/**
 	 * 获取结构ID。
 	 * @return 结构ID。
@@ -63,6 +47,21 @@ public class StructureInfo implements Serializable {
 	 */
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	/**
+	 * 获取题目数。
+	 * @return total
+	 */
+	public Integer getTotal() {
+		return total;
+	}
+	/**
+	 * 设置题目数。
+	 * @param total 
+	 *	  题目数。
+	 */
+	public void setTotal(Integer total) {
+		this.total = total;
 	}
 	/**
 	 * 获取题型。
@@ -95,34 +94,34 @@ public class StructureInfo implements Serializable {
 		this.orderNo = orderNo;
 	}
 	/**
-	 * 获取分数。
-	 * @return 分数。
+	 * 获取题目分数。
+	 * @return 题目分数。
 	 */
 	public BigDecimal getScore() {
 		return score;
 	}
 	/**
-	 * 设置分数。
+	 * 设置题目分数。
 	 * @param score
-	 * 分数。
+	 * 题目分数。
 	 */
 	public void setScore(BigDecimal score) {
 		this.score = score;
 	}
 	/**
-	 * 获取子结构集合。
-	 * @return 子结构集合。
+	 * 获取题目最小分数。
+	 * @return 题目最小分数。
 	 */
-	public Set<StructureInfo> getChildren() {
-		return children;
+	public BigDecimal getMin() {
+		return min;
 	}
 	/**
-	 * 设置子结构集合。
-	 * @param children
-	 * 子结构集合。
+	 * 设置题目最小分数。
+	 * @param min 
+	 *	  题目最小分数。
 	 */
-	public void setChildren(Set<StructureInfo> children) {
-		this.children = children;
+	public void setMin(BigDecimal min) {
+		this.min = min;
 	}
 	/**
 	 * 获取结构上试题信息集合。

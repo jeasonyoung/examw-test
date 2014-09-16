@@ -1,5 +1,6 @@
 package com.examw.test.service.library.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -291,11 +292,6 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 				}
 			}
 		}
-		if(structure.getChildren() != null && structure.getChildren().size() > 0){
-			for(Structure s : structure.getChildren()){
-				this.auditPaperItems(s);
-			}
-		}
 	}
 	/*
 	 * 加载试卷结构集合。
@@ -340,23 +336,6 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 			}
 			target.setItems(items);
 		}
-		if(source.getChildren() != null && source.getChildren().size() > 0){
-			Set<StructureInfo> children = new TreeSet<StructureInfo>(new Comparator<StructureInfo>(){
-				@Override
-				public int compare(StructureInfo o1, StructureInfo o2) {
-					return o1.getOrderNo() - o2.getOrderNo();
-				}
-			});
-			for(Structure s : source.getChildren()){
-				if(s == null) continue;
-				 StructureInfo e = new StructureInfo();
-				 e.setPid(target.getId());
-				 if(this.changeModel(s, e, isChangeItems)){
-					 children.add(e);
-				 }
-			}
-			if(children.size() > 0) target.setChildren(children);
-		}
 		return true;
 	}
 	/*
@@ -390,8 +369,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 			data = new Structure();
 			data.setPaper(paper);
 		}
-		data.setParent(StringUtils.isEmpty(info.getPid()) ? null : this.structureDao.load(Structure.class, info.getPid()));
-		BeanUtils.copyProperties(info, data, new String[]{"children"});
+		BeanUtils.copyProperties(info, data, new String[]{"items"});
 		if(isAdded) this.structureDao.save(data);
 	}
 	/*
@@ -531,6 +509,22 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		if(isAdded = (data == null)){
 			if(StringUtils.isEmpty(info.getId())) info.setId(UUID.randomUUID().toString());
 			info.setCreateTime(new Date());
+			if(info.getItem() != null && paper != null){
+				if(StringUtils.isEmpty(info.getItem().getOpt()) && paper.getType() != null){
+			    	info.getItem().setOpt(paper.getType());
+			    }
+				if(paper.getSubject() != null){
+					if(StringUtils.isEmpty(info.getItem().getSubjectId())){//所属科目。
+						info.getItem().setSubjectId(paper.getSubject().getId());
+					}
+					if(StringUtils.isEmpty(info.getItem().getExamId()) && paper.getSubject().getExam() != null){ //所属考试
+						info.getItem().setExamId(paper.getSubject().getExam().getId());
+					}
+				}
+				if(StringUtils.isEmpty(info.getItem().getSourceId()) && paper.getSource() != null){//试卷来源
+					info.getItem().setSourceId(paper.getSource().getId());
+				}
+			}
 			data = new StructureItem(); 
 		}
 		if(!isAdded) info.setCreateTime(data.getCreateTime());
@@ -541,6 +535,11 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 			throw new RuntimeException(msg);
 		}
 		data.setStructure(structure);
+		if(info.getItem() != null){
+			if(structure.getScore() != null && structure.getScore().compareTo(BigDecimal.ZERO) == 1){
+				info.getItem().setScore(structure.getScore());
+			}
+		}
 		BeanUtils.copyProperties(info, data, new String[]{"item"});
 		data.setSerial(info.getItem().getSerial());
 		data.setScore(info.getItem().getScore());

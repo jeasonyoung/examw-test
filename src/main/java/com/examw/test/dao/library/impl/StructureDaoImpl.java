@@ -25,7 +25,7 @@ public class StructureDaoImpl extends BaseDaoImpl<Structure> implements IStructu
 	@Override
 	public List<Structure> finaStructures(String paperId) {
 		if(logger.isDebugEnabled()) logger.debug("加载试卷下的结构数据...");
-		final String hql = "from Structure s where (s.parent is null) and (s.paper.id = :paperId) order by s.orderNo";
+		final String hql = "from Structure s where (s.paper.id = :paperId) order by s.orderNo";
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("paperId", paperId);
 		if(logger.isDebugEnabled()) logger.debug(hql);
@@ -40,14 +40,9 @@ public class StructureDaoImpl extends BaseDaoImpl<Structure> implements IStructu
 		if(logger.isDebugEnabled()) logger.debug("删除试卷结构数据...");
 		if(data == null) return;
 		if(data.getItems() != null && data.getItems().size() > 0){
-			String msg = String.format("该试卷结构或其子结构［%1$s］下有试题［%2$d题］，请先删除试题！", data.getTitle(), data.getItems().size());
+			String msg = String.format("该试卷结构［%1$s］下有试题［%2$d题］，请先删除试题！", data.getTitle(), data.getItems().size());
 			if(logger.isDebugEnabled()) logger.debug(msg);
 			throw new RuntimeException(msg);
-		}
-		if(data.getChildren() != null && data.getChildren().size() > 0){
-			 for(Structure s : data.getChildren()){
-				 this.delete(s);
-			 }
 		}
 		if(logger.isDebugEnabled()) logger.debug(String.format("删除试卷结构［%1$s  %2$s］", data.getTitle(), data.getId()));
 		super.delete(data);

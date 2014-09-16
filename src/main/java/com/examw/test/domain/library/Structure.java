@@ -12,11 +12,9 @@ import java.util.Set;
 public class Structure implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String id,title;
-	private Integer type,orderNo;
-	private BigDecimal score;
+	private Integer type,total,orderNo;
+	private BigDecimal score,min;
 	private Paper paper;
-	private Structure parent;
-	private Set<Structure> children;
 	private Set<StructureItem> items;
 	/**
 	 * 获取结构ID。
@@ -49,6 +47,21 @@ public class Structure implements Serializable {
 		this.title = title;
 	}
 	/**
+	 * 获取题目总数。
+	 * @return 题目总数。
+	 */
+	public Integer getTotal() {
+		return total;
+	}
+	/**
+	 * 设置题目总数。
+	 * @param total 
+	 *	  题目总数。
+	 */
+	public void setTotal(Integer total) {
+		this.total = total;
+	}
+	/**
 	 * 获取题型。
 	 * @return 题型。
 	 */
@@ -79,19 +92,34 @@ public class Structure implements Serializable {
 		this.orderNo = orderNo;
 	}
 	/**
-	 * 获取分数。
-	 * @return 分数。
+	 * 获取题目分数。
+	 * @return 题目分数。
 	 */
 	public BigDecimal getScore() {
 		return score;
 	}
 	/**
-	 * 设置分数。
+	 * 设置题目分数。
 	 * @param score
-	 * 分数。
+	 * 题目分数。
 	 */
 	public void setScore(BigDecimal score) {
 		this.score = score;
+	}
+	/**
+	 * 获取题目最少分数。
+	 * @return 题目最少分数。
+	 */
+	public BigDecimal getMin() {
+		return min;
+	}
+	/**
+	 * 设置题目最少分数。
+	 * @param min 
+	 *	  题目最少分数。
+	 */
+	public void setMin(BigDecimal min) {
+		this.min = min;
 	}
 	/**
 	 * 获取所属试卷。
@@ -107,36 +135,6 @@ public class Structure implements Serializable {
 	 */
 	public void setPaper(Paper paper) {
 		this.paper = paper;
-	}
-	/**
-	 * 获取上级结构。
-	 * @return 上级结构。
-	 */
-	public Structure getParent() {
-		return parent;
-	}
-	/**
-	 * 设置上级结构。
-	 * @param parent
-	 * 上级结构。
-	 */
-	public void setParent(Structure parent) {
-		this.parent = parent;
-	}
-	/**
-	 * 获取子结构集合。
-	 * @return 子结构集合。
-	 */
-	public Set<Structure> getChildren() {
-		return children;
-	}
-	/**
-	 * 设置子结构集合。
-	 * @param children
-	 * 子结构集合。
-	 */
-	public void setChildren(Set<Structure> children) {
-		this.children = children;
 	}
 	/**
 	 * 获取结构下题目集合。
