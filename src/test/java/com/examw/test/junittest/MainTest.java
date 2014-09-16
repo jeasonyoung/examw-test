@@ -1,6 +1,7 @@
 package com.examw.test.junittest;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,7 +11,6 @@ import javax.annotation.Resource;
 
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Test;
@@ -52,12 +52,12 @@ public class MainTest {
 //		transaction.commit();
 //		session.close();
 		ItemInfo info = new ItemInfo();
+		List<ItemInfo> list = new ArrayList<ItemInfo>();
 		for(ShiTi sts: shiTiList){
 			info = danXuan(sts);
-			itemService.update(info);
+			if(info!=null) list.add(info);
 		}
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.writeValue(System.out, info);
+		this.itemService.insertItemList(list);
 	}
 	//单选
 	public ItemInfo danXuan(ShiTi st){

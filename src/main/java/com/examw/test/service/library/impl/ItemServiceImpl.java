@@ -1,5 +1,6 @@
 package com.examw.test.service.library.impl;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
@@ -348,5 +349,49 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 			return null;
 		}
 		return this.changeModel(item);
+	}
+	/*
+	 * 批量导入
+	 * @see com.examw.test.service.library.IItemService#insertItemList(java.util.List)
+	 */
+	@Override
+	public void insertItemList(List<ItemInfo> list) {
+		if(list == null || list.size()==0) return;
+		List<Item> items = new ArrayList<Item>();
+		for(ItemInfo info:list){
+			if(info==null) continue;
+			Item item = this.changeInfoToItem(info);
+			items.add(item);
+		}
+		this.itemDao.insertItemList(items);
+	}
+	private Item changeInfoToItem(ItemInfo info){
+		if(info == null) return null;
+		boolean isAdded = false;
+		Item data = StringUtils.isEmpty(info.getId()) ? null : this.itemDao.load(Item.class, info.getId());
+		String checkCode = this.itemDuplicateCheck.computeCheckCode(info);
+		if(StringUtils.isEmpty(checkCode)){
+			String msg = "计算验证码为空！更新试题终止！";
+			if(logger.isDebugEnabled())logger.debug(msg);
+			throw new RuntimeException(msg);
+		}
+		if(data == null) data = this.itemDao.loadItem(checkCode);
+		if(data != null && data.getStatus() == ItemStatus.AUDIT.getValue()){
+			return data;
+		}
+		if(isAdded = (data == null)){
+			if(StringUtils.isEmpty(info.getId())) info.setId(UUID.randomUUID().toString());
+			info.setCreateTime(new Date());
+			info.setStatus(ItemStatus.NONE.getValue());
+			data = new Item();
+		}
+		if(!isAdded){
+			info.setId(data.getId());
+			info.setCreateTime(data.getCreateTime());
+		}
+		info.setCheckCode(checkCode);
+		info.setLastTime(new Date());
+		this.changeModel(info, data,null,null);
+		return data;
 	}
 }
