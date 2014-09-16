@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
 import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.impl.BaseDaoImpl;
@@ -146,7 +147,10 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 		if(list == null || list.size() == 0) return null;
 		return list.get(0);
 	}
-	
+	/*
+	 * 检查是否包含真题
+	 * @see com.examw.test.dao.library.IItemDao#hasRealItem(java.lang.String)
+	 */
 	@Override
 	public boolean hasRealItem(String subjectIds) {
 		if(logger.isDebugEnabled()) logger.debug("查询是否包含真题");
@@ -157,5 +161,23 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 		List<Item> list = this.getCurrentSession().createQuery(hql).list();
 		return list!=null&&list.size()>0;
 	}
-	
+	/*
+	 * 批量插入
+	 * @see com.examw.test.dao.library.IItemDao#insertItemList(java.util.List)
+	 */
+	@Override
+	public void insertItemList(List<Item> list) {
+		Session session = this.getCurrentSession();
+		for (int i=0; i<list.size();i++) {
+			session.saveOrUpdate(list.get(i));
+			if (i % 20 == 0) {
+				//20个对象后才清理缓存，写入数据库
+				session.flush();
+				session.clear();
+			}
+				
+		}
+		session.flush();
+		session.clear();
+	}
 }

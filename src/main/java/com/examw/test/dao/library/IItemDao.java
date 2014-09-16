@@ -44,4 +44,9 @@ public interface IItemDao extends IBaseDao<Item> {
 	 * @return
 	 */
 	boolean hasRealItem(String subjectIds);
+	/**
+	 * 批量插入[从sqlserver导入试题调用方法]
+	 * @param list
+	 */
+	void insertItemList(List<Item> list);
 }
