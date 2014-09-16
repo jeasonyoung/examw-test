@@ -3,9 +3,9 @@
 <#assign module="library_paper_structure"/>
 <#assign form="${module}_edit_form" />
 <form id="${form}" method="POST" style="padding:10px;">
-	<div style="float:left;margin-top:12px;width:100%;">
+	<div style="float:left;margin-top:2px;width:100%;">
 		<label style="width:50px;">标题：</label>
-		<textarea name="title" class="easyui-validatebox" data-options="required:true"  rows="10" cols="20" style="width:298px;height:50px;"/>
+		<textarea name="title" class="easyui-validatebox" data-options="required:true"  rows="10" cols="20" style="width:298px;height:70px;"/>
 		<input name="id" type="hidden" />
 	</div>
 	<div style="float:left;margin-top:7px;width:100%;">
@@ -22,12 +22,23 @@
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<div style="float:left;">
-			<label style="width:50px;">分数：</label>
-			<input name="score" class="easyui-numberbox" data-options="min:0,value:0" style="width:80px;text-align:right;">
+			<label style="width:60px;">每题分数：</label>
+			<input name="score" class="easyui-numberbox" data-options="min:0,value:0,precision:1" style="width:60px;text-align:right;">
 		</div>
-		<div style="float:right;margin-right:15px;">
-			<label style="width:100px;">排序号：</label>
-			<input name="orderNo" class="easyui-numberbox" data-options="min:0,value:1" style="width:80px;text-align:right;">
+		<div style="float:right;">
+			<label style="width:60px;">最少得分：</label>
+			<input name="min" class="easyui-numberbox" data-options="min:0,value:0,precision:1" style="width:60px;text-align:right;">
+			<span>(多选题有用)</span>
+		</div>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<div style="float:left;">
+			<label style="width:60px;">题目数量：</label>
+			<input name="total" class="easyui-numberbox" data-options="min:0,value:1" style="width:60px;text-align:right;">
+		</div>
+		<div style="float:right;">
+			<label style="width:50px;">排序号：</label>
+			<input name="orderNo" class="easyui-numberbox" data-options="min:0,value:1" style="width:60px;text-align:right;">
 		</div>
 	</div>
 </form>

@@ -39,6 +39,7 @@ import com.examw.test.service.library.IPaperService;
 import com.examw.test.service.library.ItemStatus;
 import com.examw.test.service.library.ItemType;
 import com.examw.test.service.library.PaperStatus;
+import com.examw.utils.MD5Util;
 
 /**
  * 试卷服务接口实现类。
@@ -321,7 +322,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	//试卷结构类型转换。
 	private boolean changeModel(Structure source, StructureInfo target, boolean isChangeItems){
 		if(source == null || target == null) return false;
-		BeanUtils.copyProperties(source, target, new String[]{"items","children"});
+		BeanUtils.copyProperties(source, target, new String[]{"items"});
 		if(isChangeItems && source.getItems() != null && source.getItems().size() > 0){
 			Set<StructureItemInfo> items = new TreeSet<StructureItemInfo>(new Comparator<StructureItemInfo>(){
 				@Override
@@ -329,28 +330,16 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 					return o1.getOrderNo() - o2.getOrderNo();
 				}
 			});
-			int total = 0;	//计算总题目数 2014.09.15
 			for(StructureItem structureItem : source.getItems()){
 				 if(structureItem == null) continue;
 				 StructureItemInfo structureItemInfo = this.changeModel(structureItem);
 				 if(structureItemInfo != null){ 
 					 items.add(structureItemInfo);
-					 total += calculateStructureTotal(structureItemInfo);	//计算总题目数2014.09.15
 				 }
 			}
-			target.setItems(items);	
-			target.setTotal(total);	//计算总题目数2014.09.15
+			target.setItems(items);
 		}
 		return true;
-	}
-	private Integer calculateStructureTotal(StructureItemInfo info){
-		switch(info.getType()){
-		case Item.TYPE_SHARE_ANSWER:
-		case Item.TYPE_SHARE_TITLE:
-			return info.getItem().getChildren().size();
-		default:
-			return 1;
-		}
 	}
 	/*
 	 * 更新试卷结构。
@@ -518,58 +507,72 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 			if(logger.isDebugEnabled()) logger.debug(msg);
 			throw new RuntimeException(msg);
 		}
-		boolean isAdded = false;
-		StructureItem data = StringUtils.isEmpty(info.getId()) ? null : this.structureItemDao.load(StructureItem.class, info.getId());
-		if(isAdded = (data == null)){
-			if(StringUtils.isEmpty(info.getId())) info.setId(UUID.randomUUID().toString());
-			info.setCreateTime(new Date());
-			if(info.getItem() != null && paper != null){
-				if(StringUtils.isEmpty(info.getItem().getOpt()) && paper.getType() != null){
-			    	info.getItem().setOpt(paper.getType());
-			    }
-				if(paper.getSubject() != null){
-					if(StringUtils.isEmpty(info.getItem().getSubjectId())){//所属科目。
-						info.getItem().setSubjectId(paper.getSubject().getId());
-					}
-					if(StringUtils.isEmpty(info.getItem().getExamId()) && paper.getSubject().getExam() != null){ //所属考试
-						info.getItem().setExamId(paper.getSubject().getExam().getId());
-					}
-				}
-				if(StringUtils.isEmpty(info.getItem().getSourceId()) && paper.getSource() != null){//试卷来源
-					info.getItem().setSourceId(paper.getSource().getId());
-				}
-			}
-			data = new StructureItem(); 
-		}
-		if(!isAdded) info.setCreateTime(data.getCreateTime());
 		Structure structure = StringUtils.isEmpty(info.getStructureId()) ? null : this.structureDao.load(Structure.class, info.getStructureId());
 		if(structure == null){
 			msg = String.format("试卷［%1$s］下未找到结构［structureId = %2$s］！", paper.getName(), info.getStructureId());
 			if(logger.isDebugEnabled()) logger.debug(msg);
 			throw new RuntimeException(msg);
 		}
-		data.setStructure(structure);
+		if(structure.getTotal() > 0){
+			Long count = this.structureItemDao.totalItems(info.getStructureId());
+			if(count != null && count >= structure.getTotal()){
+				msg = String.format("试卷［%1$s］结构下［structureId = %2$s］题目数量已满［total = %3$d］［count = %4$l］！", paper.getName(), info.getStructureId(), structure.getTotal(),count);
+				if(logger.isDebugEnabled()) logger.debug(msg);
+				throw new RuntimeException(msg);
+			}
+		}
 		if(info.getItem() != null){
-			if(structure.getScore() != null && structure.getScore().compareTo(BigDecimal.ZERO) == 1){
+			if(StringUtils.isEmpty(info.getItem().getOpt()) && paper.getType() != null){//试卷类型
+		    	info.getItem().setOpt(paper.getType());
+		    }
+			if(paper.getSubject() != null){
+				if(StringUtils.isEmpty(info.getItem().getSubjectId())){//所属科目。
+					info.getItem().setSubjectId(paper.getSubject().getId());
+				}
+				if(StringUtils.isEmpty(info.getItem().getExamId()) && paper.getSubject().getExam() != null){ //所属考试
+					info.getItem().setExamId(paper.getSubject().getExam().getId());
+				}
+			}
+			if(StringUtils.isEmpty(info.getItem().getSourceId()) && paper.getSource() != null){//试卷来源
+				info.getItem().setSourceId(paper.getSource().getId());
+			}
+			if(structure != null && structure.getScore() != null &&  structure.getScore().compareTo(BigDecimal.ZERO) == 1){//题目分数
 				info.getItem().setScore(structure.getScore());
 			}
 		}
-		BeanUtils.copyProperties(info, data, new String[]{"item"});
-		data.setSerial(info.getItem().getSerial());
-		data.setScore(info.getItem().getScore());
 		Set<StructureShareItemScore> shareItemScores = null;
 		if(info.getItem().getType() == ItemType.SHARE_TITLE.getValue() || info.getItem().getType() == ItemType.SHARE_ANSWER.getValue()){
 			shareItemScores = new HashSet<>();
 		}
-		Item item = this.itemService.updateItem(info.getItem(), data, shareItemScores);
+		Item item = this.itemService.updateItem(info.getItem(), shareItemScores);
 		if(item == null){
 			msg = "更新试题内容失败！";
 			if(logger.isDebugEnabled()) logger.debug(msg);
 			throw new RuntimeException(msg);
 		}
+		StructureItem data = StringUtils.isEmpty(info.getId()) ? null : this.structureItemDao.load(StructureItem.class, info.getId());
+		boolean isAdded = false;
+		if(isAdded = (data == null)){
+			info.setCreateTime(new Date());
+			info.setId(MD5Util.MD5(String.format("%1$s-%2$s", structure.getId(), item.getId())));
+			data = this.structureItemDao.load(StructureItem.class, info.getId());
+			if(isAdded = (data == null)) data = new StructureItem();
+		}
+		if(!isAdded) info.setCreateTime(data.getCreateTime());
+		data.setStructure(structure);
+		BeanUtils.copyProperties(info, data, new String[]{"item"});
+		data.setSerial(info.getItem().getSerial());
+		data.setScore(info.getItem().getScore());
 		data.setItem(item);
+		if(shareItemScores != null && shareItemScores.size() > 0){
+			for(StructureShareItemScore structureShareItemScore : shareItemScores){
+				if(structureShareItemScore == null) continue;
+				structureShareItemScore.setId(MD5Util.MD5(String.format("%1$s-%2$s", data.getId(), structureShareItemScore.getId())));
+				structureShareItemScore.setStructureItem(data);
+			}
+		}
 		data.setShareItemScores(shareItemScores);
-		if(isAdded)this.structureItemDao.save(data);
+		if(isAdded) this.structureItemDao.save(data);
 		return this.changeModel(data);
 	}
 	/*

@@ -18,7 +18,6 @@ import com.examw.test.dao.library.ISourceDao;
 import com.examw.test.dao.settings.ISubjectDao;
 import com.examw.test.domain.library.Item;
 import com.examw.test.domain.library.Source;
-import com.examw.test.domain.library.StructureItem;
 import com.examw.test.domain.library.StructureShareItemScore;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.library.BaseItemInfo;
@@ -28,8 +27,6 @@ import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.library.IItemDuplicateCheck;
 import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.ItemStatus;
-import com.examw.utils.MD5Util;
-
 /**
  * 题目服务接口实现类。
  * 
@@ -236,14 +233,14 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 	public ItemInfo update(ItemInfo info) {
 		if(logger.isDebugEnabled()) logger.debug("更新数据...");
 		if(info == null) return null;
-		return this.changeModel(this.updateItem(info, null, null));
+		return this.changeModel(this.updateItem(info,null));
 	}
 	/*
 	 * 更新题目。
 	 * @see com.examw.test.service.library.IItemService#updateItem(com.examw.test.model.library.ItemInfo)
 	 */
 	@Override
-	public Item updateItem(BaseItemInfo<?> info,StructureItem structureItem,Set<StructureShareItemScore> shareItemScores) {
+	public Item updateItem(BaseItemInfo<?> info,Set<StructureShareItemScore> shareItemScores) {
 		if(logger.isDebugEnabled()) logger.debug("更新题目...");
 		if(info == null) return null;
 		boolean isAdded = false;
@@ -270,12 +267,12 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		}
 		info.setCheckCode(checkCode);
 		info.setLastTime(new Date());
-		this.changeModel(info, data,structureItem,shareItemScores);
+		this.changeModel(info, data,shareItemScores);
 		if(isAdded)this.itemDao.save(data);
 		return data;
 	}
 	//类型转换(ItemInfo => Item)。
-	private boolean changeModel(BaseItemInfo<?> source,Item target,StructureItem structureItem,Set<StructureShareItemScore> shareItemScores){
+	private boolean changeModel(BaseItemInfo<?> source,Item target,Set<StructureShareItemScore> shareItemScores){
 		if(source == null || target == null) return false;
 		BeanUtils.copyProperties(source, target, new String[]{"children"});
 		if(!StringUtils.isEmpty(source.getSubjectId())){
@@ -284,14 +281,15 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		if(!StringUtils.isEmpty(source.getSourceId())){
 			target.setSource(this.sourceDao.load(Source.class, source.getSourceId()));
 		}
-		if((source instanceof ItemScoreInfo) && structureItem != null && shareItemScores != null){
+		if((source instanceof ItemScoreInfo) && shareItemScores != null){
 			ItemScoreInfo itemScoreInfo  = (ItemScoreInfo)source;
 			if(!StringUtils.isEmpty(itemScoreInfo.getSerial())){
 				StructureShareItemScore shareItemScore = new StructureShareItemScore();
-				shareItemScore.setId(MD5Util.MD5(String.format("%1$s-%2$s", structureItem.getId(), target.getId())));
+				//shareItemScore.setId(MD5Util.MD5(String.format("%1$s-%2$s", structureItem.getId(), target.getId())));
+				shareItemScore.setId( target.getId());
 				shareItemScore.setSerial(itemScoreInfo.getSerial());
 				shareItemScore.setScore(itemScoreInfo.getScore());
-				shareItemScore.setStructureItem(structureItem);
+				//shareItemScore.setStructureItem(structureItem);
 				shareItemScore.setSubItem(target);
 				shareItemScores.add(shareItemScore);
 			}
@@ -310,7 +308,7 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 					item = new Item();
 				}
 				item.setParent(target);
-				if(this.changeModel(info, item, structureItem, shareItemScores)){
+				if(this.changeModel(info, item, shareItemScores)){
 					target.getChildren().add(item);
 				}
 			}
