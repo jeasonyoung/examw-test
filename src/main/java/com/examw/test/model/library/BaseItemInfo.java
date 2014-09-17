@@ -378,4 +378,23 @@ public abstract class BaseItemInfo<T extends BaseItemInfo<T>>  extends Paging {
 	 *	  子题目集合。
 	 */
 	public abstract void setChildren(Set<T> children);
+	
+	/*前台使用属性 2014-09-16 by FW.*/
+	private String parentContent;//共享题的题干
+	/**
+	 * 获取 共享题的题干
+	 * @return parentContent
+	 * 
+	 */
+	public String getParentContent() {
+		return parentContent;
+	}
+	/**
+	 * 设置 共享题的题干
+	 * @param parentContent
+	 * 
+	 */
+	public void setParentContent(String parentContent) {
+		this.parentContent = parentContent;
+	}
 }

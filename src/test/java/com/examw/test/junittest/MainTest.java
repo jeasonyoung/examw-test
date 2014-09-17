@@ -45,7 +45,7 @@ public class MainTest {
 //		Transaction transaction= session.beginTransaction();
 //		transaction.begin();
 		@SuppressWarnings("unchecked")
-		List<ShiTi> shiTiList = session.createQuery("from ShiTi where type =1 and id not in(1392,1413,3021,3284,3285)").list();
+		List<ShiTi> shiTiList = session.createQuery("from ShiTi where type =2").list();
 		System.out.println(shiTiList.size());
 //		session.getTransaction().commit();
 //		transaction.commit();
@@ -96,16 +96,16 @@ public class MainTest {
 		info.setLevel(level);
 		info.setAnalysis(st.getAnalysis());
 		info.setType(Item.TYPE_SINGLE);
-		info.setSubjectId("ad20f907-9fbc-435d-8922-77c0eff1ff3e");
-//		if("1".equals( st.getClassId())){
-//			info.setSubjectId("c0e6f25c-eec8-44aa-94e8-968443ce6af9");
-//		}
-//		if("2".equals( st.getClassId())){
-//			
-//		}
-//		if("3".equals( st.getClassId())){
-//			info.setSubjectId("9502b22d-3831-4eed-ad39-00c502618e64");
-//		}
+		//
+		if("1".equals( st.getClassId())){
+			info.setSubjectId("c0e6f25c-eec8-44aa-94e8-968443ce6af9");
+		}
+		if("2".equals( st.getClassId())){
+			info.setSubjectId("ad20f907-9fbc-435d-8922-77c0eff1ff3e");
+		}
+		if("3".equals( st.getClassId())){
+			info.setSubjectId("9502b22d-3831-4eed-ad39-00c502618e64");
+		}
 		info.setOpt(4);
 		info.setYear(2014);
 		info.setStatus(Item.STATUS_NONE);
@@ -181,7 +181,15 @@ public class MainTest {
 		info.setLevel(level);
 		info.setAnalysis(st.getAnalysis());
 		info.setType(Item.TYPE_MULTY);
-		info.setSubjectId("ad20f907-9fbc-435d-8922-77c0eff1ff3e");
+		if("1".equals( st.getClassId())){
+			info.setSubjectId("c0e6f25c-eec8-44aa-94e8-968443ce6af9");
+		}
+		if("2".equals( st.getClassId())){
+			info.setSubjectId("ad20f907-9fbc-435d-8922-77c0eff1ff3e");
+		}
+		if("3".equals( st.getClassId())){
+			info.setSubjectId("9502b22d-3831-4eed-ad39-00c502618e64");
+		}
 		info.setOpt(4);
 		info.setStatus(Item.STATUS_NONE);
 		return info;
