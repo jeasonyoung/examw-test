@@ -228,9 +228,11 @@ public class PaperController {
 		Map<String, Object> attributes = new HashMap<String, Object>();
 		attributes.put("id", source.getId());
 		attributes.put("title", source.getTitle());
+		attributes.put("total", source.getTotal());
 		attributes.put("type", source.getType());
 		attributes.put("typeName", this.itemService.loadTypeName(source.getType()));
 		attributes.put("score", source.getScore());
+	    attributes.put("min", source.getMin());
 		attributes.put("orderNo", source.getOrderNo());
 		target.setAttributes(attributes);
 		
