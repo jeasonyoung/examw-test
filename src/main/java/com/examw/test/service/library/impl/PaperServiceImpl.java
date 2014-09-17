@@ -516,7 +516,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		if(structure.getTotal() > 0){
 			Long count = this.structureItemDao.totalItems(info.getStructureId());
 			if(count != null && count >= structure.getTotal()){
-				msg = String.format("试卷［%1$s］结构下［structureId = %2$s］题目数量已满［total = %3$d］［count = %4$l］！", paper.getName(), info.getStructureId(), structure.getTotal(),count);
+				msg = String.format("试卷［%1$s］结构下［structureId = %2$s］题目数量已满［total = %3$d］［count = %4$d］！", paper.getName(), info.getStructureId(), structure.getTotal(),count);
 				if(logger.isDebugEnabled()) logger.debug(msg);
 				throw new RuntimeException(msg);
 			}
