@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.examw.test.domain.records">
+	<!-- 试卷的考试记录 -->
+	<class name="PaperRecord" table="tbl_Examw_Test_Records_PaperRecords">
+		<!-- 记录ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 试卷ID -->
+		<property name="paperId" column="paper_id" type="string" length="64" not-null="true" />
+		<!-- 用户ID -->
+		<property name="userId" column="user_id" type="string" length="64" not-null="true" />
+		<!-- 上一次考试时间 -->
+		<property name="lastTime" column="last_time" type="timestamp" />
+		<!-- 得分 -->
+		<property name="score" type="integer" />
+		<!-- 状态[已完成|未完成] -->
+		<property name="status" type="integer" not-null="true"/>
+		<!-- 使用时间[秒] -->
+		<property name="time" type="integer"/>
+		<!-- 未做完已经使用时间 -->
+		<property name="usedTime" column="used_time" type="integer"/>
+	</class>
+	
+	<!-- 试题的做题记录  -->
+	<class name="ItemRecord" table="tbl_Examw_Test_Records_ItemRecords">
+		<!-- 记录ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 结构题目ID -->
+		<property name="structureItemId" column="structure_item_id" type="string"  length="128" not-null="true"/>
+		<!-- 试卷ID -->
+		<property name="paperId" column="paper_id" type="string" length="64" not-null="true" />
+		<!-- 用户ID -->
+		<property name="userId" column="user_id" type="string" length="64" not-null="true" />
+		<!-- 得分 -->
+		<property name="score" type="integer" />
+		<!-- 使用时间[秒] -->
+		<property name="time" type="integer"/>
+		<!-- 用户答案 -->
+		<property name="answer" type="text"/>
+		<!-- 上一次提交时间 -->
+		<property name="lastTime" column="last_time" type="timestamp" />
+		<!-- 做题终端 -->
+		<property name="terminal" type="integer" />
+		<!-- ip地址 -->
+		<property name="ip" type="string" length="32"	/>
+	</class>
+	
+	<!-- 错题记录 -->
+	<class name="ErrorItemRecord" table="tbl_Examw_Test_Records_ErrorItemRecords">
+		<!-- 记录ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 结构题目ID -->
+		<property name="structureItemId" column="structure_item_id" type="string"  length="128" not-null="true"/>
+		<!-- 用户ID -->
+		<property name="userId" column="user_id" type="string" length="64" not-null="true" />
+		<!-- 错误次数 -->
+		<property name="errorTimes" column="error_times" type="integer"/>
+		<!-- 历史答案 -->
+		<property name="historyAnswers" column="history_answers" type="text"/>
+		<!-- 记录时间 -->
+		<property name="createTime" column="create_time" type="timestamp" />
+	</class>
+	
+	<!-- 题目收藏 -->
+	<class name="Collection" table="tbl_Examw_Test_Records_Collections">
+		<!-- 收藏ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 结构题目ID -->
+		<property name="structureItemId" column="structure_item_id" type="string"  length="128" not-null="true"/>
+		<!-- 用户ID -->
+		<property name="userId" column="user_id" type="string" length="64" not-null="true" />
+		<!-- 收藏时间 -->
+		<property name="createTime" column="create_time" type="timestamp" />
+	</class>
+	
+	<!-- 题目笔记 -->
+	<class name="Note" table="tbl_Examw_Test_Records_Notes">
+		<!-- 笔记ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 结构题目ID -->
+		<property name="structureItemId" column="structure_item_id" type="string"  length="128" not-null="true"/>
+		<!-- 用户ID -->
+		<property name="userId" column="user_id" type="string" length="64" not-null="true" />
+		<!-- 创建时间 -->
+		<property name="createTime" column="create_time" type="timestamp" />
+		<!-- 笔记内容 -->
+		<property name="content" type="text" not-null="true"/>	
+	</class>
+</hibernate-mapping>

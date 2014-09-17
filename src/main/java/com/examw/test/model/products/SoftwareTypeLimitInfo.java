@@ -1,5 +1,7 @@
 package com.examw.test.model.products;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import com.examw.model.Paging;
 
 
@@ -8,6 +10,7 @@ import com.examw.model.Paging;
  * @author fengwei.
  * @since 2014年8月25日 上午8:21:48.
  */
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class SoftwareTypeLimitInfo extends Paging{
 	private static final long serialVersionUID = 1L;
 	private String id;

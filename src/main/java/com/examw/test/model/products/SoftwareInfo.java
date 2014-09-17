@@ -12,6 +12,7 @@ import com.examw.support.CustomDateSerializer;
  * @author fengwei.
  * @since 2014年8月12日 下午2:07:55.
  */
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class SoftwareInfo extends Paging{
 	private static final long serialVersionUID = 1L;
 	private String id,name,content,img,url;

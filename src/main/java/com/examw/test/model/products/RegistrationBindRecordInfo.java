@@ -12,6 +12,7 @@ import com.examw.support.CustomDateSerializer;
  * @author fengwei.
  * @since 2014年8月12日 下午2:52:45.
  */
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class RegistrationBindRecordInfo extends Paging{
 	private static final long serialVersionUID = 1L;
 	private String id,machineCode,detail;
