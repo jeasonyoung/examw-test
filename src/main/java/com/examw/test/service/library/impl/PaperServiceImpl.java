@@ -20,6 +20,7 @@ import com.examw.test.dao.library.IPaperDao;
 import com.examw.test.dao.library.ISourceDao;
 import com.examw.test.dao.library.IStructureDao;
 import com.examw.test.dao.library.IStructureItemDao;
+import com.examw.test.dao.records.IPaperRecordDao;
 import com.examw.test.dao.settings.ISubjectDao;
 import com.examw.test.domain.library.Item;
 import com.examw.test.domain.library.Paper;
@@ -27,6 +28,7 @@ import com.examw.test.domain.library.Source;
 import com.examw.test.domain.library.Structure;
 import com.examw.test.domain.library.StructureItem;
 import com.examw.test.domain.library.StructureShareItemScore;
+import com.examw.test.domain.records.PaperRecord;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.library.ItemScoreInfo;
 import com.examw.test.model.library.PaperInfo;
@@ -55,6 +57,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	private IStructureItemDao structureItemDao;
 	private IItemService itemService;
 	private Map<Integer,String> typeMap,statusMap;
+	private IPaperRecordDao paperRecordDao;
 	/**
 	 * 设置试卷数据接口。
 	 * @param paperDao 
@@ -119,6 +122,15 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	 */
 	public void setStatusMap(Map<Integer,String> statusMap) {
 		this.statusMap = statusMap;
+	}
+	
+	/**
+	 * 设置 试卷考试记录
+	 * @param paperRecordDao
+	 * 
+	 */
+	public void setPaperRecordDao(IPaperRecordDao paperRecordDao) {
+		this.paperRecordDao = paperRecordDao;
 	}
 	/*
 	 * 加载试卷类型名称。
@@ -651,5 +663,31 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		}
 		paperPreview.setStructures(structures);
 		return paperPreview;
+	}
+	/*
+	 * 加载试卷详情并添加考试记录
+	 * @see com.examw.test.service.library.IPaperService#loadPaperPreviewAndAddRecord(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public PaperPreview loadPaperPreviewAndAddRecord(String paperId,
+			String userId) {
+		PaperPreview paperPreview = this.loadPaperPreview(paperId);
+		if(paperPreview!=null)
+			savePaperRecord(paperId,userId);	//保存考试记录
+		return paperPreview;
+	}
+	/**
+	 * 保存考试记录
+	 * @param paperId
+	 * @param userId
+	 */
+	private void savePaperRecord(String paperId,String userId){
+		PaperRecord record = new PaperRecord();
+		record.setId(UUID.randomUUID().toString());
+		record.setPaperId(paperId);
+		record.setUserId(userId);
+		record.setLastTime(new Date());
+		record.setStatus(PaperRecord.STATUS_UNDONE);
+		paperRecordDao.save(record);
 	}
 }

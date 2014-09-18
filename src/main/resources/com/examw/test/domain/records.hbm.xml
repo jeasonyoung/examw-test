@@ -53,6 +53,8 @@
 		<property name="structureItemId" column="structure_item_id" type="string"  length="128" not-null="true"/>
 		<!-- 用户ID -->
 		<property name="userId" column="user_id" type="string" length="64" not-null="true" />
+		<!-- 试题ID -->
+		<property name="itemId" column="item_id" type="string" length="64" />
 		<!-- 错误次数 -->
 		<property name="errorTimes" column="error_times" type="integer"/>
 		<!-- 历史答案 -->
@@ -69,6 +71,8 @@
 		<property name="structureItemId" column="structure_item_id" type="string"  length="128" not-null="true"/>
 		<!-- 用户ID -->
 		<property name="userId" column="user_id" type="string" length="64" not-null="true" />
+		<!-- 试题ID -->
+		<property name="itemId" column="item_id" type="string" length="64" />
 		<!-- 收藏时间 -->
 		<property name="createTime" column="create_time" type="timestamp" />
 	</class>
@@ -79,6 +83,8 @@
 		<id name="id"  type="string"  length="64" />
 		<!-- 结构题目ID -->
 		<property name="structureItemId" column="structure_item_id" type="string"  length="128" not-null="true"/>
+		<!-- 试题ID -->
+		<property name="itemId" column="item_id" type="string" length="64" />
 		<!-- 用户ID -->
 		<property name="userId" column="user_id" type="string" length="64" not-null="true" />
 		<!-- 创建时间 -->

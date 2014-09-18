@@ -9,11 +9,14 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.model.DataGrid;
+import com.examw.model.Json;
+import com.examw.test.domain.records.ItemRecord;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.front.CategoryFrontInfo;
 import com.examw.test.model.library.PaperInfo;
@@ -24,6 +27,7 @@ import com.examw.test.model.syllabus.SyllabusInfo;
 import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperService;
 import com.examw.test.service.products.IProductService;
+import com.examw.test.service.records.IItemRecordService;
 import com.examw.test.service.settings.ICategoryService;
 import com.examw.test.service.settings.ISubjectService;
 import com.examw.test.service.syllabus.IKnowledgeService;
@@ -52,6 +56,8 @@ public class FrontDataController {
 	private IItemService itemService;
 	@Resource
 	private IKnowledgeService knowledgeService;
+	@Resource
+	private IItemRecordService itemRecordService;
 	/**
 	 * 加载所有考试分类和其下的所有考试
 	 * @param username
@@ -165,9 +171,26 @@ public class FrontDataController {
 	 */
 	@RequestMapping(value = {"/paper/do"}, method = {RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public PaperPreview loadPaperDetail(String paperId){
+	public PaperPreview loadPaperDetail(String paperId,String userId){
 		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据[包含题目]");
-		if(StringUtils.isEmpty(paperId)) return null;
-		return this.paperService.loadPaperPreview(paperId);
+		if(StringUtils.isEmpty(paperId)||StringUtils.isEmpty(userId)) return null;
+		return this.paperService.loadPaperPreviewAndAddRecord(paperId,userId);
+	}
+	
+	/**
+	 *
+	 */
+	@RequestMapping(value = {"/record/save"}, method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public Json saveItemRecord(@RequestBody ItemRecord info){
+		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据[包含题目]");
+		if(StringUtils.isEmpty(info.getStructureItemId())||StringUtils.isEmpty(info.getUserId())) return null;
+		Json result = new Json();
+		result.setSuccess(this.itemRecordService.insertRecord(info));
+		if(result.isSuccess())
+			result.setMsg("提交成功");
+		else
+			result.setMsg("提交失败");
+		return result;
 	}
 }

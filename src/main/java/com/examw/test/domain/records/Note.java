@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class Note implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id,structureItemId,userId;
+	private String id,structureItemId,userId,itemId;
 	private Date createTime;
 	private String content;
 	/**
@@ -60,6 +60,23 @@ public class Note implements Serializable {
 	 */
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+	
+	/**
+	 * 获取 试题ID
+	 * @return itemId
+	 * 试题ID
+	 */
+	public String getItemId() {
+		return itemId;
+	}
+	/**
+	 * 设置 试题ID
+	 * @param itemId
+	 * 试题ID
+	 */
+	public void setItemId(String itemId) {
+		this.itemId = itemId;
 	}
 	/**
 	 * 获取 创建时间

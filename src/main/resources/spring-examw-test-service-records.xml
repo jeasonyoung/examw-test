@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<!-- service -->
+	<bean id="paperRecordService" class="com.examw.test.service.records.impl.PaperRecordServiceImpl">
+		<!-- 做题记录数据操作接口 -->
+		<property name="paperRecordDao" ref="paperRecordDao" />
+	</bean>
+	<!-- 做题记录服务 -->
+	<bean id="itemRecordService" class="com.examw.test.service.records.impl.ItemRecordServiceImpl">
+		<!-- 做题记录数据操作接口 -->
+		<property name="itemRecordDao" ref="itemRecordDao" />
+	</bean>
+	<!-- 错题记录服务 -->
+	<bean id="errorItemRecordService" class="com.examw.test.service.records.impl.ErrorItemRecordServiceImpl">
+		<!-- 做题记录数据操作接口 -->
+		<property name="errorItemRecordDao" ref="errorItemRecordDao" />
+	</bean>
+	<!-- 题目收藏服务 -->
+	<bean id="collectionService" class="com.examw.test.service.records.impl.CollectionServiceImpl">
+		<!-- 做题记录数据操作接口 -->
+		<property name="collectionDao" ref="collectionDao" />
+	</bean>
+	<!-- 做题笔记服务 -->
+	<bean id="noteService" class="com.examw.test.service.records.impl.NoteServiceImpl">
+		<!-- 做题记录数据操作接口 -->
+		<property name="noteDao" ref="noteDao" />
+	</bean>
+	<!-- 基础设置 服务接口实现 end -->
+</beans>

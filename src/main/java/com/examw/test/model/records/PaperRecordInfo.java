@@ -18,7 +18,7 @@ public class PaperRecordInfo extends PaperRecord implements IPaging{
 	private static final long serialVersionUID = 1L;
 	private Integer rows,page;
 	private String sort,order;
-	private String username,paperName;
+	private String paperName;
 	private Integer type;
 	private String typeName;
 	/*
@@ -89,22 +89,6 @@ public class PaperRecordInfo extends PaperRecord implements IPaging{
 	@Override
 	public void setOrder(String order) {
 		this.order = order;
-	}
-	/**
-	 * 获取 用户名
-	 * @return username
-	 * 用户名
-	 */
-	public String getUsername() {
-		return username;
-	}
-	/**
-	 * 设置 用户名
-	 * @param username
-	 * 用户名
-	 */
-	public void setUsername(String username) {
-		this.username = username;
 	}
 	/**
 	 * 获取 试卷名称

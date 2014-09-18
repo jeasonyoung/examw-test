@@ -41,6 +41,8 @@
 				<entry key="2" value="已发布"/>
 			</map>
 		</property>
+		<!-- 试卷记录数据接口 -->
+		<property name="paperRecordDao" ref="paperRecordDao"/>
 	</bean>
 	<!-- 题目服务 -->
 	<bean id="itemService" class="com.examw.test.service.library.impl.ItemServiceImpl">

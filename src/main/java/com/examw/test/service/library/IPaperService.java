@@ -104,4 +104,11 @@ public interface IPaperService extends IBaseDataService<PaperInfo> {
 	 * @return
 	 */
 	PaperPreview loadPaperInfo(String paperId);
+	/**
+	 * 加载试卷详细信息并且添加试卷记录[前台调用方法]
+	 * @param paperId	试卷ID
+	 * @param userId 	用户ID
+	 * @return
+	 */
+	PaperPreview loadPaperPreviewAndAddRecord(String paperId,String userId);
 }
