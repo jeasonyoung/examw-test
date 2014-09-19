@@ -121,7 +121,10 @@
 	//获取内容
 	function _getValue(target){
 		var state = $.data(target,'ueditor');
-		return state.editor.getContent();
+		if(state && state.editor){
+			return state.editor.getContent();
+		}
+		return "";
 	};
 	//获取文本内容（无格式）
 	function _getValueTxt(target){
@@ -201,13 +204,14 @@
 	$.fn.ueditor.defaults  = $.extend({},
 			$.fn.validatebox.defaults,
 			{
+		/*
 				toolbars:[['fullscreen','source','|','bold','italic','underline','fontborder','strikethrough','superscript','subscript','removeformat','formatmatch',
 				           		'autotypeset','pasteplain','|','forecolor','backcolor','insertorderedlist','insertunorderedlist','cleardoc','|']],
 				zIndex:9999,
 				charset:'utf-8',
 				enableAutoSave:false,
 				oncontentChange:function(){},
-				ondestroy:function(){}
+				ondestroy:function(){}*/
 			});
 	//配置解析
 	$.fn.ueditor.parseOptions = function(target){
