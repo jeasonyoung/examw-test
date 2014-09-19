@@ -1,9 +1,6 @@
 package com.examw.test.model.settings;
 
-import java.util.List;
-
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-
 import com.examw.model.Paging;
 
 /**
@@ -14,10 +11,25 @@ import com.examw.model.Paging;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class CategoryInfo extends Paging {
 	private static final long serialVersionUID = 1L;
-	private String id,name,abbr,pid;
-	private List<CategoryInfo> children;
+	private String pid,id,name,abbr;
 	private String fullName;
 	private Integer code;
+	/**
+	 * 获取上级类别ID。
+	 * @return pid
+	 * 上级类别ID。
+	 */
+	public String getPid() {
+		return pid;
+	}
+	/**
+	 * 设置上级类别ID。
+	 * @param pid
+	 * 上级类别ID。
+	 */
+	public void setPid(String pid) {
+		this.pid = pid;
+	}
 	/**
 	 * 获取类别ID。
 	 * @return 类别ID。
@@ -64,67 +76,33 @@ public class CategoryInfo extends Paging {
 		this.name = name;
 	}
 	/**
-	 * 获取EN简称。
-	 * @return EN简称。
+	 * 获取类别EN简称。
+	 * @return 类别EN简称。
 	 */
 	public String getAbbr() {
 		return abbr;
 	}
 	/**
-	 * 设置EN简称。
+	 * 设置类别EN简称。
 	 * @param abbr
-	 * EN简称
+	 * 类别EN简称
 	 */
 	public void setAbbr(String abbr) {
 		this.abbr = abbr;
 	}
 	/**
-	 * 获取 上级菜单ID。
-	 * @return pid
-	 * 上级菜单ID。
-	 */
-	public String getPid() {
-		return pid;
-	}
-	/**
-	 * 设置 上级菜单ID。
-	 * @param pid
-	 * 上级菜单ID。
-	 */
-	public void setPid(String pid) {
-		this.pid = pid;
-	}
-	/**
-	 * 获取 子分类集合
-	 * @return children
-	 * 子分类集合
-	 */
-	public List<CategoryInfo> getChildren() {
-		return children;
-	}
-	/**
-	 * 设置 子分类集合
-	 * @param children
-	 * 子分类集合
-	 */
-	public void setChildren(List<CategoryInfo> children) {
-		this.children = children;
-	}
-	/**
-	 * 获取 全称
-	 * @return fullName
-	 * 
+	 * 获取类别全称
+	 * @return 类别全称
 	 */
 	public String getFullName() {
 		return fullName;
 	}
 	/**
-	 * 设置 全称
+	 * 设置类别全称
 	 * @param fullName
-	 * 
+	 * 类别全称
 	 */
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
-	}
-	
+	}	
 }

@@ -31,13 +31,13 @@ $(function(){
 		},{
 			title:"英文简称",
 			field:"abbr",
-			width:10,
+			width:20,
 			align:"left",
 			sortable:true
 		},{
 			title:"地区名称",
 			field:"name",
-			width:10,
+			width:100,
 			align:"left",
 			sortable:true
 		}]],
@@ -125,7 +125,7 @@ $(function(){
 	${dg}_add = function(){
 		if(m) return;
 		m = true;
-		$.getJSON("<@s.url '/settings/area/code'/>?random="+new Date().getTime(),function(data){
+		$.getJSON("<@s.url '/settings/area/code'/>?_=" + Math.random(),function(data){
 			m = false;
 			edit_window("新增地区",0,null,data);
 		});

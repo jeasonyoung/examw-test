@@ -17,7 +17,7 @@ public interface ICategoryService extends IBaseDataService<CategoryInfo>{
 	 * 加载最大代码值
 	 * @return
 	 */
-	Integer loadMaxCode();
+	Integer loadMaxCode(String parentCatalogId);
 	/**
 	 * 查询所有的考试分类
 	 * @return

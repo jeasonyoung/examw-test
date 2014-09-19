@@ -26,9 +26,8 @@ import com.examw.test.service.settings.ICategoryService;
  * @author fengwei.
  * @since 2014年8月6日 下午3:36:37.
  */
-public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryInfo>
-		implements ICategoryService {
-	private static final Logger logger = Logger	.getLogger(CategoryServiceImpl.class);
+public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryInfo> implements ICategoryService {
+	private static final Logger logger = Logger.getLogger(CategoryServiceImpl.class);
 	private ICategoryDao categoryDao;
 	/**
 	 * 设置 考试分类数据接口
@@ -44,7 +43,7 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 	 */
 	@Override
 	protected List<Category> find(CategoryInfo info) {
-		if (logger.isDebugEnabled())	logger.debug("查询[考试分类]数据...");
+		if (logger.isDebugEnabled())logger.debug("查询[考试分类]数据...");
 		return categoryDao.findCategorys(info);
 	}
 	/*
@@ -53,27 +52,16 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 	 */
 	@Override
 	protected CategoryInfo changeModel(Category data) {
-		if (logger.isDebugEnabled())	logger.debug("[考试分类]数据模型转换...");
+		if (logger.isDebugEnabled())logger.debug("[考试分类]数据模型转换...");
 		if(data == null) return null;
 		CategoryInfo info = new CategoryInfo();
-		BeanUtils.copyProperties(data, info, new String[] {"children"});
-		if(data.getChildren() != null && data.getChildren().size() > 0){
-			List<CategoryInfo> children = new ArrayList<>();
-			for(Category child : data.getChildren()){
-				CategoryInfo c = this.changeModel(child);
-				if(c != null){
-					c.setPid(info.getId());
-					children.add(c);
-				}
-			}
-			if(children.size() > 0){
-				info.setChildren(children);
-			}
+		BeanUtils.copyProperties(data, info);
+		if(data.getParent() != null){
+			info.setPid(data.getParent().getId());
 		}
 		info.setFullName(this.loadFullName(data));
 		return info;
 	}
-	
 	//加载类别全称。
 	private String loadFullName(Category data){
 		if(data == null) return null;
@@ -137,26 +125,15 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 			}
 		}
 	}
-	
 	/*
 	 * 加载最大的代码值
 	 * @see com.examw.test.service.settings.ICategoryService#loadMaxCode(java.lang.String)
 	 */
 	@Override
-	public Integer loadMaxCode() {
+	public Integer loadMaxCode(String parentCatalogId) {
 		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
-		List<Category> sources = this.categoryDao.findCategorys(new CategoryInfo(){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public String getSort() {return "code"; } 
-			@Override
-			public String getOrder() { return "desc";}
-		});
-		if(sources != null && sources.size() > 0)
-			return sources.get(0).getCode();
-		return null;
+		return this.categoryDao.loadMaxCode(parentCatalogId);
 	}
-	
 	/*
 	 * 查询所有的考试分类
 	 * @see com.examw.test.service.settings.ICategoryService#loadAllCategorys()
@@ -164,18 +141,14 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 	@Override
 	public List<TreeNode> loadAllCategorys(String ignoreCategoryId) {
 		List<TreeNode> result = new ArrayList<>();
-		List<Category> list = this.categoryDao.findCategorys(new CategoryInfo(){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public String getOrder() {return "asc";}
-			@Override
-			public String getSort() {return "code";};
-		});
-		if(list != null && list.size() > 0){
-			for(final Category data : list){
+		List<Category> topCategories = this.categoryDao.loadTopCategories();
+		if(topCategories != null){
+			for(Category data : topCategories){
 				if(data == null) continue;
-				TreeNode node = (createTreeNode(data,ignoreCategoryId,null,false,false));
-				if(node!=null) result.add(node);
+				TreeNode node = this.createTreeNode(data,ignoreCategoryId,null,false,false);
+				if(node != null){
+					result.add(node);
+				}
 			}
 		}
 		return result;
@@ -211,12 +184,6 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 				 }
 			}
 			node.setChildren(list);
-//			if(node.getChildren()==null)
-//				node.setChildren(list);
-//			else{
-//				list.addAll(node.getChildren());
-//				node.setChildren(list);
-//			}
 		}
 		if(withExam){
 			List<TreeNode> list_exams = new ArrayList<>();
@@ -269,13 +236,7 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 	@Override
 	public List<TreeNode> loadAllCategoryExams() {
 		List<TreeNode> treeNodes = new ArrayList<>();
-		List<Category> list = this.find(new CategoryInfo(){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public String getOrder() {return "asc";}
-			@Override
-			public String getSort() {return "code";};
-		});
+		List<Category> list =  this.categoryDao.loadTopCategories();
 		if(list != null && list.size() > 0){
 			for(final Category data : list){
 				if(data == null) continue;
@@ -293,13 +254,7 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 	@Override
 	public List<TreeNode> loadAllCategoryExamSubjects() {
 		List<TreeNode> treeNodes = new ArrayList<>();
-		List<Category> list = this.find(new CategoryInfo(){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public String getOrder() {return "asc";}
-			@Override
-			public String getSort() {return "code";};
-		});
+		List<Category> list = this.categoryDao.loadTopCategories();
 		if(list != null && list.size() > 0){
 			for(final Category data : list){
 				if(data == null) continue;
@@ -316,13 +271,7 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 	 */
 	@Override
 	public List<CategoryFrontInfo> loadAllCategoryAndExams() {
-		List<Category> list = this.categoryDao.findCategorys(new CategoryInfo(){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public String getOrder() {return "asc";}
-			@Override
-			public String getSort() {return "code";};
-		});
+		List<Category> list =  this.categoryDao.loadTopCategories();
 		List<CategoryFrontInfo> result = new ArrayList<CategoryFrontInfo>();
 		if(list != null && list.size() > 0){
 			for(final Category data : list){

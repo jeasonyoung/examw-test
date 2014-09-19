@@ -14,26 +14,11 @@ $(function(){
 		    	   handler:function(e){
 		    		   c.combotree('clear');
 		    		}
-				}
-		],
+				}],
 		onLoadError:function(e){
 			<@error_dialog "e"/>
-		},
-		onLoadSuccess:function(){
-			var id = "${CURRENT_CATEGORY_PID}";
-			if($.trim(id) == "") return;
-			c.combotree("setValue",id);
 		}
 	});
-	/* ${module}_clear_combotree = function(){
-		if(c){
-			if(!c.combotree("getValue")) return;
-			c.combotree("clear");
-			$.getJSON("<@s.url '/settings/category/code'/>?pid=",function(data){
-				$("#${module}_edit_form input[name='code']").val(data[0]);
-			});
-		}
-	} */
 });
 //-->
 </script>
@@ -41,11 +26,10 @@ $(function(){
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">上级类别：</label>
 		<input name="pid" style="width:268px;"/>
-		<!-- <a href="#" class="easyui-linkbutton" onclick="${module}_clear_combotree()" style="margin-left:15px">顶级类</a> -->
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">类别代码：</label>
-		<input type="text" name="code" class="easyui-numberbox" data-options="required:true" style="width:268px;" />
+		<input type="text" name="code" class="easyui-numberbox" data-options="required:true" style="width:80px;" />
 		<input type="hidden" name="id"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">

@@ -49,8 +49,7 @@ public class CategoryController {
 	 */
 	@RequiresPermissions({ModuleConstant.SETTINGS_CATEGORY + ":" + Right.UPDATE})
 	@RequestMapping(value="/edit", method = RequestMethod.GET)
-	public String edit(String pid,String id,Model model){
-		model.addAttribute("CURRENT_CATEGORY_PID", pid);
+	public String edit(String id,Model model){
 		model.addAttribute("CURRENT_CATEGORY_ID", id);
 		return "settings/category_edit";
 	}
@@ -140,8 +139,8 @@ public class CategoryController {
 	@RequiresPermissions({ModuleConstant.SETTINGS_AREA + ":" + Right.VIEW})
 	@RequestMapping(value="/code", method = RequestMethod.GET)
 	@ResponseBody
-	public Integer code(){
-		Integer max = this.categroyService.loadMaxCode();
+	public Integer code(String pid){
+		Integer max = this.categroyService.loadMaxCode(pid);
 		if(max == null) max = 0;
 		return max+1; 
 	}
