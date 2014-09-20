@@ -1,6 +1,7 @@
 package com.examw.test.domain.records;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -12,8 +13,8 @@ public class PaperRecord implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String id,paperId,userId;
 	private Date lastTime;
-	private Integer score,status,time,usedTime;
-	
+	private Integer status,time,usedTime;
+	private BigDecimal score;
 	public static final int STATUS_DONE = 1;	//没有完成
 	public static final int STATUS_UNDONE = 0;	//已经完成
 	/**
@@ -85,7 +86,7 @@ public class PaperRecord implements Serializable {
 	 * @return score
 	 * 
 	 */
-	public Integer getScore() {
+	public BigDecimal getScore() {
 		return score;
 	}
 	/**
@@ -93,7 +94,7 @@ public class PaperRecord implements Serializable {
 	 * @param score
 	 * 
 	 */
-	public void setScore(Integer score) {
+	public void setScore(BigDecimal score) {
 		this.score = score;
 	}
 	/**

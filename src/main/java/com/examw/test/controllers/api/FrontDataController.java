@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.examw.model.DataGrid;
 import com.examw.model.Json;
 import com.examw.test.domain.records.ItemRecord;
 import com.examw.test.domain.settings.Subject;
@@ -136,7 +136,7 @@ public class FrontDataController {
 	 */
 	@RequestMapping(value = {"/papers"}, method = {RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public Map<String,Object> loadPapers(String productId,PaperInfo info){
+	public Map<String,Object> loadPapers(String productId,PaperInfo info,String userId){
 		if(logger.isDebugEnabled()) logger.debug("试卷列表数据");
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(StringUtils.isEmpty(productId)) return map;
@@ -146,10 +146,12 @@ public class FrontDataController {
 		//试卷类型映射
 		map.put("PAPERTYPE", this.productService.getPaperTypeMap());
 		//试卷列表
-		DataGrid<PaperInfo> dg = this.paperService.datagrid(info);
-		map.put("PAPERLIST", dg.getRows());
-		//总条数
-		map.put("TOTAL",dg.getTotal());
+//		DataGrid<PaperInfo> dg = this.paperService.datagrid(info);
+//		map.put("PAPERLIST", dg.getRows());
+//		//总条数
+//		map.put("TOTAL",dg.getTotal());
+		map.put("PAPERLIST", this.paperService.loadPaperFrontInfo(info, userId));
+		map.put("TOTAL",this.paperService.totalPaperFrontInfo(info));
 		return map;
 	}
 	/**
@@ -175,6 +177,19 @@ public class FrontDataController {
 		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据[包含题目]");
 		if(StringUtils.isEmpty(paperId)||StringUtils.isEmpty(userId)) return null;
 		return this.paperService.loadPaperPreviewAndAddRecord(paperId,userId);
+	}
+	
+	@RequestMapping(value = {"/paper/submit"}, method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public Json submitPaper(String paperId,String userId,HttpServletRequest request){
+		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据[包含题目]");
+		if(StringUtils.isEmpty(paperId)||StringUtils.isEmpty(userId)) return null;
+		String model = request.getParameter("model");
+		String limitTime = request.getParameter("limitTime");
+		String chooseAnswers = request.getParameter("chooseAnswers");
+		String textAnswers = request.getParameter("textAnswers");
+		logger.debug(chooseAnswers);
+		return this.paperService.submitPaper(Integer.valueOf(limitTime), chooseAnswers, textAnswers,Integer.valueOf(model), paperId,userId);
 	}
 	
 	/**

@@ -12,7 +12,7 @@
 		<!-- 上一次考试时间 -->
 		<property name="lastTime" column="last_time" type="timestamp" />
 		<!-- 得分 -->
-		<property name="score" type="integer" />
+		<property name="score" type="big_decimal" />
 		<!-- 状态[已完成|未完成] -->
 		<property name="status" type="integer" not-null="true"/>
 		<!-- 使用时间[秒] -->
@@ -32,7 +32,7 @@
 		<!-- 用户ID -->
 		<property name="userId" column="user_id" type="string" length="64" not-null="true" />
 		<!-- 得分 -->
-		<property name="score" type="integer" />
+		<property name="score" type="big_decimal" />
 		<!-- 使用时间[秒] -->
 		<property name="time" type="integer"/>
 		<!-- 用户答案 -->
@@ -43,6 +43,8 @@
 		<property name="terminal" type="integer" />
 		<!-- ip地址 -->
 		<property name="ip" type="string" length="32"	/>
+		<!-- 回答状态 [-1:答错,0:没答,1:答对,2:少答]-->
+		<property name="status" type="integer" />
 	</class>
 	
 	<!-- 错题记录 -->

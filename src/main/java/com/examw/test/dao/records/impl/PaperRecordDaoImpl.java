@@ -1,10 +1,12 @@
 package com.examw.test.dao.records.impl;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
 import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.impl.BaseDaoImpl;
@@ -65,5 +67,44 @@ public class PaperRecordDaoImpl extends BaseDaoImpl<PaperRecord> implements IPap
 		}
 		return hql;
 	}
-	
+	/*
+	 * 查询某试卷最高得分
+	 * @see com.examw.test.dao.records.IPaperRecordDao#findMaxScore(java.lang.String)
+	 */
+	@Override
+	public BigDecimal findMaxScore(String paperId) {
+		String hql = "select MAX(pr.score)  from PaperRecord pr where paperId = :paperId";
+		Query query = this.getCurrentSession().createQuery(hql);
+		query.setParameter("paperId", paperId);
+		Object  obj = query.uniqueResult();
+		return obj == null ? null : (BigDecimal)obj;
+	}
+	/*
+	 * 查找参考人数
+	 * @see com.examw.test.dao.records.IPaperRecordDao#findUserSum(java.lang.String)
+	 */
+	@Override
+	public Long findUserSum(String paperId) {
+		String hql = "select count(*)  from PaperRecord pr where paperId = :paperId";
+		Query query = this.getCurrentSession().createQuery(hql);
+		query.setParameter("paperId", paperId);
+		Object  obj = query.uniqueResult();
+		return obj == null ? null : (long)obj;
+	}
+	/*
+	 * 加载试卷
+	 * @see com.examw.test.dao.records.IPaperRecordDao#load(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public PaperRecord load(String paperId, String userId) {
+		String hql = "from PaperRecord pr where pr.paperId = :paperId and pr.userId = :userId order by pr.lastTime desc";
+		Query query = this.getCurrentSession().createQuery(hql);
+		query.setParameter("paperId", paperId);
+		query.setParameter("userId", userId);
+		@SuppressWarnings("unchecked")
+		List<PaperRecord> list = query.list();
+		if(list == null || list.size() == 0) 
+		return null;
+		return list.get(0);
+	}
 }

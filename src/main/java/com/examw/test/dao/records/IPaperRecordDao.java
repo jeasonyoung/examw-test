@@ -1,5 +1,6 @@
 package com.examw.test.dao.records;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.examw.test.dao.IBaseDao;
@@ -28,4 +29,23 @@ public interface IPaperRecordDao extends IBaseDao<PaperRecord> {
 	 * 查询结果。
 	 */
 	Long total(PaperRecordInfo info);
+	/**
+	 * 查询某套试卷最高得分
+	 * @param paperId	试卷ID
+	 * @return
+	 */
+	BigDecimal findMaxScore(String paperId);
+	/**
+	 * 查询某套试卷的参考人数
+	 * @param paperId	试卷ID
+	 * @return
+	 */
+	Long findUserSum(String paperId);
+	/**
+	 * 加载某用户的一套试卷
+	 * @param paperId	试卷ID
+	 * @param userId	用户ID
+	 * @return
+	 */
+	PaperRecord load(String paperId,String userId);
 }

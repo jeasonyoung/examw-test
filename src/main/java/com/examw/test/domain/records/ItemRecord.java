@@ -1,6 +1,7 @@
 package com.examw.test.domain.records;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -12,8 +13,14 @@ public class ItemRecord implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String id,paperId,structureItemId,userId;
 	private Date lastTime;
-	private Integer score,time,terminal;
+	private BigDecimal score;
+	private Integer time,terminal,status;
 	private String answer,ip;
+	
+	public static final int STATUS_NULL = 0; //未答
+	public static final int STATUS_WRONG = -1; //答错
+	public static final int STATUS_RIGHT = 1; //答对
+	public static final int STATUS_LESS = 2; //少选
 	/**
 	 * 获取 ID
 	 * @return id
@@ -99,7 +106,7 @@ public class ItemRecord implements Serializable {
 	 * @return score
 	 * 得分
 	 */
-	public Integer getScore() {
+	public BigDecimal getScore() {
 		return score;
 	}
 	/**
@@ -107,7 +114,7 @@ public class ItemRecord implements Serializable {
 	 * @param score
 	 * 得分
 	 */
-	public void setScore(Integer score) {
+	public void setScore(BigDecimal score) {
 		this.score = score;
 	}
 	/**
@@ -174,4 +181,21 @@ public class ItemRecord implements Serializable {
 	public void setIp(String ip) {
 		this.ip = ip;
 	}
+	/**
+	 * 获取 回答状态
+	 * @return status
+	 * 
+	 */
+	public Integer getStatus() {
+		return status;
+	}
+	/**
+	 * 设置 回答状态
+	 * @param status
+	 * 
+	 */
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	
 }

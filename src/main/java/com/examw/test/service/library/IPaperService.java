@@ -3,6 +3,8 @@ package com.examw.test.service.library;
 import java.util.List;
 
 import com.examw.model.DataGrid;
+import com.examw.model.Json;
+import com.examw.test.model.front.PaperFrontInfo;
 import com.examw.test.model.library.PaperInfo;
 import com.examw.test.model.library.PaperPreview;
 import com.examw.test.model.library.StructureInfo;
@@ -111,4 +113,28 @@ public interface IPaperService extends IBaseDataService<PaperInfo> {
 	 * @return
 	 */
 	PaperPreview loadPaperPreviewAndAddRecord(String paperId,String userId);
+	/**
+	 * 加载试卷数据信息[前台调用方法]
+	 * @param info
+	 * @return
+	 */
+	List<PaperFrontInfo> loadPaperFrontInfo(PaperInfo info,String userId);
+	/**
+	 * 查询统计[前台调用方法]
+	 * @param info
+	 * @return
+	 */
+	Long totalPaperFrontInfo(PaperInfo info);
+	/**
+	 * 试卷提交答案	[前台调用方法]
+	 * @param limitTime			剩余时间[秒]
+	 * @param chooseAnswers		选择题答案
+	 * @param textAnswers		文字题答案
+	 * @param model				提交模式
+	 * @param paperId			试卷ID
+	 * @param userId			用户ID
+	 * @return
+	 */
+	Json submitPaper(Integer limitTime, String chooseAnswers,
+			String textAnswers,Integer model, String paperId, String userId);
 }
