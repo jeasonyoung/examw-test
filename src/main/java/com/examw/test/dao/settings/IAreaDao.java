@@ -28,4 +28,9 @@ public interface IAreaDao extends IBaseDao<Area>{
 	 * 数据总数。
 	 */
 	Long total(AreaInfo info);
+	/**
+	 * 加载最大的代码值。
+	 * @return
+	 */
+	Integer loadMaxCode();
 }

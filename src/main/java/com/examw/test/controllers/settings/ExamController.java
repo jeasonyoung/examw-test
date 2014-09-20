@@ -1,6 +1,5 @@
 package com.examw.test.controllers.settings;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -9,7 +8,6 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,9 +27,7 @@ import com.examw.test.service.settings.IExamService;
 @RequestMapping(value = "/settings/exam")
 public class ExamController {
 	private static Logger logger  = Logger.getLogger(ExamController.class);
-	/**
-	 * 考试数据接口
-	 */
+	//考试数据接口.
 	@Resource
 	private IExamService examService;
 	/**
@@ -51,8 +47,7 @@ public class ExamController {
 	 */
 	@RequiresPermissions({ModuleConstant.SETTINGS_EXAM + ":" + Right.UPDATE})
 	@RequestMapping(value="/edit", method = RequestMethod.GET)
-	public String edit(String categoryId, Model model){
-		model.addAttribute("CURRENT_CATEGORY_ID", StringUtils.isEmpty(categoryId) ? "" : categoryId);
+	public String edit(Model model){
 		return "settings/exam_edit";
 	}
 	/**
@@ -72,7 +67,6 @@ public class ExamController {
 	@RequestMapping(value={"/all"}, method = RequestMethod.POST)
 	@ResponseBody
 	public List<ExamInfo> all(final String categoryId){
-		if(StringUtils.isEmpty(categoryId)) return new ArrayList<ExamInfo>();
 		 return this.examService.datagrid(new ExamInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -125,7 +119,6 @@ public class ExamController {
 		}
 		return result;
 	}
-	
 	/**
 	 * 加载来源代码值。
 	 * @return

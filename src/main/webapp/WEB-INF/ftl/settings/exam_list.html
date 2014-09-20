@@ -39,15 +39,15 @@ $(function(){
 			field:"id",
 			checkbox:true
 		},{
-			title:"考试名称",
-			field:"name",
-			width:40,
+			title:"考试代码",
+			field:"code",
+			width:10,
 			align:"left",
 			sortable:true
 		},{
-			title:"考试代码",
-			field:"code",
-			width:20,
+			title:"考试名称",
+			field:"name",
+			width:30,
 			align:"left",
 			sortable:true
 		},{
@@ -64,7 +64,7 @@ $(function(){
 		},{
 			title:"所属地区",
 			field:"areaName",
-			width:20,
+			width:40,
 			align:"left"
 		}]],
 		toolbar:"#${dg}_toobar",
@@ -79,9 +79,9 @@ $(function(){
 	function edit_window(title,index,row,code){
 		var d = $("<div/>").dialog({
 			title:title,
-			width:420,
+			width:600,
 			height:320,
-			href:"<@s.url '/settings/exam/edit'/>?categoryId="+current_category_id,
+			href:"<@s.url '/settings/exam/edit'/>",
 			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
@@ -132,11 +132,14 @@ $(function(){
 				$(this).dialog("destroy");
 			},
 			onLoad:function(){
-				if(code && !row){
-					$("#${module}_edit_form").form("load",{"code":code});
-					return;
+				if(row) {
+					$("#${module}_edit_form").form("load",row);
+				}else{
+					var data = {};
+					if(code) data["code"] = code;
+					data["categoryId"] = current_category_id;
+					$("#${module}_edit_form").form("load",data);
 				}
-				if(row) $("#${module}_edit_form").form("load",row); 
 			}
 	  });
 	};

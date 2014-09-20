@@ -21,6 +21,11 @@ public interface ICategoryDao extends IBaseDao<Category>{
 	 */
 	List<Category> findCategorys(CategoryInfo info);
 	/**
+	 * 加载全部一级类别。
+	 * @return
+	 */
+	List<Category> loadTopCategories();
+	/**
 	 * 查询数据总数。
 	 * @param info
 	 * 查询条件。
@@ -28,4 +33,10 @@ public interface ICategoryDao extends IBaseDao<Category>{
 	 * 数据总数。
 	 */
 	Long total(CategoryInfo info);
+	/**
+	 * 加载最大的类别代码。
+	 * @param parentCatalogId
+	 * @return
+	 */
+	Integer loadMaxCode(String parentCatalogId);
 }

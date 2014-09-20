@@ -123,7 +123,7 @@ $(function(){
 			width:100,
 			align:"left",
 			formatter: function(value,row,index){
-				return $.trim(value);
+				return value.replace(/<[^>]*>/g,"");
 			}
 		},{
 			title:"正确答案",

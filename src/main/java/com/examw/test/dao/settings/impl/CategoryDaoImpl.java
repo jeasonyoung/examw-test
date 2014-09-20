@@ -46,15 +46,10 @@ public class CategoryDaoImpl extends BaseDaoImpl<Category> implements ICategoryD
 		hql = this.addWhere(info, hql, parameters);
 		return this.count(hql, parameters);
 	}
-	
 	// 添加查询条件到HQL。
 	private String addWhere(CategoryInfo info, String hql,Map<String, Object> parameters) {
-		if(StringUtils.isEmpty(info.getPid()))
-		{
-			hql += " and (c.parent is null) ";
-		}
 		if (!StringUtils.isEmpty(info.getPid())) {
-			hql += " and (c.parent.id = :pid)";
+			hql += " and (c.parent.id = :pid or c.id = :pid)";
 			parameters.put("pid", info.getPid());
 		}
 		if (!StringUtils.isEmpty(info.getName())) {
@@ -62,5 +57,39 @@ public class CategoryDaoImpl extends BaseDaoImpl<Category> implements ICategoryD
 			parameters.put("name", "%" + info.getName() + "%");
 		}
 		return hql;
+	}
+	/*
+	 * 加载一级类别。
+	 * @see com.examw.test.dao.settings.ICategoryDao#loadTopCategories()
+	 */
+	@Override
+	public List<Category> loadTopCategories() {
+		if(logger.isDebugEnabled()) logger.debug("加载一级类别...");
+		final String hql = "from Category c where (c.parent is null) order by c.code";
+		return this.find(hql, null, null, null);
+	}
+	/*
+	 * 加载最大类别代码。
+	 * @see com.examw.test.dao.settings.ICategoryDao#loadMaxCode(java.lang.String)
+	 */
+	@Override
+	public Integer loadMaxCode(String parentCatalogId) {
+		if(logger.isDebugEnabled()) logger.debug("加载最大类别代码...");
+		final String hql_top = "select max(c.code) from Category c where (c.parent is null)",
+				          hql_other = "select max(c.code) from Category c where (c.parent.id = :pid) ";
+		if(StringUtils.isEmpty(parentCatalogId)){
+			Object obj = this.uniqueResult(hql_top, null);
+			return obj == null ? null :  (int)obj;
+		}else {
+			Map<String, Object> parameters = new HashMap<>();
+			parameters.put("pid", parentCatalogId);
+			Object obj = this.uniqueResult(hql_other, parameters);
+			if(obj == null){
+				Category data = this.load(Category.class, parentCatalogId);
+				if(data == null) return null;
+				return new Integer(String.format("%d0", data.getCode()));
+			}
+			return (int)obj;
+		}
 	}
 }

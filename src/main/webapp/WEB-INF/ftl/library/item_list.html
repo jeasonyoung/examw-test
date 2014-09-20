@@ -63,7 +63,10 @@ $(function(){
 			field:"content",
 			width:50,
 			align:"left",
-			sortable:true
+			sortable:false,
+			formatter:function(value,row,index){
+				return value.replace(/<[^>]*>/g,"");
+			}
 		},{
 			title:"类型",
 			field:"optName",

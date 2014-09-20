@@ -48,7 +48,6 @@ public class AreaDaoImpl extends BaseDaoImpl<Area> implements IAreaDao {
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.count(hql, parameters);
 	}
-
 	// 添加查询条件到HQL。
 	private String addWhere(AreaInfo info, String hql,Map<String, Object> parameters) {
 		if (!StringUtils.isEmpty(info.getName())) {
@@ -57,5 +56,14 @@ public class AreaDaoImpl extends BaseDaoImpl<Area> implements IAreaDao {
 		}
 		return hql;
 	}
-
+	/*
+	 * 加载最大的代码值.
+	 * @see com.examw.test.dao.settings.IAreaDao#loadMaxCode()
+	 */
+	@Override
+	public Integer loadMaxCode() {
+		final String hql = "select max(a.code) from Area a ";
+		Object obj = this.uniqueResult(hql, null);
+		return obj == null ? null : (int)obj;
+	}
 }
