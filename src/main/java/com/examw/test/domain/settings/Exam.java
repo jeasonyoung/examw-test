@@ -12,7 +12,7 @@ public class Exam implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String id,name,abbr;
 	private Category category;
-	private Area area;
+	private Set<Area> areas;
 	private Set<Subject> subjects;
 	private Integer code;
 	/**
@@ -91,19 +91,19 @@ public class Exam implements Serializable {
 		this.category = category;
 	}
 	/**
-	 * 获取所属地区。
-	 * @return 所属地区。
+	 * 获取所属地区集合。
+	 * @return 所属地区集合。
 	 */
-	public Area getArea() {
-		return area;
+	public Set<Area> getAreas() {
+		return areas;
 	}
 	/**
-	 * 设置所属地区。
-	 * @param area
-	 * 所属地区。
+	 * 设置所属地区集合。
+	 * @param areas 
+	 *	  所属地区集合。
 	 */
-	public void setArea(Area area) {
-		this.area = area;
+	public void setAreas(Set<Area> areas) {
+		this.areas = areas;
 	}
 	/**
 	 * 获取科目集合。

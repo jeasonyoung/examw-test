@@ -54,7 +54,6 @@ public class AreaController {
 		if(logger.isDebugEnabled()) logger.debug("加载列表数据...");
 		return this.areaService.datagrid(info);
 	}
-	
 	/**
 	 * 获取编辑页面。
 	 * @param model
@@ -113,21 +112,20 @@ public class AreaController {
 		return result;
 	}
 	/**
-	 * 地区的下拉数据
+	 * 加载全部地区数据。
 	 * @return
 	 */
-	@RequestMapping(value="/combo", method = {RequestMethod.POST,RequestMethod.GET})
+	@RequestMapping(value = {"/combo","/all"}, method = {RequestMethod.POST, RequestMethod.GET})
 	@ResponseBody
-	public List<AreaInfo> combo(){
+	public List<AreaInfo> all(){
 		return this.areaService.datagrid(new AreaInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
-			public String getSort(){ return "code"; }
+			public String getSort() { return "code"; }
 			@Override
 			public String getOrder() { return "asc"; }
 		}).getRows();
 	}
-	
 	/**
 	 * 加载来源代码值。
 	 * @return

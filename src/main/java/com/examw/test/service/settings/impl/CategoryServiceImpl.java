@@ -20,6 +20,7 @@ import com.examw.test.model.settings.CategoryInfo;
 import com.examw.test.model.settings.ExamInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.settings.ICategoryService;
+import com.examw.test.service.settings.IExamService;
 
 /**
  * 考试分类服务接口实现类
@@ -29,6 +30,7 @@ import com.examw.test.service.settings.ICategoryService;
 public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryInfo> implements ICategoryService {
 	private static final Logger logger = Logger.getLogger(CategoryServiceImpl.class);
 	private ICategoryDao categoryDao;
+	private IExamService examService;
 	/**
 	 * 设置 考试分类数据接口
 	 * @param categoryDao
@@ -36,6 +38,14 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 	 */
 	public void setCategoryDao(ICategoryDao categoryDao) {
 		this.categoryDao = categoryDao;
+	}
+	/**
+	 * 设置考试服务接口。
+	 * @param examService 
+	 *	  考试服务接口。
+	 */
+	public void setExamService(IExamService examService) {
+		this.examService = examService;
 	}
 	/*
 	 * 查询数据
@@ -191,10 +201,7 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 				if(e == null) continue;
 				TreeNode tv_exam = new TreeNode();
 				tv_exam.setId(e.getId());
-				if(e.getArea()==null)
-					tv_exam.setText(e.getName());
-				else
-					tv_exam.setText(e.getName()+"["+e.getArea().getName()+"]");
+				tv_exam.setText(e.getName());
 				attributes = new HashMap<>();
 				attributes.put("type", "exam");
 				tv_exam.setAttributes(attributes);
@@ -271,8 +278,8 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 	 */
 	@Override
 	public List<CategoryFrontInfo> loadAllCategoryAndExams() {
-		List<Category> list =  this.categoryDao.loadTopCategories();
 		List<CategoryFrontInfo> result = new ArrayList<CategoryFrontInfo>();
+		List<Category> list =  this.categoryDao.loadTopCategories();
 		if(list != null && list.size() > 0){
 			for(final Category data : list){
 				if(data == null) continue;
@@ -309,7 +316,7 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 			for(Exam exam:data.getExams())
 			{
 				if(data == null)continue;
-				exams.add(changeExamModel(exam));
+				exams.add(this.examService.conversion(exam));
 			}
 			if(info.getExams()==null)
 				info.setExams(exams);
@@ -317,23 +324,4 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 				info.getExams().addAll(exams);
 		}
 	}
-	/**
-	 * 考试模型转换
-	 * @param data 考试
-	 * @return
-	 */
-	private ExamInfo changeExamModel(Exam data) {
-		if(data == null) return null;
-		ExamInfo info = new ExamInfo();
-		BeanUtils.copyProperties(data, info);
-		if(data.getCategory() != null){
-			info.setCategoryId(data.getCategory().getId());
-			info.setCategoryName(data.getCategory().getName());
-		}
-		if(data.getArea()!=null){
-			info.setAreaId(data.getArea().getId());
-			info.setAreaName(data.getArea().getName());
-		}
-		return info;
-	} 
 }

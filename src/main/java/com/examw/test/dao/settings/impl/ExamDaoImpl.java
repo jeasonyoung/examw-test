@@ -11,7 +11,6 @@ import com.examw.test.dao.impl.BaseDaoImpl;
 import com.examw.test.dao.settings.IExamDao;
 import com.examw.test.domain.settings.Exam;
 import com.examw.test.model.settings.ExamInfo;
-
 /**
  * 考试数据接口实现类
  * 
@@ -39,7 +38,6 @@ public class ExamDaoImpl extends BaseDaoImpl<Exam> implements IExamDao {
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.find(hql, parameters, info.getPage(), info.getRows());
 	}
-
 	/*
 	 * 查询数据总数
 	 * 
@@ -56,7 +54,6 @@ public class ExamDaoImpl extends BaseDaoImpl<Exam> implements IExamDao {
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.count(hql, parameters);
 	}
-
 	// 添加查询条件到HQL。
 	private String addWhere(ExamInfo info, String hql,Map<String, Object> parameters) {
 		if (!StringUtils.isEmpty(info.getName())) {
@@ -67,10 +64,16 @@ public class ExamDaoImpl extends BaseDaoImpl<Exam> implements IExamDao {
 			hql += " and (e.category.id = :categoryId)";
 			parameters.put("categoryId", info.getCategoryId());
 		}
-		if (!StringUtils.isEmpty(info.getAreaId())) {
-			hql += " and (e.area.id = :areaId)";
-			parameters.put("areaId", info.getAreaId());
-		}
 		return hql;
+	}
+	/*
+	 * 加载最大考试代码值。
+	 * @see com.examw.test.dao.settings.IExamDao#loadMaxCode()
+	 */
+	@Override
+	public Integer loadMaxCode() {
+		final String hql = "select max(e.code) from Exam e order by e.code desc ";
+		Object obj = this.uniqueResult(hql, null);
+		return obj == null ? null : (int)obj;
 	}
 }

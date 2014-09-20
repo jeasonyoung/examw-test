@@ -28,4 +28,9 @@ public interface IExamDao extends IBaseDao<Exam>{
 	 * 数据总数。
 	 */
 	Long total(ExamInfo info);
+	/**
+	 * 加载最大考试代码值。
+	 * @return
+	 */
+	Integer loadMaxCode();
 }

@@ -1,6 +1,9 @@
 package com.examw.test.service.settings.impl;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -27,7 +30,6 @@ public class ExamServiceImpl extends BaseDataServiceImpl<Exam, ExamInfo> impleme
 	private IAreaDao areaDao;
 	private ICategoryDao categoryDao;
 	private IExamDao examDao;
-	
 	/**
 	 * 设置 地区数据接口
 	 * @param areaDao
@@ -36,7 +38,6 @@ public class ExamServiceImpl extends BaseDataServiceImpl<Exam, ExamInfo> impleme
 	public void setAreaDao(IAreaDao areaDao) {
 		this.areaDao = areaDao;
 	}
-
 	/**
 	 * 设置 考试分类接口
 	 * @param categoryDao
@@ -45,7 +46,6 @@ public class ExamServiceImpl extends BaseDataServiceImpl<Exam, ExamInfo> impleme
 	public void setCategoryDao(ICategoryDao categoryDao) {
 		this.categoryDao = categoryDao;
 	}
-
 	/**
 	 * 设置 考试接口
 	 * @param examDao
@@ -54,7 +54,6 @@ public class ExamServiceImpl extends BaseDataServiceImpl<Exam, ExamInfo> impleme
 	public void setExamDao(IExamDao examDao) {
 		this.examDao = examDao;
 	}
-	
 	/*
 	 * 查询数据
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#find(java.lang.Object)
@@ -65,7 +64,6 @@ public class ExamServiceImpl extends BaseDataServiceImpl<Exam, ExamInfo> impleme
 			logger.debug("查询[考试]数据...");
 		return this.examDao.findExams(info);
 	}
-	
 	/*
 	 * 数据模型转换
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#changeModel(java.lang.Object)
@@ -79,13 +77,28 @@ public class ExamServiceImpl extends BaseDataServiceImpl<Exam, ExamInfo> impleme
 			info.setCategoryId(data.getCategory().getId());
 			info.setCategoryName(data.getCategory().getName());
 		}
-		if(data.getArea()!=null){
-			info.setAreaId(data.getArea().getId());
-			info.setAreaName(data.getArea().getName());
+		Set<Area> areas = null;
+		if((areas = data.getAreas()) != null){
+			List<String> listAreaId = new ArrayList<>(), listAreaName = new ArrayList<>();
+			for(Area area : areas){
+				if(area == null) continue;
+				listAreaId.add(area.getId());
+				listAreaName.add(area.getName());
+			}
+			info.setAreaId(listAreaId.toArray(new String[0]));
+			info.setAreaName(listAreaName.toArray(new String[0]));
 		}
 		return info;
 	}
-	
+	/*
+	 * 类型转换。
+	 * @see com.examw.test.service.settings.IExamService#conversion(com.examw.test.domain.settings.Exam)
+	 */
+	@Override
+	public ExamInfo conversion(Exam exam) {
+		if(logger.isDebugEnabled()) logger.debug("考试类型转换...");
+		return this.changeModel(exam);
+	}
 	/*
 	 * 查询数据总数
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#total(java.lang.Object)
@@ -94,7 +107,6 @@ public class ExamServiceImpl extends BaseDataServiceImpl<Exam, ExamInfo> impleme
 	protected Long total(ExamInfo info) {
 		return this.examDao.total(info);		
 	}
-	
 	/*
 	 * 更新或插入数据
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#update(java.lang.Object)
@@ -120,17 +132,23 @@ public class ExamServiceImpl extends BaseDataServiceImpl<Exam, ExamInfo> impleme
 			info.setCategoryName(data.getCategory().getName());
 		}
 		//设置地区
-		if(!StringUtils.isEmpty(info.getAreaId()) && (data.getArea() == null || !data.getArea().getId().equalsIgnoreCase(info.getAreaId()))){
-			Area area = this.areaDao.load(Area.class, info.getAreaId());
-			if(area != null) data.setArea(area);
+		List<String> listAreaName = new ArrayList<>();
+		Set<Area> areas = new HashSet<>();
+		if(info.getAreaId() != null){
+			for(String areaId : info.getAreaId()){
+				if(StringUtils.isEmpty(areaId)) continue;
+				Area area = this.areaDao.load(Area.class, areaId);
+				if(area != null){
+					areas.add(area);
+					listAreaName.add(area.getName());
+				}
+			}
 		}
-		if(data.getArea() != null){
-			info.setAreaName(data.getArea().getName());
-		}
+		data.setAreas(areas);
+		info.setAreaName(listAreaName.toArray(new String[0]));
 		if(isAdded)this.examDao.save(data);
 		return info;
 	}
-	
 	/*
 	 * 删除数据
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#delete(java.lang.String[])
@@ -145,25 +163,13 @@ public class ExamServiceImpl extends BaseDataServiceImpl<Exam, ExamInfo> impleme
 			}
 		}
 	}
-	
 	/*
 	 * 加载最大的代码值
 	 * @see com.examw.test.service.settings.IExamService#loadMaxCode()
 	 */
 	@Override
 	public Integer loadMaxCode() {
-		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
-		List<Exam> sources = this.examDao.findExams(new ExamInfo(){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public String getSort() {return "code"; } 
-			@Override
-			public String getOrder() { return "desc";}
-		});
-		if(sources != null && sources.size() > 0){
-			return sources.get(0).getCode();
-		}
-		return null;
+		return this.examDao.loadMaxCode();
 	}
 	/*
 	 * 加载

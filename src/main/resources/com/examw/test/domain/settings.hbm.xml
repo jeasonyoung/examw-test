@@ -50,8 +50,13 @@
 		<property name="abbr" type="string" length="10" unique="true" not-null="true" />
 		<!-- 所属类别 -->
 		<many-to-one name="category" column="category_id" class="Category" not-null="true"/>
-		<!-- 所属地区 -->
-		<many-to-one name="area" column="area_id" class="Area" not-null="true" />
+		<!-- 所属地区集合 -->
+		<set name="areas" inverse="false" cascade="save-update"  table="tbl_Examw_Test_Settings_ExamAreas">
+		    <!-- 考试ID -->
+			<key column="exam_id" />
+			<!-- 所属地区ID -->
+			<many-to-many class="Area"  column="area_id" />
+		</set>
 		<!-- 考试科目集合 -->
 		<set name="subjects" inverse="true" lazy="true" order-by="code asc">
 			<key column="exam_id" />

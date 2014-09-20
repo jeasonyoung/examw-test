@@ -20,4 +20,10 @@ public interface IExamService  extends IBaseDataService<ExamInfo>{
 	 * @return
 	 */
 	Exam loadExam(String examId);
+	/**
+	 * 类型转换。
+	 * @param exam
+	 * @return
+	 */
+	ExamInfo conversion(Exam exam);
 }

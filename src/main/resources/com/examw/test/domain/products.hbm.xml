@@ -116,7 +116,7 @@
 		<property name="lastTime" type="timestamp" />
 	</class>
 	<!-- 关联产品 -->
-	<class name="RelationProduct" table="bl_Examw_Test_Products_RelationProducts">
+	<class name="RelationProduct" table="tbl_Examw_Test_Products_RelationProducts">
 		<cache usage="read-write" />
 		<!-- 关联产品ID -->
 		<id name="id"  type="string"  length="64" />
@@ -201,7 +201,7 @@
 		<property name="createTime" type="timestamp" />
 	</class>
 	<!-- 注册码日志 -->
-	<class name="RegistrationLog" table="bl_Examw_Test_Products_RegistrationBindRecord_Logs">
+	<class name="RegistrationLog" table="tbl_Examw_Test_Products_RegistrationBindRecord_Logs">
 		<cache usage="read-write" />
 		<!-- 日志ID -->
 		<id name="id"  type="string"  length="64" />
