@@ -14,7 +14,14 @@ $(function(){
 			<@error_dialog "e"/>
 		},
 		onChange:function(n,o){
-			if(exam_cbb)exam_cbb.combobox("reload","<@s.url '/settings/exam/all'/>?categoryId=" + n);
+			if(area_cbb){
+				area_cbb.combobox("clear");
+				area_cbb.combobox("reload","<@s.url '/settings/exam/areas'/>?examId=");
+			}
+			if(exam_cbb){
+				exam_cbb.combobox("clear");
+				exam_cbb.combobox("reload","<@s.url '/settings/exam/all'/>?categoryId=" + n);
+			}
 		}
 	});
 	//类别下的考试。
@@ -27,7 +34,10 @@ $(function(){
 			<@error_dialog "e"/>
 		},
 		onChange:function(n,o){
-			if(area_cbb)area_cbb.combobox("reload","<@s.url '/settings/exam/areas'/>?examId=" + n);
+			if(area_cbb){
+				area_cbb.combobox("clear");
+				area_cbb.combobox("reload","<@s.url '/settings/exam/areas'/>?examId=" + n);
+			}
 		}
 	});
 	//所在地区。
