@@ -43,6 +43,10 @@
 		</property>
 		<!-- 试卷记录数据接口 -->
 		<property name="paperRecordDao" ref="paperRecordDao"/>
+		<!-- 做题记录数据接口 -->
+		<property name="itemRecordDao" ref="itemRecordDao"/>
+		<!-- 错题记录数据接口 -->
+		<property name="errorItemRecordDao" ref="errorItemRecordDao"/>
 	</bean>
 	<!-- 题目服务 -->
 	<bean id="itemService" class="com.examw.test.service.library.impl.ItemServiceImpl">

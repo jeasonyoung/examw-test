@@ -345,6 +345,7 @@ public class PaperPreview implements Serializable {
 	
 	/*前台需要数据 题目的总个数  2014-09-15 by FW.*/
 	private Integer total; //总的题目数
+	private Integer leftTime; //剩余时间[秒]
 	/**
 	 * 获取 题目总数
 	 * @return total
@@ -361,5 +362,20 @@ public class PaperPreview implements Serializable {
 	public void setTotal(Integer total) {
 		this.total = total;
 	}
-	
+	/**
+	 * 获取 剩余时间
+	 * @return leftTime
+	 * 
+	 */
+	public Integer getLeftTime() {
+		return leftTime;
+	}
+	/**
+	 * 设置 剩余时间
+	 * @param leftTime
+	 * 
+	 */
+	public void setLeftTime(Integer leftTime) {
+		this.leftTime = leftTime;
+	}
 }

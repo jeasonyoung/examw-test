@@ -1,5 +1,6 @@
 package com.examw.test.model.library;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
 
@@ -379,22 +380,74 @@ public abstract class BaseItemInfo<T extends BaseItemInfo<T>>  extends Paging {
 	 */
 	public abstract void setChildren(Set<T> children);
 	
-	/*前台使用属性 2014-09-16 by FW.*/
-	private String parentContent;//共享题的题干
+//	/*前台使用属性 2014-09-16 by FW.*/
+//	private String parentContent;//共享题的题干
+//	/**
+//	 * 获取 共享题的题干
+//	 * @return parentContent
+//	 * 
+//	 */
+//	public String getParentContent() {
+//		return parentContent;
+//	}
+//	/**
+//	 * 设置 共享题的题干
+//	 * @param parentContent
+//	 * 
+//	 */
+//	public void setParentContent(String parentContent) {
+//		this.parentContent = parentContent;
+//	}
+	/*前台使用属性 2014-09-20 by FW.*/
+	private String userAnswer;
+	private BigDecimal userScore;
+	private Integer answerStatus;
 	/**
-	 * 获取 共享题的题干
-	 * @return parentContent
-	 * 
+	 * 获取 用户答案
+	 * @return userAnswer
+	 * 用户答案
 	 */
-	public String getParentContent() {
-		return parentContent;
+	public String getUserAnswer() {
+		return userAnswer;
 	}
 	/**
-	 * 设置 共享题的题干
-	 * @param parentContent
+	 * 设置 用户答案
+	 * @param userAnswer
+	 * 用户答案
+	 */
+	public void setUserAnswer(String userAnswer) {
+		this.userAnswer = userAnswer;
+	}
+	/**
+	 * 获取 用户得分
+	 * @return userScore
+	 * 用户得分
+	 */
+	public BigDecimal getUserScore() {
+		return userScore;
+	}
+	/**
+	 * 设置 用户得分
+	 * @param userScore
+	 * 用户得分
+	 */
+	public void setUserScore(BigDecimal userScore) {
+		this.userScore = userScore;
+	}
+	/**
+	 * 获取 答题状态
+	 * @return answerStatus
 	 * 
 	 */
-	public void setParentContent(String parentContent) {
-		this.parentContent = parentContent;
+	public Integer getAnswerStatus() {
+		return answerStatus;
+	}
+	/**
+	 * 设置 答题状态
+	 * @param answerStatus
+	 * 
+	 */
+	public void setAnswerStatus(Integer answerStatus) {
+		this.answerStatus = answerStatus;
 	}
 }
