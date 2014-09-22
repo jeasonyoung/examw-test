@@ -1,5 +1,6 @@
 package com.examw.test.service.settings;
 
+import com.examw.test.domain.settings.Area;
 import com.examw.test.model.settings.AreaInfo;
 import com.examw.test.service.IBaseDataService;
 
@@ -14,4 +15,10 @@ public interface IAreaService extends IBaseDataService<AreaInfo>{
 	 * @return
 	 */
 	Integer loadMaxCode();
+	/**
+	 * 类型转换。
+	 * @param area
+	 * @return
+	 */
+	AreaInfo conversion(Area area);
 }

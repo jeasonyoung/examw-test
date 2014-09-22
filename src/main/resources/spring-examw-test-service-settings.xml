@@ -25,6 +25,8 @@
 		<property name="categoryDao" ref="categoryDao" />
 		<!-- 考试数据操作接口 -->
 		<property name="examDao" ref="examDao" />
+		<!-- 地区服务接口 -->
+		<property name="areaService" ref="areaService" />
 	</bean>
 	
 	<!-- 科目服务 -->

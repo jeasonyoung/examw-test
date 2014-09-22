@@ -1,6 +1,9 @@
 package com.examw.test.service.settings;
 
+import java.util.List;
+
 import com.examw.test.domain.settings.Exam;
+import com.examw.test.model.settings.AreaInfo;
 import com.examw.test.model.settings.ExamInfo;
 import com.examw.test.service.IBaseDataService;
 
@@ -16,14 +19,15 @@ public interface IExamService  extends IBaseDataService<ExamInfo>{
 	 */
 	Integer loadMaxCode();
 	/**
-	 * 根据ID加载考试[前台调用方法]
-	 * @return
-	 */
-	Exam loadExam(String examId);
-	/**
 	 * 类型转换。
 	 * @param exam
 	 * @return
 	 */
 	ExamInfo conversion(Exam exam);
+	/**
+	 * 加载考试所在地区集合。
+	 * @param examId
+	 * @return
+	 */
+	List<AreaInfo> loadExamAreas(String examId);
 }

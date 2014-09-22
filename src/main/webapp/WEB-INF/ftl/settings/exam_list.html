@@ -155,9 +155,9 @@ $(function(){
 	${dg}_add = function(){
 		if(m) return;
 		m = true;
-		$.getJSON("<@s.url '/settings/exam/code'/>?random="+new Date().getTime(),function(data){
+		$.getJSON("<@s.url '/settings/exam/code'/>?_=" + Math.random(),function(code){
 			m = false;
-			edit_window("新增考试设置",0,null,data);
+			edit_window("新增考试设置",0,null,code);
 		});
 	};
 	<@shiro.hasPermission name="${PER_DELETE}">
