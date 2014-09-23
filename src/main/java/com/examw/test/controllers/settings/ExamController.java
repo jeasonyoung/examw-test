@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.examw.model.DataGrid;
 import com.examw.model.Json;
 import com.examw.test.domain.security.Right;
+import com.examw.test.model.settings.AreaInfo;
 import com.examw.test.model.settings.ExamInfo;
 import com.examw.test.service.settings.IExamService;
 
@@ -64,7 +65,7 @@ public class ExamController {
 	 * 返回考试类别下的所有考试
 	 * @return
 	 */
-	@RequestMapping(value={"/all"}, method = RequestMethod.POST)
+	@RequestMapping(value={"/all"}, method = {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
 	public List<ExamInfo> all(final String categoryId){
 		 return this.examService.datagrid(new ExamInfo(){
@@ -76,6 +77,17 @@ public class ExamController {
 			@Override
 			public String getCategoryId(){return categoryId;}
 		 }).getRows();
+	}
+	/**
+	 * 加载考试所属地区。
+	 * @param examId
+	 * 所属考试ID。
+	 * @return
+	 */
+	@RequestMapping(value = {"/areas"}, method = {RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public List<AreaInfo> loadArea(String examId){ 
+		return this.examService.loadExamAreas(examId);
 	}
 	/**
 	 * 更新数据。

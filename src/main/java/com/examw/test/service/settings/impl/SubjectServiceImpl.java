@@ -28,7 +28,6 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 	private IExamDao examDao;
 	private IAreaDao areaDao;
 	private ISubjectDao subjectDao;
-	
 	/**
 	 * 设置 考试数据接口
 	 * @param examDao
@@ -121,10 +120,11 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 			}
 		}
 		//设置地区
-		if(!StringUtils.isEmpty(info.getAreaId()) && (data.getArea() == null || !data.getArea().getId().equalsIgnoreCase(info.getAreaId()))){
-			Area area = this.areaDao.load(Area.class, info.getAreaId());
-			if(area != null) data.setArea(area);
+		Area area = null;
+		if(!StringUtils.isEmpty(info.getAreaId()) && (data.getArea() == null || !data.getArea().getId().equals(info.getAreaId()))){
+			area = this.areaDao.load(Area.class, info.getAreaId());
 		}
+		data.setArea(area);
 		if(data.getArea() != null){
 			info.setAreaName(data.getArea().getName());
 		}

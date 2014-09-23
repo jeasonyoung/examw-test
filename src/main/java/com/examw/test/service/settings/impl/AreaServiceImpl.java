@@ -51,6 +51,15 @@ public class AreaServiceImpl extends BaseDataServiceImpl<Area, AreaInfo> impleme
 		return info;
 	}
 	/*
+	 * 类型转换。
+	 * @see com.examw.test.service.settings.IAreaService#conversion(com.examw.test.domain.settings.Area)
+	 */
+	@Override
+	public AreaInfo conversion(Area area) {
+		if(logger.isDebugEnabled()) logger.debug("类型转换...");
+		return this.changeModel(area);
+	}
+	/*
 	 * 数据统计。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#total(java.lang.Object)
 	 */

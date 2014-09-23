@@ -1,6 +1,8 @@
 package com.examw.test.service.settings.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,8 +18,10 @@ import com.examw.test.dao.settings.IExamDao;
 import com.examw.test.domain.settings.Area;
 import com.examw.test.domain.settings.Category;
 import com.examw.test.domain.settings.Exam;
+import com.examw.test.model.settings.AreaInfo;
 import com.examw.test.model.settings.ExamInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
+import com.examw.test.service.settings.IAreaService;
 import com.examw.test.service.settings.IExamService;
 
 /**
@@ -30,29 +34,38 @@ public class ExamServiceImpl extends BaseDataServiceImpl<Exam, ExamInfo> impleme
 	private IAreaDao areaDao;
 	private ICategoryDao categoryDao;
 	private IExamDao examDao;
+	private IAreaService areaService;
 	/**
-	 * 设置 地区数据接口
+	 * 设置地区数据接口。
 	 * @param areaDao
-	 * 
+	 * 地区数据接口。
 	 */
 	public void setAreaDao(IAreaDao areaDao) {
 		this.areaDao = areaDao;
 	}
 	/**
-	 * 设置 考试分类接口
+	 * 设置考试分类接口。
 	 * @param categoryDao
-	 * 
+	 * 考试分类接口。
 	 */
 	public void setCategoryDao(ICategoryDao categoryDao) {
 		this.categoryDao = categoryDao;
 	}
 	/**
-	 * 设置 考试接口
+	 * 设置考试接口。
 	 * @param examDao
-	 * 
+	 * 考试接口。
 	 */
 	public void setExamDao(IExamDao examDao) {
 		this.examDao = examDao;
+	}
+	/**
+	 * 设置地区服务接口。
+	 * @param areaService 
+	 *	  地区服务接口。
+	 */
+	public void setAreaService(IAreaService areaService) {
+		this.areaService = areaService;
 	}
 	/*
 	 * 查询数据
@@ -60,8 +73,7 @@ public class ExamServiceImpl extends BaseDataServiceImpl<Exam, ExamInfo> impleme
 	 */
 	@Override
 	protected List<Exam> find(ExamInfo info) {
-		if (logger.isDebugEnabled())
-			logger.debug("查询[考试]数据...");
+		if (logger.isDebugEnabled()) logger.debug("查询[考试]数据...");
 		return this.examDao.findExams(info);
 	}
 	/*
@@ -172,11 +184,31 @@ public class ExamServiceImpl extends BaseDataServiceImpl<Exam, ExamInfo> impleme
 		return this.examDao.loadMaxCode();
 	}
 	/*
-	 * 加载
-	 * @see com.examw.test.service.settings.IExamService#loadExam(java.lang.String)
+	 * 加载考试所在地区集合。
+	 * @see com.examw.test.service.settings.IExamService#loadExamAreas(java.lang.String)
 	 */
 	@Override
-	public Exam loadExam(String examId) {
-		return this.examDao.load(Exam.class, examId);
+	public List<AreaInfo> loadExamAreas(String examId) {
+		List<AreaInfo> list = new ArrayList<>();
+		if(!StringUtils.isEmpty(examId)){
+			Exam exam = this.examDao.load(Exam.class, examId);
+			if(exam != null && exam.getAreas() != null){
+				for(Area area : exam.getAreas()){
+					AreaInfo  info = this.areaService.conversion(area);
+					if(info != null){
+						list.add(info);
+					}
+				}
+				if(list.size() > 0){
+					Collections.sort(list, new Comparator<AreaInfo>(){
+						@Override
+						public int compare(AreaInfo o1, AreaInfo o2) {
+							return o1.getCode() - o2.getCode();
+						}
+					});
+				}
+			}
+		}
+		return list;
 	}
 }

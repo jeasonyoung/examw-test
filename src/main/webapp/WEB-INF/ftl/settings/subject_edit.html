@@ -4,11 +4,8 @@
 <script type="text/javascript">
 <!--
 $(function(){
-	var current_category_select = false;
-	var first_category_id = "${CURRENT_CATEGORY_ID}";
-	//分类树
-	//category_tree
-	var c_t = $("#${module}_edit_form input[name='categoryId']").combotree({
+	//考试类别。
+	var catalog_cbt = $("#${module}_edit_form input[name='categoryId']").combotree({
 		url:"<@s.url '/settings/category/tree'/>",
 		required:true,
 		valueField:"id",
@@ -16,29 +13,19 @@ $(function(){
 		onLoadError:function(e){
 			<@error_dialog "e"/>
 		},
-		onLoadSuccess:function(){
-			var id = "${CURRENT_CATEGORY_ID}";
-			if($.trim(id) == "") return;
-			c_t.combotree("setValue",id);
-		},
-		onChange:function(newId,oldId){
-			if(oldId != "")
-			{
-				current_category_select = true;
-				first_category_id = "";
+		onChange:function(n,o){
+			if(area_cbb){
+				area_cbb.combobox("clear");
+				area_cbb.combobox("reload","<@s.url '/settings/exam/areas'/>?examId=");
 			}
-		},
-		onSelect:function(record){
-			if( first_category_id == record.id) return;
-			if(e_t){
-				e_t.combobox("reload","<@s.url '/settings/exam/all'/>?categoryId=" + record.id);
+			if(exam_cbb){
+				exam_cbb.combobox("clear");
+				exam_cbb.combobox("reload","<@s.url '/settings/exam/all'/>?categoryId=" + n);
 			}
 		}
 	});
-	//考试下拉
-	//exam_tree
-	var current_area_id = "${CURRENT_AREA_ID}";
-	var e_t = $("#${module}_edit_form input[name='examId']").combobox({
+	//类别下的考试。
+	var exam_cbb = $("#${module}_edit_form input[name='examId']").combobox({
 		url:"<@s.url '/settings/exam/all'/>?categoryId=${CURRENT_CATEGORY_ID}",
 		required:true,
 		valueField:"id",
@@ -46,44 +33,27 @@ $(function(){
 		onLoadError:function(e){
 			<@error_dialog "e"/>
 		},
-		onLoadSuccess:function(){
-			e_t.combobox("clear");
-			var id = "${CURRENT_EXAM_ID}";
-			if($.trim(id) == "" || current_category_select) return;
-			e_t.combobox("setValue",id);
-		},
-		onChange:function(newId,oldId){
-			var data = e_t.combobox("getData");
-			var record;
-			$.each(data,function(i){
-				if(data[i].id == newId){
-					record = data[i];
-					return false;
-				}
-			});
-			if(current_area_id == "" ){
-				current_area_id = record.areaId;
-			}
-			if(a_t){
-				a_t.combobox("setValue",record.areaId);
+		onChange:function(n,o){
+			if(area_cbb){
+				area_cbb.combobox("clear");
+				area_cbb.combobox("reload","<@s.url '/settings/exam/areas'/>?examId=" + n);
 			}
 		}
 	});
-	//地区下拉
-	var a_t = $("#${module}_edit_form input[name='areaId']").combobox({
-		url:"<@s.url '/settings/area/combo'/>",
+	//所在地区。
+	var area_cbb = $("#${module}_edit_form input[name='areaId']").combobox({
+		url:"<@s.url '/settings/exam/areas'/>?examId=${CURRENT_EXAM_ID}",
 		valueField:"id",
 		textField:"name",
 		onLoadError:function(e){
 			<@error_dialog "e"/>
 		},
-		onLoadSuccess:function(){
-			//console.info("load success........");
-			a_t.combobox("clear");
-			var id = current_area_id;
-			if($.trim(id) == "") return;
-			a_t.combobox("setValue",id);
-		}
+		icons:[{
+			iconCls:"icon-clear",
+			handler:function(e){
+				$(e.data.target).combobox("clear");
+			}
+		}]
 	});
 });
 //-->
@@ -92,20 +62,20 @@ $(function(){
 <form id="${module}_edit_form" method="POST" style="padding:10px;">
 	<div style="float:left;margin-top:2px;width:100%;">
 		<label style="width:75px;">所属考试：</label>
-		<input type="text" name="categoryId"  style="width:150px;"/>
-		<input type="text" name="examId"  style="width:150px;"/>
+		<input type="text" name="categoryId" style="width:198px;"/>
+		<input type="text" name="examId" style="width:168px;"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">科目代码：</label>
-		<input type="text" name="code" class="easyui-numberbox" style="width:298px;" data-options="required:true"/>
+		<input type="text" name="code" class="easyui-numberbox" style="width:198px;" data-options="required:true"/>
 		<input type="hidden" name="id"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">科目名称：</label>
-			<input type="text" name="name" class="easyui-validatebox" style="width:298px;" data-options="required:true"/>
+		<input type="text" name="name" class="easyui-validatebox" style="width:368px;" data-options="required:true"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">地区：</label>
-		<input name="areaId" style="width:298px;"/>
+		<input name="areaId" style="width:372px;"/>
 	</div>
 </form>
