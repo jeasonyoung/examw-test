@@ -85,7 +85,7 @@ public class PaperRecordDaoImpl extends BaseDaoImpl<PaperRecord> implements IPap
 	 */
 	@Override
 	public Long findUserSum(String paperId) {
-		String hql = "select count(*)  from PaperRecord pr where paperId = :paperId";
+		String hql = "select count(distinct pr.userId)  from PaperRecord pr where paperId = :paperId";
 		Query query = this.getCurrentSession().createQuery(hql);
 		query.setParameter("paperId", paperId);
 		Object  obj = query.uniqueResult();

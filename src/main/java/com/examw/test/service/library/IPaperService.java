@@ -137,4 +137,11 @@ public interface IPaperService extends IBaseDataService<PaperInfo> {
 	 */
 	Json submitPaper(Integer limitTime, String chooseAnswers,
 			String textAnswers,Integer model, String paperId, String userId);
+	/**
+	 * 加载试卷考试记录详细信息[前台调用方法]
+	 * @param paperId	试卷ID
+	 * @param userId	用户ID
+	 * @return
+	 */
+	PaperFrontInfo loadPaperRecordDetail(String paperId,String userId);
 }

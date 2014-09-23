@@ -165,7 +165,10 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 		}
 		return null;
 	}
-	
+	/*
+	 * 类型转换
+	 * @see com.examw.test.service.impl.BaseDataServiceImpl#changeModel(java.util.List)
+	 */
 	@Override
 	public List<SubjectInfo> changeModel(List<Subject> list) {
 		List<SubjectInfo> results = new ArrayList<>();

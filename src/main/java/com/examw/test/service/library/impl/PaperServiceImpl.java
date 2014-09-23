@@ -1116,11 +1116,13 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo>
 		if (!StringUtils.isEmpty(textAnswers)) {
 
 		}
-		this.itemRecordDao.insertItemRecordList(itemRecords);
+		if(logger.isDebugEnabled())	logger.debug("log ==== "+model);
 		if (model.equals(PaperRecord.STATUS_DONE)) {
+			if(logger.isDebugEnabled())	logger.debug("进行试卷的评判分");
 			PaperPreview preview = judgePaper(record, paperId, itemRecords);
 			json.setData(preview);
 		}
+		this.itemRecordDao.insertItemRecordList(itemRecords);
 		json.setSuccess(true);
 		json.setMsg("提交成功");
 		return json;
@@ -1128,6 +1130,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo>
 
 	private PaperPreview judgePaper(PaperRecord record, String paperId,
 			List<ItemRecord> itemRecordList) {
+		
 		PaperPreview paper = this.loadPaperPreview(paperId);
 		List<StructureInfo> structures = paper.getStructures();
 		if (structures == null || structures.size() == 0)
@@ -1148,23 +1151,19 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo>
 						if (item.getId()
 								.equals(itemRecord.getStructureItemId())) {
 							// 判断对错
-							if(!judgeItemIsRight(item, itemRecord, min, per))
+							if(!judgeItemIsRight(item.getItem(), itemRecord, min, per))
 								errorRecords.add(createErrorRecord(item.getItem().getId(),itemRecord));
-							actualRuleTotal = actualRuleTotal.add(itemRecord
-									.getScore());
+							actualRuleTotal = actualRuleTotal.add(itemRecord.getScore());
 							break;
 						}
 					} else { // 复合题
-						Set<ItemScoreInfo> children = item.getItem()
-								.getChildren();
+						Set<ItemScoreInfo> children = item.getItem().getChildren();
 						for (ItemScoreInfo child : children) {
-							if ((item.getId() + "#" + child.getId())
-									.equals(itemRecord.getStructureItemId())) {
+							if ((item.getId() + "#" + child.getId()).equals(itemRecord.getStructureItemId())) {
 								// 判断对错
-								if(!judgeItemIsRight(item, itemRecord, min, per))
+								if(!judgeItemIsRight(child, itemRecord, min, per))
 									errorRecords.add(createErrorRecord(item.getItem().getId(),itemRecord));
-								actualRuleTotal = actualRuleTotal
-										.add(itemRecord.getScore());
+								actualRuleTotal = actualRuleTotal.add(itemRecord.getScore());
 								break;
 							}
 						}
@@ -1177,6 +1176,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo>
 			paperTotalScore = paperTotalScore.add(actualRuleTotal); // 试卷总分
 		}
 		record.setScore(paperTotalScore);
+		record.setTime(record.getUsedTime());
 		this.errorItemRecordDao.insertRecordList(errorRecords); 	//保存错题记录
 		return paper;
 	}
@@ -1193,7 +1193,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo>
 	/*
 	 * 判断题目是对是错
 	 */
-	private boolean judgeItemIsRight(StructureItemInfo item,
+	private boolean judgeItemIsRight(ItemScoreInfo item,
 			ItemRecord itemRecord, BigDecimal min, BigDecimal per) {
 		if (StringUtils.isEmpty(itemRecord.getAnswer())) {
 			itemRecord.setScore(min == null ? BigDecimal.ZERO : min); // 得0分或者负分
@@ -1203,7 +1203,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo>
 		switch (item.getType()) {
 		case Item.TYPE_SINGLE: // 单选
 		case Item.TYPE_JUDGE: // 判断
-			if (item.getItem().getAnswer().equals(itemRecord.getAnswer())) // 答对
+			if (item.getAnswer().equals(itemRecord.getAnswer())) // 答对
 			{
 				itemRecord.setScore(per); // 得标准分
 				itemRecord.setStatus(ItemRecord.STATUS_RIGHT); // 答对
@@ -1218,7 +1218,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo>
 		case Item.TYPE_MULTY: // 多选
 		case Item.TYPE_UNCERTAIN: // 不定项
 			String[] arr = itemRecord.getAnswer().split(",");
-			String answer = item.getItem().getAnswer();
+			String answer = item.getAnswer();
 			int total = 0;
 			for (String a : arr) {
 				if (answer.indexOf(a) == -1) { // 包含有错误答案
@@ -1245,5 +1245,39 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo>
 		default:
 			return true;
 		}
+	}
+	/*
+	 * 加载试卷考试记录详情
+	 * @see com.examw.test.service.library.IPaperService#loadPaperRecordDetail(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public PaperFrontInfo loadPaperRecordDetail(final String paperId,final String userId) {
+		PaperFrontInfo paperFrontInfo = null;
+		PaperPreview paperPreview =	this.loadPaperPreview(paperId);
+		if (paperPreview != null)
+		{
+			paperFrontInfo = new PaperFrontInfo();
+			BeanUtils.copyProperties(paperPreview, paperFrontInfo);
+			PaperRecord	record = this.paperRecordDao.load(paperId, userId);
+			if(record != null && record.getStatus().equals(PaperRecord.STATUS_UNDONE)){
+				return paperFrontInfo;
+			}else if(record!=null && record.getStatus().equals(PaperRecord.STATUS_DONE)){
+				paperFrontInfo.setUserTime(record.getTime());
+				paperFrontInfo.setUserScore(record.getScore());
+				final Date time = record.getLastTime();
+				//没做完 加上用户答案
+				List<ItemRecord> list = this.itemRecordDao.findItemRecords(new ItemRecord(){
+					private static final long serialVersionUID = 1L;
+					@Override
+					public String getPaperId() {return paperId;}
+					@Override
+					public String getUserId() {return userId;}
+					@Override
+					public Date getLastTime() {return time;}
+				});
+				setUserAnswer(paperPreview,list);
+			}
+		}
+		return paperFrontInfo;
 	}
 }

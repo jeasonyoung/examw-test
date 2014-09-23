@@ -1,5 +1,7 @@
 package com.examw.test.service.records;
 
+import java.util.List;
+
 import com.examw.test.domain.records.Note;
 
 /**
@@ -14,4 +16,15 @@ public interface INoteService {
 	 * @return
 	 */
 	boolean insertNote(Note data);
+	/**
+	 * 查询数据
+	 * @param info
+	 * @return
+	 */
+	List<Note> findNotes(Note info);
+	/**
+	 * 数据统计
+	 * @return
+	 */
+	long total(Note info);
 }

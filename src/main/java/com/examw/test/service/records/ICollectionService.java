@@ -1,5 +1,6 @@
 package com.examw.test.service.records;
 
+import com.examw.model.Json;
 import com.examw.test.domain.records.Collection;
 
 /**
@@ -14,4 +15,25 @@ public interface ICollectionService {
 	 * @return
 	 */
 	boolean insertCollection(Collection data);
+	/**
+	 * 判断用户有没有收藏题目
+	 * @param structureItemId	题目ID
+	 * @param userId			用户ID
+	 * @return
+	 */
+	boolean isCollected(String structureItemId,String userId);
+	/**
+	 * 取消收藏
+	 * @param structureItemId
+	 * @param userId
+	 * @return
+	 */
+	boolean deleteCollection(String structureItemId,String userId);
+	/**
+	 * 取消或添加收藏
+	 * @param structureItemId
+	 * @param userId
+	 * @return
+	 */
+	Json collectOrCancel(String structureItemId,String itemId, String userId);
 }

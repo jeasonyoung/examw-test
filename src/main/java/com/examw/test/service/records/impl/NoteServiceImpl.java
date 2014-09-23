@@ -1,6 +1,7 @@
 package com.examw.test.service.records.impl;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -41,6 +42,21 @@ public class NoteServiceImpl implements INoteService{
 		this.noteDao.save(data);
 		return true;
 	}
-	
+	/*
+	 * 查询数据
+	 * @see com.examw.test.service.records.INoteService#findNotes(com.examw.test.domain.records.Note)
+	 */
+	@Override
+	public List<Note> findNotes(Note info) {
+		return this.noteDao.findNotes(info);
+	}
+	/*
+	 * 数据统计
+	 * @see com.examw.test.service.records.INoteService#total(com.examw.test.domain.records.Note)
+	 */
+	@Override
+	public long total(Note info) {
+		return this.noteDao.total(info);
+	}
 	
 }

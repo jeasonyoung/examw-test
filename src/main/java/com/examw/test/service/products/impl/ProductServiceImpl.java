@@ -20,11 +20,13 @@ import com.examw.test.dao.settings.ISubjectDao;
 import com.examw.test.domain.library.Item;
 import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.products.Product;
+import com.examw.test.domain.settings.Area;
 import com.examw.test.domain.settings.Exam;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.library.ItemInfo;
 import com.examw.test.model.library.PaperInfo;
 import com.examw.test.model.products.ProductInfo;
+import com.examw.test.model.settings.AreaInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.products.IProductService;
 
@@ -345,13 +347,37 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 		}
 		return result;
 	}
-	
+	/*
+	 * 查询产品包含的科目
+	 * @see com.examw.test.service.products.IProductService#loadSubjectList(java.lang.String)
+	 */
 	@Override
 	public List<Subject> loadSubjectList(String productId) {
 		if(logger.isDebugEnabled()) logger.debug("加载查询产品下包含的科目集合...");
 		Product product = this.productDao.load(Product.class, productId);
 		return new ArrayList<Subject>(product.getSubjects());
 	}
-	
-	
+	/*
+	 * 查询考试下地区的集合
+	 * @see com.examw.test.service.products.IProductService#loadAreaList(java.lang.String)
+	 */
+	@Override
+	public List<AreaInfo> loadAreaList(String productId) {
+		if(logger.isDebugEnabled()) logger.debug("加载查询产品所属考试下地区集合...");
+		Product product = this.productDao.load(Product.class, productId);
+		return this.changeModel(product.getExam().getAreas());
+	}
+	/*
+	 * 地区数据转换
+	 */
+	private List<AreaInfo> changeModel(Set<Area> set){
+		if(set ==null || set.size() == 0) return null;
+		List<AreaInfo> list = new ArrayList<AreaInfo>();
+		for(Area area:set){
+			AreaInfo info = new AreaInfo();
+			BeanUtils.copyProperties(area, info);
+			list.add(info);
+		}
+		return list;
+	}
 }

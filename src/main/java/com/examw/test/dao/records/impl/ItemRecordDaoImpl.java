@@ -26,6 +26,7 @@ public class ItemRecordDaoImpl  extends BaseDaoImpl<ItemRecord> implements IItem
 	@Override
 	public List<ItemRecord> findItemRecords(ItemRecord info) {
 		if(logger.isDebugEnabled()) logger.debug("查询[做题记录]数据...");
+		this.evict(ItemRecord.class);
 		String hql = "from ItemRecord ir where 1=1 ";
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
