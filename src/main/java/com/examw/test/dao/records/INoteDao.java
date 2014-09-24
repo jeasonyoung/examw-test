@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.examw.test.dao.IBaseDao;
 import com.examw.test.domain.records.Note;
+import com.examw.test.model.records.NoteInfo;
 
 /**
  * 试题笔记数据接口
@@ -18,7 +19,7 @@ public interface INoteDao extends IBaseDao<Note>{
 	 * @return
 	 * 查询结果集合。
 	 */
-	List<Note> findNotes(Note info);
+	List<Note> findNotes(NoteInfo info);
 	/**
 	 * 查询数据统计。
 	 * @param info
@@ -26,5 +27,5 @@ public interface INoteDao extends IBaseDao<Note>{
 	 * @return
 	 * 查询结果。
 	 */
-	Long total(Note info);
+	Long total(NoteInfo info);
 }

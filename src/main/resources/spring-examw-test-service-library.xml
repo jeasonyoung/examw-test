@@ -47,6 +47,10 @@
 		<property name="itemRecordDao" ref="itemRecordDao"/>
 		<!-- 错题记录数据接口 -->
 		<property name="errorItemRecordDao" ref="errorItemRecordDao"/>
+		<!-- 笔记	-->
+		<property name="collectionDao" ref="collectionDao"/>
+		<!-- 收藏 -->
+		<property name="noteDao" ref="noteDao"/>
 	</bean>
 	<!-- 题目服务 -->
 	<bean id="itemService" class="com.examw.test.service.library.impl.ItemServiceImpl">

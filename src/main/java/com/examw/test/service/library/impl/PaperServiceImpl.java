@@ -23,8 +23,10 @@ import com.examw.test.dao.library.IPaperDao;
 import com.examw.test.dao.library.ISourceDao;
 import com.examw.test.dao.library.IStructureDao;
 import com.examw.test.dao.library.IStructureItemDao;
+import com.examw.test.dao.records.ICollectionDao;
 import com.examw.test.dao.records.IErrorItemRecordDao;
 import com.examw.test.dao.records.IItemRecordDao;
+import com.examw.test.dao.records.INoteDao;
 import com.examw.test.dao.records.IPaperRecordDao;
 import com.examw.test.dao.settings.ISubjectDao;
 import com.examw.test.domain.library.Item;
@@ -37,12 +39,14 @@ import com.examw.test.domain.records.ErrorItemRecord;
 import com.examw.test.domain.records.ItemRecord;
 import com.examw.test.domain.records.PaperRecord;
 import com.examw.test.domain.settings.Subject;
+import com.examw.test.model.front.ItemFrontInfo;
 import com.examw.test.model.front.PaperFrontInfo;
 import com.examw.test.model.library.ItemScoreInfo;
 import com.examw.test.model.library.PaperInfo;
 import com.examw.test.model.library.PaperPreview;
 import com.examw.test.model.library.StructureInfo;
 import com.examw.test.model.library.StructureItemInfo;
+import com.examw.test.model.records.NoteInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperService;
@@ -71,6 +75,8 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo>
 	private IPaperRecordDao paperRecordDao;
 	private IItemRecordDao itemRecordDao;
 	private IErrorItemRecordDao errorItemRecordDao;
+	private ICollectionDao collectionDao;
+	private INoteDao noteDao;
 
 	/**
 	 * 设置试卷数据接口。
@@ -182,6 +188,24 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo>
 	 */
 	public void setErrorItemRecordDao(IErrorItemRecordDao errorItemRecordDao) {
 		this.errorItemRecordDao = errorItemRecordDao;
+	}
+	
+	/**
+	 * 设置 
+	 * @param collectionDao
+	 * 
+	 */
+	public void setCollectionDao(ICollectionDao collectionDao) {
+		this.collectionDao = collectionDao;
+	}
+
+	/**
+	 * 设置 
+	 * @param noteDao
+	 * 
+	 */
+	public void setNoteDao(INoteDao noteDao) {
+		this.noteDao = noteDao;
 	}
 
 	/*
@@ -941,7 +965,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo>
 					@Override
 					public Date getLastTime() {return time;}
 				});
-				setUserAnswer(paperPreview,list);
+				setUserAnswer(paperPreview,list,userId,false);
 				paperPreview.setLeftTime(paperPreview.getLeftTime() - (record.getUsedTime()==null?0:record.getUsedTime()));
 			}
 			savePaperRecord(paperId, userId); // 保存考试记录
@@ -951,7 +975,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo>
 	/*
 	 * 以前做过的题目附上用户答案
 	 */
-	private void setUserAnswer(PaperPreview paperPreview,List<ItemRecord> list){
+	private void setUserAnswer(PaperPreview paperPreview,List<ItemRecord> list,String userId,boolean isAll){
 		if(list == null || list.size()==0) return;
 		List<StructureInfo> structures = paperPreview.getStructures();
 		if(structures == null || structures.size()==0) return ;
@@ -961,16 +985,17 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo>
 			for(StructureItemInfo item : items){
 				if(item.getItem() == null) continue;
 				//为每题设置用户答案
-				setUserAnswer(item,list);
+				setUserAnswer(item,list,userId,isAll);
 			}
 		}
 	}
 	/*
 	 * 设置用户答案
 	 */
-	private void setUserAnswer(StructureItemInfo item,List<ItemRecord> list){
+	private void setUserAnswer(StructureItemInfo item,List<ItemRecord> list,final String userId,boolean isAll){
 		if(item.getType().equals(Item.TYPE_SHARE_ANSWER)||item.getType().equals(Item.TYPE_SHARE_TITLE)){
 			Set<ItemScoreInfo> set = item.getItem().getChildren();
+			Set<ItemScoreInfo> children = new HashSet<ItemScoreInfo>();
 			for(ItemScoreInfo info :set){
 				for(ItemRecord record:list){
 					if((item.getId()+"#"+info.getId()).equals(record.getStructureItemId())){
@@ -980,7 +1005,27 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo>
 						break;
 					}
 				}
+			 if(isAll){
+				ItemFrontInfo front = new ItemFrontInfo();
+				BeanUtils.copyProperties(info, front);
+				front.setIsCollected(this.collectionDao.loadCollection(info.getId(), userId) != null);
+				final String id = item.getId()+"#"+info.getId();
+				front.setTotalNoteNum(this.noteDao.total(new NoteInfo(){
+					private static final long serialVersionUID = 1L;
+					@Override
+					public String getStructureItemId() {return id;}
+				}).intValue());
+				front.setUserNoteNum(this.noteDao.total(new NoteInfo(){
+					private static final long serialVersionUID = 1L;
+					@Override
+					public String getStructureItemId() {return id;}
+					@Override
+					public String getUserId(){return userId;}
+				}).intValue());
+				children.add(front);
+				}
 			}
+			if(isAll) item.getItem().setChildren(children);
 		}else{
 			for(ItemRecord record:list){
 				if(item.getId().equals(record.getStructureItemId())){
@@ -989,6 +1034,25 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo>
 					item.getItem().setAnswerStatus(record.getStatus());
 					break;
 				}
+			}
+			if(isAll){
+			ItemFrontInfo front = new ItemFrontInfo();
+			BeanUtils.copyProperties(item.getItem(), front);
+			front.setIsCollected(this.collectionDao.loadCollection(item.getId(), userId) != null);
+			final String id = item.getId();
+			front.setTotalNoteNum(this.noteDao.total(new NoteInfo(){
+				private static final long serialVersionUID = 1L;
+				@Override
+				public String getStructureItemId() {return id;}
+			}).intValue());
+			front.setUserNoteNum(this.noteDao.total(new NoteInfo(){
+				private static final long serialVersionUID = 1L;
+				@Override
+				public String getStructureItemId() {return id;}
+				@Override
+				public String getUserId(){return userId;}
+			}).intValue());
+			item.setItem(front);
 			}
 		}
 	}
@@ -1275,7 +1339,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo>
 					@Override
 					public Date getLastTime() {return time;}
 				});
-				setUserAnswer(paperPreview,list);
+				setUserAnswer(paperPreview,list,userId,true);
 			}
 		}
 		return paperFrontInfo;

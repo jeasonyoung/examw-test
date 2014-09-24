@@ -24,6 +24,7 @@ import com.examw.test.model.front.PaperFrontInfo;
 import com.examw.test.model.library.PaperInfo;
 import com.examw.test.model.library.PaperPreview;
 import com.examw.test.model.products.ProductInfo;
+import com.examw.test.model.records.NoteInfo;
 import com.examw.test.model.settings.SubjectInfo;
 import com.examw.test.model.syllabus.SyllabusInfo;
 import com.examw.test.service.library.IItemService;
@@ -219,16 +220,14 @@ public class FrontDataController {
 	 */
 	@RequestMapping(value = {"/item/notes"}, method = {RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public Map<String,Object> findNotes(String structureItemId,String userId,HttpServletRequest request){
+	public Map<String,Object> findNotes(NoteInfo info,HttpServletRequest request){
 		if(logger.isDebugEnabled()) logger.debug("查询试题笔记...");
-		if(StringUtils.isEmpty(structureItemId)) return null;
+		if(StringUtils.isEmpty(info.getStructureItemId())) return null;
 		Map<String,Object> map = new HashMap<String,Object>();
-		Note info = new Note();
-		info.setStructureItemId(structureItemId);
-		info.setUserId(userId);
 		Long total = this.noteService.total(info);
 		map.put("total", total);
 		if(total.equals(0)) return map;
+		logger.debug("page = "+info.getPage()+"   rows = "+info.getRows());
 		map.put("rows", this.noteService.findNotes(info));
 		return map;
 	}

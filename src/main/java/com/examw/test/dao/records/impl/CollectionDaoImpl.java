@@ -81,8 +81,8 @@ public class CollectionDaoImpl extends BaseDaoImpl<Collection> implements IColle
 		@SuppressWarnings("unchecked")
 		List<Collection> list = query.list();
 		if(list == null || list.size() == 0) {
-			return list.get(0);
+			return null;
 		}
-		return null;
+		return list.get(0);
 	}
 }

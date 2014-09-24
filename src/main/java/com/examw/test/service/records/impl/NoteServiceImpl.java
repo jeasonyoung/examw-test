@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import com.examw.test.dao.records.INoteDao;
 import com.examw.test.domain.records.Note;
+import com.examw.test.model.records.NoteInfo;
 import com.examw.test.service.records.INoteService;
 
 /**
@@ -47,7 +48,7 @@ public class NoteServiceImpl implements INoteService{
 	 * @see com.examw.test.service.records.INoteService#findNotes(com.examw.test.domain.records.Note)
 	 */
 	@Override
-	public List<Note> findNotes(Note info) {
+	public List<Note> findNotes(NoteInfo info) {
 		return this.noteDao.findNotes(info);
 	}
 	/*
@@ -55,8 +56,7 @@ public class NoteServiceImpl implements INoteService{
 	 * @see com.examw.test.service.records.INoteService#total(com.examw.test.domain.records.Note)
 	 */
 	@Override
-	public long total(Note info) {
+	public long total(NoteInfo info) {
 		return this.noteDao.total(info);
 	}
-	
 }
