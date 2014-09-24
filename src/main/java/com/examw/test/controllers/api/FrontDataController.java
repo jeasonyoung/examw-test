@@ -232,7 +232,7 @@ public class FrontDataController {
 		map.put("rows", this.noteService.findNotes(info));
 		return map;
 	}
-	@RequestMapping(value = {"/item/notes"}, method = {RequestMethod.POST,RequestMethod.GET})
+	@RequestMapping(value = {"/item/addnote"}, method = {RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	public Json addNotes(Note data){
 		if(logger.isDebugEnabled()) logger.debug("查询试题笔记...");
