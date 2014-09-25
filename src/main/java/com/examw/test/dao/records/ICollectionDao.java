@@ -27,4 +27,11 @@ public interface ICollectionDao extends IBaseDao<Collection>{
 	 * 查询结果。
 	 */
 	Long total(Collection info);
+	/**
+	 * 判断用户有没有收藏题目
+	 * @param structureItemId	题目ID
+	 * @param userId			用户ID
+	 * @return
+	 */
+	Collection loadCollection(String structureItemId,String userId);
 }

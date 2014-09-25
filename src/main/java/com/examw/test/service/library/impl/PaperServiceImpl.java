@@ -338,6 +338,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 //		return paperPreview;
 //	}
 
+//<<<<<<< HEAD
 //	/*
 //	 * 加载试卷详情并添加考试记录
 //	 * 
@@ -670,4 +671,774 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 //			return true;
 //		}
 //	}
+//}
+//=======
+//	/*
+//	 * 加载试卷结构下最大的排序号。
+//	 * 
+//	 * @see
+//	 * com.examw.test.service.library.IPaperService#loadStructureItemMaxOrderNo
+//	 * (java.lang.String)
+//	 */
+//	@Override
+//	public Long loadStructureItemMaxOrderNo(String structureId) {
+//		if (logger.isDebugEnabled())
+//			logger.debug("加载试卷结构下最大的排序号...");
+//		return this.structureItemDao.loadMaxOrderNo(structureId);
+//	}
+
+//	/*
+//	 * 查询试卷结构试题查询。
+//	 * 
+//	 * @see
+//	 * com.examw.test.service.library.IPaperService#loadStructureItems(java.
+//	 * lang.String, com.examw.test.model.library.StructureItemInfo)
+//	 */
+//	@Override
+//	public DataGrid<StructureItemInfo> loadStructureItems(String paperId,
+//			StructureItemInfo info) {
+//		if (logger.isDebugEnabled())
+//			logger.debug(String.format("查询试卷［paper = %s］结构试题查询...", paperId));
+//		DataGrid<StructureItemInfo> grid = new DataGrid<StructureItemInfo>();
+//		List<StructureItemInfo> rows = new ArrayList<>();
+//		List<StructureItem> list = this.structureItemDao.findStructureItems(
+//				paperId, info);
+//		if (list != null && list.size() > 0) {
+//			for (StructureItem structureItem : list) {
+//				StructureItemInfo target = this.changeModel(structureItem);
+//				if (target != null)
+//					rows.add(target);
+//			}
+//		}
+//		grid.setRows(rows);
+//		grid.setTotal(this.structureItemDao.total(paperId, info));
+//		return grid;
+//	}
+
+//	// 类型转换（StructureItem => StructureItemInfo）。
+//	private StructureItemInfo changeModel(StructureItem source) {
+//		if (source == null || source.getItem() == null)
+//			return null;
+//		StructureItemInfo target = new StructureItemInfo();
+//		BeanUtils.copyProperties(source, target, new String[] { "item" });
+//		if (source.getStructure() != null)
+//			target.setStructureId(source.getStructure().getId());
+//		target.setItem(this.changeModel(source.getItem(),
+//				source.getShareItemScores()));
+//		if (!StringUtils.isEmpty(source.getSerial())) {
+//			target.getItem().setSerial(source.getSerial());
+//		}
+//		if (source.getScore() != null) {
+//			target.getItem().setScore(source.getScore());
+//		}
+//		return target;
+//	}
+
+//	// 类型转换（item => ItemScoreInfo ）。
+//	private ItemScoreInfo changeModel(Item item,
+//			Set<StructureShareItemScore> shareItemScores) {
+//		if (item == null)
+//			return null;
+//		ItemScoreInfo info = new ItemScoreInfo();
+//		// 试题信息。
+//		BeanUtils.copyProperties(item, info, new String[] { "children" });
+//		if (item.getSubject() != null) {
+//			info.setSubjectId(item.getSubject().getId());
+//			info.setSubjectName(item.getSubject().getName());
+//			if (item.getSubject().getExam() != null) {
+//				info.setExamId(item.getSubject().getExam().getId());
+//				info.setExamName(item.getSubject().getExam().getName());
+//			}
+//		}
+//		if (item.getSource() != null) {
+//			info.setSourceId(item.getSource().getId());
+//			info.setSourceName(item.getSource().getName());
+//		}
+//		if (item.getType() != null)
+//			info.setTypeName(this.itemService.loadTypeName(item.getType()));
+//		if (item.getStatus() != null)
+//			info.setStatusName(this.itemService.loadStatusName(item.getStatus()));
+//		if (item.getOpt() != null)
+//			info.setOptName(this.itemService.loadOptName(item.getOpt()));
+//		// 结构试题信息。
+//		if (shareItemScores != null && shareItemScores.size() > 0) {
+//			StructureShareItemScore structureShareItemScore = null;
+//			for (StructureShareItemScore itemScore : shareItemScores) {
+//				if (itemScore == null || itemScore.getSubItem() == null)
+//					continue;
+//				if (!StringUtils.isEmpty(item.getId())
+//						&& itemScore.getSubItem().getId()
+//								.equalsIgnoreCase(item.getId())) {
+//					structureShareItemScore = itemScore;
+//					break;
+//				}
+//			}
+//			if (structureShareItemScore != null) {
+//				info.setSerial(structureShareItemScore.getSerial());
+//				info.setScore(structureShareItemScore.getScore());
+//			}
+//		}
+//		if (item.getChildren() != null && item.getChildren().size() > 0) {
+//			Set<ItemScoreInfo> children = new TreeSet<ItemScoreInfo>(
+//					new Comparator<ItemScoreInfo>() {
+//						@Override
+//						public int compare(ItemScoreInfo o1, ItemScoreInfo o2) {
+//							return o1.getOrderNo() - o2.getOrderNo();
+//						}
+//					});
+//			for (Item e : item.getChildren()) {
+//				ItemScoreInfo itemScoreInfo = this.changeModel(e,
+//						shareItemScores);
+//				if (itemScoreInfo != null) {
+//					itemScoreInfo.setPid(info.getId());
+//					children.add(itemScoreInfo);
+//				}
+//			}
+//			if (children.size() > 0)
+//				info.setChildren(children);
+//		}
+//		return info;
+//	}
+
+//	/*
+//	 * 更新试卷结构下试题。
+//	 * 
+//	 * @see
+//	 * com.examw.test.service.library.IPaperService#updateStructureItem(java
+//	 * .lang.String, com.examw.test.model.library.StructureItemInfo)
+//	 */
+//	@Override
+//	public StructureItemInfo updateStructureItem(String paperId,
+//			StructureItemInfo info) {
+//		if (logger.isDebugEnabled())
+//			logger.debug("更新试卷结构下试题...");
+//		if (StringUtils.isEmpty(paperId) || info == null
+//				|| info.getItem() == null)
+//			return null;
+//		String msg = null;
+//		Paper paper = this.paperDao.load(Paper.class, paperId);
+//		if (paper == null) {
+//			msg = String.format("试卷［id=%s］不存在！", paperId);
+//			if (logger.isDebugEnabled())
+//				logger.debug(msg);
+//			throw new RuntimeException(msg);
+//		}
+//		if (paper.getStatus() != PaperStatus.NONE.getValue()) {
+//			msg = String.format("试卷［％1$s］状态［%2$s］不允许更新！", paper.getName(),
+//					this.loadStatusName(paper.getStatus()));
+//			if (logger.isDebugEnabled())
+//				logger.debug(msg);
+//			throw new RuntimeException(msg);
+//		}
+//		Structure structure = StringUtils.isEmpty(info.getStructureId()) ? null
+//				: this.structureDao
+//						.load(Structure.class, info.getStructureId());
+//		if (structure == null) {
+//			msg = String.format("试卷［%1$s］下未找到结构［structureId = %2$s］！",
+//					paper.getName(), info.getStructureId());
+//			if (logger.isDebugEnabled())
+//				logger.debug(msg);
+//			throw new RuntimeException(msg);
+//		}
+//		if (structure.getTotal() > 0) {
+//			Long count = this.structureItemDao
+//					.totalItems(info.getStructureId());
+//			if (count != null && count >= structure.getTotal()) {
+//				msg = String
+//						.format("试卷［%1$s］结构下［structureId = %2$s］题目数量已满［total = %3$d］［count = %4$d］！",
+//								paper.getName(), info.getStructureId(),
+//								structure.getTotal(), count);
+//				if (logger.isDebugEnabled())
+//					logger.debug(msg);
+//				throw new RuntimeException(msg);
+//			}
+//		}
+//		if (info.getItem() != null) {
+//			if (StringUtils.isEmpty(info.getItem().getOpt())
+//					&& paper.getType() != null) {// 试卷类型
+//				info.getItem().setOpt(paper.getType());
+//			}
+//			if (paper.getSubject() != null) {
+//				if (StringUtils.isEmpty(info.getItem().getSubjectId())) {// 所属科目。
+//					info.getItem().setSubjectId(paper.getSubject().getId());
+//				}
+//				if (StringUtils.isEmpty(info.getItem().getExamId())
+//						&& paper.getSubject().getExam() != null) { // 所属考试
+//					info.getItem().setExamId(
+//							paper.getSubject().getExam().getId());
+//				}
+//			}
+//			if (StringUtils.isEmpty(info.getItem().getSourceId())
+//					&& paper.getSource() != null) {// 试卷来源
+//				info.getItem().setSourceId(paper.getSource().getId());
+//			}
+//			if (structure != null && structure.getScore() != null
+//					&& structure.getScore().compareTo(BigDecimal.ZERO) == 1) {// 题目分数
+//				info.getItem().setScore(structure.getScore());
+//			}
+//		}
+//		Set<StructureShareItemScore> shareItemScores = null;
+//		if (info.getItem().getType() == ItemType.SHARE_TITLE.getValue()
+//				|| info.getItem().getType() == ItemType.SHARE_ANSWER.getValue()) {
+//			shareItemScores = new HashSet<>();
+//		}
+//		Item item = this.itemService
+//				.updateItem(info.getItem(), shareItemScores);
+//		if (item == null) {
+//			msg = "更新试题内容失败！";
+//			if (logger.isDebugEnabled())
+//				logger.debug(msg);
+//			throw new RuntimeException(msg);
+//		}
+//		StructureItem data = StringUtils.isEmpty(info.getId()) ? null
+//				: this.structureItemDao.load(StructureItem.class, info.getId());
+//		boolean isAdded = false;
+//		if (isAdded = (data == null)) {
+//			info.setCreateTime(new Date());
+//			info.setId(MD5Util.MD5(String.format("%1$s-%2$s",
+//					structure.getId(), item.getId())));
+//			data = this.structureItemDao
+//					.load(StructureItem.class, info.getId());
+//			if (isAdded = (data == null))
+//				data = new StructureItem();
+//		}
+//		if (!isAdded)
+//			info.setCreateTime(data.getCreateTime());
+//		data.setStructure(structure);
+//		BeanUtils.copyProperties(info, data, new String[] { "item" });
+//		data.setSerial(info.getItem().getSerial());
+//		data.setScore(info.getItem().getScore());
+//		data.setItem(item);
+//		if (shareItemScores != null && shareItemScores.size() > 0) {
+//			for (StructureShareItemScore structureShareItemScore : shareItemScores) {
+//				if (structureShareItemScore == null)
+//					continue;
+//				structureShareItemScore.setId(MD5Util.MD5(String.format(
+//						"%1$s-%2$s", data.getId(),
+//						structureShareItemScore.getId())));
+//				structureShareItemScore.setStructureItem(data);
+//			}
+//		}
+//		data.setShareItemScores(shareItemScores);
+//		if (isAdded)
+//			this.structureItemDao.save(data);
+//		return this.changeModel(data);
+//	}
+
+//	/*
+//	 * 删除试卷结构下的数据。
+//	 * 
+//	 * @see
+//	 * com.examw.test.service.library.IPaperService#deleteStructureItem(java
+//	 * .lang.String, java.lang.String, java.lang.String[])
+//	 */
+//	@Override
+//	public void deleteStructureItem(String[] ids) {
+//		if (logger.isDebugEnabled())
+//			logger.debug("删除试卷下试题数据...");
+//		if (ids == null || ids.length == 0)
+//			return;
+//		for (int i = 0; i < ids.length; i++) {
+//			if (StringUtils.isEmpty(ids[i]))
+//				continue;
+//			if (logger.isDebugEnabled())
+//				logger.debug("删除试卷下试题：" + ids[i]);
+//			StructureItem data = this.structureItemDao.load(
+//					StructureItem.class, ids[i]);
+//			if (data != null)
+//				this.structureItemDao.delete(data);
+//		}
+//	}
+
+//	/*
+//	 * 加载试卷预览。
+//	 * 
+//	 * @see
+//	 * com.examw.test.service.library.IPaperService#loadPaperPreview(java.lang
+//	 * .String)
+//	 */
+//	@Override
+//	public PaperPreview loadPaperPreview(String paperId) {
+//		if (logger.isDebugEnabled())
+//			logger.debug(String.format("加载试卷［id = %s］预览...", paperId));
+//		if (StringUtils.isEmpty(paperId))
+//			return null;
+//		this.paperDao.evict(Paper.class);
+//		Paper paper = this.paperDao.load(Paper.class, paperId);
+//		if (paper == null) {
+//			if (logger.isDebugEnabled())
+//				logger.debug(String.format("试卷［id = %s］不存在！", paperId));
+//			return null;
+//		}
+//		PaperPreview paperPreview = this.changeModel(paper);
+//		if (paperPreview == null)
+//			return null;
+//		List<StructureInfo> structures = new ArrayList<>();
+//		List<Structure> list = this.structureDao.finaStructures(paperId);
+//		int total = 0; // 总题数
+//		if (list != null && list.size() > 0) {
+//			for (Structure s : list) {
+//				StructureInfo info = new StructureInfo();
+//				if (this.changeModel(s, info, true)) {
+//					structures.add(info);
+//					total += info.getTotal(); // 计算题目的总数
+//				}
+//			}
+//		}
+//		paperPreview.setStructures(structures);
+//		paperPreview.setTotal(total); // 设置题目的总数
+//		return paperPreview;
+//	}
+
+//	/********************************************************
+//	 * 前台调用方法
+//	 ********************************************************/
+//	/*
+//	 * 加载试卷基本信息
+//	 * 
+//	 * @see
+//	 * com.examw.test.service.library.IPaperService#loadPaperInfo(java.lang.
+//	 * String)
+//	 */
+//	@Override
+//	public PaperPreview loadPaperInfo(String paperId) {
+//		if (logger.isDebugEnabled())
+//			logger.debug(String.format("加载试卷［id = %s］预览...", paperId));
+//		if (StringUtils.isEmpty(paperId))
+//			return null;
+//		this.paperDao.evict(Paper.class);
+//		Paper paper = this.paperDao.load(Paper.class, paperId);
+//		if (paper == null) {
+//			if (logger.isDebugEnabled())
+//				logger.debug(String.format("试卷［id = %s］不存在！", paperId));
+//			return null;
+//		}
+//		PaperPreview paperPreview = this.changeModel(paper);
+//		if (paperPreview == null)
+//			return null;
+//		List<StructureInfo> structures = new ArrayList<>();
+//		List<Structure> list = this.structureDao.finaStructures(paperId);
+//		int total = 0; // 总题数
+//		if (list != null && list.size() > 0) {
+//			for (Structure s : list) {
+//				StructureInfo info = new StructureInfo();
+//				if (this.changeModel(s, info, false)) { // 不加载题目
+//					structures.add(info);
+//					total += info.getTotal(); // 计算题目的总数
+//				}
+//			}
+//		}
+//		paperPreview.setStructures(structures);
+//		paperPreview.setTotal(total); // 设置题目的总数
+//		return paperPreview;
+//	}
+//
+//	/*
+//	 * 加载试卷详情并添加考试记录
+//	 * 
+//	 * @see
+//	 * com.examw.test.service.library.IPaperService#loadPaperPreviewAndAddRecord
+//	 * (java.lang.String, java.lang.String)
+//	 */
+//	@Override
+//	public PaperPreview loadPaperPreviewAndAddRecord(final String paperId, final
+//			String userId) {
+//		PaperPreview paperPreview = this.loadPaperPreview(paperId);
+//		if (paperPreview != null)
+//		{
+//			paperPreview.setLeftTime(60*paperPreview.getTime());
+//			PaperRecord	record = this.paperRecordDao.load(paperId, userId);
+//			if(record != null && record.getStatus().equals(PaperRecord.STATUS_UNDONE)){
+//				final Date time = record.getLastTime();
+//				//没做完 加上用户答案
+//				List<ItemRecord> list = this.itemRecordDao.findItemRecords(new ItemRecord(){
+//					private static final long serialVersionUID = 1L;
+//					@Override
+//					public String getPaperId() {return paperId;}
+//					@Override
+//					public String getUserId() {return userId;}
+//					@Override
+//					public Date getLastTime() {return time;}
+//				});
+//				setUserAnswer(paperPreview,list,userId,false);
+//				paperPreview.setLeftTime(paperPreview.getLeftTime() - (record.getUsedTime()==null?0:record.getUsedTime()));
+//			}
+//			savePaperRecord(paperId, userId); // 保存考试记录
+//		}
+//		return paperPreview;
+//	}
+//	/*
+//	 * 以前做过的题目附上用户答案
+//	 */
+//	private void setUserAnswer(PaperPreview paperPreview,List<ItemRecord> list,String userId,boolean isAll){
+//		if(list == null || list.size()==0) return;
+//		List<StructureInfo> structures = paperPreview.getStructures();
+//		if(structures == null || structures.size()==0) return ;
+//		for(StructureInfo s:structures){
+//			Set<StructureItemInfo> items = s.getItems();
+//			if(items == null || items.size()==0) continue;
+//			for(StructureItemInfo item : items){
+//				if(item.getItem() == null) continue;
+//				//为每题设置用户答案
+//				setUserAnswer(item,list,userId,isAll);
+//			}
+//		}
+//	}
+//	/*
+//	 * 设置用户答案
+//	 */
+//	private void setUserAnswer(StructureItemInfo item,List<ItemRecord> list,final String userId,boolean isAll){
+//		if(item.getType().equals(Item.TYPE_SHARE_ANSWER)||item.getType().equals(Item.TYPE_SHARE_TITLE)){
+//			Set<ItemScoreInfo> set = item.getItem().getChildren();
+//			Set<ItemScoreInfo> children = new HashSet<ItemScoreInfo>();
+//			for(ItemScoreInfo info :set){
+//				for(ItemRecord record:list){
+//					if((item.getId()+"#"+info.getId()).equals(record.getStructureItemId())){
+//						info.setUserAnswer(record.getAnswer());
+//						info.setUserScore(record.getScore());
+//						info.setAnswerStatus(record.getStatus());
+//						break;
+//					}
+//				}
+//			 if(isAll){
+//				ItemFrontInfo front = new ItemFrontInfo();
+//				BeanUtils.copyProperties(info, front);
+//				front.setIsCollected(this.collectionDao.loadCollection(info.getId(), userId) != null);
+//				final String id = item.getId()+"#"+info.getId();
+//				front.setTotalNoteNum(this.noteDao.total(new NoteInfo(){
+//					private static final long serialVersionUID = 1L;
+//					@Override
+//					public String getStructureItemId() {return id;}
+//				}).intValue());
+//				front.setUserNoteNum(this.noteDao.total(new NoteInfo(){
+//					private static final long serialVersionUID = 1L;
+//					@Override
+//					public String getStructureItemId() {return id;}
+//					@Override
+//					public String getUserId(){return userId;}
+//				}).intValue());
+//				children.add(front);
+//				}
+//			}
+//			if(isAll) item.getItem().setChildren(children);
+//		}else{
+//			for(ItemRecord record:list){
+//				if(item.getId().equals(record.getStructureItemId())){
+//					item.getItem().setUserAnswer(record.getAnswer());
+//					item.getItem().setUserScore(record.getScore());
+//					item.getItem().setAnswerStatus(record.getStatus());
+//					break;
+//				}
+//			}
+//			if(isAll){
+//			ItemFrontInfo front = new ItemFrontInfo();
+//			BeanUtils.copyProperties(item.getItem(), front);
+//			front.setIsCollected(this.collectionDao.loadCollection(item.getId(), userId) != null);
+//			final String id = item.getId();
+//			front.setTotalNoteNum(this.noteDao.total(new NoteInfo(){
+//				private static final long serialVersionUID = 1L;
+//				@Override
+//				public String getStructureItemId() {return id;}
+//			}).intValue());
+//			front.setUserNoteNum(this.noteDao.total(new NoteInfo(){
+//				private static final long serialVersionUID = 1L;
+//				@Override
+//				public String getStructureItemId() {return id;}
+//				@Override
+//				public String getUserId(){return userId;}
+//			}).intValue());
+//			item.setItem(front);
+//			}
+//		}
+//	}
+//	/*
+//	 * 保存考试记录
+//	 * @param paperId
+//	 * @param userId
+//	 */
+//	private void savePaperRecord(String paperId, String userId) {
+//		//做一次保存一次考试记录
+//		PaperRecord	record = new PaperRecord();
+//		record.setId(UUID.randomUUID().toString());
+//		record.setPaperId(paperId);
+//		record.setUserId(userId);
+//		record.setLastTime(new Date());
+//		record.setStatus(PaperRecord.STATUS_UNDONE);
+//		paperRecordDao.save(record);
+//	}
+
+//	/*
+//	 * 查询前台数据
+//	 * @see
+//	 * com.examw.test.service.library.IPaperService#loadPaperFrontInfo(com.examw
+//	 * .test.model.library.PaperInfo, java.lang.String)
+//	 */
+//	@Override
+//	public List<PaperFrontInfo> loadPaperFrontInfo(PaperInfo info, String userId) {
+//		List<Paper> list = this.paperDao.findPapers(info);
+//		List<PaperFrontInfo> result = new ArrayList<PaperFrontInfo>();
+//		if (list == null || list.size() == 0)
+//			return result;
+//		for (Paper paper : list) {
+//			PaperFrontInfo target = this.changeFrontModel(paper, userId);
+//			if (target != null)
+//				result.add(target);
+//		}
+//		return result;
+//	}
+
+//	/*
+//	 * 模型转换
+//	 */
+//	private PaperFrontInfo changeFrontModel(Paper data, String userId) {
+//		PaperInfo paperInfo = this.changeModel(data);
+//		if (paperInfo == null)
+//			return null;
+//		paperInfo.setTotal(getTotalNum(data));
+//		PaperFrontInfo info = new PaperFrontInfo();
+//		BeanUtils.copyProperties(paperInfo, info);
+//		info.setMaxScore(this.paperRecordDao.findMaxScore(data.getId()));
+//		info.setUserSum(this.paperRecordDao.findUserSum(data.getId())
+//				.intValue());
+//		if (!StringUtils.isEmpty(userId)) {
+//			PaperRecord record = this.paperRecordDao.load(data.getId(), userId);
+//			if (record != null) {
+//				info.setUserStatus(record.getStatus());
+//				if (record.getStatus().equals(PaperRecord.STATUS_DONE)) {
+//					info.setUserScore(record.getScore());
+//					info.setUserTime(record.getTime());
+//					info.setUserExamTime(record.getLastTime());
+//				}
+//			}
+//		}
+//		return info;
+//	}
+
+//	/*
+//	 * 计算总题数
+//	 */
+//	private Integer getTotalNum(Paper data) {
+//		List<Structure> list = this.structureDao.finaStructures(data.getId());
+//		int total = 0; // 总题数
+//		if (list != null && list.size() > 0) {
+//			for (Structure s : list) {
+//				StructureInfo info = new StructureInfo();
+//				if (this.changeModel(s, info, false)) { // 不加载题目
+//					total += info.getTotal(); // 计算题目的总数
+//				}
+//			}
+//		}
+//		return total;
+//	}
+
+//	/*
+//	 * 查询统计
+//	 * @see
+//	 * com.examw.test.service.library.IPaperService#totalPaperFrontInfo(com.
+//	 * examw.test.model.library.PaperInfo)
+//	 */
+//	@Override
+//	public Long totalPaperFrontInfo(PaperInfo info) {
+//		return this.paperDao.total(info);
+//	}
+//
+//	@Override
+//	public Json submitPaper(Integer limitTime, String chooseAnswers,
+//			String textAnswers, Integer model, String paperId, String userId) {
+//		Json json = new Json();
+//		PaperRecord record = this.paperRecordDao.load(paperId, userId);
+//		Paper paper = this.paperDao.load(Paper.class, paperId);
+//		record.setStatus(model);
+//		record.setUsedTime(paper.getTime() * 60 - limitTime); // 使用时间
+//		List<ItemRecord> itemRecords = new ArrayList<ItemRecord>();
+//		if (!StringUtils.isEmpty(chooseAnswers)) {
+//			try {
+//				chooseAnswers = URLDecoder.decode(chooseAnswers, "utf-8");
+//			} catch (UnsupportedEncodingException e) {
+//				e.printStackTrace();
+//			}
+//			String[] answers = chooseAnswers.split("&");// 拆分题目与答案
+//			for (String s : answers) {
+//				ItemRecord itemRecord = new ItemRecord();
+//				itemRecord.setId(UUID.randomUUID().toString());
+//				itemRecord.setPaperId(paperId);
+//				itemRecord.setUserId(userId);
+//				itemRecord.setLastTime(new Date());
+//				String[] arr = s.split("=");
+//				itemRecord.setStructureItemId(arr[0]);
+//				if (arr.length > 1) { // 没有答案
+//					itemRecord.setAnswer(arr[1]);
+//				} 
+//				itemRecords.add(itemRecord);
+//			}
+//		}
+//		if (!StringUtils.isEmpty(textAnswers)) {
+//
+//		}
+//		if(logger.isDebugEnabled())	logger.debug("log ==== "+model);
+//		if (model.equals(PaperRecord.STATUS_DONE)) {
+//			if(logger.isDebugEnabled())	logger.debug("进行试卷的评判分");
+//			PaperPreview preview = judgePaper(record, paperId, itemRecords);
+//			json.setData(preview);
+//		}
+//		this.itemRecordDao.insertItemRecordList(itemRecords);
+//		json.setSuccess(true);
+//		json.setMsg("提交成功");
+//		return json;
+//	}
+//
+//	private PaperPreview judgePaper(PaperRecord record, String paperId,
+//			List<ItemRecord> itemRecordList) {
+//		
+//		PaperPreview paper = this.loadPaperPreview(paperId);
+//		List<StructureInfo> structures = paper.getStructures();
+//		if (structures == null || structures.size() == 0)
+//			return null;
+//		BigDecimal paperTotalScore = BigDecimal.ZERO; // 试卷总分
+//		List<ErrorItemRecord> errorRecords = new ArrayList<ErrorItemRecord>();
+//		for (StructureInfo s : structures) {
+//			Set<StructureItemInfo> items = s.getItems();
+//			if (items == null || items.size() == 0)
+//				continue;
+//			// 评分规则
+//			BigDecimal min = s.getMin(); // 最低得分
+//			BigDecimal per = s.getScore(); // 每题得分
+//			BigDecimal actualRuleTotal = BigDecimal.ZERO;
+//			for (StructureItemInfo item : items) { // 结构题目
+//				for (ItemRecord itemRecord : itemRecordList) {
+//					if (!itemRecord.getStructureItemId().contains("#")) { // 不包含#,是单题
+//						if (item.getId()
+//								.equals(itemRecord.getStructureItemId())) {
+//							// 判断对错
+//							if(!judgeItemIsRight(item.getItem(), itemRecord, min, per))
+//								errorRecords.add(createErrorRecord(item.getItem().getId(),itemRecord));
+//							actualRuleTotal = actualRuleTotal.add(itemRecord.getScore());
+//							break;
+//						}
+//					} else { // 复合题
+//						Set<ItemScoreInfo> children = item.getItem().getChildren();
+//						for (ItemScoreInfo child : children) {
+//							if ((item.getId() + "#" + child.getId()).equals(itemRecord.getStructureItemId())) {
+//								// 判断对错
+//								if(!judgeItemIsRight(child, itemRecord, min, per))
+//									errorRecords.add(createErrorRecord(item.getItem().getId(),itemRecord));
+//								actualRuleTotal = actualRuleTotal.add(itemRecord.getScore());
+//								break;
+//							}
+//						}
+//					}
+//				}
+//			}
+//			if (actualRuleTotal.compareTo(BigDecimal.ZERO) == -1) {
+//				actualRuleTotal = BigDecimal.ZERO;
+//			}
+//			paperTotalScore = paperTotalScore.add(actualRuleTotal); // 试卷总分
+//		}
+//		record.setScore(paperTotalScore);
+//		record.setTime(record.getUsedTime());
+//		this.errorItemRecordDao.insertRecordList(errorRecords); 	//保存错题记录
+//		return paper;
+//	}
+//	private ErrorItemRecord createErrorRecord(String itemId,ItemRecord itemRecord){
+//		ErrorItemRecord error = new ErrorItemRecord();
+//		error.setCreateTime(new Date());
+//		error.setId(UUID.randomUUID().toString());
+//		error.setStructureItemId(itemRecord.getStructureItemId());
+//		error.setItemId(itemId);
+//		error.setHistoryAnswers(itemRecord.getAnswer());
+//		error.setUserId(itemRecord.getUserId());
+//		return error;
+//	}
+//	/*
+//	 * 判断题目是对是错
+//	 */
+//	private boolean judgeItemIsRight(ItemScoreInfo item,
+//			ItemRecord itemRecord, BigDecimal min, BigDecimal per) {
+//		if (StringUtils.isEmpty(itemRecord.getAnswer())) {
+//			itemRecord.setScore(min == null ? BigDecimal.ZERO : min); // 得0分或者负分
+//			itemRecord.setStatus(ItemRecord.STATUS_NULL); // 没有作答
+//			return false;
+//		}
+//		switch (item.getType()) {
+//		case Item.TYPE_SINGLE: // 单选
+//		case Item.TYPE_JUDGE: // 判断
+//			if (item.getAnswer().equals(itemRecord.getAnswer())) // 答对
+//			{
+//				itemRecord.setScore(per); // 得标准分
+//				itemRecord.setStatus(ItemRecord.STATUS_RIGHT); // 答对
+//				return true;
+//			} else {
+//				itemRecord.setScore((min == null || min
+//						.compareTo(BigDecimal.ZERO) == 1) ? BigDecimal.ZERO
+//						: min); // 得0分或者负分
+//				itemRecord.setStatus(ItemRecord.STATUS_WRONG); // 答错
+//				return false;
+//			}
+//		case Item.TYPE_MULTY: // 多选
+//		case Item.TYPE_UNCERTAIN: // 不定项
+//			String[] arr = itemRecord.getAnswer().split(",");
+//			String answer = item.getAnswer();
+//			int total = 0;
+//			for (String a : arr) {
+//				if (answer.indexOf(a) == -1) { // 包含有错误答案
+//					itemRecord.setScore((min == null || min
+//							.compareTo(BigDecimal.ZERO) == 1) ? BigDecimal.ZERO
+//							: min); // 得0分或者负分
+//					itemRecord.setStatus(ItemRecord.STATUS_WRONG); // 答错
+//					return false;
+//				} else {
+//					total++;
+//				}
+//			}
+//			if (total == answer.split(",").length) { // 全对,得满分
+//				itemRecord.setScore(per); // 得标准分
+//				itemRecord.setStatus(ItemRecord.STATUS_RIGHT); // 答对
+//				return true;
+//			} else {
+//				itemRecord.setScore((min == null || min
+//						.compareTo(BigDecimal.ZERO) == -1) ? BigDecimal.ZERO
+//						: min.multiply(new BigDecimal(total))); // 得0分或者负分
+//				itemRecord.setStatus(ItemRecord.STATUS_LESS); // 少选
+//				return false;
+//			}
+//		default:
+//			return true;
+//		}
+//	}
+//	/*
+//	 * 加载试卷考试记录详情
+//	 * @see com.examw.test.service.library.IPaperService#loadPaperRecordDetail(java.lang.String, java.lang.String)
+//	 */
+//	@Override
+//	public PaperFrontInfo loadPaperRecordDetail(final String paperId,final String userId) {
+//		PaperFrontInfo paperFrontInfo = null;
+//		PaperPreview paperPreview =	this.loadPaperPreview(paperId);
+//		if (paperPreview != null)
+//		{
+//			paperFrontInfo = new PaperFrontInfo();
+//			BeanUtils.copyProperties(paperPreview, paperFrontInfo);
+//			PaperRecord	record = this.paperRecordDao.load(paperId, userId);
+//			if(record != null && record.getStatus().equals(PaperRecord.STATUS_UNDONE)){
+//				return paperFrontInfo;
+//			}else if(record!=null && record.getStatus().equals(PaperRecord.STATUS_DONE)){
+//				paperFrontInfo.setUserTime(record.getTime());
+//				paperFrontInfo.setUserScore(record.getScore());
+//				final Date time = record.getLastTime();
+//				//没做完 加上用户答案
+//				List<ItemRecord> list = this.itemRecordDao.findItemRecords(new ItemRecord(){
+//					private static final long serialVersionUID = 1L;
+//					@Override
+//					public String getPaperId() {return paperId;}
+//					@Override
+//					public String getUserId() {return userId;}
+//					@Override
+//					public Date getLastTime() {return time;}
+//				});
+//				setUserAnswer(paperPreview,list,userId,true);
+//			}
+//		}
+//		return paperFrontInfo;
+//	}
+//}
+//>>>>>>> branch 'master' of git@github.com:jeasonyoung/examw-test.git
 }

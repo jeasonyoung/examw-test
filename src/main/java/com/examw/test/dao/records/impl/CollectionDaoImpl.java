@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
 import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.impl.BaseDaoImpl;
@@ -64,5 +65,24 @@ public class CollectionDaoImpl extends BaseDaoImpl<Collection> implements IColle
 			parameters.put("userId", info.getUserId());
 		}
 		return hql;
+	}
+	
+	/*
+	 * 判断用户是否收藏了题目
+	 * @see com.examw.test.dao.records.ICollectionDao#isCollected(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Collection loadCollection(String structureItemId, String userId) {
+		if(logger.isDebugEnabled()) logger.debug("查询用户是否收藏了题目...");
+		String hql = "from Collection c where c.structureItemId = :structureItemId and c.userId = :userId";
+		Query query = this.getCurrentSession().createQuery(hql);
+		query.setParameter("structureItemId", structureItemId);
+		query.setParameter("userId", userId);
+		@SuppressWarnings("unchecked")
+		List<Collection> list = query.list();
+		if(list == null || list.size() == 0) {
+			return null;
+		}
+		return list.get(0);
 	}
 }

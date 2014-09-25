@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource; 
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -16,16 +17,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.model.Json;
 import com.examw.test.domain.records.ItemRecord;
-import com.examw.test.domain.settings.Subject;
+import com.examw.test.domain.records.Note;
 import com.examw.test.model.front.FrontCategoryInfo;
+import com.examw.test.model.front.PaperFrontInfo;
 import com.examw.test.model.library.PaperInfo;
 import com.examw.test.model.products.ProductInfo;
+import com.examw.test.model.records.NoteInfo;
 import com.examw.test.model.settings.SubjectInfo;
 import com.examw.test.model.syllabus.SyllabusInfo;
 import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperService;
 import com.examw.test.service.products.IProductService;
+import com.examw.test.service.records.ICollectionService;
 import com.examw.test.service.records.IItemRecordService;
+import com.examw.test.service.records.INoteService;
 import com.examw.test.service.settings.ICategoryService;
 import com.examw.test.service.settings.ISubjectService;
 import com.examw.test.service.syllabus.IKnowledgeService;
@@ -56,6 +61,10 @@ public class FrontDataController {
 	private IKnowledgeService knowledgeService;
 	@Resource
 	private IItemRecordService itemRecordService;
+	@Resource
+	private INoteService noteService;
+	@Resource
+	private ICollectionService collectionService;
 	/**
 	 * 加载所有考试分类和其下的所有考试
 	 * @param username
@@ -138,9 +147,16 @@ public class FrontDataController {
 		if(logger.isDebugEnabled()) logger.debug("试卷列表数据");
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(StringUtils.isEmpty(productId)) return map;
-		List<Subject> list = this.productService.loadSubjectList(productId);
-		//科目集合
-		map.put("SUBJECTLIST", this.subjectService.conversion(list));
+		//List<Subject> list = this.productService.loadSubjectList(productId);
+		
+//		//科目集合
+//<<<<<<< HEAD
+//		map.put("SUBJECTLIST", this.subjectService.conversion(list));
+//=======
+//		map.put("SUBJECTLIST", this.subjectService.changeModel(list));
+//		//地区集合
+//		map.put("AREALIST", this.productService.loadAreaList(productId));
+//>>>>>>> branch 'master' of git@github.com:jeasonyoung/examw-test.git
 		//试卷类型映射
 		map.put("PAPERTYPE", this.productService.getPaperTypeMap());
 		//试卷列表
@@ -190,6 +206,61 @@ public class FrontDataController {
 //		return this.paperService.submitPaper(Integer.valueOf(limitTime), chooseAnswers, textAnswers,Integer.valueOf(model), paperId,userId);
 //	}
 	
+	@RequestMapping(value = {"/paper/record"}, method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public PaperFrontInfo paperRecord(String paperId,String userId,HttpServletRequest request){
+		if(logger.isDebugEnabled()) logger.debug("试卷解析详情");
+		if(StringUtils.isEmpty(paperId)||StringUtils.isEmpty(userId)) return null;
+		//return this.paperService.loadPaperRecordDetail(paperId, userId);
+		///TODO::
+		return null;
+	}
+	/**
+	 * 查询试题笔记
+	 * @param structureItemId
+	 * @param userId
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = {"/item/notes"}, method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public Map<String,Object> findNotes(NoteInfo info,HttpServletRequest request){
+		if(logger.isDebugEnabled()) logger.debug("查询试题笔记...");
+		if(StringUtils.isEmpty(info.getStructureItemId())) return null;
+		Map<String,Object> map = new HashMap<String,Object>();
+		Long total = this.noteService.total(info);
+		map.put("total", total);
+		if(total.equals(0)) return map;
+		logger.debug("page = "+info.getPage()+"   rows = "+info.getRows());
+		map.put("rows", this.noteService.findNotes(info));
+		return map;
+	}
+	@RequestMapping(value = {"/item/addnote"}, method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public Json addNotes(Note data){
+		if(logger.isDebugEnabled()) logger.debug("查询试题笔记...");
+		if(data==null || StringUtils.isEmpty(data.getStructureItemId())) return null;
+		Json json = new Json();
+		json.setSuccess(this.noteService.insertNote(data));
+		if(json.isSuccess()){
+			json.setMsg("添加成功");
+			json.setData(data);
+		}
+		return json;
+	}
+	/**
+	 * 收藏或取消收藏
+	 * @param structureItemId
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping(value = {"/item/collection"}, method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public Json collection(String structureItemId,String itemId,String userId){
+		if(logger.isDebugEnabled()) logger.debug("查询试题笔记...");
+		if(StringUtils.isEmpty(structureItemId)||StringUtils.isEmpty(userId)) return null;
+		return this.collectionService.collectOrCancel(structureItemId,itemId,userId);
+	}
 	/**
 	 *
 	 */

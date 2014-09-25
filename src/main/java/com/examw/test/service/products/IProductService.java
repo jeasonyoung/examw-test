@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.products.ProductInfo;
+import com.examw.test.model.settings.AreaInfo;
 import com.examw.test.service.IBaseDataService;
 
 /**
@@ -43,6 +44,12 @@ public interface IProductService extends IBaseDataService<ProductInfo>{
 	 * @return
 	 */
 	List<Subject> loadSubjectList(String productId);
+	/**
+	 * 获取产品所属考试包含地区的集合
+	 * @param productId
+	 * @return
+	 */
+	List<AreaInfo> loadAreaList(String productId);
 	/**
 	 * 获取试卷类型映射
 	 * @return
