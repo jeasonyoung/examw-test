@@ -118,12 +118,13 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 		return info;
 	}
 	/*
-	 * 
+	 * 数据模型转换。
+	 * @see com.examw.test.service.settings.ISubjectService#conversion(com.examw.test.domain.settings.Subject)
 	 */
 	@Override
-	public List<SubjectInfo> conversion(List<Subject> data) {
+	public SubjectInfo conversion(Subject subject) {
 		if(logger.isDebugEnabled())logger.debug("数据模型集合转换...");
-		return this.changeModel(data);
+		return this.changeModel(subject);
 	}
 	/*
 	 * 查询统计。

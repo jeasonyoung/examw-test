@@ -9,7 +9,7 @@ import com.examw.model.Paging;
  * @since 2014年8月6日 上午11:37:04.
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class CategoryInfo extends Paging {
+public class CategoryInfo extends Paging implements Comparable<CategoryInfo> {
 	private static final long serialVersionUID = 1L;
 	private String pid,id,name,abbr;
 	private String fullName;
@@ -104,5 +104,21 @@ public class CategoryInfo extends Paging {
 	 */
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+	}
+	/*
+	 * 排序比较。
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(CategoryInfo o) {
+		if(this == o) return 0;
+		int index = this.getCode() - o.getCode();
+		if(index == 0){
+			index = this.getName().compareTo(o.getName());
+			if(index == 0){
+				index = this.getId().compareTo(o.getId());
+			}
+		}
+		return index;
 	}	
 }

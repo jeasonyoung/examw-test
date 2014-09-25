@@ -147,5 +147,10 @@
 	    <!-- 试卷预览服务接口 -->
 	    <property name="paperPreviewService" ref="paperPreviewService" />
 	</bean>
+	<!-- 前端试卷服务 -->
+	<bean id="frontPaperService" class="com.examw.test.service.library.impl.FrontPaperServiceImpl">
+	    <!-- 试卷发布数据接口 -->
+	    <property name="paperReleaseDao" ref="paperReleaseDao" />
+	</bean>
 	<!-- 题库管理 服务接口实现 end-->
 </beans>

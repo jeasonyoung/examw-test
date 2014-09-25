@@ -27,8 +27,8 @@ public interface ISubjectService extends IBaseDataService<SubjectInfo>{
 	List<SubjectInfo> loadAllSubjects(String examId);
 	/**
 	 * 模型类型转换。
-	 * @param data
+	 * @param subject
 	 * @return
 	 */
-	List<SubjectInfo> conversion(List<Subject> data);
+	SubjectInfo conversion(Subject subject);
 }
