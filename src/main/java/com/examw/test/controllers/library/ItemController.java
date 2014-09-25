@@ -19,15 +19,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.examw.aware.IUserAware;
 import com.examw.model.DataGrid;
 import com.examw.model.Json;
-import com.examw.test.domain.library.Item;
 import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.library.ItemInfo;
 import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.ItemJudgeAnswer;
 import com.examw.test.service.library.ItemStatus;
+import com.examw.test.support.ItemTypeUtils;
 
 /**
  * 题目管理控制器。
@@ -37,11 +38,37 @@ import com.examw.test.service.library.ItemStatus;
  */
 @Controller
 @RequestMapping(value="/library/item")
-public class ItemController {
+public class ItemController implements IUserAware {
 	private static final Logger logger = Logger.getLogger(ItemController.class);
 	//注入题目服务接口
 	@Resource
 	private IItemService itemService;
+	private String current_userId = null, current_userName = null;
+	/*
+	 * 注入当前用户ID。
+	 * @see com.examw.aware.IUserAware#setUserId(java.lang.String)
+	 */
+	@Override
+	public void setUserId(String userId) {
+		if(logger.isDebugEnabled()) logger.debug("注入当前用户ID=" + userId);
+		this.current_userId = userId;
+	}
+	/*
+	 * 注入当前用户名称。
+	 * @see com.examw.aware.IUserAware#setUserName(java.lang.String)
+	 */
+	@Override
+	public void setUserName(String userName) {
+		if(logger.isDebugEnabled()) logger.debug("注入当前用户名称=" + userName);
+		this.current_userName = userName;
+	}
+	/*
+	 * 注入当前用户昵称。
+	 * @see com.examw.aware.IUserAware#setUserNickName(java.lang.String)
+	 */
+	@Override
+	public void setUserNickName(String userNickName) {
+	}
 	/**
 	 * 列表页面。
 	 * @param model
@@ -55,27 +82,8 @@ public class ItemController {
 		model.addAttribute("PER_DELETE", ModuleConstant.LIBRARY_ITEM + ":" + Right.DELETE);
 		
 		model.addAttribute("ITEM_STATUS_NONE_VALUE", ItemStatus.NONE.getValue());
-		//单选
-		model.addAttribute("TYPE_SINGLE_VALUE", Item.TYPE_SINGLE);
-		model.addAttribute("TYPE_SINGLE_NAME", this.itemService.loadTypeName(Item.TYPE_SINGLE));
-		//多选
-		model.addAttribute("TYPE_MULTY_VALUE", Item.TYPE_MULTY);
-		model.addAttribute("TYPE_MULTY_NAME", this.itemService.loadTypeName(Item.TYPE_MULTY));
-		//不定向选
-		model.addAttribute("TYPE_UNCERTAIN_VALUE", Item.TYPE_UNCERTAIN);
-		model.addAttribute("TYPE_UNCERTAIN_NAME", this.itemService.loadTypeName(Item.TYPE_UNCERTAIN));
-		//判断
-		model.addAttribute("TYPE_JUDGE_VALUE", Item.TYPE_JUDGE);
-		model.addAttribute("TYPE_JUDGE_NAME", this.itemService.loadTypeName(Item.TYPE_JUDGE));
-		//问答
-		model.addAttribute("TYPE_QANDA_VALUE", Item.TYPE_QANDA);
-		model.addAttribute("TYPE_QANDA_NAME", this.itemService.loadTypeName(Item.TYPE_QANDA));
-		//共提干
-		model.addAttribute("TYPE_SHARE_TITLE_VALUE", Item.TYPE_SHARE_TITLE);
-		model.addAttribute("TYPE_SHARE_TITLE_NAME", this.itemService.loadTypeName(Item.TYPE_SHARE_TITLE));
-		//共答案
-		model.addAttribute("TYPE_SHARE_ANSWER_VALUE", Item.TYPE_SHARE_ANSWER);
-		model.addAttribute("TYPE_SHARE_ANSWER_NAME", this.itemService.loadTypeName(Item.TYPE_SHARE_ANSWER));
+		
+		ItemTypeUtils.addAllItemType(this.itemService, model);
 		
 		return "library/item_list";
 	}
@@ -129,21 +137,8 @@ public class ItemController {
 		model.addAttribute("JUDGE_ANSWER_WRONG_VALUE", ItemJudgeAnswer.WRONG.getValue());
 		model.addAttribute("JUDGE_ANSWER_WRONG_NAME", this.itemService.loadJudgeAnswerName(ItemJudgeAnswer.WRONG.getValue()));
 		
-		//单选
-		model.addAttribute("TYPE_SINGLE_VALUE", Item.TYPE_SINGLE);
-		model.addAttribute("TYPE_SINGLE_NAME", this.itemService.loadTypeName(Item.TYPE_SINGLE));
-		//多选
-		model.addAttribute("TYPE_MULTY_VALUE", Item.TYPE_MULTY);
-		model.addAttribute("TYPE_MULTY_NAME", this.itemService.loadTypeName(Item.TYPE_MULTY));
-		//不定向选
-		model.addAttribute("TYPE_UNCERTAIN_VALUE", Item.TYPE_UNCERTAIN);
-		model.addAttribute("TYPE_UNCERTAIN_NAME", this.itemService.loadTypeName(Item.TYPE_UNCERTAIN));
-		//判断
-		model.addAttribute("TYPE_JUDGE_VALUE", Item.TYPE_JUDGE);
-		model.addAttribute("TYPE_JUDGE_NAME", this.itemService.loadTypeName(Item.TYPE_JUDGE));
-		//问答
-		model.addAttribute("TYPE_QANDA_VALUE", Item.TYPE_QANDA);
-		model.addAttribute("TYPE_QANDA_NAME", this.itemService.loadTypeName(Item.TYPE_QANDA));
+		//添加普通题型。
+		ItemTypeUtils.addNormalItemType(this.itemService, model);
 		
 		return String.format("library/item_edit_%s", type);
 	}
@@ -186,8 +181,12 @@ public class ItemController {
 		if(logger.isDebugEnabled()) logger.debug("更新数据...");
 		Json result = new Json();
 		try {
-			 result.setData(this.itemService.update(info));
-			 result.setSuccess(true);
+			if(info != null){
+				info.setUserId(this.current_userId);
+				info.setUserName(this.current_userName);
+			}
+			result.setData(this.itemService.update(info));
+			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());

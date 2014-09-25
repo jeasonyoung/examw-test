@@ -3,7 +3,7 @@ package com.examw.test.service.settings;
 import java.util.List;
 
 import com.examw.model.TreeNode;
-import com.examw.test.model.front.CategoryFrontInfo;
+import com.examw.test.model.front.FrontCategoryInfo;
 import com.examw.test.model.settings.CategoryInfo;
 import com.examw.test.service.IBaseDataService;
 
@@ -39,5 +39,5 @@ public interface ICategoryService extends IBaseDataService<CategoryInfo>{
 	 * 加载所有的考试类型-考试[前台调用方法]
 	 * @return
 	 */
-	List<CategoryFrontInfo> loadAllCategoryAndExams();
+	List<FrontCategoryInfo> loadAllCategoryAndExams();
 }

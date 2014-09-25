@@ -53,19 +53,53 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 		this.subjectDao = subjectDao;
 	}
 	/*
-	 * 查询数据
+	 * 加载最大代码。
+	 * @see com.examw.test.service.settings.ISubjectService#loadMaxCode()
+	 */
+	@Override
+	public Integer loadMaxCode() {
+		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
+		return this.subjectDao.loadMaxCode();
+	}
+	/*
+	 * 加载考试下全部科目集合。
+	 * @see com.examw.test.service.settings.ISubjectService#loadAllSubjects(java.lang.String)
+	 */
+	@Override
+	public List<SubjectInfo> loadAllSubjects(String examId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试[examId=%s]下全部科目集合...", examId));
+		List<SubjectInfo> results = new ArrayList<>();
+		List<Subject> list = this.subjectDao.loadAllSubjects(examId);
+		if(list != null && list.size() > 0){
+			for(Subject subject : list){
+				if(subject == null) continue;
+				SubjectInfo info = this.changeModel(subject);
+				if(info != null){
+					if(!StringUtils.isEmpty(info.getAreaName())){
+						info.setName(String.format("%1$s[%2$s]", info.getName(), info.getAreaName()));
+					}
+					results.add(info);
+				}
+			}
+		}
+		return results;
+	}
+	/*
+	 * 查询数据。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#find(java.lang.Object)
 	 */
 	@Override
 	protected List<Subject> find(SubjectInfo info) {
+		if(logger.isDebugEnabled())logger.debug("查询数据...");
 		return this.subjectDao.findSubjects(info);
 	}
 	/*
-	 * 数据模型转换
+	 * 数据模型转换。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#changeModel(java.lang.Object)
 	 */
 	@Override
 	protected SubjectInfo changeModel(Subject data) {
+		if(logger.isDebugEnabled())logger.debug("数据模型转换...");
 		if(data == null) return null;
 		SubjectInfo info = new SubjectInfo();
 		BeanUtils.copyProperties(data, info);
@@ -77,26 +111,36 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 				info.setCategoryName(data.getExam().getCategory().getName());
 			}
 		}
-		if(data.getArea()!=null){
+		if(data.getArea() != null){
 			info.setAreaId(data.getArea().getId());
 			info.setAreaName(data.getArea().getName());
 		}
 		return info;
 	}
 	/*
-	 * 查询数据总数
+	 * 
+	 */
+	@Override
+	public List<SubjectInfo> conversion(List<Subject> data) {
+		if(logger.isDebugEnabled())logger.debug("数据模型集合转换...");
+		return this.changeModel(data);
+	}
+	/*
+	 * 查询统计。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#total(java.lang.Object)
 	 */
 	@Override
 	protected Long total(SubjectInfo info) {
+		if(logger.isDebugEnabled()) logger.debug("查询统计...");
 		return this.subjectDao.total(info);
 	}
 	/*
-	 * 更新或插入数据
+	 * 更新数据。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#update(java.lang.Object)
 	 */
 	@Override
 	public SubjectInfo update(SubjectInfo info) {
+		if(logger.isDebugEnabled()) logger.debug("更新数据...");
 		if(info == null) return null;
 		boolean isAdded = false;
 		Subject data = StringUtils.isEmpty(info.getId()) ? null : this.subjectDao.load(Subject.class, info.getId());
@@ -107,76 +151,32 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 			data = new Subject();
 		}
 		BeanUtils.copyProperties(info, data);
-		//考试设置
+		//考试
 		if(!StringUtils.isEmpty(info.getExamId()) && (data.getExam() == null || !data.getExam().getId().equalsIgnoreCase(info.getExamId()))){
 			Exam exam = this.examDao.load(Exam.class, info.getExamId());
 			if(exam != null) data.setExam(exam);
 		}
-		if(data.getExam() != null){
-			info.setExamName(data.getExam().getName());
-			if(data.getExam().getCategory() != null){
-				info.setCategoryId(data.getExam().getCategory().getId());
-				info.setCategoryName(data.getExam().getCategory().getName());
-			}
-		}
-		//设置地区
+		//地区
 		Area area = null;
-		if(!StringUtils.isEmpty(info.getAreaId()) && (data.getArea() == null || !data.getArea().getId().equals(info.getAreaId()))){
+		if(!StringUtils.isEmpty(info.getAreaId()) && (data.getArea() == null || !data.getArea().getId().equalsIgnoreCase(info.getAreaId()))){
 			area = this.areaDao.load(Area.class, info.getAreaId());
 		}
 		data.setArea(area);
-		if(data.getArea() != null){
-			info.setAreaName(data.getArea().getName());
-		}
 		if(isAdded)this.subjectDao.save(data);
-		return info;
+		return this.changeModel(data);
 	}
 	/*
-	 * 删除数据
+	 * 删除数据。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#delete(java.lang.String[])
 	 */
 	@Override
 	public void delete(String[] ids) {
-		if(ids == null || ids.length == 0) return;
-		for(int i = 0; i < ids.length; i++){
+		if(logger.isDebugEnabled())logger.debug("删除数据...");
+		if(ids == null || ids.length == 0)return;
+		for(int i = 0; i < ids.length;i++){
 			if(StringUtils.isEmpty(ids[i])) continue;
 			Subject data = this.subjectDao.load(Subject.class, ids[i]);
-			if(data != null){
-				this.subjectDao.delete(data);
-			}
+			if(data != null) this.subjectDao.delete(data);
 		}
-	}
-	/*
-	 * 加载最大代码值
-	 * @see com.examw.test.service.settings.ISubjectService#loadMaxCode()
-	 */
-	@Override
-	public Integer loadMaxCode() {
-		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
-		List<Subject> sources = this.subjectDao.findSubjects(new SubjectInfo(){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public String getSort() {return "code"; } 
-			@Override
-			public String getOrder() { return "desc";}
-		});
-		if(sources != null && sources.size() > 0){
-			return sources.get(0).getCode();
-		}
-		return null;
-	}
-	
-	@Override
-	public List<SubjectInfo> changeModel(List<Subject> list) {
-		List<SubjectInfo> results = new ArrayList<>();
-		if(list != null && list.size() > 0){
-			for(Subject data : list){
-				SubjectInfo info = this.changeModel(data);
-				if(info != null){
-					results.add(info);
-				}
-			}
-		}
-		return results;
 	}
 }

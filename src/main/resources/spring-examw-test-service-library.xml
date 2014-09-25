@@ -10,12 +10,50 @@
 		<!-- 来源数据接口 -->
 		<property name="sourceDao" ref="sourceDao" />
 	</bean>
-	<!-- 题型集合 -->
+	<!-- 试卷类型集合 -->
 	<util:map id="mapPaperTypes" map-class="java.util.HashMap">
 		<entry key="1" value="真题" />
 		<entry key="2" value="模拟题" />
 		<entry key="3" value="预测题" />
 		<entry key="4" value="练习题" />
+	</util:map>
+	<!-- 试题题型集合 -->
+	<util:map id="mapItemTypes" map-class="java.util.HashMap">
+	    <entry key="1"><!-- 单选题 -->
+	        <bean class="com.examw.test.service.library.impl.DefaultItemParser">
+	            <constructor-arg value="单选" />
+	        </bean>
+	    </entry>
+	    <entry key="2"><!-- 多选题 -->
+	        <bean class="com.examw.test.service.library.impl.DefaultItemParser">
+	            <constructor-arg value="多选" />
+	        </bean>
+	    </entry>
+	    <entry key="3"><!-- 不定向选题 -->
+	        <bean class="com.examw.test.service.library.impl.DefaultItemParser">
+	            <constructor-arg value="不定向选" />
+	        </bean>
+	    </entry>
+	    <entry key="4"><!-- 判断题 -->
+	        <bean class="com.examw.test.service.library.impl.DefaultItemParser">
+	            <constructor-arg value="判断题" />
+	        </bean>
+	    </entry>
+	    <entry key="5"><!-- 问答题 -->
+	        <bean class="com.examw.test.service.library.impl.DefaultItemParser">
+	            <constructor-arg value="问答题" />
+	        </bean>
+	    </entry>
+	    <entry key="6"><!-- 共享题干题 -->
+	        <bean class="com.examw.test.service.library.impl.DefaultShareTitleItemParser">
+	            <constructor-arg value="共享题干题" />
+	        </bean>
+	    </entry>
+	    <entry key="7"><!-- 共享答案题 -->
+	        <bean class="com.examw.test.service.library.impl.DefaultShareAnswerItemParser">
+	            <constructor-arg value="共享答案题" />
+	        </bean>
+	    </entry>
 	</util:map>
 	<!-- 试卷服务 -->
 	<bean id="paperService" class="com.examw.test.service.library.impl.PaperServiceImpl">
@@ -27,10 +65,8 @@
 		<property name="subjectDao" ref="subjectDao" />
 		<!-- 试卷结构数据接口 -->
 		<property name="structureDao" ref="structureDao" />
-		<!-- 试卷结构下试题数据接口 -->
-		<property name="structureItemDao" ref="structureItemDao" />
-		<!-- 试题服务接口 -->
-		<property name="itemService" ref="itemService" />
+		<!-- 所属地区数据接口 -->
+		<property name="areaDao" ref="areaDao" />
 		<!-- 试卷类型 -->
 		<property name="typeMap" ref="mapPaperTypes"/>
 		<!-- 试卷状态 -->
@@ -41,12 +77,26 @@
 				<entry key="2" value="已发布"/>
 			</map>
 		</property>
-		<!-- 试卷记录数据接口 -->
-		<property name="paperRecordDao" ref="paperRecordDao"/>
-		<!-- 做题记录数据接口 -->
-		<property name="itemRecordDao" ref="itemRecordDao"/>
-		<!-- 错题记录数据接口 -->
-		<property name="errorItemRecordDao" ref="errorItemRecordDao"/>
+	</bean>
+	<!-- 试卷结构服务 -->
+	<bean id="paperStructureService" class="com.examw.test.service.library.impl.PaperStructureServiceImpl">
+	    <!-- 试卷结构数据接口 -->
+	    <property name="structureDao" ref="structureDao" />
+	    <!-- 试卷数据接口 -->
+	    <property name="paperDao" ref="paperDao" />
+	    <!-- 试题服务接口 -->
+	    <property name="itemService" ref="itemService" />
+	</bean>
+	<!-- 试卷试题服务 -->
+	<bean id="paperItemService" class="com.examw.test.service.library.impl.PaperItemServiceImpl">
+	    <!-- 试卷数据接口 -->
+	    <property name="paperDao" ref="paperDao" />
+	    <!-- 试卷结构数据接口 -->
+	    <property name="structureDao" ref="structureDao" />
+	    <!-- 试卷题目数据接口 -->
+	    <property name="structureItemDao" ref="structureItemDao" />
+	    <!-- 试题服务接口 -->
+	    <property name="itemService" ref="itemService" />
 	</bean>
 	<!-- 题目服务 -->
 	<bean id="itemService" class="com.examw.test.service.library.impl.ItemServiceImpl">
@@ -61,17 +111,7 @@
 		    <bean class="com.examw.test.service.library.impl.ItemDuplicateCheckImpl" />
 		</property>
 		<!-- 题型数据接口 -->
-		<property name="typeMap">
-			<map>
-				<entry key="1" value="单选" />
-				<entry key="2" value="多选" />
-				<entry key="3" value="不定向选" />
-				<entry key="4" value="判断题" />
-				<entry key="5" value="问答题" />
-				<entry key="6" value="共享题干题" />
-				<entry key="7" value="共享答案题" />
-			</map>
-		</property>
+		<property name="itemParsers" ref="mapItemTypes" />
 		<!-- 题目状态 -->
 		<property name="statusMap">
 			<map>
@@ -89,14 +129,23 @@
 			</map>
 		</property>
 	</bean>
+	<!-- 试卷预览服务 -->
+	<bean id="paperPreviewService" class="com.examw.test.service.library.impl.PaperPreviewServiceImpl">
+	    <!-- 试卷数据接口 -->
+	    <property name="paperDao" ref="paperDao" />
+	    <!-- 试卷结构数据接口 -->
+	    <property name="structureDao" ref="structureDao" />
+	    <!-- 试卷试题服务接口 -->
+	    <property name="paperItemService" ref="paperItemService" />
+	</bean>
 	<!-- 试卷发布服务 -->
 	<bean id="paperReleaseService" class="com.examw.test.service.library.impl.PaperReleaseServiceImpl">
 	    <!-- 试卷发布数据接口 -->
 	    <property name="paperReleaseDao" ref="paperReleaseDao" />
 	    <!-- 试卷数据接口 -->
 	    <property name="paperDao" ref="paperDao" />
-	    <!-- 试卷服务接口 -->
-	    <property name="paperService" ref="paperService" />
+	    <!-- 试卷预览服务接口 -->
+	    <property name="paperPreviewService" ref="paperPreviewService" />
 	</bean>
 	<!-- 题库管理 服务接口实现 end-->
 </beans>

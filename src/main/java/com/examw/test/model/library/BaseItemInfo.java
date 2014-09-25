@@ -1,6 +1,5 @@
 package com.examw.test.model.library;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
 
@@ -15,11 +14,11 @@ import com.examw.support.CustomDateSerializer;
  * @author yangyong
  * @since 2014年8月30日
  */
-public abstract class BaseItemInfo<T extends BaseItemInfo<T>>  extends Paging {
+public abstract class BaseItemInfo<T extends BaseItemInfo<T>>  extends Paging implements Comparable<BaseItemInfo<T>> {
 	private static final long serialVersionUID = 1L;
 	private String pid,id,typeName,statusName,optName,examId,examName,subjectId,subjectName, 
-			content,answer,analysis,checkCode,sourceId,sourceName;
-	private Integer type,level,year,opt,status,orderNo;
+			content,answer,analysis,checkCode,sourceId,sourceName,areaId,areaName,userId,userName;
+	private Integer type,level,year,opt,status,orderNo,count;
 	private Date createTime,lastTime;
 	/**
 	 * 获取父题目ID。
@@ -187,6 +186,21 @@ public abstract class BaseItemInfo<T extends BaseItemInfo<T>>  extends Paging {
 		this.content = content;
 	}
 	/**
+	 * 获取试题数目。
+	 * @return 试题数目。
+	 */
+	public Integer getCount() {
+		return count;
+	}
+	/**
+	 * 设置试题数目。
+	 * @param count 
+	 *	  试题数目。
+	 */
+	public void setCount(Integer count) {
+		this.count = count;
+	}
+	/**
 	 * 获取答案。
 	 * @return 答案。
 	 */
@@ -260,6 +274,36 @@ public abstract class BaseItemInfo<T extends BaseItemInfo<T>>  extends Paging {
 	 */
 	public void setSourceName(String sourceName) {
 		this.sourceName = sourceName;
+	}
+	/**
+	 * 获取所属地区ID。
+	 * @return 所属地区ID。
+	 */
+	public String getAreaId() {
+		return areaId;
+	}
+	/**
+	 * 设置所属地区ID。
+	 * @param areaId 
+	 *	  所属地区ID。
+	 */
+	public void setAreaId(String areaId) {
+		this.areaId = areaId;
+	}
+	/**
+	 * 获取所属地区名称。
+	 * @return 所属地区名称
+	 */
+	public String getAreaName() {
+		return areaName;
+	}
+	/**
+	 * 设置所属地区名称
+	 * @param areaName 
+	 *	  所属地区名称
+	 */
+	public void setAreaName(String areaName) {
+		this.areaName = areaName;
 	}
 	/**
 	 * 获取难度值。
@@ -379,75 +423,53 @@ public abstract class BaseItemInfo<T extends BaseItemInfo<T>>  extends Paging {
 	 *	  子题目集合。
 	 */
 	public abstract void setChildren(Set<T> children);
-	
-//	/*前台使用属性 2014-09-16 by FW.*/
-//	private String parentContent;//共享题的题干
-//	/**
-//	 * 获取 共享题的题干
-//	 * @return parentContent
-//	 * 
-//	 */
-//	public String getParentContent() {
-//		return parentContent;
-//	}
-//	/**
-//	 * 设置 共享题的题干
-//	 * @param parentContent
-//	 * 
-//	 */
-//	public void setParentContent(String parentContent) {
-//		this.parentContent = parentContent;
-//	}
-	/*前台使用属性 2014-09-20 by FW.*/
-	private String userAnswer;
-	private BigDecimal userScore;
-	private Integer answerStatus;
 	/**
-	 * 获取 用户答案
-	 * @return userAnswer
-	 * 用户答案
+	 * 获取所属用户ID。
+	 * @return 所属用户ID。
 	 */
-	public String getUserAnswer() {
-		return userAnswer;
+	public String getUserId() {
+		return userId;
 	}
 	/**
-	 * 设置 用户答案
-	 * @param userAnswer
-	 * 用户答案
+	 * 设置所属用户ID。
+	 * @param userId 
+	 *	  所属用户ID。
 	 */
-	public void setUserAnswer(String userAnswer) {
-		this.userAnswer = userAnswer;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 	/**
-	 * 获取 用户得分
-	 * @return userScore
-	 * 用户得分
+	 * 获取所属用户名称。
+	 * @return 所属用户名称。
 	 */
-	public BigDecimal getUserScore() {
-		return userScore;
+	public String getUserName() {
+		return userName;
 	}
 	/**
-	 * 设置 用户得分
-	 * @param userScore
-	 * 用户得分
+	 * 设置所属用户名称。
+	 * @param userName 
+	 *	  所属用户名称。
 	 */
-	public void setUserScore(BigDecimal userScore) {
-		this.userScore = userScore;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
-	/**
-	 * 获取 答题状态
-	 * @return answerStatus
-	 * 
+	/*
+	 * 排序比较。
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
-	public Integer getAnswerStatus() {
-		return answerStatus;
-	}
-	/**
-	 * 设置 答题状态
-	 * @param answerStatus
-	 * 
-	 */
-	public void setAnswerStatus(Integer answerStatus) {
-		this.answerStatus = answerStatus;
+	@Override
+	public int compareTo(BaseItemInfo<T> o) {
+		if(this == o) return 0;
+		int index = this.getOrderNo() - o.getOrderNo();
+		if(index == 0){
+			index = this.getContent().compareTo(o.getContent());
+			if(index == 0){
+				index = this.getCheckCode().compareTo(o.getCheckCode());
+				if(index == 0){
+					index = this.getId().compareTo(o.getId());
+				}
+			}
+		}
+		return index;
 	}
 }

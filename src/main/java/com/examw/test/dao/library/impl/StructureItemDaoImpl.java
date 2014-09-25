@@ -25,11 +25,11 @@ public class StructureItemDaoImpl extends BaseDaoImpl<StructureItem> implements 
 	 * @see com.examw.test.dao.library.IStructureItemDao#findStructureItems(java.lang.String, com.examw.test.model.library.StructureItemInfo)
 	 */
 	@Override
-	public List<StructureItem> findStructureItems(String paperId, StructureItemInfo info) {
+	public List<StructureItem> findStructureItems(StructureItemInfo info) {
 		if(logger.isDebugEnabled()) logger.debug("查询数据...");
 		String hql = "from StructureItem s where 1=1 ";
 		Map<String, Object> parameters = new HashMap<>();
-		hql = this.addWhere(paperId, info, hql, parameters);
+		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
 			if(info.getSort().equalsIgnoreCase("TypeName")){
 				info.setSort("item.type");
@@ -47,19 +47,19 @@ public class StructureItemDaoImpl extends BaseDaoImpl<StructureItem> implements 
 	 * @see com.examw.test.dao.library.IStructureItemDao#total(com.examw.test.model.library.StructureItemInfo)
 	 */
 	@Override
-	public Long total(String paperId, StructureItemInfo info) {
+	public Long total(StructureItemInfo info) {
 		if(logger.isDebugEnabled()) logger.debug("查询数据统计...");
 		String hql = "select count(*) from StructureItem s where 1=1 ";
 		Map<String, Object> parameters = new HashMap<>();
-		hql = this.addWhere(paperId, info, hql, parameters);
+		hql = this.addWhere(info, hql, parameters);
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.count(hql, parameters);
 	}
 	//添加查询条件。
-	private String addWhere(String paperId, StructureItemInfo info,String hql,Map<String,Object> parameters){
-		if(!StringUtils.isEmpty(paperId)){
+	private String addWhere(StructureItemInfo info,String hql,Map<String,Object> parameters){
+		if(!StringUtils.isEmpty(info.getPaperId())){
 			hql += " and (s.structure.id in (select st.id from Structure st  where st.paper.id = :paperId)) ";
-			parameters.put("paperId", paperId);
+			parameters.put("paperId", info.getPaperId());
 		}
 		if(!StringUtils.isEmpty(info.getStructureId())){
 			hql += " and (s.structure.id = :structureId) ";

@@ -27,4 +27,17 @@ public interface ISubjectDao extends IBaseDao<Subject>{
 	 * 数据总数。
 	 */
 	Long total(SubjectInfo info);
+	/**
+	 * 加载最大代码值。
+	 * @return 最大代码值。
+	 */
+	Integer loadMaxCode();
+	/**
+	 * 加载考试下的科目集合。
+	 * @param examId
+	 * 所属考试ID。
+	 * @return
+	 * 科目集合。
+	 */
+	List<Subject> loadAllSubjects(String examId);
 }

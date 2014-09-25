@@ -18,9 +18,17 @@ public interface ISubjectService extends IBaseDataService<SubjectInfo>{
 	 */
 	Integer loadMaxCode();
 	/**
-	 * 科目集合类型转换
+	 * 加载考试下科目集合。
+	 * @param examId
+	 * 所属考试ID。
+	 * @return
+	 * 科目集合。
+	 */
+	List<SubjectInfo> loadAllSubjects(String examId);
+	/**
+	 * 模型类型转换。
 	 * @param data
 	 * @return
 	 */
-	List<SubjectInfo> changeModel(List<Subject> data);
+	List<SubjectInfo> conversion(List<Subject> data);
 }

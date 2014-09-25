@@ -11,10 +11,16 @@ import com.examw.test.domain.library.PaperRelease;
  */
 public interface IPaperReleaseDao extends IBaseDao<PaperRelease> {
 	/**
-	 * 加载试卷发布。
+	 * 试卷是否已发布。
 	 * @param paperId
 	 * 试卷ID。
 	 * @return
 	 */
-	PaperRelease loadRelease(String paperId);
+	boolean hasRelease(String paperId);
+	/**
+	 * 删除试卷发布。
+	 * @param paperId
+	 * 试卷ID。
+	 */
+	void deleteRelease(String paperId);
 }

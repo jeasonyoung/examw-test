@@ -4,8 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import javax.annotation.Resource; 
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -18,9 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.examw.model.Json;
 import com.examw.test.domain.records.ItemRecord;
 import com.examw.test.domain.settings.Subject;
-import com.examw.test.model.front.CategoryFrontInfo;
+import com.examw.test.model.front.FrontCategoryInfo;
 import com.examw.test.model.library.PaperInfo;
-import com.examw.test.model.library.PaperPreview;
 import com.examw.test.model.products.ProductInfo;
 import com.examw.test.model.settings.SubjectInfo;
 import com.examw.test.model.syllabus.SyllabusInfo;
@@ -66,7 +64,7 @@ public class FrontDataController {
 	 */
 	@RequestMapping(value = {"/category-exams"}, method = {RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public List<CategoryFrontInfo> loadAllCategoryExams(){
+	public List<FrontCategoryInfo> loadAllCategoryExams(){
 		if(logger.isDebugEnabled()) logger.debug("考试分类-考试数据");
 		return this.categoryService.loadAllCategoryAndExams();
 	}
@@ -102,7 +100,7 @@ public class FrontDataController {
 		if(logger.isDebugEnabled()) logger.debug("章节数据");
 		if(StringUtils.isEmpty(productId)) return null;
 		Map<String,Object> map = new HashMap<String,Object>();
-		List<SubjectInfo> subjects = this.subjectService.changeModel(this.productService.loadSubjectList(productId));
+		List<SubjectInfo> subjects = this.subjectService.conversion(this.productService.loadSubjectList(productId));
 		map.put("SUBJECTLIST",subjects);
 		if(StringUtils.isEmpty(subjectId)){
 			if(subjects!=null && subjects.size()>0)
@@ -142,7 +140,7 @@ public class FrontDataController {
 		if(StringUtils.isEmpty(productId)) return map;
 		List<Subject> list = this.productService.loadSubjectList(productId);
 		//科目集合
-		map.put("SUBJECTLIST", this.subjectService.changeModel(list));
+		map.put("SUBJECTLIST", this.subjectService.conversion(list));
 		//试卷类型映射
 		map.put("PAPERTYPE", this.productService.getPaperTypeMap());
 		//试卷列表
@@ -150,47 +148,47 @@ public class FrontDataController {
 //		map.put("PAPERLIST", dg.getRows());
 //		//总条数
 //		map.put("TOTAL",dg.getTotal());
-		map.put("PAPERLIST", this.paperService.loadPaperFrontInfo(info, userId));
-		map.put("TOTAL",this.paperService.totalPaperFrontInfo(info));
+	//	map.put("PAPERLIST", this.paperService.loadPaperFrontInfo(info, userId));
+		//map.put("TOTAL",this.paperService.totalPaperFrontInfo(info));
 		return map;
 	}
-	/**
-	 * 加载试卷基本信息数据
-	 * @param paperId
-	 * @return
-	 */
-	@RequestMapping(value = {"/paper"}, method = {RequestMethod.POST,RequestMethod.GET})
-	@ResponseBody
-	public PaperPreview loadPaperInfo(String paperId){
-		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据");
-		if(StringUtils.isEmpty(paperId)) return null;
-		return this.paperService.loadPaperInfo(paperId);
-	}
-	/**
-	 * 加载试卷的详细信息[包含题目数据]
-	 * @param paperId
-	 * @return
-	 */
-	@RequestMapping(value = {"/paper/do"}, method = {RequestMethod.POST,RequestMethod.GET})
-	@ResponseBody
-	public PaperPreview loadPaperDetail(String paperId,String userId){
-		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据[包含题目]");
-		if(StringUtils.isEmpty(paperId)||StringUtils.isEmpty(userId)) return null;
-		return this.paperService.loadPaperPreviewAndAddRecord(paperId,userId);
-	}
-	
-	@RequestMapping(value = {"/paper/submit"}, method = {RequestMethod.POST,RequestMethod.GET})
-	@ResponseBody
-	public Json submitPaper(String paperId,String userId,HttpServletRequest request){
-		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据[包含题目]");
-		if(StringUtils.isEmpty(paperId)||StringUtils.isEmpty(userId)) return null;
-		String model = request.getParameter("model");
-		String limitTime = request.getParameter("limitTime");
-		String chooseAnswers = request.getParameter("chooseAnswers");
-		String textAnswers = request.getParameter("textAnswers");
-		logger.debug(chooseAnswers);
-		return this.paperService.submitPaper(Integer.valueOf(limitTime), chooseAnswers, textAnswers,Integer.valueOf(model), paperId,userId);
-	}
+//	/**
+//	 * 加载试卷基本信息数据
+//	 * @param paperId
+//	 * @return
+//	 */
+//	@RequestMapping(value = {"/paper"}, method = {RequestMethod.POST,RequestMethod.GET})
+//	@ResponseBody
+//	public PaperPreview loadPaperInfo(String paperId){
+//		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据");
+//		if(StringUtils.isEmpty(paperId)) return null;
+//		return this.paperService.loadPaperInfo(paperId);
+//	}
+//	/**
+//	 * 加载试卷的详细信息[包含题目数据]
+//	 * @param paperId
+//	 * @return
+//	 */
+//	@RequestMapping(value = {"/paper/do"}, method = {RequestMethod.POST,RequestMethod.GET})
+//	@ResponseBody
+//	public PaperPreview loadPaperDetail(String paperId,String userId){
+//		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据[包含题目]");
+//		if(StringUtils.isEmpty(paperId)||StringUtils.isEmpty(userId)) return null;
+//		return this.paperService.loadPaperPreviewAndAddRecord(paperId,userId);
+//	}
+//	
+//	@RequestMapping(value = {"/paper/submit"}, method = {RequestMethod.POST,RequestMethod.GET})
+//	@ResponseBody
+//	public Json submitPaper(String paperId,String userId,HttpServletRequest request){
+//		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据[包含题目]");
+//		if(StringUtils.isEmpty(paperId)||StringUtils.isEmpty(userId)) return null;
+//		String model = request.getParameter("model");
+//		String limitTime = request.getParameter("limitTime");
+//		String chooseAnswers = request.getParameter("chooseAnswers");
+//		String textAnswers = request.getParameter("textAnswers");
+//		logger.debug(chooseAnswers);
+//		return this.paperService.submitPaper(Integer.valueOf(limitTime), chooseAnswers, textAnswers,Integer.valueOf(model), paperId,userId);
+//	}
 	
 	/**
 	 *

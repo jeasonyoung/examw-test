@@ -1,7 +1,4 @@
 package com.examw.test.service.library;
-
-import com.examw.test.domain.library.Item;
-
 /**
  * 题目状态枚举。
  * 
@@ -12,11 +9,12 @@ public enum ItemStatus {
 	/**
 	 * 未审核。
 	 */
-	NONE(Item.STATUS_NONE),
+	NONE(0x00),
 	/**
 	 * 已审核。
 	 */
-	AUDIT(Item.STATUS_AUDIT);
+	AUDIT(0x01);
+	
 	private int value;
 	//私有构造函数。
 	private ItemStatus(int value){
@@ -37,9 +35,9 @@ public enum ItemStatus {
 	public static ItemStatus convert(int value){
 		switch(value){
 			//未审核
-			case Item.STATUS_NONE : return ItemStatus.NONE;
+			case 0x00 : return ItemStatus.NONE;
 			//已审核
-			case Item.STATUS_AUDIT: return ItemStatus.AUDIT;
+			case 0x01: return ItemStatus.AUDIT;
 		}
 		throw new RuntimeException("不存在［value="+value+"］！");
 	}

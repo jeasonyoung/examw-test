@@ -30,7 +30,7 @@ public class SubjectDaoImpl extends BaseDaoImpl<Subject> implements ISubjectDao{
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
-			hql += " order by s." + info.getSort() + " " + info.getOrder();
+			hql += String.format(" order by s.%1$s  %2$s", info.getSort(),info.getOrder());
 		}
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.find(hql, parameters, info.getPage(), info.getRows());
@@ -48,7 +48,6 @@ public class SubjectDaoImpl extends BaseDaoImpl<Subject> implements ISubjectDao{
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.count(hql, parameters);
 	}
-	
 	// 添加查询条件到HQL。
 	private String addWhere(SubjectInfo info, String hql,Map<String, Object> parameters) {
 		if (!StringUtils.isEmpty(info.getName())) {
@@ -68,5 +67,28 @@ public class SubjectDaoImpl extends BaseDaoImpl<Subject> implements ISubjectDao{
 			parameters.put("areaId", info.getAreaId());
 		}
 		return hql;
+	}
+	/*
+	 * 加载最大代码值。
+	 * @see com.examw.test.dao.settings.ISubjectDao#loadMaxCode()
+	 */
+	@Override
+	public Integer loadMaxCode() {
+		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
+		final String hql = "select max(s.code) from Subject s ";
+		Object obj = this.uniqueResult(hql, null);
+		return (obj == null) ? null : (int)obj;
+	}
+	/*
+	 * 加载考试下的科目数据。
+	 * @see com.examw.test.dao.settings.ISubjectDao#loadAllSubjects(java.lang.String)
+	 */
+	@Override
+	public List<Subject> loadAllSubjects(String examId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试[examId=%s]下的科目...", examId));
+		final String hql = "from Subject s where s.exam.id = :examId order by s.code ";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("examId", examId);
+		return this.find(hql, parameters, null, null);
 	}
 }

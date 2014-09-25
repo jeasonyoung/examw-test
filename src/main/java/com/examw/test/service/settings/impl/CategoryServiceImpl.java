@@ -15,7 +15,7 @@ import com.examw.test.dao.settings.ICategoryDao;
 import com.examw.test.domain.settings.Category;
 import com.examw.test.domain.settings.Exam;
 import com.examw.test.domain.settings.Subject;
-import com.examw.test.model.front.CategoryFrontInfo;
+import com.examw.test.model.front.FrontCategoryInfo;
 import com.examw.test.model.settings.CategoryInfo;
 import com.examw.test.model.settings.ExamInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
@@ -277,8 +277,8 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 	 * @see com.examw.test.service.settings.ICategoryService#loadAllCategoryAndExams()
 	 */
 	@Override
-	public List<CategoryFrontInfo> loadAllCategoryAndExams() {
-		List<CategoryFrontInfo> result = new ArrayList<CategoryFrontInfo>();
+	public List<FrontCategoryInfo> loadAllCategoryAndExams() {
+		List<FrontCategoryInfo> result = new ArrayList<FrontCategoryInfo>();
 		List<Category> list =  this.categoryDao.loadTopCategories();
 		if(list != null && list.size() > 0){
 			for(final Category data : list){
@@ -293,9 +293,9 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 	 * @param data	考试分类
 	 * @return
 	 */
-	private CategoryFrontInfo createCategoryFrontInfo(Category data)
+	private FrontCategoryInfo createCategoryFrontInfo(Category data)
 	{
-		CategoryFrontInfo info = new CategoryFrontInfo();
+		FrontCategoryInfo info = new FrontCategoryInfo();
 		BeanUtils.copyProperties(data, info, new String[]{"exams"});
 		setExams(info,data);
 		if(data.getChildren()!=null){
@@ -310,7 +310,7 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 	 * @param info	
 	 * @param data
 	 */
-	private void setExams(CategoryFrontInfo info,Category data){
+	private void setExams(FrontCategoryInfo info,Category data){
 		if(data.getExams()!=null){
 			List<ExamInfo> exams = new ArrayList<ExamInfo>();
 			for(Exam exam:data.getExams())

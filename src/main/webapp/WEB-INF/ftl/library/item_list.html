@@ -74,14 +74,10 @@ $(function(){
 			align:"center",
 			sortable:true
 		},{
-			title:"验证码",
-			field:"checkCode",
-			width:20,
-			align:"left",
-			formatter: function(value,row,index){
-				var v = row["checkCode"];
-				return "<span title=' "+ v +"'>"+v+"</span>";
-			},
+			title:"题目数",
+			field:"count",
+			width:10,
+			align:"right",
 			sortable:true
 		},{
 			title:"创建时间",

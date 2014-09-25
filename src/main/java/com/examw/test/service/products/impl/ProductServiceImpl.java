@@ -17,7 +17,6 @@ import com.examw.test.dao.library.IPaperDao;
 import com.examw.test.dao.products.IProductDao;
 import com.examw.test.dao.settings.IExamDao;
 import com.examw.test.dao.settings.ISubjectDao;
-import com.examw.test.domain.library.Item;
 import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.products.Product;
 import com.examw.test.domain.settings.Exam;
@@ -26,6 +25,7 @@ import com.examw.test.model.library.ItemInfo;
 import com.examw.test.model.library.PaperInfo;
 import com.examw.test.model.products.ProductInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
+import com.examw.test.service.library.ItemStatus;
 import com.examw.test.service.products.IProductService;
 
 /**
@@ -299,7 +299,7 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 			@Override
 			public String getSubjectId() {return subjectIds;}
 			@Override
-			public Integer getStatus() {return Item.STATUS_AUDIT;} //已审核
+			public Integer getStatus() {return ItemStatus.AUDIT.getValue();} //已审核
 		}));
 	}
 	/*
@@ -324,7 +324,7 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 			@Override
 			public String getSubjectId() {return subjectIds;}
 			@Override
-			public Integer getStatus() {return Item.STATUS_AUDIT;} //已审核
+			public Integer getStatus() {return ItemStatus.AUDIT.getValue();} //已审核
 			
 		}));
 		//是否包含真题

@@ -5,19 +5,14 @@
 <script type="text/javascript">
 <!--
 $(function(){
-	var current_structure_id = current_item_type_value = current_item_type_name = "";
-	var is_load = false;
+	var current_structure_id = current_item_type_value  = current_item_type_name = "";
 	//structure_tree
 	var structure_tree = $("#${module}_tree").tree({
-		url:"<@s.url '/library/paper/structure/tree/${CURRENT_PAPER_ID}'/>",
+		url:"<@s.url '/library/paper/structure/all/${CURRENT_PAPER_ID}'/>",
 		lines:true,
 		onContextMenu:function(e, node){
 			e.preventDefault();
-			current_structure_id = node.id;
-			current_item_type_value = node.attributes.type;
-			current_item_type_name = node.attributes.typeName;
-			// select the node
-			structure_tree.tree("select", node.target);
+			setCurrentValue(node);
 			// display context menu
 			$("#${module}_tree_menu").menu("show", {
 				left: e.pageX,
@@ -28,42 +23,55 @@ $(function(){
 			<@error_dialog "e"/>
 		},
 		onBeforeLoad:function(){
-			current_structure_id = current_item_type_value = current_item_type_name = "";
-			if(is_load){$("#${dg}_toobar_add").menubutton("disable");};
+			setCurrentValue("");
+		},
+		loadFilter:function(data){
+			var o = [];
+			if(data && $.isArray(data)){
+				$.each(data,function(i,n){
+					var node = {};
+					node["id"] = n["id"];
+					node["text"] = n["title"];
+					node["attributes"] = n;
+					o.push(node);
+				});	
+			}
+			return o;
 		},
 		onClick:function(node){
-			is_load = true;
-			current_structure_id = node.id;
-			current_item_type_value = node.attributes.type;
-			current_item_type_name = node.attributes.typeName;
-			$("#${dg}_toobar_add").menubutton(($.trim(current_item_type_value) == "") ? "disable" : "enable"); 
+			setCurrentValue(node);
 			${dg}_search();
 		},
 		onDblClick:function(node){
-			is_load = true;
+			setCurrentValue(node);
+			structure_edit_window("编辑试卷结构",node.attributes);
+		}
+	});
+	function setCurrentValue(node){
+		if(!node || (typeof(node) == "string")){
+			current_structure_id = "";
+			current_item_type_value  = "";
+			current_item_type_name = "";
+		}
+		if(node){
 			current_structure_id = node.id;
 			current_item_type_value = node.attributes.type;
 			current_item_type_name = node.attributes.typeName;
-			structure_edit("编辑试卷结构",node.attributes);
 		}
-	});
+	};
 	<@shiro.hasPermission name="${PER_UPDATE}">
 	//structure_add
 	${module}_add = function(){
-		structure_edit("新增试卷结构",null)
+		structure_edit_window("新增试卷结构",null)
 	};
 	</@shiro.hasPermission>
 	//structure_edit
-	function structure_edit(title,row){
-		var structure_id = "";
-		if(row){
-			structure_id = row.id;
-		}
+	function structure_edit_window(title,row){
 		var d = $("<div/>").dialog({
 			title:title,
 			width:400,
 			height:300,
-			href:"<@s.url '/library/paper/structure/edit/${CURRENT_PAPER_ID}'/>?ignoreStructureId=" + structure_id,
+			href:"<@s.url '/library/paper/structure/edit/${CURRENT_PAPER_ID}'/>",
 			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
@@ -111,7 +119,7 @@ $(function(){
 				$(this).dialog("destroy");
 			},
 			onLoad:function(){
-				$("#${module}_edit_form").form("load",(row ? row : {"pid":current_structure_id}));
+				if(row)$("#${module}_edit_form").form("load",row);
 			}
 		});
 	}
@@ -154,7 +162,7 @@ $(function(){
 //=========================================================================================
 	//items_dg
 	var dg = $("#${dg}").datagrid({
-		url:"<@s.url '/library/paper/structure/items/datagrid/${CURRENT_PAPER_ID}'/>",
+		url:"<@s.url '/library/paper/items/datagrid/${CURRENT_PAPER_ID}'/>",
 		fit:true,
 		fitColumns:true,
 		rownumbers:true,
@@ -187,7 +195,9 @@ $(function(){
 			field:"content",
 			width:100,
 			align:"left",
-			sortable:true
+			formatter:function(value,row,index){
+				return value.replace(/<[^>]*>/g,"");
+			}
 		},{
 			title:"分数",
 			field:"score",
@@ -222,9 +232,9 @@ $(function(){
 		if($(obj).attr("value") == "new"){
 			if(show) return;
 			show = true;
-			$.getJSON("<@s.url '/library/paper/structure/items/order/'/>" + current_structure_id,function(data){
+			$.getJSON("<@s.url '/library/paper/items/order/'/>" + current_structure_id + "?_=" + Math.random(),function(data){
 				show = false;
-				edit_structure_items_window("新增试题["+current_item_type_name+"]",0,null, data[0]);
+				edit_structure_items_window("新增试题["+ current_item_type_name +"]",0,null, data[0]);
 			});
 			return;
 		}
@@ -273,7 +283,7 @@ $(function(){
 					}
 					//alert(data);console.info(data);return;
 					$.ajax({
-						url:"<@s.url '/library/paper/structure/items/update/${CURRENT_PAPER_ID}'/>",
+						url:"<@s.url '/library/paper/items/update/${CURRENT_PAPER_ID}'/>",
 						type:"POST",
 						data:JSON.stringify(data),
 						dataType:"json",
@@ -325,7 +335,7 @@ $(function(){
 					data["subjectId"] = "${CURRENT_SUBJECT_ID}";
 					data["opt"] = "${CURRENT_PAGE_TYPE_VALUE}";
 					data["sourceId"] = "${CURRENT_PAGE_SOURCE_ID}";
-					data["orderNo"] = order
+					data["serial"] = data["orderNo"] = order
 				}
 				eval("library_item_"+type+"_load(data)");
 			}
@@ -344,7 +354,7 @@ $(function(){
 					ids.push(rows[i].id);
 				}
 				$.ajax({
-					url:"<@s.url '/library/paper/structure/items/delete'/>",
+					url:"<@s.url '/library/paper/items/delete'/>",
 					type:"POST",
 					data:{
 						id:ids.join("|")

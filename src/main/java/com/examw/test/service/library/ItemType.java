@@ -1,6 +1,4 @@
 package com.examw.test.service.library;
-
-import com.examw.test.domain.library.Item;
 /**
  * 题型枚举。
  * 
@@ -11,31 +9,32 @@ public enum ItemType {
 	/**
 	 * 单选。
 	 */
-	SINGLE(Item.TYPE_SINGLE),
+	SINGLE(0x01),
 	/**
 	 * 多选。
 	 */
-	MULTY(Item.TYPE_MULTY),
+	MULTY(0x02),
 	/**
 	 * 不定向选。
 	 */
-	UNCERTAIN(Item.TYPE_UNCERTAIN),
+	UNCERTAIN(0x03),
 	/**
 	 * 判断题。
 	 */
-	JUDGE(Item.TYPE_JUDGE),
+	JUDGE(0x04),
 	/**
 	 * 问答题。
 	 */
-	QANDA(Item.TYPE_QANDA),
+	QANDA(0x05),
 	/**
 	 * 共享题干题。
 	 */
-	SHARE_TITLE(Item.TYPE_SHARE_TITLE),
+	SHARE_TITLE(0x06),
 	/**
 	 * 共享答案题。
 	 */
-	SHARE_ANSWER(Item.TYPE_SHARE_ANSWER);
+	SHARE_ANSWER(0x07);
+	
 	private int value;
 	//私有构造函数。
 	private ItemType(int value){
@@ -56,19 +55,19 @@ public enum ItemType {
 	public static ItemType convert(int value){
 		switch(value){
 			//单选
-			case Item.TYPE_SINGLE : return ItemType.SINGLE;
+			case 0x01 : return ItemType.SINGLE;
 			//多选
-			case Item.TYPE_MULTY: return ItemType.MULTY;
+			case 0x02: return ItemType.MULTY;
 			//不定向选
-			case Item.TYPE_UNCERTAIN:return ItemType.UNCERTAIN;
+			case 0x03:return ItemType.UNCERTAIN;
 			//判断题目
-			case Item.TYPE_JUDGE:return ItemType.JUDGE;
+			case 0x04:return ItemType.JUDGE;
 			//问答题
-			case Item.TYPE_QANDA:return ItemType.QANDA;
+			case 0x05:return ItemType.QANDA;
 			//共享题干题
-			case Item.TYPE_SHARE_TITLE:return ItemType.SHARE_TITLE;
+			case 0x06:return ItemType.SHARE_TITLE;
 			//共享答案题
-			case Item.TYPE_SHARE_ANSWER:return ItemType.SHARE_ANSWER;
+			case 0x07:return ItemType.SHARE_ANSWER;
 		}
 		throw new RuntimeException("不存在［value="+value+"］！");
 	}

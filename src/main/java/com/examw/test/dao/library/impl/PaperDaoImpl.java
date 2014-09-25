@@ -114,4 +114,27 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 		}
 		super.delete(data);
 	}
+	/*
+	 * 加载已审核的试卷。
+	 * @see com.examw.test.dao.library.IPaperDao#loadAllAudit(java.lang.Integer)
+	 */
+	@Override
+	public List<Paper> loadAllAudit(Integer count) {
+		final String hql = "from Paper p where p.status = :status order by p.lastTime desc,p.createTime desc";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("status", Paper.STATUS_AUDIT);
+		return this.find(hql, parameters, null, count);
+	}
+	/*
+	 * 加载已审核的试卷总数。
+	 * @see com.examw.test.dao.library.IPaperDao#loadAllAuditCount()
+	 */
+	@Override
+	public Long loadAllAuditCount() {
+		final String hql = "select count(*) from Paper p where p.status = :status ";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("status", Paper.STATUS_AUDIT);
+		Object obj = this.uniqueResult(hql, parameters);
+		return obj == null ? null : (long)obj;
+	}
 }

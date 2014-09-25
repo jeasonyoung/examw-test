@@ -27,22 +27,18 @@ public interface IStructureItemDao extends IBaseDao<StructureItem> {
 	Long totalItems(String structureId);
 	/**
 	 * 查询数据。
-	 * @param paperId
-	 * 所属试卷ID。
 	 * @param info
 	 * 查询条件。
 	 * @return
 	 * 查询结果集合。
 	 */
-	List<StructureItem> findStructureItems(String paperId, StructureItemInfo info);
+	List<StructureItem> findStructureItems(StructureItemInfo info);
 	/**
 	 * 查询数据统计。
-	 * @param paperId
-	 * 所属试卷ID。
 	 * @param info
 	 * 查询条件。
 	 * @return
 	 * 查询结果。
 	 */
-	Long total(String paperId, StructureItemInfo info);
+	Long total(StructureItemInfo info);
 }

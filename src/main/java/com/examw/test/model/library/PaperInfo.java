@@ -12,7 +12,7 @@ import com.examw.model.IPaging;
  * @since 2014-08-06.
  */
 @JsonSerialize(include = Inclusion.NON_NULL)
-public class PaperInfo extends PaperPreview implements IPaging {
+public class PaperInfo extends BasePaperInfo implements IPaging {
 	private static final long serialVersionUID = 1L;
 	private String sort, order;
 	private Integer rows, page;

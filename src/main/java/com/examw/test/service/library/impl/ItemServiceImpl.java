@@ -1,31 +1,28 @@
 package com.examw.test.service.library.impl;
-
-import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.library.IItemDao;
 import com.examw.test.dao.library.ISourceDao;
+import com.examw.test.dao.settings.IAreaDao;
 import com.examw.test.dao.settings.ISubjectDao;
 import com.examw.test.domain.library.Item;
 import com.examw.test.domain.library.Source;
 import com.examw.test.domain.library.StructureShareItemScore;
+import com.examw.test.domain.settings.Area;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.library.BaseItemInfo;
 import com.examw.test.model.library.ItemInfo;
-import com.examw.test.model.library.ItemScoreInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.library.IItemDuplicateCheck;
 import com.examw.test.service.library.IItemService;
+import com.examw.test.service.library.ItemParser;
 import com.examw.test.service.library.ItemStatus;
 /**
  * 题目服务接口实现类。
@@ -38,8 +35,10 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 	private IItemDao itemDao;
 	private ISubjectDao subjectDao;
 	private ISourceDao sourceDao;
+	private IAreaDao areaDao;
 	private IItemDuplicateCheck itemDuplicateCheck;
-	private Map<Integer, String> typeMap,statusMap,optMap,judgeAnswerMap;
+	private Map<Integer, ItemParser> itemParsers;
+	private Map<Integer, String> statusMap,optMap,judgeAnswerMap;
 	/**
 	 * 设置题目数据访问接口。
 	 * @param itemDao 
@@ -66,6 +65,14 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		this.sourceDao = sourceDao;
 	}
 	/**
+	 * 设置地区数据接口。
+	 * @param areaDao 
+	 *	  地区数据接口。
+	 */
+	public void setAreaDao(IAreaDao areaDao) {
+		this.areaDao = areaDao;
+	}
+	/**
 	 * 设置题目去重复校验码生成算法接口。
 	 * @param itemDuplicateCheck 
 	 *	  题目去重复校验码生成算法接口。
@@ -74,13 +81,13 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		this.itemDuplicateCheck = itemDuplicateCheck;
 	}
 	/**
-	 * 设置题型名称集合。
-	 * @param typeMap 
-	 *	  题型名称集合。
+	 * 设置题型解析集合。
+	 * @param itemParsers 
+	 *	  itemParsers
 	 */
-	public void setTypeMap(Map<Integer, String> typeMap) {
-		if(logger.isDebugEnabled()) logger.debug("注入题型名称集合...");
-		this.typeMap = typeMap;
+	public void setItemParsers(Map<Integer, ItemParser> itemParsers) {
+		if(logger.isDebugEnabled()) logger.debug("注入题型解析集合...");
+		this.itemParsers = itemParsers;
 	}
 	/**
 	 * 设置状态名称集合。
@@ -115,8 +122,9 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 	@Override
 	public String loadTypeName(Integer type) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载题型［type = %d］名称...", type));
-		if(type == null || this.typeMap == null) return null;
-		return this.typeMap.get(type);
+		if(type == null || this.itemParsers == null) return null;
+		ItemParser parser = this.itemParsers.get(type);
+		return (parser == null) ? null : parser.getTypeName();
 	}
 	/*
 	 * 加载状态名称。
@@ -180,40 +188,22 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 	protected ItemInfo changeModel(Item data) {
 		if(logger.isDebugEnabled()) logger.debug("类型转换...");
 		if(data == null) return null;
-		ItemInfo info = new ItemInfo();
-		BeanUtils.copyProperties(data, info, new String[]{"children"});
-		if(data.getSubject() != null){
-			info.setSubjectId(data.getSubject().getId());
-			info.setSubjectName(data.getSubject().getName());
-			if(data.getSubject().getExam() != null){
-				info.setExamId(data.getSubject().getExam().getId());
-				info.setExamName(data.getSubject().getExam().getName());
-			}
+		ItemParser parser = this.itemParsers.get(data.getType());
+		if(parser == null){
+			String err = String.format("未能找到题型［%d］的解析器！", data.getType());
+			logger.error(err);
+			throw new RuntimeException(err);
 		}
-		if(data.getSource() != null){
-			info.setSourceId(data.getSource().getId());
-			info.setSourceName(data.getSource().getName());
+		parser.setItemDao(this.itemDao);
+		ItemInfo info = parser.parser(data);
+		if(info == null){
+			String err = String.format("题型［%d］解析器［%s］未能正确解析!", data.getType(), parser.getClass());
+			logger.error(err);
+			throw new RuntimeException(err);
 		}
-		if(data.getType() != null) info.setTypeName(this.loadTypeName(data.getType()));
-		if(data.getStatus() != null) info.setStatusName(this.loadStatusName(data.getStatus()));
-		if(data.getOpt() != null) info.setOptName(this.loadOptName(data.getOpt()));
-		
-		if(data.getChildren() != null && data.getChildren().size() > 0){
-			Set<ItemInfo> children = new TreeSet<ItemInfo>(new Comparator<ItemInfo>(){
-				@Override
-				public int compare(ItemInfo o1, ItemInfo o2) {
-					return o1.getOrderNo() - o2.getOrderNo();
-				}
-			});
-			for(Item item : data.getChildren()){
-				ItemInfo itemInfo = this.changeModel(item);
-				if(itemInfo != null){
-					itemInfo.setPid(info.getId());
-					children.add(itemInfo);
-				}
-			}
-			if(children.size() > 0) info.setChildren(children);
-		}
+		if(info.getType() != null) info.setTypeName(this.loadTypeName(info.getType()));
+		if(info.getStatus() != null) info.setStatusName(this.loadStatusName(info.getStatus()));
+		if(info.getOpt() != null) info.setOptName(this.loadOptName(info.getOpt()));
 		return info;
 	}
 	/*
@@ -264,56 +254,27 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		if(!isAdded){
 			info.setId(data.getId());
 			info.setCreateTime(data.getCreateTime());
+			this.itemDao.merge(data);
 		}
 		info.setCheckCode(checkCode);
 		info.setLastTime(new Date());
-		this.changeModel(info, data,shareItemScores);
-		if(isAdded)this.itemDao.save(data);
+		//所属科目
+		data.setSubject(StringUtils.isEmpty(info.getSubjectId()) ? null : this.subjectDao.load(Subject.class, info.getSubjectId()));
+		//所属来源
+		data.setSource(StringUtils.isEmpty(info.getSourceId()) ?  null : this.sourceDao.load(Source.class, info.getSourceId()));
+		//所属地区
+		data.setArea(StringUtils.isEmpty(info.getAreaId()) ? null : this.areaDao.load(Area.class, info.getSourceId()));
+		
+		ItemParser parser = this.itemParsers.get(data.getType());
+		if(parser == null){
+			String err = String.format("未能找到题型［%d］的解析器！", data.getType());
+			logger.error(err);
+			throw new RuntimeException(err);
+		}
+		parser.setItemDao(this.itemDao);
+		parser.parser(info, shareItemScores, data);
+		this.itemDao.saveOrUpdate(data);
 		return data;
-	}
-	//类型转换(ItemInfo => Item)。
-	private boolean changeModel(BaseItemInfo<?> source,Item target,Set<StructureShareItemScore> shareItemScores){
-		if(source == null || target == null) return false;
-		BeanUtils.copyProperties(source, target, new String[]{"children"});
-		if(!StringUtils.isEmpty(source.getSubjectId())){
-			target.setSubject(this.subjectDao.load(Subject.class, source.getSubjectId()));
-		}
-		if(!StringUtils.isEmpty(source.getSourceId())){
-			target.setSource(this.sourceDao.load(Source.class, source.getSourceId()));
-		}
-		if((source instanceof ItemScoreInfo) && shareItemScores != null){
-			ItemScoreInfo itemScoreInfo  = (ItemScoreInfo)source;
-			if(!StringUtils.isEmpty(itemScoreInfo.getSerial())){
-				StructureShareItemScore shareItemScore = new StructureShareItemScore();
-				//shareItemScore.setId(MD5Util.MD5(String.format("%1$s-%2$s", structureItem.getId(), target.getId())));
-				shareItemScore.setId( target.getId());
-				shareItemScore.setSerial(itemScoreInfo.getSerial());
-				shareItemScore.setScore(itemScoreInfo.getScore());
-				//shareItemScore.setStructureItem(structureItem);
-				shareItemScore.setSubItem(target);
-				shareItemScores.add(shareItemScore);
-			}
-		}
-		if(target.getChildren() != null) target.getChildren().clear();
-		if(source.getChildren() != null && source.getChildren().size() > 0){
-			if(target.getChildren()== null) target.setChildren(new HashSet<Item>());
-			for(BaseItemInfo<?> info : source.getChildren()){
-				if(info == null) continue;
-				Item item = StringUtils.isEmpty(info.getId()) ?  null : this.itemDao.load(Item.class, info.getId());
-				if(item != null) {
-					if(item.getChildren() != null) item.getChildren().clear();
-				}
-				if(item == null){
-					if(StringUtils.isEmpty(info.getId())) info.setId(UUID.randomUUID().toString());
-					item = new Item();
-				}
-				item.setParent(target);
-				if(this.changeModel(info, item, shareItemScores)){
-					target.getChildren().add(item);
-				}
-			}
-		}
-		return true;
 	}
 	/*
 	 * 删除数据。

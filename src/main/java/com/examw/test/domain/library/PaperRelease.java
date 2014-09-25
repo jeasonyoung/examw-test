@@ -14,6 +14,7 @@ public class PaperRelease implements Serializable {
 	private String id,title,content;
 	private Paper paper;
 	private Date createTime;
+	private Integer total;
 	/**
 	 * 获取试卷发布ID。
 	 * @return 试卷发布ID。
@@ -43,6 +44,21 @@ public class PaperRelease implements Serializable {
 	 */
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	/**
+	 * 获取试卷试题数。
+	 * @return 试卷试题数。
+	 */
+	public Integer getTotal() {
+		return total;
+	}
+	/**
+	 * 设置试卷试题数。
+	 * @param total 
+	 *	  试卷试题数。
+	 */
+	public void setTotal(Integer total) {
+		this.total = total;
 	}
 	/**
 	 * 获取试卷内容（JSON格式）。

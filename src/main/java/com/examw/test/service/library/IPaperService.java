@@ -1,16 +1,7 @@
 package com.examw.test.service.library;
 
-import java.util.List;
-
-import com.examw.model.DataGrid;
-import com.examw.model.Json;
-import com.examw.test.model.front.PaperFrontInfo;
-import com.examw.test.model.library.PaperInfo;
-import com.examw.test.model.library.PaperPreview;
-import com.examw.test.model.library.StructureInfo;
-import com.examw.test.model.library.StructureItemInfo;
+import com.examw.test.model.library.PaperInfo; 
 import com.examw.test.service.IBaseDataService;
-
 /**
  * 试卷服务接口。
  * @author yangyong.
@@ -42,99 +33,46 @@ public interface IPaperService extends IBaseDataService<PaperInfo> {
 	 */
 	void updateStatus(String paperId,PaperStatus status);
 	/**
-	 * 获取试卷结构集合。
-	 * @param paperId
-	 * 所属试卷ID。
-	 * @return
-	 * 试卷结构集合。
-	 */
-	List<StructureInfo> loadStructures(String paperId);
-	/**
-	 * 更新试卷结构。
-	 * @param paperId
-	 * 所属试卷ID。
-	 * @param info
-	 * 试卷结构。
-	 */
-	void updateStructure(String paperId, StructureInfo info);
-	/**
-	 * 删除试卷结构。
-	 * @param structureIds
-	 * 试卷结构ID。
-	 */
-	void deleteStructure(String[] structureIds);
-	/**
-	 * 加载结构下试题数据。
-	 * @param paperId
-	 * 所属试卷ID。
-	 * @param info
-	 * @return
-	 */
-	DataGrid<StructureItemInfo> loadStructureItems(String paperId, StructureItemInfo info);
-	/**
-	 * 加载试卷结构下最大的排序号。
-	 * @param structureId
-	 * 所属结构ID。
-	 * @return
-	 */
-	Long loadStructureItemMaxOrderNo(String structureId);
-	/**
-	 * 更新结构下试题数据。
-	 * @param paperId
-	 * 所属试卷ID。
-	 * @param info
-	 * @return
-	 */
-	StructureItemInfo updateStructureItem(String paperId,StructureItemInfo info);
-	/**
-	 * 删除结构下试题。
-	 * @param ids
-	 * 结构下试题ID。
-	 */
-	void deleteStructureItem(String[] ids);
-	/**
-	 * 加载试卷预览。
-	 * @param paperId
-	 * 试卷ID。
-	 * @return
-	 * 试卷信息。
-	 */
-	PaperPreview loadPaperPreview(String paperId);
-	/**
-	 * 加载试卷基本信息[前台调用方法]
+	 *  加载试卷基本信息。
 	 * @param paperId
 	 * @return
 	 */
-	PaperPreview loadPaperInfo(String paperId);
-	/**
-	 * 加载试卷详细信息并且添加试卷记录[前台调用方法]
-	 * @param paperId	试卷ID
-	 * @param userId 	用户ID
-	 * @return
-	 */
-	PaperPreview loadPaperPreviewAndAddRecord(String paperId,String userId);
-	/**
-	 * 加载试卷数据信息[前台调用方法]
-	 * @param info
-	 * @return
-	 */
-	List<PaperFrontInfo> loadPaperFrontInfo(PaperInfo info,String userId);
-	/**
-	 * 查询统计[前台调用方法]
-	 * @param info
-	 * @return
-	 */
-	Long totalPaperFrontInfo(PaperInfo info);
-	/**
-	 * 试卷提交答案	[前台调用方法]
-	 * @param limitTime			剩余时间[秒]
-	 * @param chooseAnswers		选择题答案
-	 * @param textAnswers		文字题答案
-	 * @param model				提交模式
-	 * @param paperId			试卷ID
-	 * @param userId			用户ID
-	 * @return
-	 */
-	Json submitPaper(Integer limitTime, String chooseAnswers,
-			String textAnswers,Integer model, String paperId, String userId);
+	PaperInfo loadPaperInfo(String paperId);
+//	/**
+//	 * 加载试卷基本信息[前台调用方法]
+//	 * @param paperId
+//	 * @return
+//	 */
+//	PaperPreview loadPaperInfo(String paperId);
+//	/**
+//	 * 加载试卷详细信息并且添加试卷记录[前台调用方法]
+//	 * @param paperId	试卷ID
+//	 * @param userId 	用户ID
+//	 * @return
+//	 */
+//	PaperPreview loadPaperPreviewAndAddRecord(String paperId,String userId);
+//	/**
+//	 * 加载试卷数据信息[前台调用方法]
+//	 * @param info
+//	 * @return
+//	 */
+//	List<PaperFrontInfo> loadPaperFrontInfo(PaperInfo info,String userId);
+//	/**
+//	 * 查询统计[前台调用方法]
+//	 * @param info
+//	 * @return
+//	 */
+//	Long totalPaperFrontInfo(PaperInfo info);
+//	/**
+//	 * 试卷提交答案	[前台调用方法]
+//	 * @param limitTime			剩余时间[秒]
+//	 * @param chooseAnswers		选择题答案
+//	 * @param textAnswers		文字题答案
+//	 * @param model				提交模式
+//	 * @param paperId			试卷ID
+//	 * @param userId			用户ID
+//	 * @return
+//	 */
+//	Json submitPaper(Integer limitTime, String chooseAnswers,
+//			String textAnswers,Integer model, String paperId, String userId);
 }
