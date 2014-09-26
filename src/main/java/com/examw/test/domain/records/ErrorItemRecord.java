@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class ErrorItemRecord implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id,structureItemId,userId,itemId;
+	private String id,structureItemId,userId,itemId,productId;
 	private Date createTime;
 	private Integer errorTimes;
 	private String historyAnswers;
@@ -127,4 +127,21 @@ public class ErrorItemRecord implements Serializable {
 	public void setHistoryAnswers(String historyAnswers) {
 		this.historyAnswers = historyAnswers;
 	}
+	/**
+	 * 获取 产品ID
+	 * @return productId
+	 * 产品ID
+	 */
+	public String getProductId() {
+		return productId;
+	}
+	/**
+	 * 设置 产品ID
+	 * @param productId
+	 * 产品ID
+	 */
+	public void setProductId(String productId) {
+		this.productId = productId;
+	}
+	
 }

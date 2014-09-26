@@ -61,6 +61,10 @@ public class PaperRecordDaoImpl extends BaseDaoImpl<PaperRecord> implements IPap
 			hql += " and (pr.userId = :userId)";
 			parameters.put("userId", info.getUserId());
 		}
+		if (!StringUtils.isEmpty(info.getProductId())) {
+			hql += " and (pr.productId = :productId)";
+			parameters.put("productId", info.getProductId());
+		}
 		if (info.getStatus() != null){
 			hql += " and (pr.status = :status)";
 			parameters.put("status", info.getStatus());

@@ -60,6 +60,10 @@ public class CollectionDaoImpl extends BaseDaoImpl<Collection> implements IColle
 			hql += " and (c.itemId = :itemId)";
 			parameters.put("itemId", info.getUserId());
 		}
+		if (!StringUtils.isEmpty(info.getProductId())) {
+			hql += " and (c.productId = :productId)";
+			parameters.put("productId", info.getProductId());
+		}
 		if (!StringUtils.isEmpty(info.getUserId())) {
 			hql += " and (c.userId = :userId)";
 			parameters.put("userId", info.getUserId());
@@ -84,5 +88,15 @@ public class CollectionDaoImpl extends BaseDaoImpl<Collection> implements IColle
 			return null;
 		}
 		return list.get(0);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Object> loadProductIds(String userId) {
+		if(logger.isDebugEnabled()) logger.debug("查询产品IDs...");
+		String hql = "select c.productId from Collection c where c.userId = :userId";
+		Query query = this.getCurrentSession().createQuery(hql);
+		query.setParameter("userId", userId);
+		return query.list();
 	}
 }

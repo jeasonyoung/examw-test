@@ -19,6 +19,8 @@
 		<property name="time" type="integer"/>
 		<!-- 未做完已经使用时间 -->
 		<property name="usedTime" column="used_time" type="integer"/>
+		<!-- 产品ID -->
+		<property name="productId" column="product_id" type="string" length="64"/>
 	</class>
 	
 	<!-- 试题的做题记录  -->
@@ -45,6 +47,8 @@
 		<property name="ip" type="string" length="32"	/>
 		<!-- 回答状态 [-1:答错,0:没答,1:答对,2:少答]-->
 		<property name="status" type="integer" />
+		<!-- 产品ID -->
+		<property name="productId" column="product_id" type="string" length="64"/>
 	</class>
 	
 	<!-- 错题记录 -->
@@ -63,6 +67,8 @@
 		<property name="historyAnswers" column="history_answers" type="text"/>
 		<!-- 记录时间 -->
 		<property name="createTime" column="create_time" type="timestamp" />
+		<!-- 产品ID -->
+		<property name="productId" column="product_id" type="string" length="64"/>
 	</class>
 	
 	<!-- 题目收藏 -->
@@ -77,6 +83,10 @@
 		<property name="itemId" column="item_id" type="string" length="64" />
 		<!-- 收藏时间 -->
 		<property name="createTime" column="create_time" type="timestamp" />
+		<!-- 用户收藏时的答案 -->
+		<property name="userAnswer" column="user_answer" type="text"/>
+		<!-- 产品ID -->
+		<property name="productId" column="product_id" type="string" length="64"/>
 	</class>
 	
 	<!-- 题目笔记 -->

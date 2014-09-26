@@ -11,7 +11,7 @@ import java.util.Date;
  */
 public class ItemRecord implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id,paperId,structureItemId,userId;
+	private String id,paperId,structureItemId,userId,productId;
 	private Date lastTime;
 	private BigDecimal score;
 	private Integer time,terminal,status;
@@ -196,6 +196,22 @@ public class ItemRecord implements Serializable {
 	 */
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+	/**
+	 * 获取 产品ID
+	 * @return productId
+	 * 
+	 */
+	public String getProductId() {
+		return productId;
+	}
+	/**
+	 * 设置 产品ID
+	 * @param productId
+	 * 
+	 */
+	public void setProductId(String productId) {
+		this.productId = productId;
 	}
 	
 }

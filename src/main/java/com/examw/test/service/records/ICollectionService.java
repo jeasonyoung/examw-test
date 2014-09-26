@@ -2,6 +2,7 @@ package com.examw.test.service.records;
 
 import com.examw.model.Json;
 import com.examw.test.domain.records.Collection;
+import com.examw.test.model.front.FrontProductInfo;
 
 /**
  * 试题收藏服务接口
@@ -36,4 +37,9 @@ public interface ICollectionService {
 	 * @return
 	 */
 	Json collectOrCancel(String structureItemId,String itemId, String userId);
+	/**
+	 * 加载我的收藏产品分类
+	 * @return
+	 */
+	FrontProductInfo loadCollectionClassify(String userId);
 }
