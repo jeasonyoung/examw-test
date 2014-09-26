@@ -61,16 +61,16 @@ public class PaperRelease implements Serializable {
 		this.total = total;
 	}
 	/**
-	 * 获取试卷内容（JSON格式）。
-	 * @return 试卷内容（JSON格式）。
+	 * 获取试卷内容（PaperPreview 对象的JSON格式）。
+	 * @return 试卷内容（PaperPreview 对象的JSON格式）。
 	 */
 	public String getContent() {
 		return content;
 	}
 	/**
-	 * 设置试卷内容（JSON格式）。
+	 * 设置试卷内容（PaperPreview 对象的JSON格式）。
 	 * @param content 
-	 *	  试卷内容（JSON格式）。
+	 *	  试卷内容（PaperPreview 对象的JSON格式）。
 	 */
 	public void setContent(String content) {
 		this.content = content;

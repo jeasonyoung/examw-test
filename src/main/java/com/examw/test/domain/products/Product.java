@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
 
+import com.examw.test.domain.settings.Area;
 import com.examw.test.domain.settings.Exam;
 import com.examw.test.domain.settings.Subject;
 
@@ -23,6 +24,7 @@ public class Product implements Serializable {
 	private Integer status;
 	private Set<RelationProduct> relations;
 	private Integer code;
+	private Area area;
 	/**
 	 * 状态－正常。
 	 */
@@ -105,6 +107,21 @@ public class Product implements Serializable {
 	 */
 	public void setExam(Exam exam) {
 		this.exam = exam;
+	}
+	/**
+	 * 获取所属地区。
+	 * @return 所属地区。
+	 */
+	public Area getArea() {
+		return area;
+	}
+	/**
+	 * 设置所属地区。
+	 * @param area 
+	 *	  所属地区。
+	 */
+	public void setArea(Area area) {
+		this.area = area;
 	}
 	/**
 	 * 获取包含科目集合。

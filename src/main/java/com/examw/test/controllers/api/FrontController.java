@@ -11,12 +11,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.examw.test.model.library.FrontPaperInfo;
+import com.examw.test.model.library.PaperPreview;
 import com.examw.test.model.products.FrontProductInfo;
 import com.examw.test.model.settings.ExamInfo;
 import com.examw.test.model.settings.FrontCategoryInfo;
 import com.examw.test.model.settings.SubjectInfo;
 import com.examw.test.model.syllabus.KnowledgeInfo;
 import com.examw.test.model.syllabus.SyllabusInfo;
+import com.examw.test.service.library.IFrontPaperService;
 import com.examw.test.service.products.IFrontProductService;
 import com.examw.test.service.settings.IExamService;
 import com.examw.test.service.settings.IFrontCategoryService;
@@ -48,6 +51,9 @@ public class FrontController {
 	//注入大纲知识点服务接口。
 	@Resource
 	private IKnowledgeService knowledgeService;
+	//注入前端试卷服务接口。
+	@Resource
+	private IFrontPaperService frontPaperService;
 	/**
 	 * 加载考试类别集合。
 	 * @return
@@ -128,11 +134,35 @@ public class FrontController {
 		return this.frontProductService.loadProductSubjects(productId);
 	}
 	/**
+	 * 加载产品下试卷摘要信息集合。
+	 * @param productId
+	 * @return
+	 */
+	@RequestMapping(value = {"/products/{productId}/papers"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public List<FrontPaperInfo> loadProductPapers(String productId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载产品下的试卷数据集合...", productId));
+		return this.frontPaperService.loadProductPapers(productId);
+	}
+	/**
+	 * 加载试卷内容。
+	 * @param paperId
+	 * 所属试卷ID。
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = {"/papers/{paperId}"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public PaperPreview loadPaperContent(@PathVariable String paperId) throws Exception{
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［paperId = %s］内容...", paperId));
+		return this.frontPaperService.loadPaperContent(paperId);
+	}
+	/**
 	 * 加载科目下的考试大纲。
 	 * @param subjectId
 	 * @return
 	 */
-	@RequestMapping(value = {"/syllabuses/{subjectId}"}, method = {RequestMethod.GET})
+	@RequestMapping(value = {"/subjects/{subjectId}/syllabuses"}, method = {RequestMethod.GET})
 	@ResponseBody
 	public List<SyllabusInfo> loadSubjectSyllabuses(@PathVariable String subjectId){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载科目[subjectId = %s]下的考试大纲...", subjectId));

@@ -16,15 +16,11 @@ import com.examw.support.CustomDateSerializer;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class ProductInfo extends Paging implements Comparable<ProductInfo>{
 	private static final long serialVersionUID = 1L;
-	private String id,name,content;
-	private String examId,examName;
-	private String[] subjectId;
-	private String subjectName;
+	private String id,name,content,examId,examName,areaId,areaName,statusName;
+	private String[] subjectId,subjectName;
+	private Integer code,status;
 	private BigDecimal price,discount;
 	private Date createTime,lastTime;
-	private Integer status;
-	private String statusName;
-	private Integer code;
 	/**
 	 * 获取产品ID。
 	 * @return 产品ID。
@@ -86,165 +82,185 @@ public class ProductInfo extends Paging implements Comparable<ProductInfo>{
 		this.content = content;
 	}
 	/**
-	 * 获取 所属考试ID
-	 * @return examId
-	 * 
+	 * 获取所属考试ID。
+	 * @return 所属考试ID。
 	 */
 	public String getExamId() {
 		return examId;
 	}
 	/**
-	 * 设置  所属考试ID
+	 * 设置所属考试ID。
 	 * @param examId
-	 * 
+	 * 所属考试ID。
 	 */
 	public void setExamId(String examId) {
 		this.examId = examId;
 	}
 	/**
-	 * 获取  所属考试名称
-	 * @return examName
-	 * 
+	 * 获取所属考试名称。
+	 * @return 所属考试名称。
 	 */
 	public String getExamName() {
 		return examName;
 	}
 	/**
-	 * 设置 所属考试名称
+	 * 设置所属考试名称。
 	 * @param examName
-	 * 
+	 * 所属考试名称。
 	 */
 	public void setExamName(String examName) {
 		this.examName = examName;
 	}
 	/**
-	 * 获取 包含科目IDs
-	 * @return subjectId
-	 * 
+	 * 获取所属地区ID。
+	 * @return 所属地区ID。
+	 */
+	public String getAreaId() {
+		return areaId;
+	}
+	/**
+	 * 设置所属地区ID。
+	 * @param areaId 
+	 *	  所属地区ID。
+	 */
+	public void setAreaId(String areaId) {
+		this.areaId = areaId;
+	}
+	/**
+	 * 获取所属地区名称。
+	 * @return areaName
+	 */
+	public String getAreaName() {
+		return areaName;
+	}
+	/**
+	 * 设置所属地区名称。
+	 * @param areaName 
+	 *	  所属地区名称。
+	 */
+	public void setAreaName(String areaName) {
+		this.areaName = areaName;
+	}
+	/**
+	 * 获取包含科目ID。
+	 * @return 包含科目ID。
 	 */
 	public String[] getSubjectId() {
 		return subjectId;
 	}
 	/**
-	 * 设置 包含科目IDs
+	 * 设置包含科目ID。
 	 * @param subjectId
-	 * 
+	 * 包含科目ID。
 	 */
 	public void setSubjectId(String[] subjectId) {
 		this.subjectId = subjectId;
 	}
 	/**
-	 * 获取 原价
-	 * @return price
-	 * 
+	 * 获取原价。
+	 * @return 原价。
 	 */
 	public BigDecimal getPrice() {
 		return price;
 	}
 	/**
-	 * 设置 原价
+	 * 设置原价。
 	 * @param price
-	 * 
+	 * 原价。
 	 */
 	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 	/**
-	 * 获取 优惠价
-	 * @return discount
-	 * 
+	 * 获取优惠价。
+	 * @return 优惠价。
 	 */
 	public BigDecimal getDiscount() {
 		return discount;
 	}
 	/**
-	 * 设置 优惠价
+	 * 设置优惠价。
 	 * @param discount
-	 * 
+	 * 优惠价。
 	 */
 	public void setDiscount(BigDecimal discount) {
 		this.discount = discount;
 	}
 	/**
-	 * 获取 创建时间
-	 * @return createTime
-	 * 
+	 * 获取创建时间。
+	 * @return 创建时间。
 	 */
 	@JsonSerialize(using = CustomDateSerializer.LongDate.class)
 	public Date getCreateTime() {
 		return createTime;
 	}
 	/**
-	 * 设置 创建时间
+	 * 设置创建时间。
 	 * @param createTime
-	 * 
+	 * 创建时间。
 	 */
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
 	/**
-	 * 获取 最后修改时间
-	 * @return lastTime
-	 * 
+	 * 获取最后修改时间。
+	 * @return 最后修改时间。
 	 */
 	@JsonSerialize(using = CustomDateSerializer.LongDate.class)
 	public Date getLastTime() {
 		return lastTime;
 	}
 	/**
-	 * 设置 最后修改时间
+	 * 设置最后修改时间。
 	 * @param lastTime
-	 * 
+	 * 最后修改时间。
 	 */
 	public void setLastTime(Date lastTime) {
 		this.lastTime = lastTime;
 	}
 	/**
-	 * 获取 状态
-	 * @return status
-	 * 
+	 * 获取状态。
+	 * @return 状态。
 	 */
 	public Integer getStatus() {
 		return status;
 	}
 	/**
-	 * 设置 状态
+	 * 设置状态。
 	 * @param status
-	 * 
+	 * 状态。
 	 */
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
 	/**
-	 * 获取 状态名称
-	 * @return statusName
-	 * 
+	 * 获取状态名称。
+	 * @return 状态名称。
 	 */
 	public String getStatusName() {
 		return statusName;
 	}
 	/**
-	 * 设置 状态名称
+	 * 设置状态名称。
 	 * @param statusName
-	 * 
+	 * 状态名称。
 	 */
 	public void setStatusName(String statusName) {
 		this.statusName = statusName;
 	}
 	/**
-	 * 获取 包含科目名称
-	 * @return subjectName
-	 * 
+	 * 获取包含科目名称。
+	 * @return 包含科目名称。
 	 */
-	public String getSubjectName() {
+	public String[] getSubjectName() {
 		return subjectName;
 	}
 	/**
-	 * 设置 包含科目名称
+	 * 设置包含科目名称。
 	 * @param subjectName
-	 * 
+	 * 包含科目名称。
 	 */
-	public void setSubjectName(String subjectName) {
+	public void setSubjectName(String[] subjectName) {
 		this.subjectName = subjectName;
 	}
 	/*

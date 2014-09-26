@@ -9,7 +9,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
  * @author yangyong
  * @since 2014年8月15日
  */
-@JsonSerialize(include =Inclusion.NON_NULL)
+@JsonSerialize(include = Inclusion.NON_NULL)
 public class PaperPreview extends BasePaperInfo {
 	private static final long serialVersionUID = 1L;
 	private Integer total;

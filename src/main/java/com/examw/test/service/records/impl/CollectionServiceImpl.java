@@ -9,7 +9,6 @@ import com.examw.model.Json;
 import com.examw.test.dao.products.IProductDao;
 import com.examw.test.dao.records.ICollectionDao;
 import com.examw.test.domain.records.Collection;
-import com.examw.test.model.front.FrontProductInfo;
 import com.examw.test.service.records.ICollectionService;
 
 /**
@@ -94,10 +93,5 @@ public class CollectionServiceImpl implements ICollectionService{
 			json.setData(0);
 		}
 		return json;
-	}
-	
-	@Override
-	public FrontProductInfo loadCollectionClassify(String userId) {
-		return null;
 	}
 }

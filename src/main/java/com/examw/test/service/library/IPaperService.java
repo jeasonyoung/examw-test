@@ -1,5 +1,6 @@
 package com.examw.test.service.library;
 
+import com.examw.test.domain.library.Paper;
 import com.examw.test.model.library.PaperInfo; 
 import com.examw.test.service.IBaseDataService;
 /**
@@ -38,6 +39,12 @@ public interface IPaperService extends IBaseDataService<PaperInfo> {
 	 * @return
 	 */
 	PaperInfo loadPaperInfo(String paperId);
+	/**
+	 * 数据模型转换。
+	 * @param paper
+	 * @return
+	 */
+	PaperInfo conversion(Paper paper);
 //	/**
 //	 * 加载试卷基本信息[前台调用方法]
 //	 * @param paperId

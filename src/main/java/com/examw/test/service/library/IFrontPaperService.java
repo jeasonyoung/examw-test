@@ -1,4 +1,10 @@
 package com.examw.test.service.library;
+
+import java.util.List;
+
+import com.examw.test.model.library.FrontPaperInfo;
+import com.examw.test.model.library.PaperPreview;
+
 /**
  * 前端试卷服务接口。
  * 
@@ -29,4 +35,19 @@ public interface IFrontPaperService {
 	 * @return
 	 */
 	boolean hasRealItem(String[] subjectsId);
+	/**
+	 * 加载产品试卷。
+	 * @param productId
+	 * 产品ID。
+	 * @return
+	 * 试卷集合。
+	 */
+	List<FrontPaperInfo> loadProductPapers(String productId);
+	/**
+	 * 加载试卷内容。
+	 * @param paperId
+	 * 试卷ID。
+	 * @return
+	 */
+	PaperPreview loadPaperContent(String paperId) throws Exception;
 }

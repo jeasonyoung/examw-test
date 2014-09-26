@@ -89,22 +89,26 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 		ProductInfo info = new ProductInfo();
 		BeanUtils.copyProperties(data, info);
 		//所属考试
-		if(data.getExam()!=null){
+		if(data.getExam() != null){
 			info.setExamId(data.getExam().getId());
 			info.setExamName(data.getExam().getName());
 		}
+		//所属地区
+		if(data.getArea() != null){
+			info.setAreaId(data.getArea().getId());
+			info.setAreaName(data.getArea().getName());
+		}
 		//包含科目
 		if(data.getSubjects()!=null){
-			List<String> list = new ArrayList<>();
-			StringBuilder subjectNameBuilder = new StringBuilder();
+			List<String> subjectIds = new ArrayList<>(),subjectNames = new ArrayList<>();
 			for(Subject subject : data.getSubjects()){
 				if(subject != null) {
-					list.add(subject.getId());
-					subjectNameBuilder.append(",").append(subject.getName());
+					subjectIds.add(subject.getId());
+					subjectNames.add(subject.getName());
 				}
 			}
-			info.setSubjectId(list.toArray(new String[0]));
-			info.setSubjectName(subjectNameBuilder.length() > 0 ? subjectNameBuilder.substring(1) : null);
+			info.setSubjectId(subjectIds.toArray(new String[0]));
+			info.setSubjectName(subjectNames.toArray(new String[0]));
 		}
 		info.setStatusName(this.loadStatusName(data.getStatus()));
 		return info;

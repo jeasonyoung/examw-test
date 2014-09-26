@@ -20,6 +20,28 @@ import com.examw.test.service.library.PaperType;
 public class PaperReleaseDaoImpl extends BaseDaoImpl<PaperRelease> implements IPaperReleaseDao {
 	private static final Logger logger = Logger.getLogger(PaperReleaseDaoImpl.class);
 	/*
+	 * 按科目或地区加载已发布的试卷集合。
+	 * @see com.examw.test.dao.library.IPaperReleaseDao#loadReleases(java.lang.String[], java.lang.String[])
+	 */
+	@Override
+	public List<PaperRelease> loadReleases(String[] subjectsId, String[] areasId){
+		if(logger.isDebugEnabled()) logger.debug("查询已发布的试卷数据...");
+		StringBuilder hqlBuilder = new StringBuilder();
+		hqlBuilder.append("from PaperRelease p ");
+		Map<String, Object> parameters = new HashMap<>();
+		if(subjectsId != null && subjectsId.length > 0){
+			hqlBuilder.append(" where (p.paper.subject.id in (:subjectId)) ");
+			parameters.put("subjectId", subjectsId);
+		}
+		if(areasId != null && areasId.length > 0){
+			hqlBuilder.append((subjectsId == null || subjectsId.length == 0) ? " where " : " and ");
+			hqlBuilder.append(" (p.paper.Area.id in (:areaId)) ");
+			parameters.put("areaId", areasId);
+		}
+		hqlBuilder.append(" order by p.createTime desc");
+		return this.find(hqlBuilder.toString(), parameters, null, null);
+	}
+	/*
 	 * 试卷是否已发布。
 	 * @see com.examw.test.dao.library.IPaperReleaseDao#hasRelease(java.lang.String)
 	 */

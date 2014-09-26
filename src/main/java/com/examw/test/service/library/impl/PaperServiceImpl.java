@@ -161,6 +161,15 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		return info;
 	}
 	/*
+	 * 数据模型转换。
+	 * @see com.examw.test.service.library.IPaperService#conversion(com.examw.test.domain.library.Paper)
+	 */
+	@Override
+	public PaperInfo conversion(Paper paper) {
+		if(logger.isDebugEnabled()) logger.debug("数据模型转换 Paper => PaperInfo ...");
+		return this.changeModel(paper);
+	}
+	/*
 	 * 查询试卷数据统计。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#total(java.lang.Object)
 	 */
@@ -287,6 +296,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 			}
 		}
 	}
+	
 
 
 //	

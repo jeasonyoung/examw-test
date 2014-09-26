@@ -2,7 +2,6 @@ package com.examw.test.service.library.impl;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.log4j.Logger; 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -132,14 +131,18 @@ public class PaperReleaseServiceImpl implements IPaperReleaseService {
 			if(logger.isDebugEnabled()) logger.debug("试卷预览不存在!");
 			return;
 		}
-		PaperRelease paperRelease = new PaperRelease();
-		paperRelease.setId(UUID.randomUUID().toString());
-		paperRelease.setPaper(paper);
+		PaperRelease paperRelease = this.paperReleaseDao.load(PaperRelease.class, paper.getId());
+		boolean isAdded = false;
+		if(isAdded = (paperRelease == null)){
+			paperRelease = new PaperRelease();
+			paperRelease.setId(paper.getId());
+			paperRelease.setPaper(paper);
+			paperRelease.setCreateTime(new Date());
+		}
 		paperRelease.setTitle(paperPreview.getName());
 		paperRelease.setTotal(paperPreview.getTotal());
-		paperRelease.setCreateTime(new Date());
 		paperRelease.setContent(this.mapper.writeValueAsString(paperPreview));
-		this.paperReleaseDao.save(paperRelease);
+		if(isAdded) this.paperReleaseDao.save(paperRelease);
 		paper.setStatus(Paper.STATUS_PUBLISH);
 	}
 }
