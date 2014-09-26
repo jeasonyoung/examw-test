@@ -9,9 +9,9 @@ import com.examw.model.Paging;
  * @since 2014-08-07.
  */
 @JsonSerialize(include = Inclusion.NON_NULL)
-public class KnowledgeInfo extends Paging {
+public class KnowledgeInfo extends Paging implements Comparable<KnowledgeInfo> {
 	private static final long serialVersionUID = 1L;
-	private String id,content,bookId,syllId,syllName;
+	private String id,content,bookId,bookName,syllabusId,syllabusName;
 	private Integer code;
 	/**
 	 * 设置知识点ID。
@@ -74,33 +74,61 @@ public class KnowledgeInfo extends Paging {
 		this.bookId = bookId;
 	}
 	/**
+	 * 获取所属教材名称。
+	 * @return 所属教材名称。
+	 */
+	public String getBookName() {
+		return bookName;
+	}
+	/**
+	 * 设置所属教材名称。
+	 * @param bookName 
+	 *	  所属教材名称。
+	 */
+	public void setBookName(String bookName) {
+		this.bookName = bookName;
+	}
+	/**
 	 * 获取所属大纲ID。
 	 * @return 所属大纲ID。
 	 */
-	public String getSyllId() {
-		return syllId;
+	public String getSyllabusId() {
+		return syllabusId;
 	}
 	/**
 	 * 设置所属大纲ID。
-	 * @param syllId
+	 * @param syllabusId
 	 * 所属大纲ID。
 	 */
-	public void setSyllId(String syllId) {
-		this.syllId = syllId;
+	public void setSyllabusId(String syllabusId) {
+		this.syllabusId = syllabusId;
 	}
 	/**
 	 * 获取大纲名称。
 	 * @return 大纲名称。
 	 */
-	public String getSyllName() {
-		return syllName;
+	public String getSyllabusName() {
+		return syllabusName;
 	}
 	/**
 	 * 设置大纲名称。
 	 * @param syllName
 	 * 大纲名称。
 	 */
-	public void setSyllName(String syllName) {
-		this.syllName = syllName;
+	public void setSyllabusName(String syllabusName) {
+		this.syllabusName = syllabusName;
+	}
+	/*
+	 * 排序比较。
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(KnowledgeInfo o) {
+		if(this == o) return 0;
+		int index = this.getCode() - o.getCode();
+		if(index == 0){
+			index = this.getId().compareToIgnoreCase(o.getId());
+		}
+		return 0;
 	}
 }

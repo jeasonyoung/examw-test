@@ -16,22 +16,24 @@
 		<property name="subjectDao" ref="subjectDao"/>
 	</bean>
 	<!-- 教材服务 -->
-	<bean id="bookService" class="com.examw.test.service.syllabus.impl.TextBookServiceImpl">
+	<bean id="textbookService" class="com.examw.test.service.syllabus.impl.TextBookServiceImpl">
 		<!-- 教材数据接口 -->
-		<property name="bookDao" ref="bookDao"/>
-		<!-- 出版社数据接口 -->
-		<property name="pressDao" ref="pressDao"/>
+		<property name="textBookDao" ref="textBookDao"/>
 		<!-- 科目数据接口 -->
 		<property name="subjectDao" ref="subjectDao"/>
+		<!-- 出版社数据接口 -->
+		<property name="pressDao" ref="pressDao"/>
 		<!-- 知识点数据接口 -->
-		<property name="knowDao" ref="knowDao"/>
-		<!-- 大纲数据接口 -->
-		<property name="syllabusDao" ref="syllabusDao"/>
+		<property name="knowledgeService" ref="knowledgeService"/>
 	</bean>
 	<!-- 知识点服务 -->
-	<bean id="knowService" class="com.examw.test.service.syllabus.impl.KnowledegeServiceImpl">
+	<bean id="knowledgeService" class="com.examw.test.service.syllabus.impl.KnowledegeServiceImpl">
 		<!-- 知识点数据接口 -->
-		<property name="knowDao" ref="knowDao"/>
+		<property name="knowledgeDao" ref="knowledgeDao"/>
+		<!-- 考试大纲数据接口 -->
+		<property name="syllabusDao" ref="syllabusDao" />
+		<!-- 教材数据接口 -->
+		<property name="textBookDao" ref="textBookDao" />
 	</bean>
 	<!-- 考试大纲 服务接口实现 end-->
 </beans>

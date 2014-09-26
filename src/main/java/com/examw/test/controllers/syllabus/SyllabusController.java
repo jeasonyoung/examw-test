@@ -134,19 +134,19 @@ public class SyllabusController {
 	 * 加载条件。
 	 * @return
 	 */
-	@RequestMapping(value="/tree/{subId}", method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value="/tree/{subjectId}", method = {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
-	public List<TreeNode> tree(@PathVariable String subId,String ignore){
-		if(logger.isDebugEnabled()) logger.debug("加载科目［"+subId+"］下的大纲［ignore="+ignore+"］树...");
-		return this.syllabusService.loadSyllabuss(subId, ignore);
+	public List<TreeNode> tree(@PathVariable String subjectId,String ignore){
+		if(logger.isDebugEnabled()) logger.debug("加载科目［"+subjectId+"］下的大纲［ignore="+ignore+"］树...");
+		return this.syllabusService.loadSyllabuses(subjectId, ignore);
 	}
-	/**
-	 * 加载所有大纲树结构数据。
-	 * @return
-	 */
-	@RequestMapping(value = "/trees", method = {RequestMethod.GET,RequestMethod.POST})
-	@ResponseBody
-	public List<TreeNode> trees(String ignore){
-		return this.syllabusService.loadAllSyllabuss(ignore);
-	}
+//	/**
+//	 * 加载所有大纲树结构数据。
+//	 * @return
+//	 */
+//	@RequestMapping(value = "/trees", method = {RequestMethod.GET,RequestMethod.POST})
+//	@ResponseBody
+//	public List<TreeNode> trees(String ignore){
+//		return this.syllabusService.loadAllSyllabuss(ignore);
+//	}
 }

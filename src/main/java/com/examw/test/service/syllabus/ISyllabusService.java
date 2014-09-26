@@ -3,6 +3,7 @@ package com.examw.test.service.syllabus;
 import java.util.List;
 
 import com.examw.model.TreeNode;
+import com.examw.test.domain.syllabus.Syllabus;
 import com.examw.test.model.syllabus.SyllabusInfo;
 import com.examw.test.service.IBaseDataService;
 /**
@@ -14,29 +15,39 @@ public interface ISyllabusService extends IBaseDataService<SyllabusInfo> {
 	/**
 	 * 加载科目下大纲树数据。
 	 * @param sudId
-	 * 查询条件。
+	 * 所属科目ID。
 	 * @param ignore
-	 * 查询条件。
+	 * 需忽略的大纲ID。
 	 * @return
-	 * 查询结果。
+	 * 大纲节点集合。
 	 */
-	 List<TreeNode> loadSyllabuss(String sudId,String ignore);
+	 List<TreeNode> loadSyllabuses(String subjectId,String ignore);
+	 /**
+	  * 加载科目下考试大纲集合。
+	  * @param subjectId
+	  * 所属科目ID。
+	  * @return
+	  * 考试大纲集合。
+	  */
+	 List<SyllabusInfo> loadSyllabuses(String subjectId);
 	 /**
 	 * 加载最大代码值。
 	 * @return
 	 */
 	Integer loadMaxCode();
 	/**
-	 * 加载所有的大纲要点。
+	 * 数据模型转换。
+	 * @param syllabus
+	 * 转换源数据。
 	 * @return
+	 * 目标数据。
 	 */
-	List<TreeNode> loadAllSyllabuss(String ignore);
-	
+	SyllabusInfo conversion(Syllabus syllabus);
 	/**
-	 * 根据ID查找章节[把子章节调出来][前台调用方法]
-	 * @param id
+	 * 加载考试大纲数据。
+	 * @param syllabusId
+	 * 考试大纲ID。
 	 * @return
-	 * @since 2014-09-10
 	 */
-	SyllabusInfo loadSysSyllabusInfo(String id);
+	Syllabus loadSyllabus(String syllabusId);
 }

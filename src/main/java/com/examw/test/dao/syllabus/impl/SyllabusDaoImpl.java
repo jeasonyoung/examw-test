@@ -23,14 +23,11 @@ public class SyllabusDaoImpl extends BaseDaoImpl<Syllabus> implements ISyllabusD
 	 * @see com.examw.test.dao.syllabus.ISyllabusDao#loadFristSyllabuss(java.lang.String)
 	 */
 	@Override
-	public List<Syllabus> loadFristSyllabuss(String subId) {
-		if(logger.isDebugEnabled()) logger.debug("加载一级大纲数据［subId="+subId+"］集合...");
-		String hql = "from Syllabus s where (s.parent is null) ";
+	public List<Syllabus> loadFristSyllabuss(String subjectId) {
+		if(logger.isDebugEnabled()) logger.debug("加载一级大纲数据［subjectId=" + subjectId + "］集合...");
+		String hql = "from Syllabus s where (s.parent is null) and (s.subject.id = :subjectId) order by s.code";
 		Map<String, Object> parameters = new HashMap<>();
-		if(!StringUtils.isEmpty(subId)){
-			hql +=" and (s.subject.id = :subId)";
-			parameters.put("subId", subId);
-		}
+		parameters.put("subjectId", subjectId);
 		if(logger.isDebugEnabled())logger.debug(hql);
 		return this.find(hql, parameters, null, null);
 	}
@@ -41,11 +38,11 @@ public class SyllabusDaoImpl extends BaseDaoImpl<Syllabus> implements ISyllabusD
 	@Override
 	public List<Syllabus> findSyllabuss(SyllabusInfo info) {
 		if(logger.isDebugEnabled())logger.debug("查询数据...");
-		String hql = "from Syllabus s where 1=1 ";
+		String hql = "from Syllabus s where (s.parent is null) ";
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
-			if(info.getSort().equalsIgnoreCase("subName")){
+			if(info.getSort().equalsIgnoreCase("subjectName")){
 				info.setSort("subject.name");
 			}
 			hql += " order by s." + info.getSort() + " " + info.getOrder();
@@ -60,7 +57,7 @@ public class SyllabusDaoImpl extends BaseDaoImpl<Syllabus> implements ISyllabusD
 	@Override
 	public Long total(SyllabusInfo info) {
 		if(logger.isDebugEnabled())logger.debug("数据统计...");
-		String hql = "select count(*) from Syllabus s where 1=1 ";
+		String hql = "select count(*) from Syllabus s where (s.parent is null) ";
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(logger.isDebugEnabled()) logger.debug(hql);
@@ -69,12 +66,12 @@ public class SyllabusDaoImpl extends BaseDaoImpl<Syllabus> implements ISyllabusD
 	//查询条件
 	private String addWhere(SyllabusInfo info, String hql, Map<String, Object> parameters){
 		if(!StringUtils.isEmpty(info.getExamId())){
-			hql += " and ((s.subject.exam.id = :examId) or (s.subject.exam.category.id in (select c.id  from Category c where (c.parent.id = :examId or c.id = :examId))))";
+			hql += " and (s.subject.exam.id = :examId)";
 			parameters.put("examId", info.getExamId());
 		}
-		if(!StringUtils.isEmpty(info.getSubId())){
-			hql += " and (s.subject.id = :subId) ";
-			parameters.put("subId", info.getSubId());
+		if(!StringUtils.isEmpty(info.getSubjectId())){
+			hql += " and (s.subject.id = :subjectId) ";
+			parameters.put("subId", info.getSubjectId());
 		}
 		if(!StringUtils.isEmpty(info.getTitle())){
 			hql += " and (s.title like :title) ";
@@ -90,7 +87,7 @@ public class SyllabusDaoImpl extends BaseDaoImpl<Syllabus> implements ISyllabusD
 	public void delete(Syllabus data){
 		if(logger.isDebugEnabled()) logger.debug("删除数据...");
 		if(data == null) return;
-		if(data.getChildren() != null){
+		if(data.getChildren() != null && data.getChildren().size() > 0){
 			for(Syllabus p : data.getChildren()){
 				if(p == null) continue;
 				if(logger.isDebugEnabled()) logger.debug("删除大纲［"+p.getId()+"］");
@@ -100,14 +97,14 @@ public class SyllabusDaoImpl extends BaseDaoImpl<Syllabus> implements ISyllabusD
 		super.delete(data);
 	}
 	/*
-	 * 加载所有的大纲要点。
-	 * @see com.examw.test.dao.syllabus.ISyllabusDao#loadFristSyllabus()
+	 * 加载最大代码值。
+	 * @see com.examw.test.dao.syllabus.ISyllabusDao#loadMaxCode()
 	 */
 	@Override
-	public List<Syllabus> loadFristSyllabus() {
-		if(logger.isDebugEnabled())logger.debug("加载一级数据...");
-		final String hql = "from Syllabus s where (s.parent is null) order by s.code";
-		if(logger.isDebugEnabled())logger.debug(hql);
-		return this.find(hql, null, null, null);
+	public Integer loadMaxCode() {
+		if(logger.isDebugEnabled()) logger.debug("加载科目最大代码值...");
+		final String hql = "select max(s.code) from Syllabus";
+		Object obj = this.uniqueResult(hql, null);
+		return obj == null ? null : (int)obj;
 	}
 }

@@ -12,11 +12,11 @@
 		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>
 	<!-- 教材Dao -->
-	<bean id="bookDao" class="com.examw.test.dao.syllabus.impl.TextBookDaoImpl">
+	<bean id="textBookDao" class="com.examw.test.dao.syllabus.impl.TextBookDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>
 	<!-- 知识点Dao -->
-	<bean id="knowDao" class="com.examw.test.dao.syllabus.impl.KnowledgeDaoImpl">
+	<bean id="knowledgeDao" class="com.examw.test.dao.syllabus.impl.KnowledgeDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>
 	<!-- 考试大纲数据接口实现end -->

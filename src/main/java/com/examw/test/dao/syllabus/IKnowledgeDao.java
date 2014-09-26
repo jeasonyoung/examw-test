@@ -13,14 +13,12 @@ import com.examw.test.model.syllabus.KnowledgeInfo;
 public interface IKnowledgeDao extends IBaseDao<Knowledge> {
 	/**
 	 * 查询数据。
-	 * @param bookId
-	 * 查询条件。
 	 * @param info
 	 * 查询条件。
 	 * @return
 	 * 查询结果。
 	 */
-	List<Knowledge> findKnowledges(String bookId,KnowledgeInfo info);
+	List<Knowledge> findKnowledges(KnowledgeInfo info);
 	/**
 	 * 查询统计。
 	 * @param info
@@ -28,5 +26,20 @@ public interface IKnowledgeDao extends IBaseDao<Knowledge> {
 	 * @return
 	 * 数据统计。
 	 */
-	Long total(String bookId,KnowledgeInfo info);
+	Long total(KnowledgeInfo info);
+	/**
+	 * 加载考试大纲下的知识点。
+	 * @param syllabusId
+	 * 考试大纲ID。
+	 * @param textBookId
+	 * 所属教材ID。
+	 * @return
+	 * 知识点集合。
+	 */
+	List<Knowledge> loadSyllabusKnowledge(String syllabusId,String textBookId);
+	/**
+	 * 获取最大代码值。
+	 * @return
+	 */
+	Integer loadMaxCode();
 }

@@ -1,9 +1,9 @@
 package com.examw.test.service.syllabus.impl;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -42,6 +42,7 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 	 * 科目数据接口。
 	 */
 	public void setSubjectDao(ISubjectDao subjectDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入科目数据接口...");
 		this.subjectDao = subjectDao;
 	}
 	/*
@@ -63,32 +64,51 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 		return this.syllabusDao.total(info);
 	}
 	/*
-	 * 类型转换。
+	 * 数据模型转换。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#changeModel(java.lang.Object)
 	 */
 	@Override
 	protected SyllabusInfo changeModel(Syllabus data) {
-		if(logger.isDebugEnabled()) logger.debug("开始类型转换...");
+		if(logger.isDebugEnabled()) logger.debug(" 数据模型转换 Syllabus => SyllabusInfo ...");
+		if(data == null) return null;
 		SyllabusInfo info = new SyllabusInfo();
 		BeanUtils.copyProperties(data, info, new String[]{"children"});
-		info.setFullName(this.loadFullName(data));
-		if(data.getParent() != null)info.setPid(data.getParent().getId());
+		info.setFullTitle(this.buildFullTitle(data));
+		if(data.getParent() != null) info.setPid(data.getParent().getId());
 		if(data.getSubject() != null){
-			info.setSubId(data.getSubject().getId());
-			info.setSubName(data.getSubject().getName());
+			info.setSubjectId(data.getSubject().getId());
+			info.setSubjectName(data.getSubject().getName());
 			if(data.getSubject().getExam() != null){
 				info.setExamId(data.getSubject().getExam().getId());
 				info.setExamName(data.getSubject().getExam().getName());
 			}
 		}
+		if(data.getChildren() != null && data.getChildren().size() > 0){
+			Set<SyllabusInfo> children = new TreeSet<>();
+			for(Syllabus syllabus : data.getChildren()){
+				if(syllabus == null) continue;
+				SyllabusInfo e = this.changeModel(syllabus);
+				if(e != null) children.add(e);
+			}
+			if(children.size() > 0) info.setChildren(children);
+		}
 		return info;
 	}
+	/*
+	 * 数据模型转换。
+	 * @see com.examw.test.service.syllabus.ISyllabusService#conversion(com.examw.test.domain.syllabus.Syllabus)
+	 */
+	@Override
+	public SyllabusInfo conversion(Syllabus syllabus) {
+		if(logger.isDebugEnabled()) logger.debug("数据模型转换 Syllabus => SyllabusInfo ...");
+		return this.changeModel(syllabus);
+	}
 	//加载大纲全称。
-	private String loadFullName(Syllabus data){
+	private String buildFullTitle(Syllabus data){
 		if(data == null) return null;
 		if(data.getParent() == null) return data.getTitle();
 		StringBuilder builder = new StringBuilder(data.getTitle());
-		builder.insert(0, this.loadFullName(data.getParent()) + ">");
+		builder.insert(0, this.buildFullTitle(data.getParent()) + ">");
 		return builder.toString();
 	}
 	/*
@@ -108,21 +128,17 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 		BeanUtils.copyProperties(info, data, new String[]{"children"});
 		if(!StringUtils.isEmpty(info.getPid()) && (data.getParent() == null || !data.getParent().getId().equalsIgnoreCase(info.getPid()))){
 			Syllabus parent = this.syllabusDao.load(Syllabus.class, info.getPid());
-			if(parent != null && !parent.getId().equalsIgnoreCase(data.getId())) data.setParent(parent);
-		}
-		if(!StringUtils.isEmpty(info.getSubId())){
-			if(data.getParent() != null && data.getParent().getSubject() != null)
-				data.setSubject(data.getParent().getSubject());
-			else {
-				Subject sub = this.subjectDao.load(Subject.class, info.getSubId());
-				if(sub != null) data.setSubject(sub);
+			if(parent != null && !parent.getId().equalsIgnoreCase(data.getId())) {
+				data.setParent(parent);
 			}
 		}
-		info.setFullName(this.loadFullName(data));
+		data.setSubject(StringUtils.isEmpty(info.getSubjectId()) ? null : this.subjectDao.load(Subject.class, info.getSubjectId()));
+		
+		info.setFullTitle(this.buildFullTitle(data));
 		if(isAdded) this.syllabusDao.save(data);
 		if(data.getSubject() != null){
-			info.setSubId(data.getSubject().getId());
-			info.setSubName(data.getSubject().getName());
+			info.setSubjectId(data.getSubject().getId());
+			info.setSubjectName(data.getSubject().getName());
 			if(data.getSubject().getExam() != null){
 				info.setExamId(data.getSubject().getExam().getId());
 				info.setExamName(data.getSubject().getExam().getName());
@@ -147,38 +163,21 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 		}
 	}
 	/*
-	 * 加载科目大纲树数据。
-	 * @see com.examw.test.service.syllabus.ISyllabusService#loadSyllabuss(java.lang.String, java.lang.String)
+	 * 加载考试大纲树结构。
+	 * @see com.examw.test.service.syllabus.ISyllabusService#loadSyllabuses(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<TreeNode> loadSyllabuss(String sudId, String ignore) {
-		if(logger.isDebugEnabled()) logger.debug("加载科目［"+sudId+"］大纲［ignore="+ignore+"］树数据...");
-		List<TreeNode> nodes = new ArrayList<>();
-		if(!StringUtils.isEmpty(sudId)){
-			List<Syllabus> list = this.syllabusDao.loadFristSyllabuss(sudId);
-			if(list != null){
-				for(int  i = 0; i < list.size(); i++){
-					TreeNode e = this.createNode(list.get(i), ignore);
-					if(e != null) nodes.add(e);
-				}
-			}
-		}
-		return nodes;
-	}
-	/*
-	 * 加载所有的要点。
-	 * @see com.examw.test.service.syllabus.ISyllabusService#loadAllSyllabuss()
-	 */
-	@Override
-	public List<TreeNode> loadAllSyllabuss(String ignore) {
-		if(logger.isDebugEnabled())logger.debug("加载所有的大纲要点...");
+	public List<TreeNode> loadSyllabuses(String subjectId, String ignore) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载科目［subjectId = %s］ 大纲，忽略［syllabusId = %s］...", subjectId, ignore));
 		List<TreeNode> treeNodes = new ArrayList<>();
-		List<Syllabus> list = this.syllabusDao.loadFristSyllabus();
-		if(list != null){
-			for(int i = 0; i < list.size(); i++){
-				TreeNode e = this.createNode(list.get(i),ignore);
-				if(e != null) treeNodes.add(e);
-			}
+		List<Syllabus> syllabuses = this.syllabusDao.loadFristSyllabuss(subjectId);
+		if(syllabuses != null && syllabuses.size() > 0){
+			 for(Syllabus syllabus : syllabuses){
+				 TreeNode node = this.createNode(syllabus, ignore);
+				 if(node != null){
+					 treeNodes.add(node);
+				 }
+			 }
 		}
 		return treeNodes;
 	}
@@ -205,38 +204,36 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 	@Override
 	public Integer loadMaxCode() {
 		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
-		List<Syllabus> sources = this.find(new SyllabusInfo(){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public String getSort() {return "code"; } 
-			@Override
-			public String getOrder() { return "desc";}
-		});
-		if(sources != null && sources.size() > 0){
-			return sources.get(0).getCode();
-		}
-		return null;
+		return this.syllabusDao.loadMaxCode();
 	}
-	
 	/*
-	 * 加载章节大纲信息
-	 * @see com.examw.test.service.syllabus.ISyllabusService#loadSysSyllabusInfo(java.lang.String)
+	 *  加载科目下的考试大纲。
+	 * @see com.examw.test.service.syllabus.ISyllabusService#loadSyllabuses(java.lang.String)
 	 */
 	@Override
-	public SyllabusInfo loadSysSyllabusInfo(String id) {
-		Syllabus data = this.syllabusDao.load(Syllabus.class, id);
-		if(data==null)
-		return null;
-		SyllabusInfo info = this.changeModel(data);
-		if(data.getChildren()!=null){
-			Set<SyllabusInfo> children = new HashSet<SyllabusInfo>();
-			for(Syllabus s:data.getChildren()){
-				SyllabusInfo child = this.changeModel(s);
-				children.add(child);
+	public List<SyllabusInfo> loadSyllabuses(String subjectId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载科目［subjectId = %s］的考试大纲... ", subjectId));
+		List<SyllabusInfo> list = new ArrayList<>();
+		if(StringUtils.isEmpty(subjectId)) return list;
+		List<Syllabus> syllabuses = this.syllabusDao.loadFristSyllabuss(subjectId);
+		if(syllabuses != null && syllabuses.size() > 0){
+			for(Syllabus syllabus : syllabuses){
+				SyllabusInfo info = this.changeModel(syllabus);
+				if(info != null){
+					list.add(info);
+				}
 			}
-			info.setChildren(children);
 		}
-		info.setFullName(info.getSubName()+" > "+info.getFullName());
-		return info;
+		return list;
+	}
+	/*
+	 * 加载考试大纲数据。
+	 * @see com.examw.test.service.syllabus.ISyllabusService#loadSyllabus(java.lang.String)
+	 */
+	@Override
+	public Syllabus loadSyllabus(String syllabusId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试大纲[syllabusId = %s]数据...", syllabusId));
+		if(StringUtils.isEmpty(syllabusId)) return null;
+		return this.syllabusDao.load(Syllabus.class, syllabusId);
 	}
 }

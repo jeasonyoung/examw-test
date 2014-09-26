@@ -22,13 +22,13 @@ public class KnowledgeDaoImpl extends BaseDaoImpl<Knowledge> implements IKnowled
 	 * @see com.examw.test.dao.syllabus.IKnowledgeDao#findKnowledges(com.examw.test.model.syllabus.KnowledgeInfo)
 	 */
 	@Override
-	public List<Knowledge> findKnowledges(String bookId,KnowledgeInfo info) {
+	public List<Knowledge> findKnowledges(KnowledgeInfo info) {
 		if(logger.isDebugEnabled())logger.debug("查询数据...");
 		String hql = "from Knowledge k where 1=1 ";
 		Map<String, Object> parameters = new HashMap<>();
-		hql = this.addWhere(bookId, info, hql, parameters);
+		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
-			if(info.getSort().equalsIgnoreCase("subName")){
+			if(info.getSort().equalsIgnoreCase("subjectName")){
 				info.setSort("subject.name");
 			}
 			hql += " order by k." + info.getSort() + " " + info.getOrder();
@@ -41,28 +41,61 @@ public class KnowledgeDaoImpl extends BaseDaoImpl<Knowledge> implements IKnowled
 	 * @see com.examw.test.dao.syllabus.IKnowledgeDao#total(com.examw.test.model.syllabus.KnowledgeInfo)
 	 */
 	@Override
-	public Long total(String bookId,KnowledgeInfo info) {
+	public Long total(KnowledgeInfo info) {
 		if(logger.isDebugEnabled())logger.debug("统计数据...");
 		String hql = "select count(*) from Knowledge k where 1=1 ";
 		Map<String, Object> parameters = new HashMap<>();
-		hql = this.addWhere(bookId, info, hql, parameters);
+		hql = this.addWhere(info, hql, parameters);
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.count(hql, parameters);
 	}
-	//条件查询。
-	private String addWhere(String bookId,KnowledgeInfo info, String hql, Map<String, Object> parameters){
-		if(!StringUtils.isEmpty(bookId)){
+	//添加条件查询。
+	private String addWhere(KnowledgeInfo info, String hql, Map<String, Object> parameters){
+		if(!StringUtils.isEmpty(info.getBookId())){
 			hql += "  and (k.book.id = :bookId) ";
-			parameters.put("bookId", bookId);
+			parameters.put("bookId", info.getBookId());
 		}
-		if(!StringUtils.isEmpty(info.getSyllName())){
-			hql += " and (k.syllabus.title like :syllName)";
-			parameters.put("syllName", "%"+ info.getSyllName() +"%");
+		if(!StringUtils.isEmpty(info.getSyllabusName())){
+			hql += " and (k.syllabus.title like :syllabusName)";
+			parameters.put("syllabusName", "%"+ info.getSyllabusName() +"%");
 		}
-		if(!StringUtils.isEmpty(info.getSyllId())){
-			hql += " and (k.syllabus.id = :syllId) ";
-			parameters.put("syllId", info.getSyllId());
+		if(!StringUtils.isEmpty(info.getSyllabusId())){
+			hql += " and (k.syllabus.id = :syllabusId) ";
+			parameters.put("syllabusId", info.getSyllabusId());
 		}
 		return hql;
+	}
+	/*
+	 * 加载考试大纲下的知识点集合。
+	 * @see com.examw.test.dao.syllabus.IKnowledgeDao#loadSyllabusKnowledge(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<Knowledge> loadSyllabusKnowledge(String syllabusId,String textBookId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试大纲[syllabusId = %1$s][textBookId = %2$s]下的知识点集合...", syllabusId, textBookId));
+		StringBuilder hqlBuilder = new StringBuilder();
+		hqlBuilder.append("from Knowledge k ");
+		Map<String, Object> parameters = new HashMap<>();
+		if(!StringUtils.isEmpty(syllabusId)){
+			hqlBuilder.append(" where ").append("k.syllabus.id").append(" = ").append(" :syllabusId");
+			parameters.put("syllabusId", syllabusId);
+		}
+		if(!StringUtils.isEmpty(textBookId)){
+			hqlBuilder.append(StringUtils.isEmpty(syllabusId) ? " where " : " and ");
+			hqlBuilder.append(" k.book.id").append(" = ").append(" :textBookId ");
+			parameters.put("textBookId", textBookId);
+		}
+		hqlBuilder.append(" order by k.code");
+		return this.find(hqlBuilder.toString(), parameters, null, null);
+	}
+	/*
+	 * 加载最大代码值。
+	 * @see com.examw.test.dao.syllabus.IKnowledgeDao#loadMaxCode()
+	 */
+	@Override
+	public Integer loadMaxCode() {
+		if(logger.isDebugEnabled()) logger.debug("加载最大代码值 ...");
+		final String hql = "select max(k.code) from Knowledge k ";
+		Object obj = this.uniqueResult(hql, null);
+		return obj == null ? null : (int)obj;
 	}
 }

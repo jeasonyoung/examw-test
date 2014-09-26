@@ -12,9 +12,9 @@ import com.examw.model.Paging;
  * @since 2014-08-06.
  */
 @JsonSerialize(include = Inclusion.NON_NULL)
-public class SyllabusInfo extends Paging {
+public class SyllabusInfo extends Paging implements Comparable<SyllabusInfo> {
 	private static final long serialVersionUID = 1L;
-	private String pid,fullName,id,title,subId,subName,examId,examName;
+	private String pid,id,title,fullTitle,subjectId,subjectName,examId,examName;
 	private Set<SyllabusInfo> children;
 	private Integer code;
 	/**
@@ -36,16 +36,16 @@ public class SyllabusInfo extends Paging {
 	 * 获取要点全称。
 	 * @return 要点全称。
 	 */
-	public String getFullName() {
-		return fullName;
+	public String getFullTitle() {
+		return fullTitle;
 	}
 	/**
 	 * 设置要点全称。
-	 * @param fullName
+	 * @param fullTitle
 	 * 要点全称。
 	 */
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
+	public void setFullTitle(String fullTitle) {
+		this.fullTitle = fullTitle;
 	}
 	/**
 	 * 获取大纲ID。
@@ -96,31 +96,31 @@ public class SyllabusInfo extends Paging {
 	 * 获取所属科目ID。
 	 * @return 所属科目ID。
 	 */
-	public String getSubId() {
-		return subId;
+	public String getSubjectId() {
+		return subjectId;
 	}
 	/**
 	 * 设置所属科目ID。
-	 * @param subId
+	 * @param subjectId
 	 * 所属科目ID。
 	 */
-	public void setSubId(String subId) {
-		this.subId = subId;
+	public void setSubjectId(String subjectId) {
+		this.subjectId = subjectId;
 	}
 	/**
 	 * 获取所属科目名称。
 	 * @return 所属科目名称。
 	 */
-	public String getSubName() {
-		return subName;
+	public String getSubjectName() {
+		return subjectName;
 	}
 	/**
 	 * 设置所属科目名称。
-	 * @param subName
+	 * @param subjectName
 	 * 所属科目名称。
 	 */
-	public void setSubName(String subName) {
-		this.subName = subName;
+	public void setSubjectName(String subjectName) {
+		this.subjectName = subjectName;
 	}
 	/**
 	 * 获取子大纲集合。
@@ -166,5 +166,21 @@ public class SyllabusInfo extends Paging {
 	 */
 	public void setExamName(String examName) {
 		this.examName = examName;
+	}
+	/*
+	 * 排序比较。
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(SyllabusInfo o) {
+		if(this == o) return 0;
+		int index = this.getCode() - o.getCode();
+		if(index == 0){
+			index = this.getTitle().compareToIgnoreCase(o.getTitle());
+			if(index == 0){
+				index = this.getId().compareToIgnoreCase(o.getId());
+			}
+		}
+		return index;
 	}
 }

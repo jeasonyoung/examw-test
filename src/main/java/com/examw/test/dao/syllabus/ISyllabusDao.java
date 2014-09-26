@@ -29,16 +29,15 @@ public interface ISyllabusDao extends IBaseDao<Syllabus>{
 	Long total(SyllabusInfo info);
 	/**
 	 * 加载一级大纲。
-	 * @param subId
-	 * 查询条件。
+	 * @param subjectId
+	 * 所属科目。
 	 * @return
 	 * 查询结果。
 	 */
-	List<Syllabus> loadFristSyllabuss(String subId);
+	List<Syllabus> loadFristSyllabuss(String subjectId);
 	/**
-	 * 加载所有的大纲要点。
+	 * 加载最大代码值。
 	 * @return
-	 * 查询结果。
 	 */
-	List<Syllabus> loadFristSyllabus();
+	Integer loadMaxCode();
 }

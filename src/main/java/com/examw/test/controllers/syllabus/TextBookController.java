@@ -16,6 +16,7 @@ import com.examw.model.Json;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.syllabus.KnowledgeInfo;
 import com.examw.test.model.syllabus.TextBookInfo;
+import com.examw.test.service.syllabus.IKnowledgeService;
 import com.examw.test.service.syllabus.ITextBookService;
 /**
  * 教材控制器。
@@ -29,6 +30,9 @@ public class TextBookController {
 	//教材服务。
 	@Resource
 	private ITextBookService bookService;
+	//知识点服务。
+	@Resource
+	private IKnowledgeService knowledgeService;
 	/**
 	 * 获取列表页面。
 	 * @return
@@ -80,7 +84,9 @@ public class TextBookController {
 	@ResponseBody
 	public DataGrid<KnowledgeInfo> dgStructureItems(@PathVariable String bookId, KnowledgeInfo info){
 		if(logger.isDebugEnabled()) logger.debug("加载教材下的［"+bookId+"］知识点数据列表...");
-		return this.bookService.findKnowledge(bookId, info);
+		if(info == null)info = new KnowledgeInfo();
+		info.setBookId(bookId);
+		return this.knowledgeService.datagrid(info);
 	}
 	/**
 	 * 获取添加知识点页面。
@@ -143,8 +149,9 @@ public class TextBookController {
 		if(logger.isDebugEnabled()) logger.debug("更新知识点数据...");
 		Json result = new Json();
 		try {
-			result.setData(this.bookService.updateKnowledge(bookId, info));
-			 result.setSuccess(true);
+			info.setBookId(bookId);
+			result.setData(this.knowledgeService.update(info));
+			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
@@ -160,7 +167,7 @@ public class TextBookController {
 	@RequestMapping(value="/code", method = RequestMethod.GET)
 	@ResponseBody
 	public Integer code(){
-		Integer max = this.bookService.loadMaxCode();
+		Integer max = this.knowledgeService.loadMaxCode();
 		if(max == null) max = 0;
 		return max + 1;
 	}
