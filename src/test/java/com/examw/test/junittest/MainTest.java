@@ -20,9 +20,10 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.examw.test.dao.library.IItemDao;
-import com.examw.test.domain.library.Item;
 import com.examw.test.model.library.ItemInfo;
 import com.examw.test.service.library.IItemService;
+import com.examw.test.service.library.ItemStatus;
+import com.examw.test.service.library.ItemType;
 /**
  * 
  * @author fengwei.
@@ -95,7 +96,7 @@ public class MainTest {
 		Integer level=Integer.parseInt(st.getId());
 		info.setLevel(level);
 		info.setAnalysis(st.getAnalysis());
-		info.setType(Item.TYPE_SINGLE);
+		info.setType(ItemType.SINGLE.getValue());
 		//
 		if("1".equals( st.getClassId())){
 			info.setSubjectId("c0e6f25c-eec8-44aa-94e8-968443ce6af9");
@@ -108,7 +109,7 @@ public class MainTest {
 		}
 		info.setOpt(4);
 		info.setYear(2014);
-		info.setStatus(Item.STATUS_NONE);
+		info.setStatus(ItemStatus.NONE.getValue());
 		return info;
 	}
 	//判断题
@@ -120,10 +121,10 @@ public class MainTest {
 		info.setLevel(level);
 		info.setAnalysis(st.getAnalysis());
 		info.setAnswer(st.getAnswer());
-		info.setType(Item.TYPE_JUDGE);
+		info.setType(ItemType.JUDGE.getValue());
 		info.setSubjectId("53951b86-3578-4d72-8c81-00d6d111e9b1");
 		info.setOpt(4);
-		info.setStatus(Item.STATUS_NONE);
+		info.setStatus(ItemStatus.NONE.getValue());
 		return info;
 	}
 	//多选题
@@ -180,7 +181,7 @@ public class MainTest {
 		Integer level=Integer.parseInt(st.getId());
 		info.setLevel(level);
 		info.setAnalysis(st.getAnalysis());
-		info.setType(Item.TYPE_MULTY);
+		info.setType(ItemType.MULTY.getValue());
 		if("1".equals( st.getClassId())){
 			info.setSubjectId("c0e6f25c-eec8-44aa-94e8-968443ce6af9");
 		}
@@ -191,7 +192,7 @@ public class MainTest {
 			info.setSubjectId("9502b22d-3831-4eed-ad39-00c502618e64");
 		}
 		info.setOpt(4);
-		info.setStatus(Item.STATUS_NONE);
+		info.setStatus(ItemStatus.NONE.getValue());
 		return info;
 	}
 	//问答题
@@ -203,9 +204,9 @@ public class MainTest {
 		info.setLevel(level);
 		info.setAnalysis(st.getAnalysis());
 		info.setAnswer(st.getAnswer());
-		info.setType(Item.TYPE_QANDA);
+		info.setType(ItemType.QANDA.getValue());
 		info.setOpt(4);
-		info.setStatus(Item.STATUS_NONE);
+		info.setStatus(ItemStatus.NONE.getValue());
 		//根据sql科目ID设置mysql科目ID
 		info.setSubjectId("53951b86-3578-4d72-8c81-00d6d111e9b1");
 //		if("1".equals( st.getClassId())){
@@ -311,9 +312,9 @@ public class MainTest {
 		Integer level=Integer.parseInt(st.getId());
 		info.setLevel(level);
 		info.setAnalysis(st.getAnalysis());
-		info.setType(Item.TYPE_UNCERTAIN);
+		info.setType(ItemType.UNCERTAIN.getValue());
 		info.setOpt(4);
-		info.setStatus(Item.STATUS_NONE);
+		info.setStatus(ItemStatus.NONE.getValue());
 		info.setSubjectId("53951b86-3578-4d72-8c81-00d6d111e9b1");
 //		if("1".equals( st.getClassId())){
 //			info.setSubjectId("c0e6f25c-eec8-44aa-94e8-968443ce6af9");
@@ -346,11 +347,11 @@ public class MainTest {
 		ItemInfo child = new ItemInfo();
 		child.setId(UUID.randomUUID().toString());
 		child.setContent(arr[0]);
-		child.setType(Item.TYPE_SINGLE);
+		child.setType(ItemType.SINGLE.getValue());
 		child.setAnalysis(st.getAnalysis());
 		child.setOrderNo(1);
 		child.setOpt(4);
-		child.setStatus(Item.STATUS_NONE);
+		child.setStatus(ItemStatus.NONE.getValue());
 		two.add(child);
 		info.setChildren(two);
 		//选项
@@ -374,7 +375,7 @@ public class MainTest {
 		child.setAnswer(answer);
 		Integer level=Integer.parseInt(st.getId());
 		info.setLevel(level);
-		info.setType(Item.TYPE_SHARE_TITLE);
+		info.setType(ItemType.SHARE_TITLE.getValue());
 		if("1".equals( st.getClassId())){
 			info.setSubjectId("c0e6f25c-eec8-44aa-94e8-968443ce6af9");
 		}
@@ -398,12 +399,12 @@ public class MainTest {
 			children.setContent(content);
 			children.setAnalysis(st.getAnalysis());
 			children.setAnswer(st.getAnswer());
-			children.setType(Item.TYPE_JUDGE);
+			children.setType(ItemType.JUDGE.getValue());
 			children.setOpt(4);
-			children.setStatus(Item.STATUS_NONE);
+			children.setStatus(ItemStatus.NONE.getValue());
 			child.add(children);
 		info.setChildren(child);
-		info.setType(Item.TYPE_SHARE_TITLE);
+		info.setType(ItemType.SHARE_TITLE.getValue());
 		Integer level=Integer.parseInt(st.getId());
 		info.setLevel(level);
 		if("1".equals( st.getClassId())){
@@ -435,10 +436,10 @@ public class MainTest {
 		ItemInfo child = new ItemInfo();
 		child.setId(UUID.randomUUID().toString());
 		child.setContent(arr[0]);
-		child.setType(Item.TYPE_MULTY);
+		child.setType(ItemType.MULTY.getValue());
 		child.setAnalysis(st.getAnalysis());
 		child.setOpt(4);
-		child.setStatus(Item.STATUS_NONE);
+		child.setStatus(ItemStatus.NONE.getValue());
 		two.add(child);
 		info.setChildren(two);
 		//选项
@@ -479,7 +480,7 @@ public class MainTest {
 		child.setAnswer(jieQu);
 		Integer level=Integer.parseInt(st.getId());
 		info.setLevel(level);
-		info.setType(Item.TYPE_SHARE_TITLE);
+		info.setType(ItemType.SHARE_TITLE.getValue());
 		if("1".equals( st.getClassId())){
 			info.setSubjectId("c0e6f25c-eec8-44aa-94e8-968443ce6af9");
 		}
@@ -505,7 +506,7 @@ public class MainTest {
 		ItemInfo child = new ItemInfo();
 		child.setId(UUID.randomUUID().toString());
 		child.setAnalysis(st.getAnalysis());
-		child.setType(Item.TYPE_UNCERTAIN);
+		child.setType(ItemType.UNCERTAIN.getValue());
 		one.add(child);
 		info.setChildren(one);
 		Set<ItemInfo> set= new HashSet<ItemInfo>();
@@ -592,7 +593,7 @@ public class MainTest {
 		}
 		Integer level=Integer.parseInt(st.getId());
 		info.setLevel(level);
-		info.setType(Item.TYPE_MULTY);
+		info.setType(ItemType.MULTY.getValue());
 		if("1".equals( st.getClassId())){
 			info.setSubjectId("c0e6f25c-eec8-44aa-94e8-968443ce6af9");
 		}
@@ -615,12 +616,12 @@ public class MainTest {
 			children.setContent(content);
 			children.setAnalysis(st.getAnalysis());
 			children.setAnswer(st.getAnswer());
-			children.setType(Item.TYPE_QANDA);
+			children.setType(ItemType.QANDA.getValue());
 			children.setOpt(4);
-			children.setStatus(Item.STATUS_NONE);
+			children.setStatus(ItemStatus.NONE.getValue());
 			child.add(children);
 		info.setChildren(child);
-		info.setType(Item.TYPE_SHARE_TITLE);
+		info.setType(ItemType.SHARE_TITLE.getValue());
 		Integer level=Integer.parseInt(st.getId());
 		info.setLevel(level);
 		if("1".equals( st.getClassId())){

@@ -16,13 +16,28 @@ import com.examw.support.CustomDateSerializer;
  * @since 2014年8月8日
  */
 @JsonSerialize(include = Inclusion.NON_NULL)
-public class StructureItemInfo extends Paging {
+public class StructureItemInfo extends Paging implements Comparable<StructureItemInfo> {
 	private static final long serialVersionUID = 1L;
-	private String id,serial,structureId,content;
+	private String id,serial,structureId,content,paperId;
 	private BigDecimal score;
 	private Integer orderNo;
 	private ItemScoreInfo item;
 	private Date createTime;
+	/**
+	 * 获取所属试卷ID。
+	 * @return 所属试卷ID。
+	 */
+	public String getPaperId() {
+		return paperId;
+	}
+	/**
+	 * 设置所属试卷ID。
+	 * @param paperId 
+	 *	  所属试卷ID。
+	 */
+	public void setPaperId(String paperId) {
+		this.paperId = paperId;
+	}
 	/**
 	 * 获取结构下题目ID。
 	 * @return 结构下题目ID。
@@ -165,5 +180,21 @@ public class StructureItemInfo extends Paging {
 	 */
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+	/*
+	 * 排序比较。
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(StructureItemInfo o) {
+		if(this == o) return 0;
+		int index = this.getOrderNo() - o.getOrderNo();
+		if(index == 0){
+			index = this.getSerial().compareTo(o.getSerial());
+			if(index == 0){
+				index = this.getId().compareTo(o.getId());
+			}
+		}
+		return index;
 	}
 }

@@ -1,7 +1,4 @@
 package com.examw.test.service.library;
-
-import com.examw.test.domain.library.Item;
-
 /**
  * 题目判断题答案枚举。
  * 
@@ -12,11 +9,12 @@ public enum ItemJudgeAnswer {
 	/**
 	 * 正确。
 	 */
-	RIGTH(Item.ANSWER_JUDGE_RIGTH),
+	RIGTH(0x01),
 	/**
 	 * 错误。
 	 */
-	WRONG(Item.ANSWER_JUDGE_WRONG);
+	WRONG(0x00);
+	
 	private int value;
 	//私有构造函数。
 	private ItemJudgeAnswer(int value){
@@ -37,9 +35,9 @@ public enum ItemJudgeAnswer {
 	public static ItemJudgeAnswer convert(int value){
 		switch(value){
 			//正确
-			case Item.ANSWER_JUDGE_RIGTH:return ItemJudgeAnswer.RIGTH;
+			case 0x01:return ItemJudgeAnswer.RIGTH;
 			//错误
-			case Item.ANSWER_JUDGE_WRONG: return ItemJudgeAnswer.WRONG;
+			case 0x00: return ItemJudgeAnswer.WRONG;
 		}
 		throw new RuntimeException("不存在！");
 	}

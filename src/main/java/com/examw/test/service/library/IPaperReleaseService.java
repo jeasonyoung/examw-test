@@ -1,7 +1,4 @@
 package com.examw.test.service.library;
-
-import com.examw.test.model.library.PaperPreview;
-
 /**
  * 试卷发布服务接口。
  * 
@@ -10,15 +7,19 @@ import com.examw.test.model.library.PaperPreview;
  */
 public interface IPaperReleaseService {
 	/**
-	 * 加载试卷数据。
-	 * @param paperId
-	 * 所属试卷ID。
-	 * @return
-	 * 试卷数据。
-	 */
-	PaperPreview loadPaper(String paperId) throws Exception;
-	/**
 	 * 试卷发布。
 	 */
-	void addPaperRelease();
+	void updateRelease() throws Exception;
+	/**
+	 * 发布指定试卷。
+	 * @param paperId
+	 * 试卷ID。
+	 * @throws Exception
+	 */
+	void updateRelease(String paperId) throws Exception;
+	/**
+	 * 删除试卷的发布。
+	 * @param paperId。
+	 */
+	void deleteRelease(String paperId);
 }

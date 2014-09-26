@@ -21,9 +21,10 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.examw.test.dao.library.IItemDao;
-import com.examw.test.domain.library.Item;
 import com.examw.test.model.library.ItemInfo;
 import com.examw.test.service.library.IItemService;
+import com.examw.test.service.library.ItemStatus;
+import com.examw.test.service.library.ItemType;
 /**
  * 
  * @author Administrator
@@ -61,13 +62,13 @@ public class FenXiTest {
 	public ItemInfo fenXiTi(CaiLianFenXi clfx){
 		ItemInfo info = new  ItemInfo();
 		String content=clfx.getContent();
-		info.setType(Item.TYPE_SHARE_TITLE);
+		info.setType(ItemType.SHARE_TITLE.getValue());
 		//正则表达式进行替换</P><P>为<br/> 删除不是<br/><img>的标签
 		content = content.replaceAll("</[p|P]><[p|P](.+?)>", "<br/>");
 		content = content.replaceAll("<(?!/?(?i)(img|br)).*?>", "");
 		info.setContent(content);
 		info.setOpt(4);
-		info.setStatus(Item.STATUS_NONE);
+		info.setStatus(ItemStatus.NONE.getValue());
 		if("1".equals( clfx.getClassId())){
 			info.setSubjectId("c0e6f25c-eec8-44aa-94e8-968443ce6af9");
 		}
@@ -154,7 +155,7 @@ public class FenXiTest {
 				children.setOrderNo(i);
 				children.setAnswer(jieQu);
 				children.setChildren(set);
-				children.setType(Item.TYPE_UNCERTAIN);
+				children.setType(ItemType.UNCERTAIN.getValue());
 				child.add(children);
 				info.setChildren(child);
 			}else{
@@ -199,7 +200,7 @@ public class FenXiTest {
 				children.setOrderNo(i);
 				children.setAnswer(jieQu);
 				children.setChildren(set);
-				children.setType(Item.TYPE_UNCERTAIN);
+				children.setType(ItemType.UNCERTAIN.getValue());
 				child.add(children);
 				info.setChildren(child);
 			}

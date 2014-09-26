@@ -32,9 +32,9 @@ public class ProductDaoImpl extends BaseDaoImpl<Product> implements IProductDao{
 		if(!StringUtils.isEmpty(info.getSort())){
 			if("examId".equals(info.getSort()))
 			{
-				hql += " order by p.exam.id " + info.getOrder();
-			}else
-				hql += " order by p." + info.getSort() + " " + info.getOrder();
+				info.setSort("exam.id");
+			} 
+			hql += " order by p." + info.getSort() + " " + info.getOrder();
 		}
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.find(hql, parameters, info.getPage(), info.getRows());
@@ -52,7 +52,6 @@ public class ProductDaoImpl extends BaseDaoImpl<Product> implements IProductDao{
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.count(hql, parameters);
 	}
-
 	// 添加查询条件到HQL。
 	private String addWhere(ProductInfo info, String hql,Map<String, Object> parameters) {
 		if (!StringUtils.isEmpty(info.getName())) {
@@ -60,18 +59,24 @@ public class ProductDaoImpl extends BaseDaoImpl<Product> implements IProductDao{
 			parameters.put("name", "%" + info.getName() + "%");
 		}
 		if (!StringUtils.isEmpty(info.getExamId())) {
-			if(info.getExamId().contains(","))
-			{
-				hql += " and (p.exam.id in ("+info.getExamId().replaceAll("([a-z0-9-]{36})", "'$1'")+"))";
-			}else{
-				hql += " and (p.exam.id = :examId)";
-				parameters.put("examId", info.getExamId());
-			}
+			hql += " and (p.exam.id in (:examId))";
+			parameters.put("examId", info.getExamId().split(","));
 		}
 		if(info.getStatus()!=null){
 			hql += " and (p.status = :status)";
 			parameters.put("status", info.getStatus());
 		}
 		return hql;
+	}
+	/*
+	 * 加载最大代码值。
+	 * @see com.examw.test.dao.products.IProductDao#loadMaxCode()
+	 */
+	@Override
+	public Integer loadMaxCode() {
+		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
+		final String hql = "select max(p.code) from Product p";
+		Object obj = this.uniqueResult(hql, null);
+		return obj == null ? null : (int)obj;
 	}
 }

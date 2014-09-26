@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
+import com.examw.test.domain.settings.Area;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.domain.syllabus.Syllabus;
 
@@ -14,62 +15,16 @@ import com.examw.test.domain.syllabus.Syllabus;
  */
 public class Item implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id,content,answer,analysis,checkCode;
-	private Integer type,level,year,opt,status,orderNo;
+	private String id,content,answer,analysis,checkCode,userId,userName;
+	private Integer type,level,year,opt,status,orderNo,count;
 	private Subject subject;
 	private Source source;
+	private Area area;
 	private Date createTime,lastTime;
 	private Item parent;
 	private Set<Item> children;
 	private Set<Syllabus> syllabuses;
 	private Set<StructureItem> structureItems;
-	/**
-	 * 类型－单选。
-	 */
-	public static final int TYPE_SINGLE = 1;
-	/**
-	 * 类型－多选。
-	 */
-	public static final int TYPE_MULTY = 2;
-	/**
-	 * 类型－不定向选。
-	 */
-	public static final int 	TYPE_UNCERTAIN =3;
-	/**
-	 * 类型－判断题。
-	 */
-	public static final int TYPE_JUDGE = 4;
-	/**
-	 * 类型－问答题。
-	 */
-	public static final int TYPE_QANDA = 5;
-	/**
-	 * 类型－共享题干题。
-	 */
-	public static final int TYPE_SHARE_TITLE = 6;
-	/**
-	 * 类型－共享答案题。
-	 */
-	public static final int TYPE_SHARE_ANSWER = 7;
-	
-	/**
-	 * 判断题答案[Type=TYPE_JUDGE] 1-正确。
-	 */
-	public static final int ANSWER_JUDGE_RIGTH = 1;
-	/**
-	 * 判断题答案[Type=TYPE_JUDGE] 0-错误。
-	 */
-	public static final int ANSWER_JUDGE_WRONG = 0;
-	
-	/**
-	 * 状态－未审核。
-	 */
-	public static final int STATUS_NONE = 0;
-	/**
-	 * 状态－已审核。
-	 */
-	public static final int STATUS_AUDIT = 1;
-	
 	/**
 	 * 获取题目ID。
 	 * @return 题目ID。
@@ -99,6 +54,21 @@ public class Item implements Serializable {
 	 */
 	public void setContent(String content) {
 		this.content = content;
+	}
+	/**
+	 * 获取试题数目。
+	 * @return 试题数目。
+	 */
+	public Integer getCount() {
+		return count;
+	}
+	/**
+	 * 设置试题数目。
+	 * @param count 
+	 *	  试题数目。
+	 */
+	public void setCount(Integer count) {
+		this.count = count;
 	}
 	/**
 	 * 获取答案。
@@ -251,6 +221,21 @@ public class Item implements Serializable {
 		this.source = source;
 	}
 	/**
+	 * 获取所属地区。
+	 * @return 所属地区。
+	 */
+	public Area getArea() {
+		return area;
+	}
+	/**
+	 * 设置所属地区。
+	 * @param area 
+	 *	  所属地区。
+	 */
+	public void setArea(Area area) {
+		this.area = area;
+	}
+	/**
 	 * 获取创建时间。
 	 * @return 创建时间。
 	 */
@@ -354,5 +339,35 @@ public class Item implements Serializable {
 	 */
 	public void setStructureItems(Set<StructureItem> structureItems) {
 		this.structureItems = structureItems;
+	}
+	/**
+	 * 获取所属用户ID。
+	 * @return 所属用户ID。
+	 */
+	public String getUserId() {
+		return userId;
+	}
+	/**
+	 * 设置所属用户ID。
+	 * @param userId 
+	 *	  所属用户ID。
+	 */
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+	/**
+	 * 获取所属用户名称。
+	 * @return userName
+	 */
+	public String getUserName() {
+		return userName;
+	}
+	/**
+	 * 设置所属用户名称。
+	 * @param userName 
+	 *	  所属用户名称。
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 }

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
 import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.impl.BaseDaoImpl;
@@ -131,7 +130,22 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 			if(logger.isDebugEnabled()) logger.debug(msg);
 			throw new RuntimeException(msg);
 		}
-		super.delete(data);
+		this.autoDelete(data);
+	}
+	/**
+	 * 自动删除题目数据。
+	 * @param data
+	 */
+	protected void autoDelete(Item data){
+		if(data == null) return;
+		if(data.getChildren() == null || data.getChildren().size() == 0){
+			super.delete(data);
+			return;
+		}
+		for(Item item : data.getChildren()){
+			if(item == null) continue;
+			this.autoDelete(item);
+		} 
 	}
 	/*
 	 * 根据校验码
@@ -160,24 +174,5 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 		@SuppressWarnings("unchecked")
 		List<Item> list = this.getCurrentSession().createQuery(hql).list();
 		return list!=null&&list.size()>0;
-	}
-	/*
-	 * 批量插入
-	 * @see com.examw.test.dao.library.IItemDao#insertItemList(java.util.List)
-	 */
-	@Override
-	public void insertItemList(List<Item> list) {
-		Session session = this.getCurrentSession();
-		for (int i=0; i<list.size();i++) {
-			session.saveOrUpdate(list.get(i));
-			if (i % 20 == 0) {
-				//20个对象后才清理缓存，写入数据库
-				session.flush();
-				session.clear();
-			}
-				
-		}
-		session.flush();
-		session.clear();
 	}
 }

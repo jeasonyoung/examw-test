@@ -1,10 +1,9 @@
 package com.examw.test.controllers.api;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
+import javax.annotation.Resource; 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
@@ -18,14 +17,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.examw.model.Json;
 import com.examw.test.domain.records.ItemRecord;
 import com.examw.test.domain.records.Note;
-import com.examw.test.domain.settings.Subject;
-import com.examw.test.model.front.CategoryFrontInfo;
 import com.examw.test.model.front.PaperFrontInfo;
 import com.examw.test.model.library.PaperInfo;
-import com.examw.test.model.library.PaperPreview;
-import com.examw.test.model.products.ProductInfo;
 import com.examw.test.model.records.NoteInfo;
-import com.examw.test.model.settings.SubjectInfo;
 import com.examw.test.model.syllabus.SyllabusInfo;
 import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperService;
@@ -67,41 +61,9 @@ public class FrontDataController {
 	private INoteService noteService;
 	@Resource
 	private ICollectionService collectionService;
-	/**
-	 * 加载所有考试分类和其下的所有考试
-	 * @param username
-	 * @param token
-	 * @return
-	 */
-	@RequestMapping(value = {"/category-exams"}, method = {RequestMethod.POST,RequestMethod.GET})
-	@ResponseBody
-	public List<CategoryFrontInfo> loadAllCategoryExams(){
-		if(logger.isDebugEnabled()) logger.debug("考试分类-考试数据");
-		return this.categoryService.loadAllCategoryAndExams();
-	}
-	/**
-	 * 加载考试下所有的产品
-	 * @param examId
-	 * @return
-	 */
-	@RequestMapping(value = {"/products"}, method = {RequestMethod.POST,RequestMethod.GET})
-	@ResponseBody
-	public List<ProductInfo> loadProducts(String examId){
-		if(logger.isDebugEnabled()) logger.debug("考试下产品数据");
-		if(StringUtils.isEmpty(examId)) return null;
-		return this.productService.loadProducts(examId);
-	}
-	/**
-	 * 单个产品信息
-	 */
-	@RequestMapping(value = {"/product"}, method = {RequestMethod.POST,RequestMethod.GET})
-	@ResponseBody
-	public ProductInfo loadProduct(String id){
-		if(logger.isDebugEnabled()) logger.debug("选中产品数据");
-		if(StringUtils.isEmpty(id)) return null;
-		ProductInfo info = this.productService.loadProduct(id);
-		return info;
-	}
+	
+	
+	
 	/**
 	 * 章节练习
 	 */
@@ -111,12 +73,12 @@ public class FrontDataController {
 		if(logger.isDebugEnabled()) logger.debug("章节数据");
 		if(StringUtils.isEmpty(productId)) return null;
 		Map<String,Object> map = new HashMap<String,Object>();
-		List<SubjectInfo> subjects = this.subjectService.changeModel(this.productService.loadSubjectList(productId));
-		map.put("SUBJECTLIST",subjects);
-		if(StringUtils.isEmpty(subjectId)){
-			if(subjects!=null && subjects.size()>0)
-				subjectId = subjects.get(0).getId();
-		}
+//		List<SubjectInfo> subjects = this.subjectService.conversion(this.productService.loadSubjectList(productId));
+//		map.put("SUBJECTLIST",subjects);
+//		if(StringUtils.isEmpty(subjectId)){
+//			if(subjects!=null && subjects.size()>0)
+//				subjectId = subjects.get(0).getId();
+//		}
 		map.put("CHAPTERLIST", this.syllabusService.loadSyllabuss(subjectId, null));
 		map.put("CURRENT_SUBJECT_ID", subjectId);
 		return map;
@@ -149,67 +111,73 @@ public class FrontDataController {
 		if(logger.isDebugEnabled()) logger.debug("试卷列表数据");
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(StringUtils.isEmpty(productId)) return map;
-		List<Subject> list = this.productService.loadSubjectList(productId);
+		//List<Subject> list = this.productService.loadSubjectList(productId);
 		
-		//科目集合
-		map.put("SUBJECTLIST", this.subjectService.changeModel(list));
-		//地区集合
-		map.put("AREALIST", this.productService.loadAreaList(productId));
+//		//科目集合
+//<<<<<<< HEAD
+//		map.put("SUBJECTLIST", this.subjectService.conversion(list));
+//=======
+//		map.put("SUBJECTLIST", this.subjectService.changeModel(list));
+//		//地区集合
+//		map.put("AREALIST", this.productService.loadAreaList(productId));
+//>>>>>>> branch 'master' of git@github.com:jeasonyoung/examw-test.git
 		//试卷类型映射
-		map.put("PAPERTYPE", this.productService.getPaperTypeMap());
+		//map.put("PAPERTYPE", this.productService.getPaperTypeMap());
 		//试卷列表
 //		DataGrid<PaperInfo> dg = this.paperService.datagrid(info);
 //		map.put("PAPERLIST", dg.getRows());
 //		//总条数
 //		map.put("TOTAL",dg.getTotal());
-		map.put("PAPERLIST", this.paperService.loadPaperFrontInfo(info, userId));
-		map.put("TOTAL",this.paperService.totalPaperFrontInfo(info));
+	//	map.put("PAPERLIST", this.paperService.loadPaperFrontInfo(info, userId));
+		//map.put("TOTAL",this.paperService.totalPaperFrontInfo(info));
 		return map;
 	}
-	/**
-	 * 加载试卷基本信息数据
-	 * @param paperId
-	 * @return
-	 */
-	@RequestMapping(value = {"/paper"}, method = {RequestMethod.POST,RequestMethod.GET})
-	@ResponseBody
-	public PaperPreview loadPaperInfo(String paperId){
-		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据");
-		if(StringUtils.isEmpty(paperId)) return null;
-		return this.paperService.loadPaperInfo(paperId);
-	}
-	/**
-	 * 加载试卷的详细信息[包含题目数据]
-	 * @param paperId
-	 * @return
-	 */
-	@RequestMapping(value = {"/paper/do"}, method = {RequestMethod.POST,RequestMethod.GET})
-	@ResponseBody
-	public PaperPreview loadPaperDetail(String paperId,String userId){
-		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据[包含题目]");
-		if(StringUtils.isEmpty(paperId)||StringUtils.isEmpty(userId)) return null;
-		return this.paperService.loadPaperPreviewAndAddRecord(paperId,userId);
-	}
-	
-	@RequestMapping(value = {"/paper/submit"}, method = {RequestMethod.POST,RequestMethod.GET})
-	@ResponseBody
-	public Json submitPaper(String paperId,String userId,HttpServletRequest request){
-		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据[包含题目]");
-		if(StringUtils.isEmpty(paperId)||StringUtils.isEmpty(userId)) return null;
-		String model = request.getParameter("model");
-		String limitTime = request.getParameter("limitTime");
-		String chooseAnswers = request.getParameter("chooseAnswers");
-		String textAnswers = request.getParameter("textAnswers");
-		logger.debug(chooseAnswers);
-		return this.paperService.submitPaper(Integer.valueOf(limitTime), chooseAnswers, textAnswers,Integer.valueOf(model), paperId,userId);
-	}
+//	/**
+//	 * 加载试卷基本信息数据
+//	 * @param paperId
+//	 * @return
+//	 */
+//	@RequestMapping(value = {"/paper"}, method = {RequestMethod.POST,RequestMethod.GET})
+//	@ResponseBody
+//	public PaperPreview loadPaperInfo(String paperId){
+//		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据");
+//		if(StringUtils.isEmpty(paperId)) return null;
+//		return this.paperService.loadPaperInfo(paperId);
+//	}
+//	/**
+//	 * 加载试卷的详细信息[包含题目数据]
+//	 * @param paperId
+//	 * @return
+//	 */
+//	@RequestMapping(value = {"/paper/do"}, method = {RequestMethod.POST,RequestMethod.GET})
+//	@ResponseBody
+//	public PaperPreview loadPaperDetail(String paperId,String userId){
+//		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据[包含题目]");
+//		if(StringUtils.isEmpty(paperId)||StringUtils.isEmpty(userId)) return null;
+//		return this.paperService.loadPaperPreviewAndAddRecord(paperId,userId);
+//	}
+//	
+//	@RequestMapping(value = {"/paper/submit"}, method = {RequestMethod.POST,RequestMethod.GET})
+//	@ResponseBody
+//	public Json submitPaper(String paperId,String userId,HttpServletRequest request){
+//		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据[包含题目]");
+//		if(StringUtils.isEmpty(paperId)||StringUtils.isEmpty(userId)) return null;
+//		String model = request.getParameter("model");
+//		String limitTime = request.getParameter("limitTime");
+//		String chooseAnswers = request.getParameter("chooseAnswers");
+//		String textAnswers = request.getParameter("textAnswers");
+//		logger.debug(chooseAnswers);
+//		return this.paperService.submitPaper(Integer.valueOf(limitTime), chooseAnswers, textAnswers,Integer.valueOf(model), paperId,userId);
+//	}
 	
 	@RequestMapping(value = {"/paper/record"}, method = {RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
 	public PaperFrontInfo paperRecord(String paperId,String userId,HttpServletRequest request){
 		if(logger.isDebugEnabled()) logger.debug("试卷解析详情");
 		if(StringUtils.isEmpty(paperId)||StringUtils.isEmpty(userId)) return null;
-		return this.paperService.loadPaperRecordDetail(paperId, userId);
+		//return this.paperService.loadPaperRecordDetail(paperId, userId);
+		///TODO::
+		return null;
 	}
 	/**
 	 * 查询试题笔记

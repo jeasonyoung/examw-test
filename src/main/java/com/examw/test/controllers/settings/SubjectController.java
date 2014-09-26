@@ -29,14 +29,10 @@ import com.examw.test.service.settings.ISubjectService;
 @RequestMapping(value = "/settings/subject")
 public class SubjectController {
 	private static Logger logger  = Logger.getLogger(SubjectController.class);
-	/**
-	 * 科目服务接口
-	 */
+	//科目服务接口.
 	@Resource
 	private ISubjectService subjectService;
-	/**
-	 * 考试服务接口
-	 */
+	//考试服务接口.
 	@Resource
 	private IExamService examService;
 	/**
@@ -78,17 +74,9 @@ public class SubjectController {
 	 */
 	@RequestMapping(value="/all", method = {RequestMethod.GET,RequestMethod.POST})
 	@ResponseBody
-	public List<SubjectInfo> all(final String examId)
+	public List<SubjectInfo> all(String examId)
 	{
-		return this.subjectService.datagrid(new SubjectInfo(){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public String getExamId(){return examId;}
-			@Override
-			public String getSort(){return "code";}
-			@Override
-			public String getOrder(){return "asc";}
-		}).getRows();
+		return this.subjectService.loadAllSubjects(examId);
 	}
 	/**
 	 * 更新数据。
@@ -143,6 +131,6 @@ public class SubjectController {
 	public Integer code(){
 		Integer max = this.subjectService.loadMaxCode();
 		if(max == null) max = 0;
-		return max+1;
+		return max + 1;
 	}
 }

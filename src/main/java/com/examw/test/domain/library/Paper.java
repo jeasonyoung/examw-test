@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.examw.test.domain.settings.Area;
 import com.examw.test.domain.settings.Subject;
 
 /**
@@ -13,13 +14,13 @@ import com.examw.test.domain.settings.Subject;
  */
 public class Paper implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id,name,description;
+	private String id,name,description,userId,userName;
 	private Integer type,status,price,time,year;
 	private BigDecimal score;
 	private Subject subject;
 	private Source source;
+	private Area area;
 	private Date createTime,lastTime,publishTime;
-	//private Set<Structure> structures;
 	/**
 	 * 类型－真题。
 	 */
@@ -215,6 +216,21 @@ public class Paper implements Serializable {
 		this.source = source;
 	}
 	/**
+	 * 获取所属地区。
+	 * @return 所属地区。
+	 */
+	public Area getArea() {
+		return area;
+	}
+	/**
+	 * 设置所属地区。
+	 * @param area 
+	 *	  所属地区。
+	 */
+	public void setArea(Area area) {
+		this.area = area;
+	}
+	/**
 	 * 获取创建时间。
 	 * @return 创建时间。
 	 */
@@ -258,5 +274,35 @@ public class Paper implements Serializable {
 	 */
 	public void setPublishTime(Date publishTime) {
 		this.publishTime = publishTime;
+	}
+	/**
+	 * 获取所属用户ID。
+	 * @return 所属用户ID。
+	 */
+	public String getUserId() {
+		return userId;
+	}
+	/**
+	 * 设置所属用户ID。
+	 * @param userId 
+	 *	所属用户ID。
+	 */
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+	/**
+	 * 获取所属用户名称。
+	 * @return 所属用户名称。
+	 */
+	public String getUserName() {
+		return userName;
+	}
+	/**
+	 * 设置所属用户名称。
+	 * @param userName 
+	 *	  所属用户名称。
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 }

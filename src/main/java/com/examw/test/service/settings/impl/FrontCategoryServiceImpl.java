@@ -1,0 +1,117 @@
+package com.examw.test.service.settings.impl;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.BeanUtils;
+
+import com.examw.test.dao.settings.ICategoryDao;
+import com.examw.test.domain.settings.Category;
+import com.examw.test.domain.settings.Exam;
+import com.examw.test.model.settings.ExamInfo;
+import com.examw.test.model.settings.FrontCategoryInfo;
+import com.examw.test.service.settings.IExamService;
+import com.examw.test.service.settings.IFrontCategoryService;
+
+/**
+ * 前端考试类别服务接口实现类。
+ * 
+ * @author yangyong
+ * @since 2014年9月25日
+ */
+public class FrontCategoryServiceImpl implements IFrontCategoryService {
+	private static Logger logger = Logger.getLogger(FrontCategoryServiceImpl.class);
+	private ICategoryDao categoryDao;
+	private IExamService examService;
+	/**
+	 * 设置考试类别数据接口。
+	 * @param categoryDao 
+	 *	  考试类别数据接口。
+	 */
+	public void setCategoryDao(ICategoryDao categoryDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入考试类别数据接口...");
+		this.categoryDao = categoryDao;
+	}
+	/**
+	 * 设置考试服务接口。
+	 * @param examService 
+	 *	  考试服务接口。
+	 */
+	public void setExamService(IExamService examService) {
+		if(logger.isDebugEnabled()) logger.debug("注入考试服务接口...");
+		this.examService = examService;
+	}
+	/*
+	 * 加载所有的考试类别。
+	 * @see com.examw.test.service.settings.IFrontCategoryService#loadAllCategoryAndExams()
+	 */
+	@Override
+	public List<FrontCategoryInfo> loadAllCategoryAndExams() {
+		if(logger.isDebugEnabled()) logger.debug("加载考试类别集合...");
+		return this.changeModel(this.categoryDao.loadTopCategories());
+	}
+	/**
+	 * 数据模型转换。
+	 * @param catalogs
+	 * @return
+	 */
+	protected List<FrontCategoryInfo> changeModel(List<Category> catalogs){
+		List<FrontCategoryInfo> targets = new ArrayList<>();
+		if(catalogs != null && catalogs.size() > 0){
+			for(Category category : catalogs){
+				if(category == null) continue;
+				FrontCategoryInfo info = this.changeModel(category);
+				if(info != null) targets.add(info);
+			}
+		}
+		return targets;
+	}
+	/**
+	 * 数据模型转换。
+	 * @param category
+	 * @return
+	 */
+	protected FrontCategoryInfo changeModel(Category category){
+		if(logger.isDebugEnabled()) logger.debug("数据模型转换: Category => FrontCategoryInfo ...");
+		if(category == null) return null;
+		FrontCategoryInfo info = new FrontCategoryInfo();
+		BeanUtils.copyProperties(category, info, new String[]{"exams","children"});
+		if(category.getExams() != null && category.getExams().size() > 0){
+			List<ExamInfo> exams = new ArrayList<>();
+			for(Exam exam : category.getExams()){
+				if(exam == null) continue;
+				ExamInfo examInfo = this.examService.conversion(exam);
+				if(examInfo != null) exams.add(examInfo);
+			}
+			if(exams.size() > 0){
+				Collections.sort(exams, new Comparator<ExamInfo>() {
+					@Override
+					public int compare(ExamInfo o1, ExamInfo o2) {
+						return o1.getCode() - o2.getCode();
+					}
+				});
+				info.setExams(exams);
+			}
+		}
+		if(category.getChildren() != null && category.getChildren().size() > 0){
+			Set<FrontCategoryInfo> children = new TreeSet<FrontCategoryInfo>();
+			for(Category data : category.getChildren()){
+				if(data == null) continue;
+				FrontCategoryInfo frontCategoryInfo = this.changeModel(data);
+				if(frontCategoryInfo != null){
+					frontCategoryInfo.setPid(info.getId());
+					children.add(frontCategoryInfo);
+				}
+			}
+			if(children.size() > 0){
+				info.setChildren(children);
+			}
+		}
+		return info;
+	}
+}

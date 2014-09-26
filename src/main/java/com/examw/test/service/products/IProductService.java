@@ -1,11 +1,7 @@
 package com.examw.test.service.products;
 
-import java.util.List;
-import java.util.Map;
-
-import com.examw.test.domain.settings.Subject;
+import com.examw.test.domain.products.Product;
 import com.examw.test.model.products.ProductInfo;
-import com.examw.test.model.settings.AreaInfo;
 import com.examw.test.service.IBaseDataService;
 
 /**
@@ -26,33 +22,19 @@ public interface IProductService extends IBaseDataService<ProductInfo>{
 	 */
 	String loadStatusName(Integer status);
 	/**
-	 * 加载考试下所有的产品 [前台调用方法]
-	 * @param examId
-	 * @return
-	 */
-	List<ProductInfo> loadProducts(String examId);
-	/**
-	 * 根据id加载产品 [前台调用方法]
-	 * @param id
-	 * @return
-	 */
-	ProductInfo loadProduct(String id);
-	/**
-	 * 根据产品ID,查询条件查询试卷列表[前台调用方法]
+	 * 加载产品数据。
 	 * @param productId
-	 * @param info
+	 * 产品ID。
 	 * @return
+	 * 产品数据。
 	 */
-	List<Subject> loadSubjectList(String productId);
+	Product loadProduct(String productId);
 	/**
-	 * 获取产品所属考试包含地区的集合
-	 * @param productId
+	 * 数据模型转换。
+	 * @param product
+	 * 产品数据。
 	 * @return
+	 * 产品信息。
 	 */
-	List<AreaInfo> loadAreaList(String productId);
-	/**
-	 * 获取试卷类型映射
-	 * @return
-	 */
-	Map<String, String> getPaperTypeMap();
+	ProductInfo conversion(Product product);
 }

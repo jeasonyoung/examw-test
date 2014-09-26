@@ -13,6 +13,12 @@
 	<bean id="categoryService" class="com.examw.test.service.settings.impl.CategoryServiceImpl">
 		<!-- 分类数据操作接口 -->
 		<property name="categoryDao" ref="categoryDao" />
+	</bean>
+	
+	<!-- 前端考试分类服务 -->
+	<bean id="frontCategoryService" class="com.examw.test.service.settings.impl.FrontCategoryServiceImpl">
+	    <!-- 分类数据操作接口 -->
+		<property name="categoryDao" ref="categoryDao" />
 		<!-- 考试服务接口 -->
 		<property name="examService" ref="examService" />
 	</bean>

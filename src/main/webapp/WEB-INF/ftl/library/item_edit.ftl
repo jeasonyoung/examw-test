@@ -31,6 +31,8 @@
 			onChange:function(n,o){
 				$('#${form}_cbb_subjectId').combobox('clear');
 				$('#${form}_cbb_subjectId').combobox('reload','<@s.url '/settings/subject/all'/>?examId=' + n);
+				$('#${form}_cbb_areaId').combobox('clear');
+				$('#${form}_cbb_areaId').combobox('reload','<@s.url '/settings/exam/areas'/>?examId=' + n);
 			}
 		" style="width:368px;"/>
 	<input id="${form}_cbb_subjectId" name="subjectId" class="easyui-combobox" data-options="
@@ -86,12 +88,31 @@
 				textField:'name',
 				onLoadError:function(e){
 					<@error_dialog 'e'/>
-				}
-			" style="width:368px;"/>
+				},
+				icons:[{
+					iconCls:'icon-clear',
+					handler:function(e){
+						$(e.data.target).combobox('clear');
+					}
+				}]
+			" style="width:198px;"/>
 	</div>
 	<div style="float:left;">
-		<label style="width:70px;">难度值：</label>
-		<input name="level" type="text" class="easyui-numberbox" data-options="min:0,value:0" style="width:80px;"/>
+		<label style="width:75px;">所属地区：</label>
+		<input id="${form}_cbb_areaId" name="areaId" class="easyui-combobox" data-options="
+			url:'<@s.url '/settings/exam/areas'/>?examId=${CURRENT_EXAM_ID}',
+			valueField:'id',
+			textField:'name',
+			onLoadError:function(e){
+				<@error_dialog 'e'/>
+			},
+			icons:[{
+				iconCls:'icon-clear',
+				handler:function(e){
+					$(e.data.target).combobox('clear');
+				}
+			}]
+		" style="width:198px"/>
 	</div>
 	<div style="float:left;">
 		<label style="width:75px;">使用年份：</label>

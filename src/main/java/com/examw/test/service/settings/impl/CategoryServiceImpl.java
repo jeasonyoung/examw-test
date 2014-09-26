@@ -15,13 +15,9 @@ import com.examw.test.dao.settings.ICategoryDao;
 import com.examw.test.domain.settings.Category;
 import com.examw.test.domain.settings.Exam;
 import com.examw.test.domain.settings.Subject;
-import com.examw.test.model.front.CategoryFrontInfo;
 import com.examw.test.model.settings.CategoryInfo;
-import com.examw.test.model.settings.ExamInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.settings.ICategoryService;
-import com.examw.test.service.settings.IExamService;
-
 /**
  * 考试分类服务接口实现类
  * @author fengwei.
@@ -30,7 +26,6 @@ import com.examw.test.service.settings.IExamService;
 public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryInfo> implements ICategoryService {
 	private static final Logger logger = Logger.getLogger(CategoryServiceImpl.class);
 	private ICategoryDao categoryDao;
-	private IExamService examService;
 	/**
 	 * 设置 考试分类数据接口
 	 * @param categoryDao
@@ -38,14 +33,6 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 	 */
 	public void setCategoryDao(ICategoryDao categoryDao) {
 		this.categoryDao = categoryDao;
-	}
-	/**
-	 * 设置考试服务接口。
-	 * @param examService 
-	 *	  考试服务接口。
-	 */
-	public void setExamService(IExamService examService) {
-		this.examService = examService;
 	}
 	/*
 	 * 查询数据
@@ -271,57 +258,5 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 			}
 		}
 		return treeNodes;
-	}
-	/*
-	 * 前台加载考试分类
-	 * @see com.examw.test.service.settings.ICategoryService#loadAllCategoryAndExams()
-	 */
-	@Override
-	public List<CategoryFrontInfo> loadAllCategoryAndExams() {
-		List<CategoryFrontInfo> result = new ArrayList<CategoryFrontInfo>();
-		List<Category> list =  this.categoryDao.loadTopCategories();
-		if(list != null && list.size() > 0){
-			for(final Category data : list){
-				if(data == null) continue;
-				result.add(createCategoryFrontInfo(data));
-			}
-		}
-		return result;
-	}
-	/**
-	 * 构造前台分类对象
-	 * @param data	考试分类
-	 * @return
-	 */
-	private CategoryFrontInfo createCategoryFrontInfo(Category data)
-	{
-		CategoryFrontInfo info = new CategoryFrontInfo();
-		BeanUtils.copyProperties(data, info, new String[]{"exams"});
-		setExams(info,data);
-		if(data.getChildren()!=null){
-			for(Category category:data.getChildren()){
-				setExams(info,category);
-			}
-		}
-		return info;
-	}
-	/**
-	 * 设置分类下的所有的考试
-	 * @param info	
-	 * @param data
-	 */
-	private void setExams(CategoryFrontInfo info,Category data){
-		if(data.getExams()!=null){
-			List<ExamInfo> exams = new ArrayList<ExamInfo>();
-			for(Exam exam:data.getExams())
-			{
-				if(data == null)continue;
-				exams.add(this.examService.conversion(exam));
-			}
-			if(info.getExams()==null)
-				info.setExams(exams);
-			else
-				info.getExams().addAll(exams);
-		}
 	}
 }

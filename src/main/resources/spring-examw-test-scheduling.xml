@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    <!-- 配置任务定时出发器 -->
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <!-- 添加触发器 -->
+        <property name="triggers">
+            <list>
+                <bean class="org.springframework.scheduling.quartz.CronTriggerBean">
+                    <!-- 任务明细 -->
+                    <property name="jobDetail">
+                        <bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+                            <property name="targetObject" ref="paperReleaseService" />
+                            <property name="targetMethod" value="updateRelease" />
+                        </bean>
+                    </property>
+                    <!-- 触发时间 -->
+                    <property name="cronExpression" value="0 0/2 * * * ?" />
+                </bean>
+            </list>
+        </property>
+    </bean>
+</beans>

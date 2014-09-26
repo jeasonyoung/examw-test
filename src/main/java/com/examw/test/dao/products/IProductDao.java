@@ -24,4 +24,9 @@ public interface IProductDao extends IBaseDao<Product>{
 	 * @return	产品数据
 	 */
 	Long total(ProductInfo info);
+	/**
+	 * 加载最大代码。
+	 * @return
+	 */
+	Integer loadMaxCode();
 }

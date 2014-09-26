@@ -34,10 +34,6 @@
 		<property name="examDao" ref="examDao" />
 		<!-- 科目数据操作接口 -->
 		<property name="subjectDao" ref="subjectDao" />
-		<!-- 题目数据接口 -->
-		<property name="itemDao" ref="itemDao" />
-		<!-- 试卷数据接口 -->
-		<property name="paperDao" ref="paperDao" />
 		<!-- 状态-名称映射 -->
 		<property name="statusMap">
 		    <map>
@@ -45,8 +41,17 @@
 		        <entry key="-1" value="删除"/>
 		    </map>
 		</property>
-		<!-- 试卷类型 -->
-		<property name="paperTypeMap" ref="mapPaperTypes"/>
+	</bean>
+	<!-- 产品前端服务 -->
+	<bean id="frontProductService" class="com.examw.test.service.products.impl.FrontProductServiceImpl">
+	    <!-- 产品服务接口 -->
+	    <property name="productService" ref="productService" />
+	    <!-- 考试科目服务接口 -->
+	    <property name="subjectService" ref="subjectService" />
+	    <!-- 地区服务接口 -->
+	    <property name="areaService" ref="areaService" />
+	    <!-- 前端试卷服务 -->
+	    <property name="frontPaperService" ref="frontPaperService" />
 	</bean>
 	<!-- 产品软件服务 -->
 	<bean id="softwareService" class="com.examw.test.service.products.impl.SoftwareServiceImpl">

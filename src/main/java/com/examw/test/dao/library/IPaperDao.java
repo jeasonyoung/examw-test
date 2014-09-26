@@ -28,4 +28,14 @@ public interface IPaperDao extends IBaseDao<Paper> {
 	 * 结果数据。
 	 */
 	Long total(PaperInfo info);
+	/**
+	 * 加载已审核的全部试卷总数。
+	 * @return
+	 */
+	Long loadAllAuditCount();
+	/**
+	 * 加载已审核的全部试卷集合。
+	 * @return 已审核的全部试卷集合。
+	 */
+	List<Paper> loadAllAudit(Integer count);
 }
