@@ -34,4 +34,10 @@ public interface ICollectionDao extends IBaseDao<Collection>{
 	 * @return
 	 */
 	Collection loadCollection(String structureItemId,String userId);
+	/**
+	 * 加载产品ID
+	 * @param userId
+	 * @return
+	 */
+	List<Object> loadProductIds(String userId);
 }

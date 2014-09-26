@@ -61,6 +61,10 @@ public class ErrorItemRecordDaoImpl extends BaseDaoImpl<ErrorItemRecord> impleme
 			hql += " and (eir.itemId = :itemId)";
 			parameters.put("itemId", info.getUserId());
 		}
+		if (!StringUtils.isEmpty(info.getProductId())) {
+			hql += " and (eir.productId = :productId)";
+			parameters.put("productId", info.getProductId());
+		}
 		if (!StringUtils.isEmpty(info.getUserId())) {
 			hql += " and (eir.userId = :userId)";
 			parameters.put("userId", info.getUserId());

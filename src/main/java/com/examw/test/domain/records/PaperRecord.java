@@ -11,7 +11,7 @@ import java.util.Date;
  */
 public class PaperRecord implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id,paperId,userId;
+	private String id,paperId,userId,productId;
 	private Date lastTime;
 	private Integer status,time,usedTime;
 	private BigDecimal score;
@@ -145,4 +145,21 @@ public class PaperRecord implements Serializable {
 	public void setUsedTime(Integer usedTime) {
 		this.usedTime = usedTime;
 	}
+	/**
+	 * 获取 产品ID
+	 * @return productId
+	 * 产品ID
+	 */
+	public String getProductId() {
+		return productId;
+	}
+	/**
+	 * 设置 产品ID
+	 * @param productId
+	 * 产品ID
+	 */
+	public void setProductId(String productId) {
+		this.productId = productId;
+	}
+	
 }

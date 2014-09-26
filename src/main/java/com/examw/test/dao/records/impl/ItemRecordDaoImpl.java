@@ -64,6 +64,10 @@ public class ItemRecordDaoImpl  extends BaseDaoImpl<ItemRecord> implements IItem
 			hql += " and (ir.paperId = :paperId)";
 			parameters.put("paperId", info.getPaperId());
 		}
+		if (!StringUtils.isEmpty(info.getProductId())) {
+			hql += " and (ir.productId = :productId)";
+			parameters.put("productId", info.getProductId());
+		}
 		if (info.getLastTime() != null){
 			hql += " and (ir.lastTime > :time)";
 			parameters.put("time", info.getLastTime());
