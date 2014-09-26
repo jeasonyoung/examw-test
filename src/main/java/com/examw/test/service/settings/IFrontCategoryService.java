@@ -12,8 +12,14 @@ import com.examw.test.model.settings.FrontCategoryInfo;
  */
 public interface IFrontCategoryService {
 	/**
-	 * 加载所有的考试类型-考试。
+	 * 加载所有考试类别。
 	 * @return
 	 */
-	List<FrontCategoryInfo> loadAllCategoryAndExams();
+	List<FrontCategoryInfo> loadCategories();
+	/**
+	 * 加载考试类别。
+	 * @param categoryId
+	 * @return
+	 */
+	FrontCategoryInfo loadCategory(String categoryId);
 }

@@ -9,6 +9,7 @@ import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.settings.ICategoryDao;
 import com.examw.test.domain.settings.Category;
@@ -47,13 +48,25 @@ public class FrontCategoryServiceImpl implements IFrontCategoryService {
 		this.examService = examService;
 	}
 	/*
-	 * 加载所有的考试类别。
-	 * @see com.examw.test.service.settings.IFrontCategoryService#loadAllCategoryAndExams()
+	 * 加载全部考试类别。
+	 * @see com.examw.test.service.settings.IFrontCategoryService#loadCategories()
 	 */
 	@Override
-	public List<FrontCategoryInfo> loadAllCategoryAndExams() {
+	public List<FrontCategoryInfo> loadCategories() {
 		if(logger.isDebugEnabled()) logger.debug("加载考试类别集合...");
 		return this.changeModel(this.categoryDao.loadTopCategories());
+	}
+	/*
+	 * 加载考试类别信息。
+	 * @see com.examw.test.service.settings.IFrontCategoryService#loadCategory(java.lang.String)
+	 */
+	@Override
+	public FrontCategoryInfo loadCategory(String categoryId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试类别［categoryId ＝%s］的信息...", categoryId));
+		if(StringUtils.isEmpty(categoryId)) return null;
+		Category category = this.categoryDao.load(Category.class, categoryId);
+		if(category == null) throw new RuntimeException(String.format("考试类别［categoryId = %s］不存在!", categoryId));
+		return this.changeModel(category);
 	}
 	/**
 	 * 数据模型转换。

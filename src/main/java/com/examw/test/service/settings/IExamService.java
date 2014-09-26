@@ -30,4 +30,16 @@ public interface IExamService  extends IBaseDataService<ExamInfo>{
 	 * @return
 	 */
 	List<AreaInfo> loadExamAreas(String examId);
+	/**
+	 *  加载考试集合。
+	 * @param categoryId
+	 * @return
+	 */
+	List<ExamInfo> loadExams(String categoryId);
+	/**
+	 * 加载考试信息。
+	 * @param examId
+	 * @return
+	 */
+	ExamInfo loadExam(String examId);
 }

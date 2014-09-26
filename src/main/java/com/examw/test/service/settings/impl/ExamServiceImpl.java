@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
@@ -136,10 +135,7 @@ public class ExamServiceImpl extends BaseDataServiceImpl<Exam, ExamInfo> impleme
 		}
 		BeanUtils.copyProperties(info, data);
 		//设置考试分类
-		if(!StringUtils.isEmpty(info.getCategoryId()) && (data.getCategory() == null || !data.getCategory().getId().equalsIgnoreCase(info.getCategoryId()))){
-			Category category = this.categoryDao.load(Category.class, info.getCategoryId());
-			if(category != null) data.setCategory(category);
-		}
+		data.setCategory(StringUtils.isEmpty(info.getCategoryId()) ?  null : this.categoryDao.load(Category.class, info.getCategoryId()));
 		if(data.getCategory() != null){
 			info.setCategoryName(data.getCategory().getName());
 		}
@@ -210,5 +206,30 @@ public class ExamServiceImpl extends BaseDataServiceImpl<Exam, ExamInfo> impleme
 			}
 		}
 		return list;
+	}
+	/*
+	 * 加载考试信息集合。
+	 * @see com.examw.test.service.settings.IExamService#loadExams(java.lang.String)
+	 */
+	@Override
+	public List<ExamInfo> loadExams(final String categoryId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载［categoryId = %s］考试信息...", categoryId));
+		return this.changeModel(this.examDao.findExams(new ExamInfo(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public String getCategoryId() {
+				return categoryId;
+			}
+		}));
+	}
+	/*
+	 * 加载考试信息。
+	 * @see com.examw.test.service.settings.IExamService#loadExam(java.lang.String)
+	 */
+	@Override
+	public ExamInfo loadExam(String examId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试［examId = %s］信息...", examId));
+		if(StringUtils.isEmpty(examId)) return null;
+		return this.changeModel(this.examDao.load(Exam.class, examId));
 	}
 }

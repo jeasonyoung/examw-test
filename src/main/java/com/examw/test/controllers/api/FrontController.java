@@ -12,11 +12,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.test.model.products.FrontProductInfo;
+import com.examw.test.model.settings.ExamInfo;
 import com.examw.test.model.settings.FrontCategoryInfo;
 import com.examw.test.model.settings.SubjectInfo;
 import com.examw.test.model.syllabus.KnowledgeInfo;
 import com.examw.test.model.syllabus.SyllabusInfo;
 import com.examw.test.service.products.IFrontProductService;
+import com.examw.test.service.settings.IExamService;
 import com.examw.test.service.settings.IFrontCategoryService;
 import com.examw.test.service.syllabus.IKnowledgeService;
 import com.examw.test.service.syllabus.ISyllabusService;
@@ -34,6 +36,9 @@ public class FrontController {
 	//注入前端考试类别服务接口。
 	@Resource
 	private IFrontCategoryService frontCategoryService;
+	//注入考试服务接口。
+	@Resource
+	private IExamService examService;
 	//注入产品服务接口。
 	@Resource
 	private IFrontProductService frontProductService;
@@ -44,14 +49,47 @@ public class FrontController {
 	@Resource
 	private IKnowledgeService knowledgeService;
 	/**
-	 * 加载考试集合。
+	 * 加载考试类别集合。
 	 * @return
 	 */
-	@RequestMapping(value = {"/categories/exams"}, method = {RequestMethod.GET})
+	@RequestMapping(value = {"/categories"}, method = {RequestMethod.GET})
 	@ResponseBody
-	public List<FrontCategoryInfo> loadAllCategoryExams(){
-		if(logger.isDebugEnabled()) logger.debug("考试分类-考试数据...");
-		return this.frontCategoryService.loadAllCategoryAndExams();
+	public List<FrontCategoryInfo> loadCategories(){
+		if(logger.isDebugEnabled()) logger.debug("加载考试类别...");
+		return this.frontCategoryService.loadCategories();
+	}
+	/**
+	 * 加载考试类别信息。
+	 * @param categoryId
+	 * @return
+	 */
+	@RequestMapping(value = {"/categories/{categoryId}"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public FrontCategoryInfo loadCategory(@PathVariable String categoryId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试类别［categoryId = %s］信息...", categoryId));
+		return this.frontCategoryService.loadCategory(categoryId);
+	}
+	/**
+	 * 加载考试信息集合。
+	 * @param categoryId
+	 * @return
+	 */
+	@RequestMapping(value = {"/exams"} , method = {RequestMethod.GET})
+	@ResponseBody
+	public List<ExamInfo> loadExams(String categoryId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试［categoryId = %s］信息集合...", categoryId));
+		return this.examService.loadExams(categoryId);
+	}
+	/**
+	 * 加载考试信息。
+	 * @param examId
+	 * @return
+	 */
+	@RequestMapping(value = {"/exams/{examId}"} , method = {RequestMethod.GET})
+	@ResponseBody
+	public ExamInfo loadExam(@PathVariable String examId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试［examId = %s］信息...", examId));
+		return this.examService.loadExam(examId);
 	}
 	/**
 	 * 加载考试下所有的产品
