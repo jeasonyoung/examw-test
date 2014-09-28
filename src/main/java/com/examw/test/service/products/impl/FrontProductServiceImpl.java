@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
 import com.examw.test.domain.products.Product;
@@ -82,6 +83,8 @@ public class FrontProductServiceImpl implements IFrontProductService {
 			public Integer getStatus() {return Product.STATUS_NONE;}	//状态必须正常
 			@Override
 			public String getSort() {return "code"; }
+			@Override
+			public String getOrder() {return "desc"; }
 		}).getRows();
 		return this.changeModel(rows);
 	}
@@ -107,7 +110,9 @@ public class FrontProductServiceImpl implements IFrontProductService {
 	private FrontProductInfo changeModel(ProductInfo product){
 		if(logger.isDebugEnabled()) logger.debug("数据模型转换 ProductInfo => FrontProductInfo ");
 		if(product == null) return null;
-		FrontProductInfo info = (FrontProductInfo) product;
+		//FrontProductInfo info = (FrontProductInfo) product;
+		FrontProductInfo info = new FrontProductInfo();
+		BeanUtils.copyProperties(product, info);
 		info.setPaperCount(this.frontPaperService.loadPapersCount(info.getSubjectId()));
 		info.setItemCount(this.frontPaperService.loadItemsCount(info.getSubjectId()));
 		info.setHasRealItem(this.frontPaperService.hasRealItem(info.getSubjectId()));
@@ -121,7 +126,7 @@ public class FrontProductServiceImpl implements IFrontProductService {
 	public FrontProductInfo loadProduct(String productId) {
 		if(logger.isDebugEnabled())logger.debug(String.format("加载产品［%s］...", productId));
 		if(StringUtils.isEmpty(productId)) return null;
-		return this.changeModel((FrontProductInfo)this.productService.conversion(this.productService.loadProduct(productId)));
+		return this.changeModel(this.productService.conversion(this.productService.loadProduct(productId)));
 	}
 	/*
 	 * 加载产品科目数据集合。
