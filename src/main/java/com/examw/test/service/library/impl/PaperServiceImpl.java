@@ -38,7 +38,8 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	private ISubjectDao subjectDao;
 	private IStructureDao structureDao;
 	private IAreaDao areaDao;
-	private Map<Integer, String> typeMap, statusMap;
+	private Map<Integer, String> statusMap;
+	private Map<String, String> typeMap;	//修改为Map<String,String>
 	/**
 	 * 设置试卷数据接口。
 	 * @param paperDao
@@ -88,7 +89,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	 * @param typeMap
 	 * 试卷类型集合。
 	 */
-	public void setTypeMap(Map<Integer, String> typeMap) {
+	public void setTypeMap(Map<String, String> typeMap) {
 		if(logger.isDebugEnabled()) logger.debug("注入试卷类型集合...");
 		this.typeMap = typeMap;
 	}
@@ -109,7 +110,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	public String loadTypeName(Integer type) {
 		if(logger.isDebugEnabled())logger.debug(String.format("加载试卷类型[type=%d]名称...", type));
 		if (type == null || this.typeMap == null || this.typeMap.size() == 0)return null;
-		return this.typeMap.get(type);
+		return this.typeMap.get(type.toString());
 	}
 	/*
 	 * 加载试卷状态名称。
@@ -296,8 +297,14 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 			}
 		}
 	}
-	
-
+	/*
+	 * 获取试卷类型映射
+	 * @see com.examw.test.service.library.IPaperService#loadPaperType()
+	 */
+	@Override
+	public Map<String, String> loadPaperType() {
+		return typeMap;
+	}
 
 //	
 

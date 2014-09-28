@@ -1,6 +1,7 @@
 package com.examw.test.service.library;
 
 import java.util.List;
+import java.util.Map;
 
 import com.examw.test.model.library.FrontPaperInfo;
 import com.examw.test.model.library.PaperPreview;
@@ -50,4 +51,9 @@ public interface IFrontPaperService {
 	 * @return
 	 */
 	PaperPreview loadPaperContent(String paperId) throws Exception;
+	/**
+	 * 加载试卷的类型[add by FW 2014.09.28]
+	 * @return
+	 */
+	Map<String,String> loadPaperType();
 }
