@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import com.examw.model.Json;
-import com.examw.test.dao.products.IProductDao;
 import com.examw.test.dao.records.ICollectionDao;
 import com.examw.test.domain.records.Collection;
 import com.examw.test.service.records.ICollectionService;
@@ -19,7 +18,6 @@ import com.examw.test.service.records.ICollectionService;
 public class CollectionServiceImpl implements ICollectionService{
 	private static final Logger logger = Logger.getLogger(CollectionServiceImpl.class);
 	private ICollectionDao collectionDao;
-	private IProductDao productDao;
 	/**
 	 * 设置 收藏数据接口
 	 * @param collectionDao
@@ -27,14 +25,6 @@ public class CollectionServiceImpl implements ICollectionService{
 	 */
 	public void setCollectionDao(ICollectionDao collectionDao) {
 		this.collectionDao = collectionDao;
-	}
-	/**
-	 * 设置 产品数据接口
-	 * @param productDao
-	 * 
-	 */
-	public void setProductDao(IProductDao productDao) {
-		this.productDao = productDao;
 	}
 
 	/*
