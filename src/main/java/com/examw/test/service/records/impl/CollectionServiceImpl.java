@@ -19,7 +19,7 @@ import com.examw.test.service.records.ICollectionService;
 public class CollectionServiceImpl implements ICollectionService{
 	private static final Logger logger = Logger.getLogger(CollectionServiceImpl.class);
 	private ICollectionDao collectionDao;
-	private IProductDao productDao;
+	//private IProductDao productDao;
 	/**
 	 * 设置 收藏数据接口
 	 * @param collectionDao
@@ -34,7 +34,7 @@ public class CollectionServiceImpl implements ICollectionService{
 	 * 
 	 */
 	public void setProductDao(IProductDao productDao) {
-		this.productDao = productDao;
+		//this.productDao = productDao;
 	}
 
 	/*

@@ -5,8 +5,12 @@
 <form id="${form}" method="POST" style="padding:10px;">
 	<div style="float:left;margin-top:2px;width:100%;">
 		<label style="width:50px;">标题：</label>
-		<textarea name="title" class="easyui-validatebox" data-options="required:true"  rows="10" cols="20" style="width:298px;height:70px;"/>
+		<input name="title" class="easyui-textbox" data-options="required:true,width:302" />
 		<input name="id" type="hidden" />
+	</div>
+	<div style="float:left;margin-top:7px;width:100%;">
+		<label style="width:50px;">描述：</label>
+		<textarea name="description" style="width:298px;" rows="2" cols="10" />
 	</div>
 	<div style="float:left;margin-top:7px;width:100%;">
 		<label style="margin-top:5px;width:50px;">题型：</label>
@@ -27,7 +31,7 @@
 		</div>
 		<div style="float:right;">
 			<label style="width:60px;">最少得分：</label>
-			<input name="min" class="easyui-numberbox" data-options="min:0,value:0,precision:1" style="width:60px;text-align:right;">
+			<input name="min" class="easyui-numberbox" data-options="min:-10,value:0,precision:1" style="width:60px;text-align:right;">
 			<span>(多选题有用)</span>
 		</div>
 	</div>

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.examw.model.Json;
 import com.examw.test.domain.security.User;
 import com.examw.test.model.library.PaperInfo;
-import com.examw.test.model.library.PaperStructureInfo;
+import com.examw.test.model.library.StructureInfo;
 import com.examw.test.model.library.StructureItemInfo;
 import com.examw.test.model.settings.ExamInfo;
 import com.examw.test.service.library.IItemService;
@@ -135,7 +135,7 @@ public class ClientImportsController {
 	 */
 	@RequestMapping(value = {"/structures/{paperId}"}, method = { RequestMethod.GET })
 	@ResponseBody
-	public List<PaperStructureInfo> loadStructures(@PathVariable final String paperId){
+	public List<StructureInfo> loadStructures(@PathVariable final String paperId){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［paperId=%s］的结构...", paperId));
 		return this.paperStructureService.loadStructures(paperId);
 	}
@@ -162,14 +162,14 @@ public class ClientImportsController {
 	 * @param info
 	 * @return
 	 */
-	@RequestMapping(value="/update/{paperId}", method = RequestMethod.POST)
+	@RequestMapping(value="/update/{paperId}/{structureId}", method = RequestMethod.POST)
 	@ResponseBody
-	public Json update(@PathVariable String paperId,@RequestBody StructureItemInfo info){
+	public Json update(@PathVariable String paperId,@PathVariable String structureId,@RequestBody StructureItemInfo info){
 		if(logger.isDebugEnabled()) logger.debug(String.format("更新试卷［%s］..", paperId));
 		Json result = new Json();
 		try {
-			if(info == null) info = new StructureItemInfo();
-			info.setPaperId(paperId);
+			//if(info == null) info = new StructureItemInfo();
+			//info.setPaperId(paperId);
 			this.paperItemService.update(info);
 			result.setSuccess(true);
 		} catch (Exception e) {

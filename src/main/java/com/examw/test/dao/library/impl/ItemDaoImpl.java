@@ -10,9 +10,9 @@ import org.springframework.util.StringUtils;
 import com.examw.test.dao.impl.BaseDaoImpl;
 import com.examw.test.dao.library.IItemDao;
 import com.examw.test.domain.library.Item;
-import com.examw.test.domain.library.Paper;
 import com.examw.test.model.library.ItemInfo;
 import com.examw.test.service.library.ItemStatus;
+import com.examw.test.service.library.PaperType;
 
 /**
  * 题目数据操作接口实现类。
@@ -76,14 +76,8 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 			parameters.put("examId", info.getExamId());
 		}
 		if(!StringUtils.isEmpty(info.getSubjectId())){
-			// 2014-09-10 fengwei 多个科目的情况一起查
-			if(info.getSubjectId().contains(","))
-			{
-				hql += " and (i.subject.id in ("+info.getSubjectId().replaceAll("([a-z0-9-]{36})", "'$1'")+"))";
-			}else{
-				hql += " and (i.subject.id = :subjectId) ";
-				parameters.put("subjectId", info.getSubjectId());
-			}
+			hql += " and (i.subject.id = :subjectId) ";
+			parameters.put("subjectId", info.getSubjectId());
 		}
 		if(!StringUtils.isEmpty(info.getSourceId())){
 			hql += " and (i.source.id = :sourceId) ";
@@ -125,11 +119,6 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 			if(logger.isDebugEnabled()) logger.debug(msg);
 			throw new RuntimeException(msg);
 		}
-		if(parent.getStructureItems() != null && parent.getStructureItems().size() > 0){
-			msg = "题目已与试卷关联，不允许删除！";
-			if(logger.isDebugEnabled()) logger.debug(msg);
-			throw new RuntimeException(msg);
-		}
 		this.autoDelete(data);
 	}
 	/**
@@ -148,13 +137,14 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 		} 
 	}
 	/*
-	 * 根据校验码
-	 * @see com.examw.test.dao.library.IItemDao#loadItem(java.lang.String)
+	 * 加载试题。
+	 * @see com.examw.test.dao.library.IItemDao#loadItemByCode(java.lang.String)
 	 */
 	@Override
-	public Item loadItem(String checkCode) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("加载［checkcode = %s］题目...", checkCode));
-		final String hql = "from Item i where (i.parent is null) and (i.checkCode = :checkCode) order by i.lastTime desc,i.createTime desc ";
+	public Item loadItemByCode(String checkCode) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载［checkcode = %s］试题...", checkCode));
+		if(StringUtils.isEmpty(checkCode)) return null;
+		final String hql = "from Item i where (i.parent is null) and (i.checkCode = :checkCode) ";
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("checkCode", checkCode);
 		List<Item> list = this.find(hql, parameters, null, null);
@@ -162,17 +152,32 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 		return list.get(0);
 	}
 	/*
-	 * 检查是否包含真题
+	 * 加载试题。
+	 * @see com.examw.test.dao.library.IItemDao#loadItem(java.lang.String)
+	 */
+	@Override
+	public Item loadItem(String itemId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载［id = %s］试题...", itemId));
+		final String hql = "from Item i where (i.parent is null) and (i.id = :itemId) ";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("itemId", itemId);
+		List<Item> list = this.find(hql, parameters, null, null);
+		if(list == null || list.size() == 0) return null;
+		return list.get(0);
+	}
+	/*
+	 * 检查科目下是否包含真题
 	 * @see com.examw.test.dao.library.IItemDao#hasRealItem(java.lang.String)
 	 */
 	@Override
-	public boolean hasRealItem(String subjectIds) {
-		if(logger.isDebugEnabled()) logger.debug("查询是否包含真题");
-		if(StringUtils.isEmpty(subjectIds)) return false;
-		subjectIds = subjectIds.replaceAll("([a-z0-9-]{36})", "'$1'");
-		final String hql = "from Item i where (i.parent is null) and i.subject.id in("+subjectIds+") and i.opt = "+Paper.TYPE_REAL;
-		@SuppressWarnings("unchecked")
-		List<Item> list = this.getCurrentSession().createQuery(hql).list();
-		return list!=null&&list.size()>0;
+	public boolean hasRealItem(String[] subjectIds) {
+		if(logger.isDebugEnabled()) logger.debug("查询科目下是否包含真题 ...");
+		if(subjectIds == null || subjectIds.length > 0) return false;
+		final String hql = "select count(*) from Item i where (i.parent is null) and (i.opt = :opt) and (i.subject.id in (:subjectId)) ";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("opt", PaperType.REAL.getValue());
+		parameters.put("subjectId", subjectIds);
+		Object obj = this.uniqueResult(hql, parameters);
+		return obj == null ? false : (long)obj > 0;
 	}
 }

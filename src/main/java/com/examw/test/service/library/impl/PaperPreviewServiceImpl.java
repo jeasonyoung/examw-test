@@ -2,25 +2,25 @@ package com.examw.test.service.library.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
-import com.examw.test.dao.library.IPaperDao;
 import com.examw.test.dao.library.IStructureDao;
 import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.library.Structure;
 import com.examw.test.domain.library.StructureItem;
+import com.examw.test.model.library.BasePaperInfo;
 import com.examw.test.model.library.PaperPreview;
 import com.examw.test.model.library.StructureInfo;
 import com.examw.test.model.library.StructureItemInfo;
 import com.examw.test.service.library.IPaperItemService;
 import com.examw.test.service.library.IPaperPreviewService;
+import com.examw.test.service.library.IPaperService;
+import com.examw.test.service.library.IPaperStructureService;
 
 /**
  * 试卷预览服务实现类。
@@ -30,17 +30,10 @@ import com.examw.test.service.library.IPaperPreviewService;
  */
 public class PaperPreviewServiceImpl implements IPaperPreviewService {
 	private static final Logger logger = Logger.getLogger(PaperPreviewServiceImpl.class);
-	private IPaperDao paperDao;
 	private IStructureDao structureDao;
+	private IPaperService paperService;
+	private IPaperStructureService paperStructureService;
 	private IPaperItemService paperItemService;
-	/**
-	 * 设置试卷数据接口。
-	 * @param paperDao 
-	 *	  试卷数据接口。
-	 */
-	public void setPaperDao(IPaperDao paperDao) {
-		this.paperDao = paperDao;
-	}
 	/**
 	 * 设置试卷结构数据接口。
 	 * @param structureDao 
@@ -48,6 +41,22 @@ public class PaperPreviewServiceImpl implements IPaperPreviewService {
 	 */
 	public void setStructureDao(IStructureDao structureDao) {
 		this.structureDao = structureDao;
+	}
+	/**
+	 * 设置试卷服务接口。
+	 * @param paperService 
+	 *	  试卷服务接口。
+	 */
+	public void setPaperService(IPaperService paperService) {
+		this.paperService = paperService;
+	}
+	/**
+	 * 设置试卷结构服务接口。
+	 * @param paperStructureService 
+	 *	  试卷结构服务接口。
+	 */
+	public void setPaperStructureService(IPaperStructureService paperStructureService) {
+		this.paperStructureService = paperStructureService;
 	}
 	/**
 	 * 设置试卷试题服务接口。
@@ -65,25 +74,16 @@ public class PaperPreviewServiceImpl implements IPaperPreviewService {
 	public PaperPreview loadPaperPreview(String paperId) {
 		if (logger.isDebugEnabled()) logger.debug(String.format("加载试卷［id = %s］预览...", paperId));
 		if (StringUtils.isEmpty(paperId)) return null;
-		this.paperDao.evict(Paper.class);
-		Paper paper = this.paperDao.load(Paper.class, paperId);
+		Paper paper = this.paperService.loadPaper(paperId);
 		if (paper == null) {
-			if (logger.isDebugEnabled())logger.debug(String.format("试卷［id = %s］不存在！", paperId));
-			return null;
+			String msg =  null;
+			logger.debug(msg = String.format("试卷［id = %s］不存在！", paperId));
+			throw new RuntimeException(msg);
 		}
-		PaperPreview paperPreview = new PaperPreview();
-		BeanUtils.copyProperties(paper, paperPreview);
+		PaperPreview paperPreview = (PaperPreview)((BasePaperInfo)this.paperService.conversion(paper));
 		Integer count = 0;
-		List<StructureInfo> structures = this.changeModel(this.structureDao.finaStructures(paperId), count);
-		if(structures != null && structures.size() > 0){
-			Collections.sort(structures, new Comparator<StructureInfo>() {
-				@Override
-				public int compare(StructureInfo o1, StructureInfo o2) {
-					 return o1.getOrderNo() - o1.getOrderNo();
-				}
-			});
-		}
-		paperPreview.setStructures(structures);
+		paperPreview.setStructures(this.changeModel(this.structureDao.loadStructures(paperId), count));
+		paperPreview.setTotal(count);
 		return paperPreview;
 	}
 	//数据模型集合转换。
@@ -100,24 +100,31 @@ public class PaperPreviewServiceImpl implements IPaperPreviewService {
 				list.add(info);
 			}
 		}
-		return list.size() > 0 ? list : null;
+		if(list.size() > 0){
+			Collections.sort(list);
+		}
+		return null;
 	}
-	//数据模型转换。
+	//数据模型转换 Structure => StructureInfo。
 	private StructureInfo changeModel(Structure structure){
 		if(logger.isDebugEnabled()) logger.debug("数据模型转换[Structure => StructureInfo]...");
 		if(structure == null) return null;
-		StructureInfo structureInfo = new StructureInfo();
-		BeanUtils.copyProperties(structure, structureInfo, new String[]{"items"});
-		if(structure.getItems() != null){
-			Set<StructureItemInfo> items = new TreeSet<StructureItemInfo>();
-			for(StructureItem structureItem : structure.getItems()){
-				StructureItemInfo info = this.paperItemService.conversion(structureItem);
-				if(info != null){
-					items.add(info);
-				}
-			}
-			structureInfo.setItems(items.size() > 0 ? items : null);
-		}
+		StructureInfo structureInfo =  this.paperStructureService.conversion(structure);
+		if(structureInfo == null) return null;
+		structureInfo.setItems(this.changeModelItems(structure.getItems()));
 		return structureInfo;
+	}
+	//数据模型转换 Set<StructureItem> => Set<StructureItemInfo>。
+	private Set<StructureItemInfo> changeModelItems(Set<StructureItem> structureItems){
+		if(logger.isDebugEnabled()) logger.debug("数据模型转换 Set<StructureItem> =>  Set<StructureItemInfo>");
+		Set<StructureItemInfo> items = new TreeSet<>();
+		for(StructureItem item : structureItems){
+			if(item == null) continue;
+			StructureItemInfo info = this.paperItemService.conversion(item);
+			if(info != null){
+				items.add(info);
+			}
+		}
+		return items;
 	}
 }

@@ -2,7 +2,6 @@ package com.examw.test.service.library.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -14,7 +13,6 @@ import com.examw.test.dao.settings.IAreaDao;
 import com.examw.test.dao.settings.ISubjectDao;
 import com.examw.test.domain.library.Item;
 import com.examw.test.domain.library.Source;
-import com.examw.test.domain.library.StructureShareItemScore;
 import com.examw.test.domain.settings.Area;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.library.BaseItemInfo;
@@ -22,6 +20,7 @@ import com.examw.test.model.library.ItemInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.library.IItemDuplicateCheck;
 import com.examw.test.service.library.IItemService;
+import com.examw.test.service.library.IPaperService;
 import com.examw.test.service.library.ItemParser;
 import com.examw.test.service.library.ItemStatus;
 /**
@@ -38,7 +37,8 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 	private IAreaDao areaDao;
 	private IItemDuplicateCheck itemDuplicateCheck;
 	private Map<Integer, ItemParser> itemParsers;
-	private Map<Integer, String> statusMap,optMap,judgeAnswerMap;
+	private Map<Integer, String> statusMap,judgeAnswerMap;
+	private IPaperService paperService;
 	/**
 	 * 设置题目数据访问接口。
 	 * @param itemDao 
@@ -54,6 +54,7 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 	 *	  考试科目数据接口。
 	 */
 	public void setSubjectDao(ISubjectDao subjectDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入考试科目数据接口...");
 		this.subjectDao = subjectDao;
 	}
 	/**
@@ -62,6 +63,7 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 	 *	 来源数据接口。
 	 */
 	public void setSourceDao(ISourceDao sourceDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入来源数据接口...");
 		this.sourceDao = sourceDao;
 	}
 	/**
@@ -70,14 +72,16 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 	 *	  地区数据接口。
 	 */
 	public void setAreaDao(IAreaDao areaDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入地区数据接口...");
 		this.areaDao = areaDao;
 	}
 	/**
-	 * 设置题目去重复校验码生成算法接口。
+	 * 设置试题去重复校验码生成算法接口。
 	 * @param itemDuplicateCheck 
 	 *	  题目去重复校验码生成算法接口。
 	 */
 	public void setItemDuplicateCheck(IItemDuplicateCheck itemDuplicateCheck) {
+		if(logger.isDebugEnabled()) logger.debug("注入试题去重复校验码生成算法接口...");
 		this.itemDuplicateCheck = itemDuplicateCheck;
 	}
 	/**
@@ -99,21 +103,22 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		this.statusMap = statusMap;
 	}
 	/**
-	 * 设置类型名称集合。
-	 * @param optMap 
-	 *	  类型名称集合。
-	 */
-	public void setOptMap(Map<Integer, String> optMap) {
-		if(logger.isDebugEnabled()) logger.debug("注入类型名称集合...");
-		this.optMap = optMap;
-	}
-	/**
 	 * 设置判断题答案名称集合。
 	 * @param judgeAnswerMap 
 	 *	  判断题答案名称集合。
 	 */
 	public void setJudgeAnswerMap(Map<Integer, String> judgeAnswerMap) {
+		if(logger.isDebugEnabled()) logger.debug("注入判断题答案名称集合...");
 		this.judgeAnswerMap = judgeAnswerMap;
+	}
+	/**
+	 * 设置试卷服务接口。
+	 * @param paperService 
+	 *	  试卷服务接口。
+	 */
+	public void setPaperService(IPaperService paperService) {
+		if(logger.isDebugEnabled()) logger.debug("注入试卷服务接口...");
+		this.paperService = paperService;
 	}
 	/*
 	 * 加载题型名称。
@@ -137,14 +142,13 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		return this.statusMap.get(status);
 	}
 	/*
-	 * 加载类型名称。
+	 * 加载试卷类型名称。
 	 * @see com.examw.test.service.library.IItemService#loadOptName(java.lang.Integer)
 	 */
 	@Override
 	public String loadOptName(Integer opt) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("加载类型［opt = %d］名称...", opt));
-		if(opt == null || this.optMap == null) return null;
-		return this.optMap.get(opt);
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷类型［opt = %d］名称...", opt));
+		return this.paperService.loadTypeName(opt);
 	}
 	/*
 	 * 加载判断题答案名称。
@@ -155,6 +159,31 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载判断题答案［answer = %d］名称...", answer));
 		if(answer == null || this.judgeAnswerMap == null) return null;
 		return this.judgeAnswerMap.get(answer);
+	}
+	/*
+	 * 加载试题。
+	 * @see com.examw.test.service.library.IItemService#loadItem(java.lang.String)
+	 */
+	@Override
+	public Item loadItem(String itemId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载［itemId = %s］试题...", itemId));
+		return this.itemDao.loadItem(itemId);
+	}
+	/*
+	 * 计算包含的试题数量。
+	 * @see com.examw.test.service.library.IItemService#calculationCount(com.examw.test.model.library.BaseItemInfo)
+	 */
+	@Override
+	public Integer calculationCount(BaseItemInfo<?> source) {
+		if(logger.isDebugEnabled()) logger.debug("计算包含的试题数量...");
+		if(source == null) return null;
+		ItemParser parser = this.itemParsers.get(source.getType());
+		if(parser == null){
+			String err = String.format("未能找到题型［%d］的解析器！", source.getType());
+			logger.error(err);
+			throw new RuntimeException(err);
+		}
+		return parser.calculationCount(source);
 	}
 	/*
 	 * 更新题目状态。
@@ -181,30 +210,35 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		return this.itemDao.findItems(info);
 	}
 	/*
-	 * 类型转换。
+	 * 试题数据模型转换。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#changeModel(java.lang.Object)
 	 */
 	@Override
 	protected ItemInfo changeModel(Item data) {
-		if(logger.isDebugEnabled()) logger.debug("类型转换...");
+		if(logger.isDebugEnabled()) logger.debug("试题数据模型转换...");
 		if(data == null) return null;
-		ItemParser parser = this.itemParsers.get(data.getType());
-		if(parser == null){
-			String err = String.format("未能找到题型［%d］的解析器！", data.getType());
-			logger.error(err);
-			throw new RuntimeException(err);
-		}
-		parser.setItemDao(this.itemDao);
-		ItemInfo info = parser.parser(data);
-		if(info == null){
-			String err = String.format("题型［%d］解析器［%s］未能正确解析!", data.getType(), parser.getClass());
-			logger.error(err);
-			throw new RuntimeException(err);
-		}
-		if(info.getType() != null) info.setTypeName(this.loadTypeName(info.getType()));
-		if(info.getStatus() != null) info.setStatusName(this.loadStatusName(info.getStatus()));
-		if(info.getOpt() != null) info.setOptName(this.loadOptName(info.getOpt()));
+		ItemInfo info = new ItemInfo();
+		this.conversion(data, info);
 		return info;
+	}
+	/*
+	 * 数据模型转换。
+	 * @see com.examw.test.service.library.IItemService#conversion(com.examw.test.domain.library.Item, com.examw.test.model.library.BaseItemInfo)
+	 */
+	@Override
+	public void conversion(Item source, BaseItemInfo<?> target) {
+		if(logger.isDebugEnabled()) logger.debug("数据模型转换 Item => BaseItemInfo<?> ...");
+		if(source == null || target == null) return;
+		ItemParser parser = this.itemParsers.get(source.getType());
+		if(parser == null){
+			String err = String.format("未能找到题型［%d］的解析器！", source.getType());
+			logger.error(err);
+			throw new RuntimeException(err);
+		}
+		parser.conversion(source, target);
+		if(target.getType() != null) target.setTypeName(this.loadTypeName(target.getType()));
+		if(target.getStatus() != null) target.setStatusName(this.loadStatusName(target.getStatus()));
+		if(target.getOpt() != null) target.setOptName(this.loadOptName(target.getOpt()));
 	}
 	/*
 	 * 查询数据统计。
@@ -223,14 +257,14 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 	public ItemInfo update(ItemInfo info) {
 		if(logger.isDebugEnabled()) logger.debug("更新数据...");
 		if(info == null) return null;
-		return this.changeModel(this.updateItem(info,null));
+		return this.changeModel(this.updateItem(info));
 	}
 	/*
 	 * 更新题目。
 	 * @see com.examw.test.service.library.IItemService#updateItem(com.examw.test.model.library.ItemInfo)
 	 */
 	@Override
-	public Item updateItem(BaseItemInfo<?> info,Set<StructureShareItemScore> shareItemScores) {
+	public Item updateItem(BaseItemInfo<?> info) {
 		if(logger.isDebugEnabled()) logger.debug("更新题目...");
 		if(info == null) return null;
 		boolean isAdded = false;
@@ -241,7 +275,7 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 			if(logger.isDebugEnabled())logger.debug(msg);
 			throw new RuntimeException(msg);
 		}
-		if(data == null) data = this.itemDao.loadItem(checkCode);
+		if(data == null) data = this.itemDao.loadItemByCode(checkCode);
 		if(data != null && data.getStatus() == ItemStatus.AUDIT.getValue()){
 			return data;
 		}
@@ -271,8 +305,7 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 			logger.error(err);
 			throw new RuntimeException(err);
 		}
-		parser.setItemDao(this.itemDao);
-		parser.parser(info, shareItemScores, data);
+		parser.parser(info, data);
 		this.itemDao.saveOrUpdate(data);
 		return data;
 	}
@@ -292,20 +325,5 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 				this.itemDao.delete(data);
 			}
 		}
-	}
-	/*
-	 * 加载试题预览。
-	 * @see com.examw.test.service.library.IItemService#loadItemPreview(java.lang.String)
-	 */
-	@Override
-	public ItemInfo loadItemPreview(String itemId) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("加载试题［id = %s］预览....", itemId));
-		if(StringUtils.isEmpty(itemId)) return null;
-		Item item = this.itemDao.load(Item.class, itemId);
-		if(item == null){
-			if(logger.isDebugEnabled()) logger.debug(String.format("试题［id = %s］不存在！", itemId));
-			return null;
-		}
-		return this.changeModel(item);
 	}
 }

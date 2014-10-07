@@ -9,7 +9,7 @@ import com.examw.test.domain.settings.Subject;
 import com.examw.test.domain.syllabus.Syllabus;
 
 /**
- * 题目。
+ * 试题。
  * @author yangyong.
  * @since 2014-08-02.
  */
@@ -24,7 +24,7 @@ public class Item implements Serializable {
 	private Item parent;
 	private Set<Item> children;
 	private Set<Syllabus> syllabuses;
-	private Set<StructureItem> structureItems;
+	private Set<StructureItem> structures;
 	/**
 	 * 获取题目ID。
 	 * @return 题目ID。
@@ -326,19 +326,19 @@ public class Item implements Serializable {
 		this.syllabuses = syllabuses;
 	}
 	/**
-	 * 获取所属试卷集合。
-	 * @return 所属试卷集合。
+	 * 获取所属的结构集合。
+	 * @return 所属的结构集合。
 	 */
-	public Set<StructureItem> getStructureItems() {
-		return structureItems;
+	public Set<StructureItem> getStructures() {
+		return structures;
 	}
 	/**
-	 * 设置所属试卷集合。
-	 * @param structureItems 
-	 *	  所属试卷集合。
+	 * 设置所属的结构集合。
+	 * @param structures 
+	 *	  所属的结构集合。
 	 */
-	public void setStructureItems(Set<StructureItem> structureItems) {
-		this.structureItems = structureItems;
+	public void setStructures(Set<StructureItem> structures) {
+		this.structures = structures;
 	}
 	/**
 	 * 获取所属用户ID。

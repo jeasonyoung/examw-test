@@ -2,7 +2,8 @@ package com.examw.test.service.library;
 
 import java.util.List;
 
-import com.examw.test.model.library.PaperStructureInfo;
+import com.examw.test.domain.library.Structure;
+import com.examw.test.model.library.StructureInfo;
 
 /**
  * 试卷结构服务接口。
@@ -18,7 +19,13 @@ public interface IPaperStructureService {
 	 * @return
 	 * 结构集合。
 	 */
-	List<PaperStructureInfo> loadStructures(String paperId);
+	List<StructureInfo> loadStructures(String paperId);
+	/**
+	 * 数据模型转换。
+	 * @param structure
+	 * @return
+	 */
+	StructureInfo conversion(Structure structure);
 	/**
 	 * 更新试卷结构。
 	 * @param paperId
@@ -26,7 +33,7 @@ public interface IPaperStructureService {
 	 * @param info
 	 * 试卷结构。
 	 */
-	void updateStructure(String paperId, PaperStructureInfo info);
+	void updateStructure(String paperId, StructureInfo info);
 	/**
 	 * 删除试卷结构。
 	 * @param structureIds

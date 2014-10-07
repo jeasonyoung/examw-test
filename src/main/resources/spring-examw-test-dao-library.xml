@@ -15,10 +15,6 @@
 	<bean id="structureDao" class="com.examw.test.dao.library.impl.StructureDaoImpl">
 	    <property name="sessionFactory"  ref="sessionFactory" />
 	</bean>
-	<!-- 试卷结构下试题 -->
-	<bean id="structureItemDao" class="com.examw.test.dao.library.impl.StructureItemDaoImpl">
-	    <property name="sessionFactory"  ref="sessionFactory" />
-	</bean>
 	<!-- 题目数据接口 -->
 	<bean id="itemDao" class="com.examw.test.dao.library.impl.ItemDaoImpl">
 		<property name="sessionFactory"  ref="sessionFactory" />

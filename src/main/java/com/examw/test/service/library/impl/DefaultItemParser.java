@@ -11,9 +11,9 @@ import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.library.IItemDao;
 import com.examw.test.domain.library.Item;
-import com.examw.test.domain.library.StructureShareItemScore;
 import com.examw.test.model.library.BaseItemInfo;
 import com.examw.test.model.library.ItemInfo;
+import com.examw.test.model.library.StructureItemInfo;
 import com.examw.test.service.library.ItemParser;
 /**
  * 试题解析基础类。
@@ -41,11 +41,10 @@ public class DefaultItemParser implements ItemParser {
 	public String getTypeName() {
 		return this.typeName;
 	}
-	/*
+	/**
 	 * 设置试题数据接口。
-	 * @see com.examw.test.service.library.ItemParser#setItemDao(com.examw.test.dao.library.IItemDao)
+	 * @param itemDao
 	 */
-	@Override
 	public void setItemDao(IItemDao itemDao) {
 		this.itemDao = itemDao;
 	}
@@ -61,18 +60,18 @@ public class DefaultItemParser implements ItemParser {
 	 * @see com.examw.test.service.library.ItemParser#parser(com.examw.test.model.library.BaseItemInfo, java.util.Set, com.examw.test.domain.library.Item)
 	 */
 	@Override
-	public void parser(BaseItemInfo<?> source,Set<StructureShareItemScore> shareItemScores, Item target) {
+	public void parser(BaseItemInfo<?> source,Item target) {
 		if(logger.isDebugEnabled()) logger.debug("试题解析：BaseItemInfo => Item ...");
 		if(source == null || target == null) return;
 		source.setCount(this.calculationCount(source));
-		this.changeModel(source,shareItemScores,target);
+		this.changeModel(source,target);
 	}
 	/**
-	 * 计算试题数量。
+	 * 计算包含的试题数量。
 	 * @param source
 	 * @return
 	 */
-	protected Integer calculationCount(BaseItemInfo<?> source){
+	public Integer calculationCount(BaseItemInfo<?> source){
 		return 1;
 	}
 	/**
@@ -85,7 +84,7 @@ public class DefaultItemParser implements ItemParser {
 	 * 目标数据模型。
 	 * @return
 	 */
-	protected boolean changeModel(BaseItemInfo<?> source,Set<StructureShareItemScore> shareItemScores,Item target){
+	protected boolean changeModel(BaseItemInfo<?> source,Item target){
 		if(source == null || target == null) return false;
 		if(target.getChildren() != null && target.getChildren().size() > 0){
 			target.getChildren().clear();
@@ -101,7 +100,7 @@ public class DefaultItemParser implements ItemParser {
 					item.setId(UUID.randomUUID().toString());
 				}
 				item.setParent(target);
-				if(this.changeModel(info, shareItemScores,item)){
+				if(this.changeModel(info,item)){
 					target.getChildren().add(item);
 				}
 			}
@@ -109,15 +108,14 @@ public class DefaultItemParser implements ItemParser {
 		return true;
 	}
 	/*
-	 * 解析试题。
-	 * @see com.examw.test.service.library.ItemParser#parser(com.examw.test.domain.library.Item, com.examw.test.model.library.BaseItemInfo)
+	 *试题数据模型转换。
+	 * @see com.examw.test.service.library.ItemParser#conversion(com.examw.test.domain.library.Item, com.examw.test.model.library.BaseItemInfo)
 	 */
 	@Override
-	public ItemInfo parser(Item source) {
-		if(logger.isDebugEnabled()) logger.debug("解析试题:Item => ItemInfo ...");
-		if(source == null) return null;
-		ItemInfo target = this.changeModel(source);
-		if(target == null) return null;
+	public void conversion(Item source, BaseItemInfo<?> target){
+		if(logger.isDebugEnabled()) logger.debug(String.format("解析试题:Item => BaseItemInfo<?> ［%s］ ...", target == null ? "" : target.getClass()));
+		if(source == null || target == null) return;
+		this.conversionModel(source, target);
 		//所属科目
 		if(source.getSubject() != null){
 			target.setSubjectId(source.getSubject().getId());
@@ -138,28 +136,49 @@ public class DefaultItemParser implements ItemParser {
 			target.setAreaId(source.getArea().getId());
 			target.setAreaName(source.getArea().getName());
 		}
-		return target;
+	}
+	/**
+	 * 模型转换辅助方法。
+	 * @param source
+	 * @param target
+	 */
+	protected void conversionModel(Item source, BaseItemInfo<?> target) {
+		try {
+			if(target instanceof ItemInfo){
+				changeModel(source, ((ItemInfo)target));
+			}else if(target instanceof StructureItemInfo) {
+				changeModel(source, ((StructureItemInfo)target));
+			}
+		} catch (Exception e) {
+			String err = String.format("试题数据模型转换［%1$s => %2$s］异常：%3$s", source.getClass(), target.getClass(), e.getMessage());
+			logger.error(err);
+			e.printStackTrace();
+			throw new RuntimeException(err, e);
+		}
 	}
 	/**
 	 * 数据模型转换。
 	 * @param source
-	 * @return
+	 * @param target
 	 */
-	protected ItemInfo changeModel(Item source){
-		if(source == null) return null;
-		ItemInfo target = new ItemInfo();
+	@SuppressWarnings("unchecked")
+	protected <T extends BaseItemInfo<T>> void changeModel(Item source, T target) throws Exception {
+		if(logger.isDebugEnabled()) logger.debug("数据模型转换 Item => T...");
+		if(source == null || target == null) return;
 		BeanUtils.copyProperties(source, target, new String[]{"children"});
 		if(source.getChildren() != null && source.getChildren().size() > 0){
-			Set<ItemInfo> children = new TreeSet<>();
+			Set<T> children = new TreeSet<>();
 			for(Item item : source.getChildren()){
-				ItemInfo info = this.changeModel(item);
+				if(item == null) continue;
+				T info = (T)target.getClass().newInstance();
 				if(info != null){
+					this.changeModel(item, info);
 					info.setPid(target.getId());
 					children.add(info);
 				}
 			}
 			if(children.size() > 0) target.setChildren(children);
 		}
-		return target;
 	}
+	
 }

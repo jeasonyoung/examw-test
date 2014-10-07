@@ -1,9 +1,6 @@
 package com.examw.test.service.library;
 
-import java.util.Set;
-
 import com.examw.test.domain.library.Item;
-import com.examw.test.domain.library.StructureShareItemScore;
 import com.examw.test.model.library.BaseItemInfo;
 import com.examw.test.model.library.ItemInfo;
 import com.examw.test.service.IBaseDataService;
@@ -48,6 +45,12 @@ public interface IItemService extends IBaseDataService<ItemInfo> {
 	 */
 	String loadJudgeAnswerName(Integer answer);
 	/**
+	 * 计算包含的题目数量。
+	 * @param source
+	 * @return
+	 */
+	Integer calculationCount(BaseItemInfo<?> source);
+	/**
 	 * 更新题目状态。
 	 * @param itemId
 	 * 所属题目ID。
@@ -62,13 +65,19 @@ public interface IItemService extends IBaseDataService<ItemInfo> {
 	 * @return
 	 * 题目对象。
 	 */
-	Item updateItem(BaseItemInfo<?> info,Set<StructureShareItemScore> shareItemScores);
+	Item updateItem(BaseItemInfo<?> info);
 	/**
-	 * 加载试题预览。
+	 * 加载试题数据。
 	 * @param itemId
 	 * 试题ID。
 	 * @return
-	 * 试题预览信息。
+	 * 试题数据。
 	 */
-	ItemInfo loadItemPreview(String itemId);
+	Item loadItem(String itemId);
+	/**
+	 * 试题数据模型转换。
+	 * @param source
+	 * @param target
+	 */
+	void conversion(Item source, BaseItemInfo<?> target);
 }

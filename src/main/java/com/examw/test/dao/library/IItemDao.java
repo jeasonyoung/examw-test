@@ -30,17 +30,24 @@ public interface IItemDao extends IBaseDao<Item> {
 	 */
 	Long total(ItemInfo info);
 	/**
-	 * 根据校验码加载题目。
+	 * 根据校验码加载试题。
 	 * @param checkCode
 	 * 校验码。
 	 * @return
 	 * 题目对象。
 	 */
-	Item loadItem(String checkCode);
+	Item loadItemByCode(String checkCode);
+	/**
+	 * 加载试题。
+	 * @param itemId
+	 * 试题ID。
+	 * @return
+	 */
+	Item loadItem(String itemId);
 	/**
 	 * 查询是否包含真题
 	 * @param subjectIds
 	 * @return
 	 */
-	boolean hasRealItem(String subjectIds);
+	boolean hasRealItem(String[] subjectIds);
 }

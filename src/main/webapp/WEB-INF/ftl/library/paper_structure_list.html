@@ -234,7 +234,7 @@ $(function(){
 			show = true;
 			$.getJSON("<@s.url '/library/paper/items/order/'/>" + current_structure_id + "?_=" + Math.random(),function(data){
 				show = false;
-				edit_structure_items_window("新增试题["+ current_item_type_name +"]",0,null, data[0]);
+				edit_structure_items_window("新增试题["+ current_item_type_name +"]",0,null, data);
 			});
 			return;
 		}

@@ -11,7 +11,7 @@ import java.util.Set;
  */
 public class Structure implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id,title;
+	private String id,title,description;
 	private Integer type,total,orderNo;
 	private BigDecimal score,min;
 	private Paper paper;
@@ -45,6 +45,21 @@ public class Structure implements Serializable {
 	 */
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	/**
+	 * 获取描述信息。
+	 * @return 描述信息。
+	 */
+	public String getDescription() {
+		return description;
+	}
+	/**
+	 * 设置描述信息。
+	 * @param description 
+	 *	  描述信息。
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	/**
 	 * 获取题目总数。

@@ -5,10 +5,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Cache;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.IBaseDao;
 
@@ -18,6 +20,7 @@ import com.examw.test.dao.IBaseDao;
  * @since 2014-04-28.
  */
 public class BaseDaoImpl<T> implements IBaseDao<T> {
+	private static final Logger logger = Logger.getLogger(BaseDaoImpl.class);
 	private SessionFactory sessionFactory;
 	/**
 	 * 设置SessionFactory。
@@ -25,6 +28,7 @@ public class BaseDaoImpl<T> implements IBaseDao<T> {
 	 * 	Hibernate Session 对象。
 	 * */
 	public void setSessionFactory(SessionFactory sessionFactory) {
+		if(logger.isDebugEnabled()) logger.debug("注入sessionFactory...");
 		this.sessionFactory = sessionFactory;
 	}
 	/**
@@ -44,6 +48,7 @@ public class BaseDaoImpl<T> implements IBaseDao<T> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public T load(Class<T> c, Serializable id) {
+		if(logger.isDebugEnabled()) logger.debug("加载指定主键对象...");
 		if(c != null && id != null){
 			return (T)this.getCurrentSession().get(c, id);
 		}
@@ -56,6 +61,7 @@ public class BaseDaoImpl<T> implements IBaseDao<T> {
 	 * */
 	@Override
 	public Serializable save(T data) {
+		if(logger.isDebugEnabled()) logger.debug("保存新增对象...");
 		if(data != null){
 			return this.getCurrentSession().save(data);
 		}
@@ -68,6 +74,7 @@ public class BaseDaoImpl<T> implements IBaseDao<T> {
 	 * */
 	@Override
 	public void update(T data) {
+		if(logger.isDebugEnabled()) logger.debug("更新对象...");
 		if(data != null){
 			this.getCurrentSession().update(data);
 		}
@@ -79,7 +86,10 @@ public class BaseDaoImpl<T> implements IBaseDao<T> {
 	 * */
 	@Override
 	public void saveOrUpdate(T data) {
-		if(data != null) this.getCurrentSession().saveOrUpdate(data);
+		if(logger.isDebugEnabled()) logger.debug("保存或更新对象...");
+		if(data != null){
+			this.getCurrentSession().saveOrUpdate(data);
+		}
 	}
 	/**
 	 * 删除对象。
@@ -88,6 +98,7 @@ public class BaseDaoImpl<T> implements IBaseDao<T> {
 	 * */
 	@Override
 	public void delete(T data) {
+		if(logger.isDebugEnabled()) logger.debug("删除对象...");
 		if(data != null){
 			this.getCurrentSession().delete(data);
 		}
@@ -107,8 +118,22 @@ public class BaseDaoImpl<T> implements IBaseDao<T> {
 	 * </pre>
 	 * @return 结果数据集合。
 	 * */
-	@SuppressWarnings("unchecked") 
+	@SuppressWarnings("unchecked")
 	protected List<T> find(String hql, Map<String, Object> parameters,Integer page, Integer rows) {
+		if(logger.isDebugEnabled()) logger.debug("查找对象集合...");
+		return this.query(hql, parameters, page, rows);
+	}
+	/**
+	 * 查询数据。
+	 * @param hql
+	 * @param parameters
+	 * @param page
+	 * @param rows
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	protected List query(String hql, Map<String, Object> parameters,Integer page, Integer rows){
+		if(logger.isDebugEnabled()) logger.debug(String.format("查询数据［hql = %1$s］［page = %2$d］［rows = %3$d］...", hql, page, rows));
 		if(hql == null || hql.isEmpty()) return null;
 		Query query = this.getCurrentSession().createQuery(hql);
 		if(query != null){
@@ -127,7 +152,8 @@ public class BaseDaoImpl<T> implements IBaseDao<T> {
 	 */
 	@SuppressWarnings("rawtypes")
 	protected void addParameters(Query query, Map<String, Object> parameters){
-		if(query == null)return;
+		if(logger.isDebugEnabled()) logger.debug("添加参数集合...");
+		if(query == null) return;
 		if(parameters == null || parameters.size() == 0) return;
 		Object  value = null;
 		for(Map.Entry<String, Object> entry : parameters.entrySet()){
@@ -152,6 +178,7 @@ public class BaseDaoImpl<T> implements IBaseDao<T> {
 	 * @return 数据总数。
 	 * */
 	protected Long count(String hql, Map<String, Object> parameters) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("统计数据［hql = %s］", hql));
 		 Object  obj = this.uniqueResult(hql, parameters);
 		 return obj == null ? null : (long)obj;
 	}
@@ -165,11 +192,27 @@ public class BaseDaoImpl<T> implements IBaseDao<T> {
 	 * 结果数据对象。
 	 */
 	protected Object uniqueResult(String hql, Map<String, Object> parameters){
+		if(logger.isDebugEnabled()) logger.debug(String.format("查询单个结果数据［hql = %s］", hql));
 		if(hql == null || hql.isEmpty()) return null;
 		Query query = this.getCurrentSession().createQuery(hql);
 		if(query != null){
 			this.addParameters(query, parameters);
 			return query.uniqueResult();
+		}
+		return null;
+	}
+	/**
+	 * 执行HQL语句。
+	 * @param hql
+	 * @param parameters
+	 */
+	protected Integer executeUpdate(String hql,Map<String, Object> parameters){
+		if(logger.isDebugEnabled()) logger.debug(String.format("执行HQL语句［hql = %s］!", hql));
+		if(StringUtils.isEmpty(hql)) return null;
+		Query query = this.getCurrentSession().createQuery(hql);
+		if(query != null){
+			this.addParameters(query, parameters);
+			return query.executeUpdate();
 		}
 		return null;
 	}

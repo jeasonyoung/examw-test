@@ -1,13 +1,7 @@
 package com.examw.test.service.library;
 
-import java.util.Set;
-
-import com.examw.test.dao.library.IItemDao;
 import com.examw.test.domain.library.Item;
-import com.examw.test.domain.library.StructureShareItemScore;
 import com.examw.test.model.library.BaseItemInfo;
-import com.examw.test.model.library.ItemInfo;
-
 /**
  * 试题解析器接口。
  * 
@@ -21,24 +15,23 @@ public interface ItemParser {
 	 */
 	String getTypeName();
 	/**
-	 * 设置试题数据访问接口。
-	 * @param itemDao
+	 * 计算包含的试题数量。
+	 * @param source
+	 * @return
 	 */
-	void setItemDao(IItemDao itemDao);
+	Integer calculationCount(BaseItemInfo<?> source);
 	/**
 	 * 解析试题。
 	 * @param source
 	 * 解析源。
-	 * @param shareItemScores
-	 * 共享题信息。
 	 * @param target
 	 * 解析目标。
 	 */
-	void parser(BaseItemInfo<?> source,Set<StructureShareItemScore> shareItemScores, Item target);
+	void parser(BaseItemInfo<?> source, Item target);
 	/**
-	 * 解析试题。
+	 * 试题数据模型转换。
 	 * @param source
-	 * @return
+	 * @param target
 	 */
-	ItemInfo parser(Item source);
+	void conversion(Item source, BaseItemInfo<?> target);
 }

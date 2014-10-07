@@ -16,11 +16,19 @@ public interface IPaperItemService extends IBaseDataService<StructureItemInfo> {
 	 * 所属结构ID。
 	 * @return
 	 */
-	Long loadStructureItemMaxOrderNo(String structureId);
+	Integer loadMaxOrderNo(String structureId);
 	/**
 	 * 数据模型转换。
 	 * @param source
 	 * @return
 	 */
 	StructureItemInfo conversion(StructureItem source);
+	/**
+	 * 删除试卷结构下的试题。
+	 * @param structureId
+	 * 试卷结构ID。
+	 * @param itemIds
+	 * 试题ID。
+	 */
+	void delete(String structureId,String[] itemIds);
 }

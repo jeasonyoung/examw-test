@@ -1,13 +1,14 @@
 package com.examw.test.model.front;
 
-import com.examw.test.model.library.ItemScoreInfo;
+import java.io.Serializable;
+
 
 /**
  * 试题前台数据信息
  * @author fengwei.
  * @since 2014年9月24日 上午11:55:52.
  */
-public class ItemFrontInfo extends ItemScoreInfo{
+public class ItemFrontInfo implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private Boolean isCollected;	//是否被收藏
 	private Integer totalNoteNum;	//笔记总数

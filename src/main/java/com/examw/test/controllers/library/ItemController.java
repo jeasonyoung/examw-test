@@ -229,7 +229,7 @@ public class ItemController implements IUserAware {
 		model.addAttribute("ItemJudgeAnswer_Wrong_Value", ItemJudgeAnswer.WRONG.getValue());
 		model.addAttribute("ItemJudgeAnswer_Wrong_Name", this.itemService.loadJudgeAnswerName(ItemJudgeAnswer.WRONG.getValue()));
 		
-		model.addAttribute("item", this.itemService.loadItemPreview(itemId));
+		//model.addAttribute("item", this.itemService.loadItemPreview(itemId));
 		return "library/item_preview";
 	}
 	/**

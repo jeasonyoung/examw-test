@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.examw.model.Json;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.library.PaperInfo;
-import com.examw.test.model.library.PaperStructureInfo;
+import com.examw.test.model.library.StructureInfo;
 import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperService;
 import com.examw.test.service.library.IPaperStructureService;
@@ -49,7 +49,7 @@ public class PaperStructureController {
 	 */
 	@RequestMapping(value="/all/{paperId}", method = {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
-	public List<PaperStructureInfo> loadStructures(@PathVariable String paperId){
+	public List<StructureInfo> loadStructures(@PathVariable String paperId){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［paperId = %s］结构数据...", paperId));
 		return this.paperStructureService.loadStructures(paperId);
 	}
@@ -64,7 +64,7 @@ public class PaperStructureController {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［paperId = %s］结构列表页面...", paperId));
 		
 		model.addAttribute("CURRENT_PAPER_ID", paperId);
-		PaperInfo paper = this.paperService.loadPaperInfo(paperId);
+		PaperInfo paper = this.paperService.conversion(this.paperService.loadPaper(paperId));
 		
  		model.addAttribute("CURRENT_EXAM_ID", paper == null ? "" : paper.getExamId());
 		model.addAttribute("CURRENT_SUBJECT_ID", paper == null ? "" : paper.getSubjectId());
@@ -105,7 +105,7 @@ public class PaperStructureController {
 	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE})
 	@RequestMapping(value = "/update/{paperId}", method = RequestMethod.POST)
 	@ResponseBody
-	public Json structureUpdate(@PathVariable String paperId,PaperStructureInfo info){
+	public Json structureUpdate(@PathVariable String paperId,StructureInfo info){
 		if(logger.isDebugEnabled()) logger.debug(String.format("更新试卷［%s］结构数据...", paperId));
 		Json result = new Json();
 		try {

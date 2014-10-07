@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.examw.test.dao.IBaseDao;
 import com.examw.test.domain.library.Structure;
+import com.examw.test.domain.library.StructureItem;
+import com.examw.test.model.library.StructureItemInfo;
 /**
  * 试卷结构数据接口。
  * 
@@ -17,5 +19,42 @@ public interface IStructureDao extends IBaseDao<Structure> {
 	 * 所属试卷ID。
 	 * @return
 	 */
-	List<Structure> finaStructures(String paperId);
+	List<Structure> loadStructures(String paperId);
+	/**
+	 *  查询试卷试题。
+	 * @param info
+	 * 查询条件。
+	 * @return
+	 * 试题集合。
+	 */
+	List<StructureItem> findItems(StructureItemInfo info);
+	/**
+	 * 统计查询试卷试题。
+	 * @param info
+	 * 查询条件。
+	 * @return
+	 * 统计结果。
+	 */
+	Long totalItems(StructureItemInfo info);
+	/**
+	 * 加载试卷结构下最大排序号。
+	 * @param structureId
+	 * 结构ID。
+	 * @return
+	 */
+	Integer loadItemMaxOrderNo(String structureId);
+	/**
+	 * 统计结构下的试题数量。
+	 * @param structureId
+	 * 所属结构ID。
+	 * @return
+	 * 试题数量。
+	 */
+	Long totalStructureItems(String structureId);
+	/**
+	 * 删除试卷结构下的试题。
+	 * @param structureId
+	 * @param itemIds
+	 */
+	Integer deleteStructrureItems(String structureId, String[] itemIds);
 }

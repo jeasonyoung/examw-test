@@ -1,6 +1,7 @@
 package com.examw.test.service.library.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,7 +13,7 @@ import com.examw.test.dao.library.IPaperDao;
 import com.examw.test.dao.library.IStructureDao;
 import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.library.Structure;
-import com.examw.test.model.library.PaperStructureInfo;
+import com.examw.test.model.library.StructureInfo;
 import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperStructureService;
 
@@ -51,6 +52,7 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 	 *	  试卷服务接口。
 	 */
 	public void setItemService(IItemService itemService) {
+		if(logger.isDebugEnabled()) logger.debug("注入试卷服务接口...");
 		this.itemService = itemService;
 	}
 	/*
@@ -58,28 +60,40 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 	 * @see com.examw.test.service.library.IPaperStructureService#loadStructures(java.lang.String)
 	 */
 	@Override
-	public List<PaperStructureInfo> loadStructures(String paperId) {
+	public List<StructureInfo> loadStructures(String paperId) {
 		if(logger.isDebugEnabled())logger.debug(String.format("加载结构[paperId=%s]数据...", paperId));
 		String msg = null;
 		if (StringUtils.isEmpty(paperId)) {
-			msg = "试卷ID不存在！";
-			if (logger.isDebugEnabled())logger.debug(msg);
+			logger.error(msg = "试卷ID不存在！");
 			throw new RuntimeException(msg);
 		}
-		List<PaperStructureInfo> results = new ArrayList<>();
-		List<Structure> structures = this.structureDao.finaStructures(paperId);
-		if (structures != null) {
-			for (Structure structure : structures) {
-				PaperStructureInfo info = this.changeModel(structure);
-				if(info != null) results.add(info);
+		return this.changeModel(this.structureDao.loadStructures(paperId));
+	}
+	/**
+	 * 数据模型集合转换。
+	 * @param structures
+	 * @return
+	 */
+	protected List<StructureInfo> changeModel(List<Structure> structures){
+		if(logger.isDebugEnabled()) logger.debug("数据模型集合转换 List<Structure> => List<StructureInfo> ...");
+		List<StructureInfo> list = new ArrayList<>();
+		if(structures != null && structures.size() > 0){
+			for(Structure structure : structures){
+				if(structure == null) continue;
+				StructureInfo info = this.changeModel(structure);
+				if(info != null){
+					list.add(info);
+				}
 			}
+			if(list.size() > 0) Collections.sort(list);
 		}
-		return results;
+		return list;
 	}
 	//数据模型转换。
-	private PaperStructureInfo changeModel(Structure data){
-		if(data == null)return null;
-		PaperStructureInfo info = new PaperStructureInfo();
+	protected StructureInfo changeModel(Structure data){
+		if(logger.isDebugEnabled()) logger.debug("数据模型转换 Structure => StructureInfo ...");
+		if(data == null) return null;
+		StructureInfo info = new StructureInfo();
 		BeanUtils.copyProperties(data, info);
 		if(data.getType() != null && this.itemService != null){
 			info.setTypeName(this.itemService.loadTypeName(data.getType()));
@@ -87,33 +101,39 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 		return info;
 	}
 	/*
+	 * 数据模型转换。
+	 * @see com.examw.test.service.library.IPaperStructureService#conversion(com.examw.test.domain.library.Structure)
+	 */
+	@Override
+	public StructureInfo conversion(Structure structure) {
+		if(logger.isDebugEnabled()) logger.debug("数据模型转换...");
+		return this.changeModel(structure);
+	}
+	/*
 	 * 更新试卷结构。
 	 * @see com.examw.test.service.library.IPaperStructureService#updateStructure(java.lang.String, com.examw.test.model.library.PaperStructureInfo)
 	 */
 	@Override
-	public void updateStructure(String paperId, PaperStructureInfo info) {
+	public void updateStructure(String paperId, StructureInfo info) {
 		if (logger.isDebugEnabled())logger.debug("更新试卷［paperId = " + paperId + "］结构...");
 		String msg = null;
-		if (StringUtils.isEmpty(paperId)) {
-			msg = "所属试卷ID为空！";
-			if (logger.isDebugEnabled())logger.debug(msg);
-			throw new RuntimeException(msg);
-		}
 		if (info == null) {
-			msg = String.format("更新的试卷［paperId = %s］结构不存在！", paperId);
-			if (logger.isDebugEnabled())logger.debug(msg);
-			throw new RuntimeException(msg);
-		}
-		Paper paper = this.paperDao.load(Paper.class, paperId);
-		if (paper == null) {
-			msg = String.format("所属试卷［paperId = %s］不存在！", paperId);
-			if (logger.isDebugEnabled())logger.debug(msg);
+			logger.error(String.format("更新的试卷［paperId = %s］结构不存在！", paperId));
 			throw new RuntimeException(msg);
 		}
 		boolean isAdded = false;
 		Structure data = StringUtils.isEmpty(info.getId()) ? null : this.structureDao.load(Structure.class, info.getId());
-		if (isAdded = (data == null)) {
+		if(isAdded = (data == null)){
 			if (StringUtils.isEmpty(info.getId())) info.setId(UUID.randomUUID().toString());
+			if (StringUtils.isEmpty(paperId)) {
+				logger.error(msg = "所属试卷ID为空！");
+				throw new RuntimeException(msg);
+			}
+			Paper paper = this.paperDao.load(Paper.class, paperId);
+			if(paper == null){
+				logger.error(msg = String.format("所属试卷［paperId = %s］不存在!", paperId));
+				throw new RuntimeException(msg);
+			}
 			data = new Structure();
 			data.setPaper(paper);
 		}

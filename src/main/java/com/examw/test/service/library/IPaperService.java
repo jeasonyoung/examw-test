@@ -34,93 +34,15 @@ public interface IPaperService extends IBaseDataService<PaperInfo> {
 	 */
 	void updateStatus(String paperId,PaperStatus status);
 	/**
-	 *  加载试卷基本信息。
+	 *  加载试卷基本数据。
 	 * @param paperId
 	 * @return
 	 */
-	PaperInfo loadPaperInfo(String paperId);
+	Paper loadPaper(String paperId);
 	/**
 	 * 数据模型转换。
 	 * @param paper
 	 * @return
 	 */
 	PaperInfo conversion(Paper paper);
-//	/**
-//	 * 加载试卷基本信息[前台调用方法]
-//	 * @param paperId
-//	 * @return
-//	 */
-//	PaperPreview loadPaperInfo(String paperId);
-//	/**
-//	 * 加载试卷详细信息并且添加试卷记录[前台调用方法]
-//	 * @param paperId	试卷ID
-//	 * @param userId 	用户ID
-//	 * @return
-//	 */
-//	PaperPreview loadPaperPreviewAndAddRecord(String paperId,String userId);
-//	/**
-//	 * 加载试卷数据信息[前台调用方法]
-//	 * @param info
-//	 * @return
-//	 */
-//	List<PaperFrontInfo> loadPaperFrontInfo(PaperInfo info,String userId);
-//	/**
-//	 * 查询统计[前台调用方法]
-//	 * @param info
-//	 * @return
-//	 */
-//	Long totalPaperFrontInfo(PaperInfo info);
-//	/**
-//	 * 试卷提交答案	[前台调用方法]
-//	 * @param limitTime			剩余时间[秒]
-//	 * @param chooseAnswers		选择题答案
-//	 * @param textAnswers		文字题答案
-//	 * @param model				提交模式
-//	 * @param paperId			试卷ID
-//	 * @param userId			用户ID
-//	 * @return
-//	 */
-//	Json submitPaper(Integer limitTime, String chooseAnswers,
-//			String textAnswers,Integer model, String paperId, String userId);
-//=======
-//	PaperPreview loadPaperInfo(String paperId);
-//	/**
-//	 * 加载试卷详细信息并且添加试卷记录[前台调用方法]
-//	 * @param paperId	试卷ID
-//	 * @param userId 	用户ID
-//	 * @return
-//	 */
-//	PaperPreview loadPaperPreviewAndAddRecord(String paperId,String userId);
-//	/**
-//	 * 加载试卷数据信息[前台调用方法]
-//	 * @param info
-//	 * @return
-//	 */
-//	List<PaperFrontInfo> loadPaperFrontInfo(PaperInfo info,String userId);
-//	/**
-//	 * 查询统计[前台调用方法]
-//	 * @param info
-//	 * @return
-//	 */
-//	Long totalPaperFrontInfo(PaperInfo info);
-//	/**
-//	 * 试卷提交答案	[前台调用方法]
-//	 * @param limitTime			剩余时间[秒]
-//	 * @param chooseAnswers		选择题答案
-//	 * @param textAnswers		文字题答案
-//	 * @param model				提交模式
-//	 * @param paperId			试卷ID
-//	 * @param userId			用户ID
-//	 * @return
-//	 */
-//	Json submitPaper(Integer limitTime, String chooseAnswers,
-//			String textAnswers,Integer model, String paperId, String userId);
-//	/**
-//	 * 加载试卷考试记录详细信息[前台调用方法]
-//	 * @param paperId	试卷ID
-//	 * @param userId	用户ID
-//	 * @return
-//	 */
-//	PaperFrontInfo loadPaperRecordDetail(String paperId,String userId);
-//>>>>>>> branch 'master' of git@github.com:jeasonyoung/examw-test.git
 }

@@ -38,9 +38,8 @@ public class PaperItemController {
 	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.VIEW})
 	@RequestMapping(value="/datagrid/{paperId}", method = RequestMethod.POST)
 	@ResponseBody
-	public DataGrid<StructureItemInfo> structureItemsdatagrid(@PathVariable String paperId,StructureItemInfo info){
+	public DataGrid<StructureItemInfo> structureItemsdatagrid(@PathVariable String paperId,String structureId, StructureItemInfo info){
 		if(logger.isDebugEnabled()) logger.debug("加载试卷结构下试题列表页面数据...");
-		if(info == null) info = new StructureItemInfo();
 		info.setPaperId(paperId);
 		return this.paperItemService.datagrid(info);
 	}
@@ -49,13 +48,13 @@ public class PaperItemController {
 	 * @param structureId
 	 * @return
 	 */
-	@RequiresPermissions({ModuleConstant.LIBRARY_SOURCE + ":" + Right.VIEW})
+	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.VIEW})
 	@RequestMapping(value="/order/{structureId}", method = RequestMethod.GET)
 	@ResponseBody
-	public String[] loadstructureItemsMaxOrderNo(@PathVariable String structureId){
-		Long max = this.paperItemService.loadStructureItemMaxOrderNo(structureId);
-		if(max == null) max = 0L;
-		return new String[]{ String.format("%02d", max+1)};
+	public Integer loadstructureItemsMaxOrderNo(@PathVariable String structureId){
+		Integer max = this.paperItemService.loadMaxOrderNo(structureId);
+		if(max == null) max = 0;
+		return max + 1;
 	}
 	/**
 	 * 更新试卷结构下试题数据。
@@ -66,15 +65,15 @@ public class PaperItemController {
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE})
-	@RequestMapping(value = "/update/{paperId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/update/{paperId}/{structureId}", method = RequestMethod.POST)
 	@ResponseBody
-	public Json structureItemsUpdate(@PathVariable String paperId,@RequestBody StructureItemInfo info){
+	public Json structureItemsUpdate(@PathVariable String paperId,@PathVariable String structureId,@RequestBody StructureItemInfo info){
 		if(logger.isDebugEnabled()) logger.debug(String.format("更新试卷［%s］结构下试题数据...", paperId));
 		Json result = new Json();
 		try {
-			if(info == null) info = new StructureItemInfo();
-			info.setPaperId(paperId);
-			result.setData(this.paperItemService.update(info));
+//			if(info == null) info = new StructureItemInfo();
+//			info.setPaperId(paperId);
+//			result.setData(this.paperItemService.update(info));
 			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);

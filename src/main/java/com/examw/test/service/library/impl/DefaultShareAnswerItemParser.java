@@ -21,7 +21,7 @@ public class DefaultShareAnswerItemParser extends DefaultShareTitleItemParser {
 	 * @see com.examw.test.service.library.impl.DefaultShareTitleItemParser#calculationCount(com.examw.test.model.library.BaseItemInfo)
 	 */
 	@Override
-	protected Integer calculationCount(BaseItemInfo<?> source) {
+	public Integer calculationCount(BaseItemInfo<?> source) {
 		if(source == null || source.getChildren() == null) return super.calculationCount(source);
 		int max_order = 0, count = 1;
 		for(BaseItemInfo<?> info : source.getChildren()){

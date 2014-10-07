@@ -18,7 +18,6 @@ import com.examw.model.Json;
 import com.examw.test.domain.records.ItemRecord;
 import com.examw.test.domain.records.Note;
 import com.examw.test.model.front.PaperFrontInfo;
-import com.examw.test.model.library.PaperInfo;
 import com.examw.test.model.records.NoteInfo;
 import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperService;
@@ -63,20 +62,20 @@ public class FrontDataController {
 	
 	
 	
-	/**
-	 * 加载产品下的试卷列表
-	 * @param productId
-	 * @param info
-	 * @return
-	 */
-	@RequestMapping(value = {"/papers"}, method = {RequestMethod.POST,RequestMethod.GET})
-	@ResponseBody
-	public Map<String,Object> loadPapers(String productId,PaperInfo info,String userId){
-		if(logger.isDebugEnabled()) logger.debug("试卷列表数据");
-		Map<String, Object> map = new HashMap<String, Object>();
-		if(StringUtils.isEmpty(productId)) return map;
-		//List<Subject> list = this.productService.loadSubjectList(productId);
-		
+//	/**
+//	 * 加载产品下的试卷列表
+//	 * @param productId
+//	 * @param info
+//	 * @return
+//	 */
+//	@RequestMapping(value = {"/papers"}, method = {RequestMethod.POST,RequestMethod.GET})
+//	@ResponseBody
+//	public Map<String,Object> loadPapers(String productId,PaperInfo info,String userId){
+//		if(logger.isDebugEnabled()) logger.debug("试卷列表数据");
+//		Map<String, Object> map = new HashMap<String, Object>();
+//		if(StringUtils.isEmpty(productId)) return map;
+//		//List<Subject> list = this.productService.loadSubjectList(productId);
+//		
 //		//科目集合
 //<<<<<<< HEAD
 //		map.put("SUBJECTLIST", this.subjectService.conversion(list));
@@ -94,8 +93,8 @@ public class FrontDataController {
 //		map.put("TOTAL",dg.getTotal());
 	//	map.put("PAPERLIST", this.paperService.loadPaperFrontInfo(info, userId));
 		//map.put("TOTAL",this.paperService.totalPaperFrontInfo(info));
-		return map;
-	}
+//		return map;
+	//}
 //	/**
 //	 * 加载试卷基本信息数据
 //	 * @param paperId
@@ -140,7 +139,6 @@ public class FrontDataController {
 		if(logger.isDebugEnabled()) logger.debug("试卷解析详情");
 		if(StringUtils.isEmpty(paperId)||StringUtils.isEmpty(userId)) return null;
 		//return this.paperService.loadPaperRecordDetail(paperId, userId);
-		///TODO::
 		return null;
 	}
 	/**

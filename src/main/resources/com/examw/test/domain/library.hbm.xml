@@ -56,6 +56,8 @@
 		<id name="id"  type="string"  length="64" />
 		<!-- 结构标题 -->
 		<property name="title" type="string" length="512" />
+		<!-- 描述信息 -->
+		<property name="description" type="string" length="512" />
 		<!-- 题型 -->
 		<property name="type" type="integer" />
 		<!-- 题目总数 -->
@@ -68,48 +70,26 @@
 		<property name="orderNo" type="integer" />
 		<!-- 所属试卷 -->
 		<many-to-one name="paper" column="paper_id" class="Paper" />
-		<!-- 结构下题目集合 -->
+		<!-- 结构下试题集合 -->
 		<set name="items" inverse="false" cascade="save-update" order-by="orderNo asc">
+		    <!-- 结构ID -->
 			<key column="structure_id" />
 			<one-to-many class="StructureItem"/>
 		</set>
 	</class>
-	<!-- 结构题目 -->
-	<class name="StructureItem" table="tbl_Examw_Test_Library_StructureItems">
-		<cache usage="read-write" />
-		<!-- 结构题目ID -->
-		<id name="id"  type="string"  length="64" />
-		<!-- 所属结构 -->
-		<many-to-one name="structure" column="structure_id" class="Structure" />
-		<!-- 结构题目序号 -->
-		<property name="serial" type="string" length="10" />
-		<!-- 所属题目  -->
-		<many-to-one name="item" column="item_id" class="Item" />
-		<!-- 结构题目分数 -->
-		<property name="score" type="big_decimal" />
-		<!-- 排序号 -->
-		<property name="orderNo" type="integer" />
-		<!-- 共享题集合 -->
-		<set name="shareItemScores" inverse="false" cascade="save-update">
-			<key column="structure_item_id" />
-			<one-to-many class="StructureShareItemScore"/>
-		</set>
-		<!-- 创建时间 -->
+	<!-- 试卷结构试题 -->
+	<class name="StructureItem" table="tbl_Examw_Test_Library_Structures_Items">
+	    <cache usage="read-write" />
+	    <composite-id>
+	        <!-- 试卷结构ID -->
+	        <key-many-to-one name="structure" class="Structure" column="structure_id" />
+	        <!-- 试题ID -->
+	        <key-many-to-one name="item" class="Item" column="item_id" />
+	    </composite-id>
+	    <!-- 排序号 -->
+	    <property name="orderNo" type="integer" />
+	    <!-- 创建时间 -->
 		<property name="createTime" column="create_time" type="timestamp" />
-	</class>
-	<!-- 结构共享题目 -->
-	<class name="StructureShareItemScore" table="tbl_Examw_Test_Library_StructureShareItemScores">
-		<cache usage="read-write" />
-		<!-- 共享题ID -->
-		<id name="id"  type="string"  length="64" />
-		<!-- 共享题序号 -->
-		<property name="serial" type="string" length="10" />
-		<!-- 所属结构题目 -->
-		<many-to-one name="structureItem" column="structure_item_id" class="StructureItem" />
-		<!-- 共享题分数 -->
-		<property name="score" type="big_decimal" />
-		<!-- 所属共享题目 -->
-		<many-to-one name="subItem" column="sub_item_id" class="Item" />
 	</class>
 	<!-- 题目 -->
 	<class name="Item" table="tbl_Examw_Test_Library_Items">
@@ -160,8 +140,8 @@
 			<key column="item_id" />
 			<many-to-many class="com.examw.test.domain.syllabus.Syllabus" column="syllabus_id" />
 		</set>
-		<!-- 所属试卷集合 -->
-		<set name="structureItems" inverse="true" lazy="true" order-by="createTime desc">
+		<!-- 所属试卷结构集合 -->
+		<set name="structures" inverse="true" order-by="createTime desc">
 			<key column="item_id" />
 			<one-to-many class="StructureItem"/>
 		</set>

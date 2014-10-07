@@ -1,128 +1,69 @@
 package com.examw.test.domain.library;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Set;
-
 /**
- * 结构下的题目。
- * @author yangyong.
- * @since 2014-08-04.
+ *  试卷结构下的试题。
+ * 
+ * @author yangyong
+ * @since 2014年9月27日
  */
-public class StructureItem implements Serializable {
+public class StructureItem implements Serializable,Comparable<StructureItem> {
 	private static final long serialVersionUID = 1L;
-	private String id,serial;
-	private BigDecimal score;
-	private Integer orderNo;
 	private Structure structure;
 	private Item item;
-	private Set<StructureShareItemScore> shareItemScores;
+	private Integer orderNo;
 	private Date createTime;
 	/**
-	 * 获取结构题目ID。
-	 * @return 结构题目ID。
+	 * 构造函数。
 	 */
-	public String getId() {
-		return id;
+	public StructureItem(){
+		this.setCreateTime(new Date());
 	}
 	/**
-	 * 设置结构题目ID。
-	 * @param id 
-	 *	 结构题目ID。
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-	/**
-	 * 获取结构题目序号。
-	 * @return 结构题目序号。
-	 */
-	public String getSerial() {
-		return serial;
-	}
-	/**
-	 * 设置结构题目序号。
-	 * @param serial 
-	 *	  结构题目序号。
-	 */
-	public void setSerial(String serial) {
-		this.serial = serial;
-	}
-	/**
-	 * 获取结构题目分数。
-	 * @return 结构题目分数。
-	 */
-	public BigDecimal getScore() {
-		return score;
-	}
-	/**
-	 * 设置结构题目分数。
-	 * @param score 
-	 *	结构题目分数。
-	 */
-	public void setScore(BigDecimal score) {
-		this.score = score;
-	}
-	/**
-	 * 获取排序号
-	 * @return 排序号
-	 */
-	public Integer getOrderNo() {
-		return orderNo;
-	}
-	/**
-	 * 设置排序号
-	 * @param orderNo 
-	 *	排序号
-	 */
-	public void setOrderNo(Integer orderNo) {
-		this.orderNo = orderNo;
-	}
-	/**
-	 * 获取所属结构。
-	 * @return 所属结构。
+	 * 获取试卷结构。
+	 * @return 试卷结构。
 	 */
 	public Structure getStructure() {
 		return structure;
 	}
 	/**
-	 * 设置所属结构。
+	 * 设置试卷结构。
 	 * @param structure 
-	 *	 所属结构。
+	 *	  试卷结构。
 	 */
 	public void setStructure(Structure structure) {
 		this.structure = structure;
 	}
 	/**
-	 * 获取所属题目。
-	 * @return 所属题目。
+	 * 获取试题。
+	 * @return 试题。
 	 */
 	public Item getItem() {
 		return item;
 	}
 	/**
-	 * 设置所属题目。
+	 * 设置试题。
 	 * @param item 
-	 *	所属题目。
+	 *	  试题。
 	 */
 	public void setItem(Item item) {
 		this.item = item;
 	}
 	/**
-	 * 获取共享题子题目分数集合。
-	 * @return 共享题子题目分数集合。
+	 * 获取排序号。
+	 * @return 排序号。
 	 */
-	public Set<StructureShareItemScore> getShareItemScores() {
-		return shareItemScores;
+	public Integer getOrderNo() {
+		return orderNo;
 	}
 	/**
-	 * 设置共享题子题目分数集合。
-	 * @param shareItemScores 
-	 *	共享题子题目分数集合。
+	 * 设置排序号。
+	 * @param orderNo 
+	 *	  排序号。
 	 */
-	public void setShareItemScores(Set<StructureShareItemScore> shareItemScores) {
-		this.shareItemScores = shareItemScores;
+	public void setOrderNo(Integer orderNo) {
+		this.orderNo = orderNo;
 	}
 	/**
 	 * 获取创建时间。
@@ -138,5 +79,53 @@ public class StructureItem implements Serializable {
 	 */
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+	/* 重构hasCode。
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((item == null) ? 0 : item.hashCode());
+		result = prime * result + ((structure == null) ? 0 : structure.hashCode());
+		return result;
+	}
+	/* 重构equals
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (this.getClass() != obj.getClass()) return false;
+		StructureItem other = (StructureItem) obj;
+		if (item == null) {
+			if (other.item != null) return false;
+		} else if (!item.equals(other.item)){
+			return false;
+		}
+		if (structure == null) {
+			if (other.structure != null) return false;
+		} else if (!structure.equals(other.structure)){
+			return false;
+		}
+		return true;
+	}
+	/*
+	 * 排序比较。
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(StructureItem o) {
+		if(this == o) return 0;
+		int index = this.getOrderNo() - o.getOrderNo();
+		if(index == 0){
+			index = this.getCreateTime().compareTo(o.getCreateTime());
+			if(index == 0){
+				index = this.hashCode() - o.hashCode();
+			}
+		}
+		return index;
 	}
 }
