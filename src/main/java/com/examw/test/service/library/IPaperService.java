@@ -1,7 +1,9 @@
 package com.examw.test.service.library;
 
+import java.util.Map;
+
 import com.examw.test.domain.library.Paper;
-import com.examw.test.model.library.PaperInfo; 
+import com.examw.test.model.library.PaperInfo;
 import com.examw.test.service.IBaseDataService;
 /**
  * 试卷服务接口。
@@ -45,4 +47,9 @@ public interface IPaperService extends IBaseDataService<PaperInfo> {
 	 * @return
 	 */
 	PaperInfo conversion(Paper paper);
+	/**
+	 * 试卷类型[add by FW 2014.09.28]
+	 * @return
+	 */
+	Map<String,String> loadPaperType();
 }

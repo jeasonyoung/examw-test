@@ -13,7 +13,7 @@
 		<!-- service -->
 		<import resource="spring-examw-test-service.xml" />
 		<!-- task -->
-		<import resource="spring-examw-test-scheduling.xml"/>
+		<!-- <import resource="spring-examw-test-scheduling.xml"/> -->
 		<!-- shiro -->
 		<import resource="spring-examw-test-shiro.xml" />
 </beans>

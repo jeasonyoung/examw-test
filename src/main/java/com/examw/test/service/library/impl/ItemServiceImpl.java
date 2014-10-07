@@ -299,9 +299,9 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		//所属地区
 		data.setArea(StringUtils.isEmpty(info.getAreaId()) ? null : this.areaDao.load(Area.class, info.getSourceId()));
 		
-		ItemParser parser = this.itemParsers.get(data.getType());
+		ItemParser parser = this.itemParsers.get(info.getType());
 		if(parser == null){
-			String err = String.format("未能找到题型［%d］的解析器！", data.getType());
+			String err = String.format("未能找到题型［%d］的解析器！", info.getType());
 			logger.error(err);
 			throw new RuntimeException(err);
 		}

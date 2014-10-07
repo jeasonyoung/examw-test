@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.examw.test.model.library.FrontPaperInfo;
 import com.examw.test.model.library.PaperPreview;
 import com.examw.test.model.products.FrontProductInfo;
+import com.examw.test.model.settings.AreaInfo;
 import com.examw.test.model.settings.ExamInfo;
 import com.examw.test.model.settings.FrontCategoryInfo;
 import com.examw.test.model.settings.SubjectInfo;
@@ -134,6 +135,18 @@ public class FrontController {
 		return this.frontProductService.loadProductSubjects(productId);
 	}
 	/**
+	 * 加载产品地区集合。[Add by FW 2014.09.28]
+	 * @param productId
+	 * 产品ID。
+	 * @return
+	 */
+	@RequestMapping(value = {"/products/{productId}/areas"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public List<AreaInfo> loadProductAreas(@PathVariable String productId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载产品[productId = %s]科目集合...", productId));
+		return this.frontProductService.loadProductAreas(productId);
+	}
+	/**
 	 * 加载产品下试卷摘要信息集合。
 	 * @param productId
 	 * @return
@@ -188,7 +201,7 @@ public class FrontController {
 	@RequestMapping(value = {"/syllabus/{syllabusId}/knowledges"}, method = {RequestMethod.GET})
 	@ResponseBody
 	public List<KnowledgeInfo> loadKnowledges(@PathVariable String syllabusId,String textBookId){
-		if(logger.isDebugEnabled()) logger.debug(String.format("加载知识点[subjectId = %1$s，textBookId = %2$s]信息...", syllabusId));
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载知识点[subjectId = %1$s，textBookId = %2$s]信息...", syllabusId,textBookId));
 		return this.knowledgeService.loadKnowledges(syllabusId, textBookId);
 	}
 	/**

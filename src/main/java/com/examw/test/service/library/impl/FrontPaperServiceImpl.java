@@ -2,6 +2,7 @@ package com.examw.test.service.library.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -142,5 +143,13 @@ public class FrontPaperServiceImpl implements IFrontPaperService  {
 		if(StringUtils.isEmpty(paperRelease.getContent())) throw new RuntimeException(String.format("试卷［%s］序列化内容丢失!", paperId));
 		return this.mapper.readValue(paperRelease.getContent(), PaperPreview.class);
 	}
-
+	/*
+	 * 加载试卷类型映射
+	 * @see com.examw.test.service.library.IFrontPaperService#loadPaperType()
+	 */
+	@Override
+	public Map<String, String> loadPaperType() {
+		if(logger.isDebugEnabled()) logger.debug("加载试卷类型映射");
+		return this.paperService.loadPaperType();
+	}
 }
