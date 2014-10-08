@@ -205,8 +205,8 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 			info.setStatus(PaperStatus.NONE.getValue());
 			data = new Paper();
 		} else {
-			if (data.getStatus() == Paper.STATUS_AUDIT) throw new RuntimeException("试卷已审核，不能被修改！");
-			if (data.getStatus() == Paper.STATUS_PUBLISH) throw new RuntimeException("试卷已发布，不能被修改！");
+			if (data.getStatus() == PaperStatus.AUDIT.getValue()) throw new RuntimeException("试卷已审核，不能被修改！");
+			if (data.getStatus() == PaperStatus.PUBLISH.getValue()) throw new RuntimeException("试卷已发布，不能被修改！");
 			info.setStatus(data.getStatus());
 			info.setCreateTime(data.getCreateTime());
 			info.setPublishTime(data.getPublishTime());

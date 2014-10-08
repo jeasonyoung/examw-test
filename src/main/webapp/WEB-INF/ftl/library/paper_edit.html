@@ -64,10 +64,11 @@ $(function(){
 	</div>
 	<div style="float:left;margin-top:5px;width:100%;">
 		<label style="margin-top:5px;width:75px;">试卷类型：</label>
-		<label style="padding-top:0px;"><input type="radio" name="type" value="${TYPE_REAL_VALUE}" />${TYPE_REAL_NAME}</label>
-		<label style="padding-top:0px;margin-left:15px;"><input type="radio" name="type" value="${TYPE_SIMU_VALUE}" checked="checked" />${TYPE_SIMU_NAME}</label>
-		<label style="padding-top:0px;margin-left:15px;"><input type="radio" name="type" value="${TYPE_FORECAST_VALUE}" />${TYPE_FORECAST_NAME}</label>
-		<label style="padding-top:0px;margin-left:15px;"><input type="radio" name="type" value="${TYPE_PRACTICE_VALUE}" />${TYPE_PRACTICE_NAME}</label>
+		<#list PaperTypeMaps?keys as key>
+			<label style="padding-top:0px;<#if (key_index > 0)>margin-left:15px;</#if> ">
+				<input type="radio" name="type" value="${key}"  <#if (key_index == 0)> checked="checked" </#if> />${PaperTypeMaps[key]}
+			</label>
+		</#list>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<div style="float:left;">

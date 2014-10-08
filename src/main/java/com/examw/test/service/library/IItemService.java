@@ -29,14 +29,6 @@ public interface IItemService extends IBaseDataService<ItemInfo> {
 	 */
 	String loadStatusName(Integer status);
 	/**
-	 * 加载类型名称。
-	 * @param opt
-	 * 类型值。
-	 * @return
-	 * 类型名称。
-	 */
-	String loadOptName(Integer opt);
-	/**
 	 * 加载判断题答案名称。
 	 * @param answer
 	 * 答案值。

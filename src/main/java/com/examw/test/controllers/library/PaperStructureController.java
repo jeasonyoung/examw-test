@@ -21,7 +21,7 @@ import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperService;
 import com.examw.test.service.library.IPaperStructureService;
 import com.examw.test.service.library.PaperStatus;
-import com.examw.test.support.ItemTypeUtils;
+import com.examw.test.support.PaperItemUtils;
 /**
  * 试卷结构控制器。
  * 
@@ -89,7 +89,7 @@ public class PaperStructureController {
 	public String structureEdit(@PathVariable String paperId,Model model){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［paperId = %s］结构编辑页面...", paperId));
 		model.addAttribute("CURRENT_PAPER_ID", paperId);
-		ItemTypeUtils.addAllItemType(this.itemService, model);
+		PaperItemUtils.addAllItemType(this.itemService, model);
 		
 		return "library/paper_structure_edit";
 	}

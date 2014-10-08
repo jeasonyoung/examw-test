@@ -1,7 +1,5 @@
 package com.examw.test.service.library;
 
-import com.examw.test.domain.library.Paper;
-
 /**
  * 试卷类型枚举
  * @author yangyong
@@ -11,19 +9,20 @@ public enum PaperType {
 	/**
 	 * 真题。
 	 */
-	REAL(Paper.TYPE_REAL),
+	REAL(0x01),
 	/**
 	 * 模拟题。
 	 */
-	SIMU(Paper.TYPE_SIMU),
+	SIMU(0x02),
 	/**
 	 * 预测题。
 	 */
-	FORECAS(Paper.TYPE_FORECAST),
+	FORECAS(0x03),
 	/**
 	 * 练习题。
 	 */
-	PRACTICE(Paper.TYPE_PRACTICE);
+	PRACTICE(0x04);
+	
 	private int value;
 	//构造函数。
 	private PaperType(int value){
@@ -46,13 +45,13 @@ public enum PaperType {
 	public static PaperType convert(Integer value){
 		switch(value){
 			//真题
-			case Paper.TYPE_REAL : return PaperType.REAL;
+			case 0x01 : return PaperType.REAL;
 			//模拟题
-			case Paper.TYPE_SIMU: return PaperType.SIMU;
+			case 0x02: return PaperType.SIMU;
 			//预测题
-			case Paper.TYPE_FORECAST: return PaperType.FORECAS;
+			case 0x03: return PaperType.FORECAS;
 			//练习题
-			case Paper.TYPE_PRACTICE: return PaperType.PRACTICE;
+			case 0x04: return PaperType.PRACTICE;
 		}
 		throw new RuntimeException("不存在［value="+value+"］！");
 	}

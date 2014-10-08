@@ -11,6 +11,7 @@ import com.examw.test.dao.impl.BaseDaoImpl;
 import com.examw.test.dao.library.IPaperDao;
 import com.examw.test.domain.library.Paper;
 import com.examw.test.model.library.PaperInfo;
+import com.examw.test.service.library.PaperStatus;
 
 /**
  * 试卷数据接口实现类。
@@ -107,7 +108,7 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 	public void delete(Paper data) {
 		if(logger.isDebugEnabled()) logger.debug("删除数据...");
 		if(data == null) return;
-		if(!StringUtils.isEmpty(data.getStatus()) && (data.getStatus() != Paper.STATUS_NONE)){
+		if(!StringUtils.isEmpty(data.getStatus()) && (data.getStatus() != PaperStatus.NONE.getValue())){
 			String msg = "数据［"+data.getId() +","+ data.getName()+"］已被审核或发布不允许删除！";
 			if(logger.isDebugEnabled()) logger.debug(msg);
 			throw new RuntimeException(msg);
@@ -122,7 +123,7 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 	public List<Paper> loadAllAudit(Integer count) {
 		final String hql = "from Paper p where p.status = :status order by p.lastTime desc,p.createTime desc";
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("status", Paper.STATUS_AUDIT);
+		parameters.put("status", PaperStatus.AUDIT.getValue());
 		return this.find(hql, parameters, null, count);
 	}
 	/*
@@ -133,7 +134,7 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 	public Long loadAllAuditCount() {
 		final String hql = "select count(*) from Paper p where p.status = :status ";
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("status", Paper.STATUS_AUDIT);
+		parameters.put("status", PaperStatus.AUDIT.getValue());
 		Object obj = this.uniqueResult(hql, parameters);
 		return obj == null ? null : (long)obj;
 	}

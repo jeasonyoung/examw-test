@@ -142,15 +142,6 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		return this.statusMap.get(status);
 	}
 	/*
-	 * 加载试卷类型名称。
-	 * @see com.examw.test.service.library.IItemService#loadOptName(java.lang.Integer)
-	 */
-	@Override
-	public String loadOptName(Integer opt) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷类型［opt = %d］名称...", opt));
-		return this.paperService.loadTypeName(opt);
-	}
-	/*
 	 * 加载判断题答案名称。
 	 * @see com.examw.test.service.library.IItemService#loadAnswerJudgeName(java.lang.Integer)
 	 */
@@ -238,7 +229,7 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		parser.conversion(source, target);
 		if(target.getType() != null) target.setTypeName(this.loadTypeName(target.getType()));
 		if(target.getStatus() != null) target.setStatusName(this.loadStatusName(target.getStatus()));
-		if(target.getOpt() != null) target.setOptName(this.loadOptName(target.getOpt()));
+		if(target.getOpt() != null) target.setOptName(this.paperService.loadTypeName(target.getOpt()));
 	}
 	/*
 	 * 查询数据统计。
@@ -267,7 +258,6 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 	public Item updateItem(BaseItemInfo<?> info) {
 		if(logger.isDebugEnabled()) logger.debug("更新题目...");
 		if(info == null) return null;
-		boolean isAdded = false;
 		Item data = StringUtils.isEmpty(info.getId()) ? null : this.itemDao.load(Item.class, info.getId());
 		String checkCode = this.itemDuplicateCheck.computeCheckCode(info);
 		if(StringUtils.isEmpty(checkCode)){
@@ -279,14 +269,14 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		if(data != null && data.getStatus() == ItemStatus.AUDIT.getValue()){
 			return data;
 		}
-		if(isAdded = (data == null)){
+		if(data == null){
 			if(StringUtils.isEmpty(info.getId())) info.setId(UUID.randomUUID().toString());
 			info.setCreateTime(new Date());
 			info.setStatus(ItemStatus.NONE.getValue());
 			data = new Item();
-		}
-		if(!isAdded){
+		}else {
 			info.setId(data.getId());
+			info.setStatus(data.getStatus() == null ? ItemStatus.NONE.getValue() : data.getStatus());
 			info.setCreateTime(data.getCreateTime());
 			this.itemDao.merge(data);
 		}
@@ -297,7 +287,7 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		//所属来源
 		data.setSource(StringUtils.isEmpty(info.getSourceId()) ?  null : this.sourceDao.load(Source.class, info.getSourceId()));
 		//所属地区
-		data.setArea(StringUtils.isEmpty(info.getAreaId()) ? null : this.areaDao.load(Area.class, info.getSourceId()));
+		data.setArea(StringUtils.isEmpty(info.getAreaId()) ? null : this.areaDao.load(Area.class, info.getAreaId()));
 		
 		ItemParser parser = this.itemParsers.get(info.getType());
 		if(parser == null){

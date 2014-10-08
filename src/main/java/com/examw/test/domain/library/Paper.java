@@ -21,35 +21,7 @@ public class Paper implements Serializable {
 	private Source source;
 	private Area area;
 	private Date createTime,lastTime,publishTime;
-	/**
-	 * 类型－真题。
-	 */
-	public static final int TYPE_REAL = 1;
-	/**
-	 * 类型－模拟题。
-	 */
-	public static final int TYPE_SIMU = 2;
-	/**
-	 * 类型－预测题。
-	 */
-	public static final int TYPE_FORECAST = 3;
-	/**
-	 * 类型－练习题。
-	 */
-	public static final int TYPE_PRACTICE = 4;
-	 
-	/**
-	 * 状态－未审核。
-	 */
-	public static final int STATUS_NONE = 0;
-	/**
-	 * 状态－已审核。
-	 */
-	public static final int STATUS_AUDIT = 1;
-	/**
-	 * 状态－已发布。
-	 */
-	public static final int STATUS_PUBLISH = 2;
+	
 	/**
 	 * 获取试卷ID。
 	 * @return 试卷ID。

@@ -1,7 +1,7 @@
 <#--试题选项页面-->
-<#assign module = "library_item_${CURRENT_ITEM_TYPE_VALUE}" />
+<#assign module = "library_item_${current_item_type_value}" />
 <form id="${module}_edit_opt_form"  method="POST" style="padding:1px;">
-	<input type="hidden" name="opt_id" value="${CURRENT_ID}"/>
+	<input type="hidden" name="opt_id" value="${current_id}"/>
 	<div style="float:left;margin-left:5px;">
 		<textarea style="float:left" name="opt_content" class="easyui-ueditor"  data-options="required:true,width:520" rows="5" cols="20" />
 	</div>

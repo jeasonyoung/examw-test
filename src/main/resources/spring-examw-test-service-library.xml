@@ -10,58 +10,6 @@
 		<!-- 来源数据接口 -->
 		<property name="sourceDao" ref="sourceDao" />
 	</bean>
-	<!-- 试卷类型集合 -->
-	<util:map id="mapPaperTypes" map-class="java.util.HashMap">
-		<entry key="1" value="真题" />
-		<entry key="2" value="模拟题" />
-		<entry key="3" value="预测题" />
-		<entry key="4" value="练习题" />
-	</util:map>
-	<!-- 试题题型集合 -->
-	<util:map id="mapItemTypes" map-class="java.util.HashMap">
-	    <entry key="1"><!-- 单选题 -->
-	        <bean class="com.examw.test.service.library.impl.DefaultItemParser">
-	            <constructor-arg value="单选" />
-	            <property name="itemDao" ref="itemDao" />
-	        </bean>
-	    </entry>
-	    <entry key="2"><!-- 多选题 -->
-	        <bean class="com.examw.test.service.library.impl.DefaultItemParser">
-	            <constructor-arg value="多选" />
-	            <property name="itemDao" ref="itemDao" />
-	        </bean>
-	    </entry>
-	    <entry key="3"><!-- 不定向选题 -->
-	        <bean class="com.examw.test.service.library.impl.DefaultItemParser">
-	            <constructor-arg value="不定向选" />
-	            <property name="itemDao" ref="itemDao" />
-	        </bean>
-	    </entry>
-	    <entry key="4"><!-- 判断题 -->
-	        <bean class="com.examw.test.service.library.impl.DefaultItemParser">
-	            <constructor-arg value="判断题" />
-	            <property name="itemDao" ref="itemDao" />
-	        </bean>
-	    </entry>
-	    <entry key="5"><!-- 问答题 -->
-	        <bean class="com.examw.test.service.library.impl.DefaultItemParser">
-	            <constructor-arg value="问答题" />
-	            <property name="itemDao" ref="itemDao" />
-	        </bean>
-	    </entry>
-	    <entry key="6"><!-- 共享题干题 -->
-	        <bean class="com.examw.test.service.library.impl.DefaultShareTitleItemParser">
-	            <constructor-arg value="共享题干题" />
-	            <property name="itemDao" ref="itemDao" />
-	        </bean>
-	    </entry>
-	    <entry key="7"><!-- 共享答案题 -->
-	        <bean class="com.examw.test.service.library.impl.DefaultShareAnswerItemParser">
-	            <constructor-arg value="共享答案题" />
-	            <property name="itemDao" ref="itemDao" />
-	        </bean>
-	    </entry>
-	</util:map>
 	<!-- 试卷服务 -->
 	<bean id="paperService" class="com.examw.test.service.library.impl.PaperServiceImpl">
 		<!-- 试卷数据接口 -->
@@ -75,7 +23,14 @@
 		<!-- 所属地区数据接口 -->
 		<property name="areaDao" ref="areaDao" />
 		<!-- 试卷类型 -->
-		<property name="typeMap" ref="mapPaperTypes"/>
+		<property name="typeMap">
+		    <map>
+		        <entry key="1" value="真题" />
+				<entry key="2" value="模拟题" />
+				<entry key="3" value="预测题" />
+				<entry key="4" value="练习题" />
+		    </map>
+		</property>
 		<!-- 试卷状态 -->
 		<property name="statusMap">
 			<map>
@@ -109,12 +64,61 @@
 		<property name="subjectDao" ref="subjectDao" />
 		<!-- 来源数据接口 -->
 		<property name="sourceDao" ref="sourceDao" />
+		<!-- 所属地区数据接口 -->
+		<property name="areaDao" ref="areaDao" />
 		<!-- 校验码生成接口 -->
 		<property name="itemDuplicateCheck">
 		    <bean class="com.examw.test.service.library.impl.ItemDuplicateCheckImpl" />
 		</property>
 		<!-- 题型数据接口 -->
-		<property name="itemParsers" ref="mapItemTypes" />
+		<property name="itemParsers">
+		    <map>
+		        <entry key="1"><!-- 单选题 -->
+			        <bean class="com.examw.test.service.library.impl.DefaultItemParser">
+			            <constructor-arg value="单选" />
+			            <property name="itemDao" ref="itemDao" />
+			        </bean>
+			    </entry>
+			    <entry key="2"><!-- 多选题 -->
+			        <bean class="com.examw.test.service.library.impl.DefaultItemParser">
+			            <constructor-arg value="多选" />
+			            <property name="itemDao" ref="itemDao" />
+			        </bean>
+			    </entry>
+			    <entry key="3"><!-- 不定向选题 -->
+			        <bean class="com.examw.test.service.library.impl.DefaultItemParser">
+			            <constructor-arg value="不定向选" />
+			            <property name="itemDao" ref="itemDao" />
+			        </bean>
+			    </entry>
+			    <entry key="4"><!-- 判断题 -->
+			        <bean class="com.examw.test.service.library.impl.DefaultItemParser">
+			            <constructor-arg value="判断题" />
+			            <property name="itemDao" ref="itemDao" />
+			        </bean>
+			    </entry>
+			    <entry key="5"><!-- 问答题 -->
+			        <bean class="com.examw.test.service.library.impl.DefaultItemParser">
+			            <constructor-arg value="问答题" />
+			            <property name="itemDao" ref="itemDao" />
+			        </bean>
+			    </entry>
+			    <entry key="6"><!-- 共享题干题 -->
+			        <bean class="com.examw.test.service.library.impl.DefaultShareTitleItemParser">
+			            <constructor-arg value="共享题干题" />
+			            <property name="itemDao" ref="itemDao" />
+			            <property name="itemService" ref="itemService" />
+			        </bean>
+			    </entry>
+			    <entry key="7"><!-- 共享答案题 -->
+			        <bean class="com.examw.test.service.library.impl.DefaultShareAnswerItemParser">
+			            <constructor-arg value="共享答案题" />
+			            <property name="itemDao" ref="itemDao" />
+			            <property name="itemService" ref="itemService" />
+			        </bean>
+			    </entry>
+		    </map>
+		</property>
 		<!-- 题目状态 -->
 		<property name="statusMap">
 			<map>

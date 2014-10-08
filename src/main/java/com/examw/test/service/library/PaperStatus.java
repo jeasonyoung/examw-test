@@ -1,7 +1,5 @@
 package com.examw.test.service.library;
 
-import com.examw.test.domain.library.Paper;
-
 /**
  * 试卷状态枚举类。
  * @author yangyong.
@@ -11,15 +9,16 @@ public enum PaperStatus {
 	/**
 	 * 未审核。
 	 */
-	NONE(Paper.STATUS_NONE),
+	NONE(0x00),
 	/**
 	 * 已审核。
 	 */
-	AUDIT(Paper.STATUS_AUDIT),
+	AUDIT(0x01),
 	/**
 	 * 已发布。
 	 */
-	PUBLISH(Paper.STATUS_PUBLISH);
+	PUBLISH(0x02);
+	
 	private int value;
 	//构造函数。
 	private PaperStatus(int value){
@@ -42,10 +41,10 @@ public enum PaperStatus {
 	public static PaperStatus convert(Integer value){
 		PaperStatus result = PaperStatus.NONE;
 		switch(value){
-			case Paper.STATUS_AUDIT: 
+			case 0x01: 
 				result = PaperStatus.AUDIT;
 			break;
-			case Paper.STATUS_PUBLISH:
+			case 0x02:
 				result = PaperStatus.PUBLISH;
 			break;
 			default:break;

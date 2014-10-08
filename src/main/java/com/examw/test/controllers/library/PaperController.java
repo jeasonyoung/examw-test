@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.examw.aware.IUserAware;
 import com.examw.model.DataGrid;
 import com.examw.model.Json; 
-import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.library.PaperInfo; 
 import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperService; 
 import com.examw.test.service.library.PaperStatus;
+import com.examw.test.support.PaperItemUtils;
 /**
  * 试卷控制器。
  * 
@@ -130,14 +130,7 @@ public class PaperController implements IUserAware {
 		
 		model.addAttribute("CURRENT_YEAR", new SimpleDateFormat("yyyy").format(new Date()));
 		
-		model.addAttribute("TYPE_REAL_VALUE", Paper.TYPE_REAL);
-		model.addAttribute("TYPE_REAL_NAME", this.paperService.loadTypeName(Paper.TYPE_REAL));
-		model.addAttribute("TYPE_SIMU_VALUE", Paper.TYPE_SIMU);
-		model.addAttribute("TYPE_SIMU_NAME", this.paperService.loadTypeName(Paper.TYPE_SIMU));
-		model.addAttribute("TYPE_FORECAST_VALUE", Paper.TYPE_FORECAST);
-		model.addAttribute("TYPE_FORECAST_NAME", this.paperService.loadTypeName(Paper.TYPE_FORECAST));
-		model.addAttribute("TYPE_PRACTICE_VALUE", Paper.TYPE_PRACTICE);
-		model.addAttribute("TYPE_PRACTICE_NAME", this.paperService.loadTypeName(Paper.TYPE_PRACTICE));
+		PaperItemUtils.addPaperType(this.paperService, model);
 		
 		return "library/paper_edit";
 	}
@@ -230,5 +223,4 @@ public class PaperController implements IUserAware {
 		}
 		return result;
 	}
-	
 }

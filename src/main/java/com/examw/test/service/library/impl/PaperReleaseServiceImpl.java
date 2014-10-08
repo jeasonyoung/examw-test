@@ -14,6 +14,7 @@ import com.examw.test.domain.library.PaperRelease;
 import com.examw.test.model.library.PaperPreview;
 import com.examw.test.service.library.IPaperPreviewService;
 import com.examw.test.service.library.IPaperReleaseService;
+import com.examw.test.service.library.PaperStatus;
 /**
  * 试卷发布服务接口实现类。
  * 
@@ -143,6 +144,6 @@ public class PaperReleaseServiceImpl implements IPaperReleaseService {
 		paperRelease.setTotal(paperPreview.getTotal());
 		paperRelease.setContent(this.mapper.writeValueAsString(paperPreview));
 		if(isAdded) this.paperReleaseDao.save(paperRelease);
-		paper.setStatus(Paper.STATUS_PUBLISH);
+		paper.setStatus(PaperStatus.PUBLISH.getValue());
 	}
 }

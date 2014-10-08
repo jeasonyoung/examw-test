@@ -180,18 +180,16 @@ $(function(){
 	</@shiro.hasPermission>
 	//edit_window
 	function edit_window(title,index,row,type){
-		var exam_id = current_exam_id;
-		var opts = true;
+		var examId = current_exam_id;
 		if(row){
-			if(row.examId)exam_id = row.examId;
+			if(row.examId)examId = row.examId;
 			if(row.type)type = row.type;
-			if(row.status) opts = (row.status == ${ITEM_STATUS_NONE_VALUE});
 		}
 		var d = $("<div/>").dialog({
 			title:title,
 			width:800,
 			height:600,
-			href:"<@s.url '/library/item/edit/'/>" + type + "?examId=" + exam_id + "&opts=" + opts,
+			href:"<@s.url '/library/item/edit/'/>" + type + "?examId=" + examId,
 			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
@@ -317,16 +315,9 @@ $(function(){
 			<@shiro.hasPermission name="${PER_UPDATE}">
 			<a href="#" class="easyui-menubutton" data-options="iconCls:'icon-add',menu:'#${dg}_toobar_menu',plain:true" style="float:left;">新增</a>
 			<div id="${dg}_toobar_menu" style="width:120p;">
-				<div onclick="${dg}_add(this)" value="${TYPE_SINGLE_VALUE}">${TYPE_SINGLE_NAME}</div>
-				<div onclick="${dg}_add(this)" value="${TYPE_MULTY_VALUE}">${TYPE_MULTY_NAME}</div>
-				<div onclick="${dg}_add(this)" value="${TYPE_UNCERTAIN_VALUE}">${TYPE_UNCERTAIN_NAME}</div>
-				<div class="menu-sep"></div>
-				<div onclick="${dg}_add(this)" value="${TYPE_JUDGE_VALUE}">${TYPE_JUDGE_NAME}</div>
-				<div class="menu-sep"></div>
-				<div onclick="${dg}_add(this)" value="${TYPE_QANDA_VALUE}">${TYPE_QANDA_NAME}</div>
-				<div class="menu-sep"></div>
-				<div onclick="${dg}_add(this)" value="${TYPE_SHARE_TITLE_VALUE}">${TYPE_SHARE_TITLE_NAME}</div>
-				<div onclick="${dg}_add(this)" value="${TYPE_SHARE_ANSWER_VALUE}">${TYPE_SHARE_ANSWER_NAME}</div>
+				<#list ItemTypeMaps?keys as key>
+					 <div onclick="${dg}_add(this)" value="${key}">${ItemTypeMaps[key]}</div>
+				</#list>
 			</div>
 			</@shiro.hasPermission>
 			<span>|</span>

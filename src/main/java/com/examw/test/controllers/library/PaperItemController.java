@@ -70,10 +70,10 @@ public class PaperItemController {
 	public Json structureItemsUpdate(@PathVariable String paperId,@PathVariable String structureId,@RequestBody StructureItemInfo info){
 		if(logger.isDebugEnabled()) logger.debug(String.format("更新试卷［%s］结构下试题数据...", paperId));
 		Json result = new Json();
-		try {
-//			if(info == null) info = new StructureItemInfo();
-//			info.setPaperId(paperId);
-//			result.setData(this.paperItemService.update(info));
+		try { 
+			info.setPaperId(paperId);
+			info.setStructureId(structureId);
+			result.setData(this.paperItemService.update(info));
 			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);
