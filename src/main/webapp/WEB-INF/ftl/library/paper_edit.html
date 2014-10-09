@@ -9,9 +9,7 @@ $(function(){
 	var exam_tree = $("#${form} input[name='examId']").combotree({
 		url:"<@s.url '/settings/category/exams-tree'/>",
 		required:true,
-		onLoadError:function(e){
-				<@error_dialog "e"/>
-		},
+		onLoadError:function(e){ <@error_dialog "e"/> },
 		onChange:function(n,o){
 			if(subject_cbb){
 				subject_cbb.combobox("clear");
@@ -25,27 +23,19 @@ $(function(){
 	});
 	//subject-cbb
 	var subject_cbb = $("#${form} input[name='subjectId']").combobox({
-		url:"<@s.url '/settings/subject/all'/>?examId=${CURRENT_EXAM_ID}",
-		required:true,
-		valueField:"id",
-		textField:"name",
+		url:"<@s.url '/settings/subject/all'/>?examId=${current_exam_id}",
+		required:true, valueField:"id",textField:"name",
 		onLoadError:function(e){
 			<@error_dialog 'e'/>
 		}
 	});
 	//area-cbb
 	var area_cbb = $("#${form} input[name='areaId']").combobox({
-		url:"<@s.url '/settings/exam/areas'/>?examId=${CURRENT_EXAM_ID}",
-		valueField:"id",
-		textField:"name",
-		onLoadError:function(e){
-			<@error_dialog "e"/>
-		},
+		url:"<@s.url '/settings/exam/areas'/>?examId=${current_exam_id}",
+		valueField:"id",textField:"name",
+		onLoadError:function(e){ <@error_dialog "e"/> },
 		icons:[{
-			iconCls:"icon-clear",
-			handler:function(e){
-				$(e.data.target).combobox("clear");
-			}
+			iconCls:"icon-clear",handler:function(e){ $(e.data.target).combobox("clear");}
 		}]
 	});
 });
@@ -82,7 +72,7 @@ $(function(){
 		</div>
 		<div style="float:left;margin-left:10px;">
 			<label>使用年份：</label>
-			<input name="year" class="easyui-numberbox" data-options="min:0,value:${CURRENT_YEAR}" style="text-align:right;width:40px;"/>
+			<input name="year" class="easyui-numberbox" data-options="min:0,value:${current_year}" style="text-align:right;width:40px;"/>
 		</div>
 		<div style="float:left;margin-left:10px;">
 			<label>价格(考试币)：</label>
@@ -94,16 +84,10 @@ $(function(){
 			<label style="width:75px;">试卷来源：</label>
 			<input name="sourceId" class="easyui-combobox" data-options="
 				url:'<@s.url '/library/source/all'/>',
-				valueField:'id',
-				textField:'name',
-				onLoadError:function(e){
-					<@error_dialog 'e'/>
-				},
+				valueField:'id',textField:'name',
+				onLoadError:function(e){ <@error_dialog 'e'/> },
 				icons:[{
-					iconCls:'icon-clear',
-					handler:function(e){ 
-						$(e.data.target).combobox('clear');
-					}
+					iconCls:'icon-clear',handler:function(e){ $(e.data.target).combobox('clear');}
 			  }]" style="width:228px;"/>
 		</div>
 		<div style="float:left;margin-left:5px;">

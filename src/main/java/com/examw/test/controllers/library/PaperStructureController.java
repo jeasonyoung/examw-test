@@ -15,12 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.model.Json;
 import com.examw.test.domain.security.Right;
-import com.examw.test.model.library.PaperInfo;
 import com.examw.test.model.library.StructureInfo;
 import com.examw.test.service.library.IItemService;
-import com.examw.test.service.library.IPaperService;
 import com.examw.test.service.library.IPaperStructureService;
-import com.examw.test.service.library.PaperStatus;
 import com.examw.test.support.PaperItemUtils;
 /**
  * 试卷结构控制器。
@@ -32,9 +29,6 @@ import com.examw.test.support.PaperItemUtils;
 @RequestMapping(value = "/library/paper/structure")
 public class PaperStructureController {
 	private static final Logger logger = Logger.getLogger(PaperStructureController.class);
-	//注入试卷服务。
-	@Resource
-	private IPaperService paperService;
 	//注入试卷结构服务。
 	@Resource
 	private IPaperStructureService paperStructureService;
@@ -62,17 +56,8 @@ public class PaperStructureController {
 	@RequestMapping(value="/list/{paperId}", method = RequestMethod.GET)
 	public String structureList(@PathVariable String paperId,Model model){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［paperId = %s］结构列表页面...", paperId));
-		
-		model.addAttribute("CURRENT_PAPER_ID", paperId);
-		PaperInfo paper = this.paperService.conversion(this.paperService.loadPaper(paperId));
-		
- 		model.addAttribute("CURRENT_EXAM_ID", paper == null ? "" : paper.getExamId());
-		model.addAttribute("CURRENT_SUBJECT_ID", paper == null ? "" : paper.getSubjectId());
-		model.addAttribute("CURRENT_PAGE_TYPE_VALUE", paper == null ? "" : paper.getType());
-		model.addAttribute("CURRENT_PAGE_STATUS_VALUE", paper == null ? "" : paper.getStatus());
-		model.addAttribute("CURRENT_PAGE_SOURCE_ID", paper == null ? "" : paper.getSourceId());
 
-		model.addAttribute("PAGE_STATUS_NONE_VALUE", PaperStatus.NONE.getValue());
+		model.addAttribute("current_paper_id", paperId);
 		
 		model.addAttribute("PER_UPDATE", ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE);
 		model.addAttribute("PER_DELETE", ModuleConstant.LIBRARY_PAPER + ":" + Right.DELETE);
@@ -85,10 +70,9 @@ public class PaperStructureController {
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE})
-	@RequestMapping(value="/edit/{paperId}", method = RequestMethod.GET)
-	public String structureEdit(@PathVariable String paperId,Model model){
-		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［paperId = %s］结构编辑页面...", paperId));
-		model.addAttribute("CURRENT_PAPER_ID", paperId);
+	@RequestMapping(value="/edit", method = RequestMethod.GET)
+	public String structureEdit(Model model){
+		if(logger.isDebugEnabled()) logger.debug("加载试卷结构编辑页面...");
 		PaperItemUtils.addAllItemType(this.itemService, model);
 		
 		return "library/paper_structure_edit";

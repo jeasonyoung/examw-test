@@ -10,12 +10,8 @@ $(function(){
 	var exam_tree = $("#${module}_exam_tree").tree({
 		url:"<@s.url '/settings/category/subject-tree'/>",
 		lines:true,
-		onLoadError:function(e){
-			<@error_dialog "e"/>
-		},
-		onBeforeLoad:function(){
-			current_exam_id = current_subject_id = "";
-		},
+		onLoadError:function(e){<@error_dialog "e"/>},
+		onBeforeLoad:function(){current_exam_id = current_subject_id = "";},
 		onClick:function(node){
 			current_exam_id = current_subject_id = "";
 			if(node.attributes.type =="subject"){
@@ -28,121 +24,64 @@ $(function(){
 			${dg}_search();
 		}
 	});
-	//dg
+	//papers list
 	var dg = $("#${dg}").datagrid({
 		url:"<@s.url '/library/paper/datagrid'/>",
-		fit:true,
-		fitColumns:true,
-		rownumbers:true,
-		pagination:true,
-		pagePosition:"bottom",
-		pageSize:20,
-		pageList:[20,30,40],
-		border:true,
-		striped:true,
-		idField:"id",
-		sortName:"createTime",
-		sortOrder:"desc",
+		fit:true,fitColumns:true,rownumbers:true,border:true,striped:true,
+		pagination:true,pagePosition:"bottom",pageSize:20,pageList:[20,30,40],
+		idField:"id",sortName:"createTime",sortOrder:"desc",
 		columns:[[{
-			field:"id",
-			checkbox:true
-		},{
-			title:"所属考试",
-			field:"examName",
-			width:30,
-			align:"left",
-			sortable:true
-		},{
-			title:"所属科目",
-			field:"subjectName",
-			width:30,
-			align:"left",
-			sortable:true
-		},{
-			title:"试卷名称",
-			field:"name",
-			width:50,
-			align:"left",
-			sortable:true
-		},{
-			title:"类型",
-			field:"typeName",
-			width:15,
-			align:"center",
-			sortable:true
-		},{
-			title:"创建时间",
-			field:"createTime",
-			width:18,
-			align:"center",
-			sortable:true
-		},{
-			title:"状态",
-			field:"statusName",
-			width:15,
-			align:"center",
-			sortable:true
-		},{
-			title:"来源",
-			field:"sourceName",
-			width:25,
-			align:"left",
-			sortable:true
-		},{
-			title:"操作",
-			field:"opt",
-			width:15,
-			align:"center",
-			formatter:function(value,row,index){
-				return "<a href='#' onclick='${dg}_paper_structure(\""+ row["id"] +"\",\"" + row["name"] +"\")'>试卷结构</a>";
-			}
-		},{
-			title:"预览",
-			field:"preview",
-			width:10,
-			align:"center",
-			formatter:function(value,row,index){
-				return "<a href='#' onclick='${dg}_paper_preview(\""+row["id"] +"\",\"" +row["status"]+ "\");'>预览</a>";
-			}
-		},{
-			title:"操作者",
-			field:"userName",
-			width:14,
-			align:"left",
-			sortable:true
-		}]],
+			    field:"id",checkbox:true
+			},{
+				title:"所属考试",field:"examName",width:30,align:"left",sortable:true
+			},{
+				title:"所属科目",field:"subjectName",width:30,align:"left",sortable:true
+			},{
+				title:"试卷名称",field:"name",width:50,align:"left",sortable:true
+			},{
+				title:"类型",field:"typeName",width:15,align:"center",sortable:true
+			},{
+				title:"创建时间",field:"createTime",width:18,align:"center",sortable:true
+			},{
+				title:"状态",field:"statusName",width:15,align:"center",sortable:true
+			},{
+				title:"来源",field:"sourceName",width:25,align:"left",sortable:true
+			},{
+				title:"操作",field:"opt",width:15,align:"center",
+				formatter:function(value,row,index){
+					return "<a href='#' onclick='${dg}_paper_structure(\""+ row["id"] +"\",\"" + row["name"] +"\")'>试卷结构</a>";
+				}
+			},{
+				title:"预览",field:"preview",width:10,align:"center",
+			    formatter:function(value,row,index){
+					return "<a href='#' onclick='${dg}_paper_preview(\""+row["id"] +"\",\"" +row["status"]+ "\");'>预览</a>";
+				}
+			},{
+				title:"操作者",field:"userName",width:14,align:"left",sortable:true
+			}]],
 		toolbar:"#${dg}_toobar",
-		onLoadError:function(e){
-			<@error_dialog "e"/>
-		},
+		onLoadError:function(e){<@error_dialog "e"/> },
 		onDblClickRow:function(rowIndex,rowData){
 			edit_window("编辑试卷",rowIndex,rowData);
 		}
 	});
-	//paper_structure
-	${dg}_paper_structure = function(id,name){
-		var title = "试卷[" + name +  "]结构";
+	//paper structures
+	${dg}_paper_structure = function(paperId,paperName){
+		var title = "试卷[" + paperName +  "]结构";
 		var d = $("<div/>").dialog({
-			title:title,
-			width:800,
-			height:600,
-			href:"<@s.url '/library/paper/structure/list/'/>" + id,
+			title:title,width:800,height:600,
+			href:"<@s.url '/library/paper/structure/list/'/>" + paperId,
 			modal:true,
 			buttons:[{
-				text:"关闭",
-				iconCls:"icon-cancel",
-				handler:function(){
-					d.dialog("close");
-				}
+				text:"关闭",iconCls:"icon-cancel",
+				handler:function(){ d.dialog("close");}
 			}],
-			onClose:function(){
-				$(this).dialog("destroy");
-			}
+			onClose:function(){ $(this).dialog("destroy");}
 		});
 	};
-	//paper_preview
+	//paper preview
 	${dg}_paper_preview = function(paperId,status){
-		var isAudit = (status == ${PAPER_STATUS_NONE});
+		var isAudit = (status == ${paper_status_none_value});
 		var d = $("<div/>").dialog({
 			title:"试题预览",
 			width:800,
@@ -158,8 +97,7 @@ $(function(){
 						$.messager.progress();
 						$.ajax({
 							url:"<@s.url '/library/paper/'/>" + (isAudit?"audit" :"unaudit") + "/" +paperId,
-							type:"GET",
-							dataType:"json",
+							type:"GET",dataType:"json",
 							error:function(e){
 								$.messager.progress("close");
 								<@error_dialog "e"/>
@@ -181,22 +119,17 @@ $(function(){
 					});
 				}
 			},{
-				text:"关闭",
-				iconCls:"icon-cancel",
-				handler:function(){
-					d.dialog("close");
-				}
+				text:"关闭", iconCls:"icon-cancel",
+				handler:function(){ d.dialog("close");}
 			}],
-			onClose:function(){
-				$(this).dialog("destroy");
-			}
+			onClose:function(){ $(this).dialog("destroy");}
 		});
 	};
-	//add
+	//add paper
 	${dg}_add = function(){
 		edit_window("新增试卷",0,null);
 	};
-	//edit
+	//edit paper
 	function edit_window(title,index,row){
 		var exam_id = current_exam_id,subject_id = current_subject_id;
 		if(row){
@@ -205,7 +138,7 @@ $(function(){
 		}
 		var btns = [];
 		<@shiro.hasPermission name="${PER_UPDATE}">
-		if((!row) || (row && (row.status == ${PAPER_STATUS_NONE}))){
+		if((!row) || (row && (row.status == ${paper_status_none_value}))){
 			btns.push({
 				text:"保存",
 				iconCls:"icon-save",
@@ -246,11 +179,8 @@ $(function(){
 		}
 		</@shiro.hasPermission>
 		btns.push({
-			text:"关闭",
-			iconCls:"icon-cancel",
-			handler:function(){
-				d.dialog("close");
-			}
+			text:"关闭",iconCls:"icon-cancel",
+			handler:function(){ d.dialog("close");}
 		});
 		var d = $("<div/>").dialog({
 			title:title,
@@ -259,15 +189,13 @@ $(function(){
 			href:"<@s.url '/library/paper/edit'/>?examId="+exam_id,
 			modal:true,
 			buttons:btns,
-			onClose:function(){
-				$(this).dialog("destroy");
-			},
+			onClose:function(){ $(this).dialog("destroy");},
 			onLoad:function(){
 				$("#${module}_edit_form").form("load",(row ? row : {"examId":current_exam_id,"subjectId":current_subject_id}));
 			}
 		});
 	};
-	//search
+	//search papers
 	${dg}_search = function(){
 		dg.datagrid("load",{
 			"examId":current_exam_id,
@@ -276,7 +204,7 @@ $(function(){
 		});
 	};
 	<@shiro.hasPermission name="${PER_DELETE}">
-	//detele
+	//detele paper
 	${dg}_delete = function(){
 		var rows = dg.datagrid("getChecked");
 		if(rows && rows.length > 0){
@@ -324,8 +252,7 @@ $(function(){
 	<div data-options="region:'west',title:'所属考试',split:true,tools:[{
 			iconCls:'icon-reload',
 		 	handler:function(){
-		 		$('#${module}_exam_tree').tree('reload');
-		 		${dg}_search();
+		 		$('#${module}_exam_tree').tree('reload');${dg}_search();
 		 	}
 		}]"  style="padding:5px;width:190px;">
 		<ul id="${module}_exam_tree"></ul>

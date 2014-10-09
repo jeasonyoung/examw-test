@@ -94,7 +94,7 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 		if(logger.isDebugEnabled()) logger.debug("数据模型转换 Structure => StructureInfo ...");
 		if(data == null) return null;
 		StructureInfo info = new StructureInfo();
-		BeanUtils.copyProperties(data, info);
+		BeanUtils.copyProperties(data, info,new String[]{"items"});
 		if(data.getType() != null && this.itemService != null){
 			info.setTypeName(this.itemService.loadTypeName(data.getType()));
 		}
