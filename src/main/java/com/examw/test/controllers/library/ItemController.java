@@ -125,15 +125,13 @@ public class ItemController implements IUserAware {
 			model.addAttribute("current_year",new SimpleDateFormat("yyyy").format(new Date()));
 			//添加试卷类型。
 			PaperItemUtils.addPaperType(this.paperService, model);
-			if(itemType == ItemType.SHARE_TITLE){
-				PaperItemUtils.addNormalItemType(this.itemService, model);//添加普通题型。
-			}else if(itemType == ItemType.SHARE_ANSWER){
-				PaperItemUtils.addChoiceItemType(this.itemService, model);//添加选择题型。
-			}
 		}
-		//添加判断题型
-		if(itemType == ItemType.JUDGE){
-			PaperItemUtils.addItemJudgeAnswers(this.itemService, model);
+		if(itemType == ItemType.SHARE_TITLE){
+			PaperItemUtils.addNormalItemType(this.itemService, model);//添加普通题型。
+		}else if(itemType == ItemType.SHARE_ANSWER){
+			PaperItemUtils.addChoiceItemType(this.itemService, model);//添加选择题型。
+		}else if(itemType == ItemType.JUDGE){
+			PaperItemUtils.addItemJudgeAnswers(this.itemService, model);//添加判断题型答案。
 		}
 		return String.format("library/item_edit_%d", itemType.getValue());
 	}

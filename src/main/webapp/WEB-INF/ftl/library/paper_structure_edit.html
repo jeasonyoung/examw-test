@@ -15,13 +15,9 @@
 	<div style="float:left;margin-top:7px;width:100%;">
 		<label style="margin-top:5px;width:50px;">题型：</label>
 		<div style="float:left;width:280px;">
-			<label style="padding-top:0px;margin-left:5px;"><input type="radio" name="type" value="${TYPE_SINGLE_VALUE}" checked="checked"/>${TYPE_SINGLE_NAME}</label>
-			<label style="padding-top:0px;margin-left:5px;"><input type="radio" name="type" value="${TYPE_MULTY_VALUE}" />${TYPE_MULTY_NAME}</label>
-			<label style="padding-top:0px;margin-left:5px;"><input type="radio" name="type" value="${TYPE_UNCERTAIN_VALUE}" />${TYPE_UNCERTAIN_NAME}</label>
-			<label style="padding-top:0px;margin-left:5px;"><input type="radio" name="type" value="${TYPE_JUDGE_VALUE}" />${TYPE_JUDGE_NAME}</label>
-			<label style="padding-top:0px;margin-left:5px;"><input type="radio" name="type" value="${TYPE_QANDA_VALUE}" />${TYPE_QANDA_NAME}</label>
-			<label style="padding-top:0px;margin-left:5px;"><input type="radio" name="type" value="${TYPE_SHARE_TITLE_VALUE}" />${TYPE_SHARE_TITLE_NAME}</label>
-			<label style="padding-top:0px;margin-left:5px;"><input type="radio" name="type" value="${TYPE_SHARE_ANSWER_VALUE}" />${TYPE_SHARE_ANSWER_NAME}</label>
+			<#list ItemTypeMaps?keys as key>
+				<label style="padding-top:0px;margin-left:5px;"><input type="radio" name="type" value="${key}"  <#if (key_index == 0)> checked="checked" </#if> />${ItemTypeMaps[key]}</label>
+			</#list>
 		</div>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">

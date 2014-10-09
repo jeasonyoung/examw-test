@@ -35,13 +35,13 @@ import com.examw.test.support.PaperItemUtils;
 @RequestMapping(value = "/library/paper")
 public class PaperController implements IUserAware {
 	private static final Logger logger = Logger.getLogger(PaperController.class);
+	private String currentUserId = null,currentUserName = null;
 	//注入试卷服务。
 	@Resource
 	private IPaperService paperService;
 	//注入题目服务。
 	@Resource
 	private IItemService itemService;
-	private String currentUserId = null,currentUserName = null;
 	/*
 	 * 注入当前用户ID。
 	 * @see com.examw.aware.IUserAware#setUserId(java.lang.String)
@@ -65,9 +65,7 @@ public class PaperController implements IUserAware {
 	 * @see com.examw.aware.IUserAware#setUserNickName(java.lang.String)
 	 */
 	@Override
-	public void setUserNickName(String userNickName) {
-		
-	}
+	public void setUserNickName(String userNickName) {}
 	/**
 	 * 列表页面。
 	 * @param model
@@ -80,7 +78,7 @@ public class PaperController implements IUserAware {
 		model.addAttribute("PER_UPDATE", ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE);
 		model.addAttribute("PER_DELETE", ModuleConstant.LIBRARY_PAPER + ":" + Right.DELETE);
 		
-		model.addAttribute("PAPER_STATUS_NONE", PaperStatus.NONE.getValue());
+		model.addAttribute("paper_status_none_value", PaperStatus.NONE.getValue());
 		
 		return "library/paper_list";
 	}
@@ -126,9 +124,9 @@ public class PaperController implements IUserAware {
 	@RequestMapping(value="/edit", method = RequestMethod.GET)
 	public String edit(String examId,Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
-		model.addAttribute("CURRENT_EXAM_ID", StringUtils.isEmpty(examId) ? "" : examId.trim());
 		
-		model.addAttribute("CURRENT_YEAR", new SimpleDateFormat("yyyy").format(new Date()));
+		model.addAttribute("current_exam_id", StringUtils.isEmpty(examId) ? "" : examId.trim());
+		model.addAttribute("current_year", new SimpleDateFormat("yyyy").format(new Date()));
 		
 		PaperItemUtils.addPaperType(this.paperService, model);
 		
@@ -146,10 +144,8 @@ public class PaperController implements IUserAware {
 		if(logger.isDebugEnabled()) logger.debug("更新数据...");
 		Json result = new Json();
 		try {
-			if(info != null){
-				info.setUserId(this.currentUserId);
-				info.setUserName(this.currentUserName);
-			}
+			info.setUserId(this.currentUserId);
+			info.setUserName(this.currentUserName); 
 			result.setData(this.paperService.update(info));
 			result.setSuccess(true);
 		} catch (Exception e) {

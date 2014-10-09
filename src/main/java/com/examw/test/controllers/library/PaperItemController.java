@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +16,10 @@ import com.examw.model.DataGrid;
 import com.examw.model.Json;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.library.StructureItemInfo;
+import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperItemService;
+import com.examw.test.service.library.ItemType;
+import com.examw.test.support.PaperItemUtils;
 
 /**
  * 试卷试题控制器。
@@ -30,6 +34,9 @@ public class PaperItemController {
 	//注入试卷试题服务接口。
 	@Resource
 	private IPaperItemService paperItemService;
+	//注入试题服务接口。
+	@Resource
+	private IItemService itemService;
 	/**
 	 * 加载试卷试题列数据。
 	 * @param info
@@ -52,9 +59,41 @@ public class PaperItemController {
 	@RequestMapping(value="/order/{structureId}", method = RequestMethod.GET)
 	@ResponseBody
 	public Integer loadstructureItemsMaxOrderNo(@PathVariable String structureId){
+		if(logger.isDebugEnabled()) logger.debug("加载试卷结构下的排序号...");
 		Integer max = this.paperItemService.loadMaxOrderNo(structureId);
 		if(max == null) max = 0;
 		return max + 1;
+	}
+	/**
+	 * 编辑试卷试题。
+	 * @param type
+	 * @param child
+	 * @param model
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE})
+	@RequestMapping(value = "/edit/{type}", method = RequestMethod.GET)
+	public String editPaperItem(@PathVariable Integer type, Boolean child,Model model){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷结构下试题［题型：%d］编辑页面...", type));
+		
+		model.addAttribute("PER_UPDATE", ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE);
+		model.addAttribute("PER_DELETE", ModuleConstant.LIBRARY_PAPER + ":" + Right.DELETE);
+		
+		model.addAttribute("current_item_child", (child == null) ? false : child);
+		//获取当前题型。
+		ItemType itemType =  ItemType.convert(type);
+		model.addAttribute("current_item_type_value", itemType.getValue());
+		model.addAttribute("current_item_type_name", this.itemService.loadTypeName(itemType.getValue()));
+		
+		if(itemType == ItemType.SHARE_TITLE){
+			PaperItemUtils.addNormalItemType(this.itemService, model);//添加普通题型。
+		}else if(itemType == ItemType.SHARE_ANSWER){
+			PaperItemUtils.addChoiceItemType(this.itemService, model);//添加选择题型。
+		}else if(itemType == ItemType.JUDGE){
+			PaperItemUtils.addItemJudgeAnswers(this.itemService, model);//添加判断题型答案。
+		}
+		
+		return String.format("/library/paper_item_edit_%d", itemType.getValue());
 	}
 	/**
 	 * 更新试卷结构下试题数据。
