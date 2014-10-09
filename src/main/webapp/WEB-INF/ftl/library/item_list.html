@@ -10,9 +10,7 @@ $(function(){
 	var subject_tree = $("#${module}_subject_tree").tree({
 		url:"<@s.url '/settings/category/subject-tree'/>",
 		lines:true,
-		onLoadError:function(e){
-			<@error_dialog "e"/>
-		},
+		onLoadError:function(e){ <@error_dialog "e"/> },
 		onBeforeLoad:function(){
 			current_exam_id = current_subject_id = "";
 		},
@@ -31,94 +29,50 @@ $(function(){
 	//dg
 	var dg = $("#${dg}").datagrid({
 		url:"<@s.url '/library/item/datagrid'/>",
-		fit:true,
-		fitColumns:true,
-		rownumbers:true,
-		pagination:true,
-		pagePosition:"bottom",
-		pageSize:20,
-		pageList:[20,30,40],
-		border:true,
-		striped:true,
-		idField:"id",
-		sortName:"createTime",
-		sortOrder:"desc",
+		fit:true,fitColumns:true,rownumbers:true,
+		pagination:true,pagePosition:"bottom",pageSize:20,pageList:[20,30,40],
+		border:true,striped:true,
+		idField:"id",sortName:"createTime",sortOrder:"desc",
 		columns:[[{
-			field:"id",
-			checkbox:true
+			field:"id",checkbox:true
 		},{
-			title:"所属科目",
-			field:"subjectName",
-			width:28,
-			align:"left",
-			sortable:true
+			title:"所属科目",field:"subjectName",width:28,align:"left",sortable:true
 		},{
-			title:"题型",
-			field:"typeName",
-			width:13,
-			align:"center",
-			sortable:true
+			title:"题型",field:"typeName",width:13,align:"center",sortable:true
 		},{
-			title:"试题",
-			field:"content",
-			width:50,
-			align:"left",
-			sortable:false,
+			title:"试题",field:"content",width:50,align:"left",sortable:false,
 			formatter:function(value,row,index){
 				return value.replace(/<[^>]*>/g,"");
 			}
 		},{
-			title:"类型",
-			field:"optName",
-			width:10,
-			align:"center",
-			sortable:true
+			title:"类型",field:"optName",width:10,align:"center",sortable:true
 		},{
-			title:"题目数",
-			field:"count",
-			width:10,
-			align:"right",
-			sortable:true
+			title:"试题数",field:"count",width:10,align:"right",sortable:true
 		},{
-			title:"创建时间",
-			field:"createTime",
-			width:13,
-			align:"center",
+			title:"创建时间",field:"createTime",width:13,align:"center",sortable:true,
 			formatter: function(value,row,index){
 				var v = row["createTime"];
 				return "<span title=' "+ v +"'>"+v+"</span>";
-			},
-			sortable:true
+			}
 		},{
-			title:"状态",
-			field:"statusName",
-			width:10,
-			align:"center",
-			sortable:true
+			title:"状态",field:"statusName",width:10,align:"center",sortable:true
 		},{
-			title:"预览",
-			field:"opt",
-			width:10,
-			align:"center",
+			title:"预览",field:"opt",width:10,align:"center",
 			formatter:function(value,row,index){
 				return "<a href=\"javascript:${dg}_preview('"+row["id"] +"'," +row["status"]+ ");\">预览</a>";
 			}
 		}]],
 		toolbar:"#${dg}_toobar",
-		onLoadError:function(e){
-			<@error_dialog "e"/>
-		},
+		onLoadError:function(e){ <@error_dialog "e"/> },
 		onDblClickRow:function(rowIndex,rowData){
 			edit_window("编辑试题［"+rowData.typeName+"］",rowIndex,rowData);
 		}
 	});
 	//preview
 	${dg}_preview = function(itemId,status){
-		var isAudit = (status == ${ITEM_STATUS_NONE_VALUE});
+		var isAudit = (status == ${item_status_none_value});
 		var d = $("<div/>").dialog({
-			title:"试题预览",
-			width:800,
-			height:600,
+			title:"试题预览",width:800,height:600,
 			href:"<@s.url '/library/item/preview/'/>" +itemId,
 			modal:true,
 			buttons:[{
@@ -130,8 +84,7 @@ $(function(){
 						$.messager.progress();
 						$.ajax({
 							url:"<@s.url '/library/item/'/>" + (isAudit?"audit" :"unaudit") + "/" +itemId,
-							type:"GET",
-							dataType:"json",
+							type:"GET",dataType:"json",
 							error:function(e){
 								$.messager.progress("close");
 								<@error_dialog "e"/>
@@ -174,9 +127,7 @@ $(function(){
 	};
 	<@shiro.hasPermission name="${PER_UPDATE}">
 	//add
-	${dg}_add = function(item){
-		edit_window("新增试题［"+$(item).text()+"］",0,null,$(item).attr("value"));
-	};
+	${dg}_add = function(item){ edit_window("新增试题［"+$(item).text()+"］",0,null,$(item).attr("value")); };
 	</@shiro.hasPermission>
 	//edit_window
 	function edit_window(title,index,row,type){
@@ -186,16 +137,13 @@ $(function(){
 			if(row.type)type = row.type;
 		}
 		var d = $("<div/>").dialog({
-			title:title,
-			width:800,
-			height:600,
+			title:title,width:800,height:600,
 			href:"<@s.url '/library/item/edit/'/>" + type + "?examId=" + examId,
 			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
 			{
-				text:"保存",
-				iconCls:"icon-save",
+				text:"保存",iconCls:"icon-save",
 				handler:function(){
 					$.messager.progress();
 					var valid = eval("${module}_"+type+"_validate()");
@@ -239,15 +187,12 @@ $(function(){
 			},
 			</@shiro.hasPermission>
 			{
-				text:"关闭",
-				iconCls:"icon-cancel",
+				text:"关闭",iconCls:"icon-cancel",
 				handler:function(){
 					d.dialog("close");
 				}
 			}],
-			onClose:function(){
-				$(this).dialog("destroy");
-			},
+			onClose:function(){ $(this).dialog("destroy"); },
 			onLoad:function(){
 				var data = (row ? row : {"examId":current_exam_id,"subjectId":current_subject_id});
 				eval("${module}_"+type+"_load(data)");

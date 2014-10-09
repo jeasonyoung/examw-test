@@ -1,36 +1,41 @@
+<#include "library/item_view.ftl" />
 <#--试题预览-->
-<#include "library/item_view.ftl"/>
-<div class="easyui-layout container" data-options="fit:true,border:false">
-	<div data-options="region:'north',border:false,split:false" style="height:80px;">
-		<#if item??>
-			<@item_header item/>
-		</#if>
+<div style="float:left;width:100%;">
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="float:left;width:75px;">所属科目：</label>
+		<span style="float:left;width:471px;margin-top:2px;border-bottom:solid 1px #ccc;">${item.examName} &gt; ${item.subjectName}<br/></span>
+		<label style="float:left;width:75px;">所属类型：</label>
+		<span style="float:left;width:128px;margin-top:2px;border-bottom:solid 1px #ccc;">${item.optName}<br/></span>
 	</div>
-	<div data-options="region:'center',border:false">
-	<#if item??>
-		<#switch item.type>
-			<#case 1><#--单选-->
-				<@single item/>
-			<#break>
-			<#case 2><#--多选-->
-				<@multy item/>
-			<#break>
-			<#case 3><#--不定向选-->
-				<@uncertain item/>
-			<#break>
-			<#case 4><#--判断题-->
-				<@judge item/>
-			<#break>
-			<#case 5><#--问答题-->
-				<@qanda item/>
-			<#break>
-			<#case 6><#--共享题干题-->
-				<@share_title item/>
-			<#break>
-			<#case 7><#--共享答案题-->
-				<@share_answer item/>
-			<#break>
-		</#switch>
-	</#if>
+	<div style="float:left;margin-top:7px;width:100%;">
+		<label style="float:left;width:75px;">试题来源：</label>
+		<span style="float:left;width:198px;margin-top:2px;border-bottom:solid 1px #ccc;">${item.sourceName}<br/></span>
+		<label style="float:left;width:75px;">所属地区：</label>
+		<span style="float:left;width:198px;margin-top:2px;border-bottom:solid 1px #ccc;">${item.areaName}<br/></span>
+		<label style="float:left;width:75px;">使用年份：</label>
+		<span style="float:left;width:128px;margin-top:2px;border-bottom:solid 1px #ccc;"><#if item.year??> ${item.year?string('####')}</#if><br/></span>
+	</div>
 </div>
+<div style="float:left;margin-top:12px;width:100%;">
+<#switch item.type>
+	<#case 1><#--单选-->
+	<#case 2><#--多选-->
+	<#case 3><#--不定向选-->
+		<@item_choice item/>
+	<#break>
+	<#case 4><#--判断题-->
+		<@item_judge item/>
+	<#break>
+	<#case 5><#--问答题-->
+		<@item_qanda item/>
+	<#break>
+	<#case 6><#--共享题干题-->
+		<@item_share_title item/>
+	<#break>
+	<#case 7><#--共享答案题-->
+		<@item_share_answer item/>
+	<#break>
+	<#default>
+	<span style="float:left;margin-left:15px;">题型［${item.typeName} - ${item.type}］暂不支持预览！</span>
+</#switch>
 </div>

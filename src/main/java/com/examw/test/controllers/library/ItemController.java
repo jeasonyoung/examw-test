@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.examw.aware.IUserAware;
 import com.examw.model.DataGrid;
 import com.examw.model.Json;
+import com.examw.test.domain.library.Item;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.library.ItemInfo;
 import com.examw.test.service.library.IItemService;
@@ -83,7 +84,7 @@ public class ItemController implements IUserAware {
 		model.addAttribute("PER_UPDATE", ModuleConstant.LIBRARY_ITEM + ":" + Right.UPDATE);
 		model.addAttribute("PER_DELETE", ModuleConstant.LIBRARY_ITEM + ":" + Right.DELETE);
 		
-		model.addAttribute("ITEM_STATUS_NONE_VALUE", ItemStatus.NONE.getValue());
+		model.addAttribute("item_status_none_value", ItemStatus.NONE.getValue());
 		
 		PaperItemUtils.addAllItemType(this.itemService, model);
 		
@@ -128,11 +129,10 @@ public class ItemController implements IUserAware {
 		}
 		if(itemType == ItemType.SHARE_TITLE){
 			PaperItemUtils.addNormalItemType(this.itemService, model);//添加普通题型。
+			PaperItemUtils.addItemJudgeAnswers(this.itemService, model);//添加判断题型答案。
 		}else if(itemType == ItemType.SHARE_ANSWER){
 			PaperItemUtils.addChoiceItemType(this.itemService, model);//添加选择题型。
-		}else if(itemType == ItemType.JUDGE){
-			PaperItemUtils.addItemJudgeAnswers(this.itemService, model);//添加判断题型答案。
-		}
+		} 
 		return String.format("library/item_edit_%d", itemType.getValue());
 	}
 	/**
@@ -214,13 +214,17 @@ public class ItemController implements IUserAware {
 	@RequiresPermissions({ModuleConstant.LIBRARY_ITEM + ":" + Right.VIEW})
 	@RequestMapping(value="/preview/{itemId}", method = {RequestMethod.GET, RequestMethod.POST})
 	public String itemPreview(@PathVariable String itemId,Model model){
-		//model.addAttribute("ItemJudgeAnswer_Right_Value", ItemJudgeAnswer.RIGTH.getValue());
-		//model.addAttribute("ItemJudgeAnswer_Right_Name", this.itemService.loadJudgeAnswerName(ItemJudgeAnswer.RIGTH.getValue()));
-
-		//model.addAttribute("ItemJudgeAnswer_Wrong_Value", ItemJudgeAnswer.WRONG.getValue());
-		//model.addAttribute("ItemJudgeAnswer_Wrong_Name", this.itemService.loadJudgeAnswerName(ItemJudgeAnswer.WRONG.getValue()));
-		//model.addAttribute("item", this.itemService.loadItemPreview(itemId));
-		
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试题［itemId = %s］预览...", itemId));
+		Item item = this.itemService.loadItem(itemId);
+		if(item == null){
+			throw new RuntimeException(String.format("试题［itemId = %s］不存在！", itemId));
+		}
+		ItemInfo itemInfo = new ItemInfo();
+		this.itemService.conversion(item, itemInfo);
+		model.addAttribute("item", itemInfo);
+		if(itemInfo.getType() == ItemType.SHARE_TITLE.getValue()){
+			PaperItemUtils.addItemJudgeAnswers(this.itemService, model);//判断题答案
+		}
 		return "library/item_preview";
 	}
 	/**
