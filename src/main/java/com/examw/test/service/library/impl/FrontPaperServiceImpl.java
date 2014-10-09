@@ -1,12 +1,15 @@
 package com.examw.test.service.library.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.library.IPaperReleaseDao;
@@ -123,7 +126,10 @@ public class FrontPaperServiceImpl implements IFrontPaperService  {
 	private FrontPaperInfo changeModel(PaperRelease paperRelease){
 		if(logger.isDebugEnabled()) logger.debug("数据模型转换 PaperRelease => FrontPaperInfo ...");
 		if(paperRelease == null || paperRelease.getPaper() == null) return null;
-		FrontPaperInfo frontPaperInfo = (FrontPaperInfo)((BasePaperInfo)this.paperService.conversion(paperRelease.getPaper()));
+		//FrontPaperInfo frontPaperInfo = (FrontPaperInfo)((BasePaperInfo)this.paperService.conversion(paperRelease.getPaper()));
+		//转型错误
+		FrontPaperInfo frontPaperInfo = new FrontPaperInfo();
+		BeanUtils.copyProperties((BasePaperInfo)this.paperService.conversion(paperRelease.getPaper()), frontPaperInfo);
 		if(frontPaperInfo != null){
 			frontPaperInfo.setId(paperRelease.getId());//重置试卷ID。
 			frontPaperInfo.setTotal(paperRelease.getTotal());
@@ -141,6 +147,11 @@ public class FrontPaperServiceImpl implements IFrontPaperService  {
 		PaperRelease paperRelease = this.paperReleaseDao.load(PaperRelease.class, paperId);
 		if(paperRelease == null) throw new RuntimeException(String.format("试卷［%s］不存在!", paperId));
 		if(StringUtils.isEmpty(paperRelease.getContent())) throw new RuntimeException(String.format("试卷［%s］序列化内容丢失!", paperId));
+		//处理日期格式  Add by FW 2014.10.09
+		DeserializationConfig cfg = mapper.getDeserializationConfig();
+		cfg = cfg.withDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+		mapper = mapper.setDeserializationConfig(cfg);
+		//处理日期格式  Add by FW 2014.10.09
 		return this.mapper.readValue(paperRelease.getContent(), PaperPreview.class);
 	}
 	/*

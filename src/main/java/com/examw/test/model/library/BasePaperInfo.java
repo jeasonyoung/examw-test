@@ -312,7 +312,7 @@ public abstract class BasePaperInfo implements Serializable {
 	 * 获取创建时间。
 	 * @return 创建时间。
 	 */
-	@JsonSerialize(using=CustomDateSerializer.ShortDate.class)
+	@JsonSerialize(using=CustomDateSerializer.LongDate.class)
 	public Date getCreateTime() {
 		return createTime;
 	}
@@ -328,7 +328,7 @@ public abstract class BasePaperInfo implements Serializable {
 	 * 获取最后修改时间。
 	 * @return 最后修改时间。
 	 */
-	@JsonSerialize(using=CustomDateSerializer.ShortDate.class)
+	@JsonSerialize(using=CustomDateSerializer.LongDate.class)
 	public Date getLastTime() {
 		return lastTime;
 	}
