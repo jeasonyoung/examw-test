@@ -145,7 +145,7 @@ $(function(){
 		columns:[[{
 			field:"id",checkbox:true
 		},{
-			title:"题号",field:"serial",width:10,align:"left",sortable:true
+			title:"序号",field:"orderNo",width:10,align:"right",sortable:true
 		},{
 			title:"题型",field:"typeName",width:18,align:"center",sortable:true
 		},{
@@ -153,8 +153,6 @@ $(function(){
 			formatter:function(value,row,index){
 				return value.replace(/<[^>]*>/g,"");
 			}
-		},{
-			title:"排序号",field:"orderNo",width:10,align:"right",sortable:true
 		}]],
 		toolbar:"#${dg}_toobar",
 		onLoadError:function(e){ <@error_dialog "e"/> },
@@ -211,15 +209,14 @@ $(function(){
 				text:"保存",
 				iconCls:"icon-save",
 				handler:function(){
-					alert('x');
 					var valid = eval("library_paper_item_"+type+"_validate()");
 					if(!valid) return;
 					var post = eval("library_paper_item_"+type+"_update()");
-					//alert(post);console.info(post);return;
+					//alert(post);console.info(post);
 					$.ajax({
 						url:"<@s.url '/library/paper/items/update/${current_paper_id}'/>/" + structure_id,
 						type:"POST",
-						data:JSON.stringify(data),
+						data:JSON.stringify(post),
 						dataType:"json",
 						contentType:"application/json;charset=UTF-8",
 						error:function(e){
@@ -229,7 +226,7 @@ $(function(){
 						success:function(callback,textStatus){
 							$.messager.progress("close");
 							if(callback.success){
-								//alert("index=" + index);
+								alert("index=" + index);
 								dg.datagrid(row ? "updateRow" : "insertRow",{
 									index:index,
 									row:callback.data

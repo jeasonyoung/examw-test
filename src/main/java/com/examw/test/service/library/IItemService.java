@@ -37,13 +37,13 @@ public interface IItemService extends IBaseDataService<ItemInfo> {
 	 */
 	String loadJudgeAnswerName(Integer answer);
 	/**
-	 * 计算包含的题目数量。
+	 * 计算包含的试题数量。
 	 * @param source
 	 * @return
 	 */
 	Integer calculationCount(BaseItemInfo<?> source);
 	/**
-	 * 更新题目状态。
+	 * 更新试题状态。
 	 * @param itemId
 	 * 所属题目ID。
 	 * @param status
@@ -51,11 +51,11 @@ public interface IItemService extends IBaseDataService<ItemInfo> {
 	 */
 	void updateStatus(String itemId, ItemStatus status);
 	/**
-	 * 更新题目。
+	 * 更新试题。
 	 * @param info
-	 * 题目信息。
+	 * 试题信息。
 	 * @return
-	 * 题目对象。
+	 * 试题对象。
 	 */
 	Item updateItem(BaseItemInfo<?> info);
 	/**
