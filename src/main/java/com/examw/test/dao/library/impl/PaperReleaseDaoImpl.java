@@ -35,7 +35,7 @@ public class PaperReleaseDaoImpl extends BaseDaoImpl<PaperRelease> implements IP
 		}
 		if(areasId != null && areasId.length > 0){
 			hqlBuilder.append((subjectsId == null || subjectsId.length == 0) ? " where " : " and ");
-			hqlBuilder.append(" (p.paper.Area.id in (:areaId)) ");
+			hqlBuilder.append(" (p.paper.area.id in (:areaId)) ");
 			parameters.put("areaId", areasId);
 		}
 		hqlBuilder.append(" order by p.createTime desc");

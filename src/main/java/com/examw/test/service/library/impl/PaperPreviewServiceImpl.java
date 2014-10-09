@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.library.IStructureDao;
@@ -80,7 +81,9 @@ public class PaperPreviewServiceImpl implements IPaperPreviewService {
 			logger.debug(msg = String.format("试卷［id = %s］不存在！", paperId));
 			throw new RuntimeException(msg);
 		}
-		PaperPreview paperPreview = (PaperPreview)((BasePaperInfo)this.paperService.conversion(paper));
+		//PaperPreview paperPreview = (PaperPreview)((BasePaperInfo)this.paperService.conversion(paper));
+		PaperPreview paperPreview = new PaperPreview();
+		BeanUtils.copyProperties((BasePaperInfo)this.paperService.conversion(paper), paperPreview);
 		Integer count = 0;
 		paperPreview.setStructures(this.changeModel(this.structureDao.loadStructures(paperId), count));
 		paperPreview.setTotal(count);
@@ -103,7 +106,7 @@ public class PaperPreviewServiceImpl implements IPaperPreviewService {
 		if(list.size() > 0){
 			Collections.sort(list);
 		}
-		return null;
+		return list;
 	}
 	//数据模型转换 Structure => StructureInfo。
 	private StructureInfo changeModel(Structure structure){

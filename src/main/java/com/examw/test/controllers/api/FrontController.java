@@ -1,6 +1,7 @@
 package com.examw.test.controllers.api;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -153,7 +154,7 @@ public class FrontController {
 	 */
 	@RequestMapping(value = {"/products/{productId}/papers"}, method = {RequestMethod.GET})
 	@ResponseBody
-	public List<FrontPaperInfo> loadProductPapers(String productId){
+	public List<FrontPaperInfo> loadProductPapers(@PathVariable String productId){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载产品下的试卷数据集合...", productId));
 		return this.frontPaperService.loadProductPapers(productId);
 	}
@@ -169,6 +170,11 @@ public class FrontController {
 	public PaperPreview loadPaperContent(@PathVariable String paperId) throws Exception{
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［paperId = %s］内容...", paperId));
 		return this.frontPaperService.loadPaperContent(paperId);
+	}
+	@RequestMapping(value="/papers/type",method = RequestMethod.GET)
+	@ResponseBody
+	public Map<String,String> loadPaperType(){
+		return this.frontPaperService.loadPaperType();
 	}
 	/**
 	 * 加载科目下的考试大纲。
