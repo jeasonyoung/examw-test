@@ -168,8 +168,8 @@ public class ClientImportsController {
 		if(logger.isDebugEnabled()) logger.debug(String.format("更新试卷［%s］..", paperId));
 		Json result = new Json();
 		try {
-			//if(info == null) info = new StructureItemInfo();
-			//info.setPaperId(paperId);
+			info.setPaperId(paperId);
+			info.setStructureId(structureId);
 			this.paperItemService.update(info);
 			result.setSuccess(true);
 		} catch (Exception e) {

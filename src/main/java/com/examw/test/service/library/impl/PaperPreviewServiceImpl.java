@@ -81,16 +81,13 @@ public class PaperPreviewServiceImpl implements IPaperPreviewService {
 			logger.debug(msg = String.format("试卷［id = %s］不存在！", paperId));
 			throw new RuntimeException(msg);
 		}
-		//PaperPreview paperPreview = (PaperPreview)((BasePaperInfo)this.paperService.conversion(paper));
 		PaperPreview paperPreview = new PaperPreview();
 		BeanUtils.copyProperties((BasePaperInfo)this.paperService.conversion(paper), paperPreview);
-		Integer count = 0;
-		paperPreview.setStructures(this.changeModel(this.structureDao.loadStructures(paperId), count));
-		paperPreview.setTotal(count);
+		paperPreview.setStructures(this.changeModel(this.structureDao.loadStructures(paperId)));
 		return paperPreview;
 	}
 	//数据模型集合转换。
-	private List<StructureInfo> changeModel(List<Structure> structures, Integer count){
+	private List<StructureInfo> changeModel(List<Structure> structures){
 		if(logger.isDebugEnabled()) logger.debug("开始数据模型集合转换...");
 		if(structures == null || structures.size() == 0) return null;
 		List<StructureInfo> list = new ArrayList<>();
@@ -98,8 +95,6 @@ public class PaperPreviewServiceImpl implements IPaperPreviewService {
 			if(structure == null)continue;
 			StructureInfo info = this.changeModel(structure);
 			if(info != null){
-				if(count == null) count = 0;
-				count += (info.getTotal() == null ? 0 : info.getTotal());
 				list.add(info);
 			}
 		}
