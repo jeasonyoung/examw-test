@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.examw.test.domain.security.Right;
+import com.examw.test.model.library.PaperPreview;
 import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperPreviewService;
-import com.examw.test.service.library.ItemJudgeAnswer;
+import com.examw.test.support.PaperItemUtils;
 
 /**
  * 试卷阅览控制器。
@@ -39,14 +40,11 @@ public class PaperPreviewController {
 	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.VIEW})
 	@RequestMapping(value="/{paperId}", method = {RequestMethod.GET, RequestMethod.POST})
 	public String paperPreview(@PathVariable String paperId, Model model){
-		if(logger.isDebugEnabled()) logger.debug("预览试卷:" + paperId);
-		model.addAttribute("ItemJudgeAnswer_Right_Value", ItemJudgeAnswer.RIGTH.getValue());
-		model.addAttribute("ItemJudgeAnswer_Right_Name", this.itemService.loadJudgeAnswerName(ItemJudgeAnswer.RIGTH.getValue()));
-
-		model.addAttribute("ItemJudgeAnswer_Wrong_Value", ItemJudgeAnswer.WRONG.getValue());
-		model.addAttribute("ItemJudgeAnswer_Wrong_Name", this.itemService.loadJudgeAnswerName(ItemJudgeAnswer.WRONG.getValue()));
-		
-		model.addAttribute("paper",  this.paperPreviewService.loadPaperPreview(paperId));
+		if(logger.isDebugEnabled()) logger.debug(String.format("预览试卷［paperId = %s］...", paperId));
+		PaperPreview paperPreview =  this.paperPreviewService.loadPaperPreview(paperId);
+		if(paperPreview == null) throw new RuntimeException(String.format("试卷［paperId = %s］不存在!", paperId));
+		model.addAttribute("paper", paperPreview);
+		PaperItemUtils.addItemJudgeAnswers(this.itemService, model);
 		return "library/paper_preview";
 	}
 }
