@@ -22,6 +22,7 @@ import com.examw.test.model.library.FrontPaperInfo;
 import com.examw.test.model.library.PaperPreview;
 import com.examw.test.service.library.IFrontPaperService;
 import com.examw.test.service.library.IPaperService;
+import com.examw.test.support.PaperItemUtils;
 
 /**
  * 试卷前端服务接口。
@@ -161,6 +162,6 @@ public class FrontPaperServiceImpl implements IFrontPaperService  {
 	@Override
 	public Map<String, String> loadPaperType() {
 		if(logger.isDebugEnabled()) logger.debug("加载试卷类型映射");
-		return this.paperService.loadPaperType();
+		return PaperItemUtils.loadPaperTypeValueMap(this.paperService);
 	}
 }

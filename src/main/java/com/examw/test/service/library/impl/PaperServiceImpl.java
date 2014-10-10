@@ -300,13 +300,4 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 			throw new RuntimeException(msg);
 		}
 	}
-	/*
-	 * 获取试卷类型映射
-	 * @see com.examw.test.service.library.IPaperService#loadPaperType()
-	 */
-	@Override
-	public Map<String, String> loadPaperType() {
-		if(logger.isDebugEnabled()) logger.debug(" 加载试卷类型...");
-		return typeMap;
-	}
 }
