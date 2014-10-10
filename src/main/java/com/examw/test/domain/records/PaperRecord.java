@@ -15,8 +15,8 @@ public class PaperRecord implements Serializable {
 	private Date lastTime;
 	private Integer status,time,usedTime;
 	private BigDecimal score;
-	public static final int STATUS_DONE = 1;	//没有完成
-	public static final int STATUS_UNDONE = 0;	//已经完成
+	public static final int STATUS_DONE = 1;	//完成
+	public static final int STATUS_UNDONE = 0;	//未完成
 	/**
 	 * 获取 ID
 	 * @return id

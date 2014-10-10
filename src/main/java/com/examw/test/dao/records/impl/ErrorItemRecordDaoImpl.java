@@ -53,13 +53,9 @@ public class ErrorItemRecordDaoImpl extends BaseDaoImpl<ErrorItemRecord> impleme
 	
 	// 添加查询条件到HQL。
 	private String addWhere(ErrorItemRecord info, String hql,Map<String, Object> parameters) {
-		if (!StringUtils.isEmpty(info.getStructureItemId())) {
-			hql += " and (eir.structureItemId = :structureItemId)";
-			parameters.put("structureItemId", info.getStructureItemId());
-		}
 		if (!StringUtils.isEmpty(info.getItemId())) {
 			hql += " and (eir.itemId = :itemId)";
-			parameters.put("itemId", info.getUserId());
+			parameters.put("itemId", info.getItemId());
 		}
 		if (!StringUtils.isEmpty(info.getProductId())) {
 			hql += " and (eir.productId = :productId)";

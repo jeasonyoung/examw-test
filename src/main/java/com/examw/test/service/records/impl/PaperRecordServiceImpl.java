@@ -44,7 +44,7 @@ public class PaperRecordServiceImpl implements IPaperRecordService{
 	
 	
 	/**
-	 * 设置 试卷服务接口[获取类型映射]
+	 * 设置 试卷服务
 	 * @param paperService
 	 * 
 	 */
@@ -74,4 +74,25 @@ public class PaperRecordServiceImpl implements IPaperRecordService{
 		}
 		return result;
 	}
+	
+	/*
+	 * 查找单个考试记录
+	 * @see com.examw.test.service.records.IPaperRecordService#findRecord(com.examw.test.model.records.PaperRecordInfo)
+	 */
+	@Override
+	public PaperRecordInfo findRecord(PaperRecordInfo info) {
+		if(info == null) return null;
+		List<PaperRecord> list = this.paperRecordDao.findPaperRecords(info);
+		if(list == null || list.size() == 0) return null;
+		PaperRecordInfo result = new PaperRecordInfo();
+		PaperRecord data = list.get(0);
+		Paper paper = this.paperDao.load(Paper.class, data.getPaperId());
+		if(paper == null) return null;
+		BeanUtils.copyProperties(data, result);
+		result.setPaperName(paper.getName());
+		result.setType(paper.getType());
+		result.setTypeName(this.paperService.loadTypeName(paper.getType()));
+		return result;
+	}
+	
 }

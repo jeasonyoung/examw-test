@@ -63,13 +63,9 @@ public class NoteDaoImpl extends BaseDaoImpl<Note> implements INoteDao{
 	
 	// 添加查询条件到HQL。
 	private String addWhere(Note info, String hql,Map<String, Object> parameters) {
-		if (!StringUtils.isEmpty(info.getStructureItemId())) {
-			hql += " and (n.structureItemId = :structureItemId)";
-			parameters.put("structureItemId", info.getStructureItemId());
-		}
 		if (!StringUtils.isEmpty(info.getItemId())) {
 			hql += " and (n.itemId = :itemId)";
-			parameters.put("itemId", info.getUserId());
+			parameters.put("itemId", info.getItemId());
 		}
 		if (!StringUtils.isEmpty(info.getUserId())) {
 			hql += " and (n.userId = :userId)";

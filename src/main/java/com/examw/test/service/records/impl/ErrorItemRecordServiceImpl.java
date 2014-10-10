@@ -30,7 +30,7 @@ public class ErrorItemRecordServiceImpl implements IErrorItemRecordService {
 
 	@Override
 	public boolean insertRecord(ErrorItemRecord data) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("插入或更新一条错题记录[userId=%1$s,structureItemId=%2$s]",data.getUserId(),data.getStructureItemId()));
+		if(logger.isDebugEnabled()) logger.debug(String.format("插入或更新一条错题记录[userId=%1$s,itemId=%2$s]",data.getUserId(),data.getItemId()));
 		if(data == null) return false;
 		//错一次一条记录
 		data.setId(UUID.randomUUID().toString());

@@ -21,21 +21,21 @@ public interface ICollectionService {
 	 * @param userId			用户ID
 	 * @return
 	 */
-	boolean isCollected(String structureItemId,String userId);
+	boolean isCollected(String itemId,String userId);
 	/**
 	 * 取消收藏
 	 * @param structureItemId
 	 * @param userId
 	 * @return
 	 */
-	boolean deleteCollection(String structureItemId,String userId);
+	boolean deleteCollection(String itemId,String userId);
 	/**
 	 * 取消或添加收藏
 	 * @param structureItemId
 	 * @param userId
 	 * @return
 	 */
-	Json collectOrCancel(String structureItemId,String itemId, String userId);
+	Json collectOrCancel(String itemId, String userId);
 //	/**
 //	 * 加载我的收藏产品分类
 //	 * @return

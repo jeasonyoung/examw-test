@@ -27,8 +27,8 @@
 	<class name="ItemRecord" table="tbl_Examw_Test_Records_ItemRecords">
 		<!-- 记录ID -->
 		<id name="id"  type="string"  length="64" />
-		<!-- 结构题目ID -->
-		<property name="structureItemId" column="structure_item_id" type="string"  length="128" not-null="true"/>
+		<!-- 题目ID -->
+		<property name="itemId" column="item_id" type="string"  length="128" not-null="true"/>
 		<!-- 试卷ID -->
 		<property name="paperId" column="paper_id" type="string" length="64" not-null="true" />
 		<!-- 用户ID -->
@@ -55,8 +55,6 @@
 	<class name="ErrorItemRecord" table="tbl_Examw_Test_Records_ErrorItemRecords">
 		<!-- 记录ID -->
 		<id name="id"  type="string"  length="64" />
-		<!-- 结构题目ID -->
-		<property name="structureItemId" column="structure_item_id" type="string"  length="128" not-null="true"/>
 		<!-- 用户ID -->
 		<property name="userId" column="user_id" type="string" length="64" not-null="true" />
 		<!-- 试题ID -->
@@ -69,14 +67,14 @@
 		<property name="createTime" column="create_time" type="timestamp" />
 		<!-- 产品ID -->
 		<property name="productId" column="product_id" type="string" length="64"/>
+		<!-- 试题内容（JSON格式） -->
+		<property name="content" type="text" />
 	</class>
 	
 	<!-- 题目收藏 -->
 	<class name="Collection" table="tbl_Examw_Test_Records_Collections">
 		<!-- 收藏ID -->
 		<id name="id"  type="string"  length="64" />
-		<!-- 结构题目ID -->
-		<property name="structureItemId" column="structure_item_id" type="string"  length="128" not-null="true"/>
 		<!-- 用户ID -->
 		<property name="userId" column="user_id" type="string" length="64" not-null="true" />
 		<!-- 试题ID -->
@@ -87,14 +85,14 @@
 		<property name="userAnswer" column="user_answer" type="text"/>
 		<!-- 产品ID -->
 		<property name="productId" column="product_id" type="string" length="64"/>
+		<!-- 试题内容（JSON格式） -->
+		<property name="content" type="text" />
 	</class>
 	
 	<!-- 题目笔记 -->
 	<class name="Note" table="tbl_Examw_Test_Records_Notes">
 		<!-- 笔记ID -->
 		<id name="id"  type="string"  length="64" />
-		<!-- 结构题目ID -->
-		<property name="structureItemId" column="structure_item_id" type="string"  length="128" not-null="true"/>
 		<!-- 试题ID -->
 		<property name="itemId" column="item_id" type="string" length="64" />
 		<!-- 用户ID -->

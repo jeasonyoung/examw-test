@@ -34,7 +34,7 @@ public class ItemRecordServiceImpl implements IItemRecordService{
 	 */
 	@Override
 	public boolean insertRecord(ItemRecord data) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("插入一条做题记录[userId=%1$s,structureItemId=%2$s]",data.getUserId(),data.getStructureItemId()));
+		if(logger.isDebugEnabled()) logger.debug(String.format("插入一条做题记录[userId=%1$s,itemId=%2$s]",data.getUserId(),data.getItemId()));
 		if(data == null) return false;
 		//做一次一条记录
 		if(StringUtils.isEmpty(data.getId()))

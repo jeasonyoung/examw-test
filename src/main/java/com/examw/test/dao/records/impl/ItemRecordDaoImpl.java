@@ -52,9 +52,9 @@ public class ItemRecordDaoImpl  extends BaseDaoImpl<ItemRecord> implements IItem
 	}
 	//添加查询条件
 	private String addWhere(ItemRecord info, String hql,Map<String, Object> parameters) {
-		if (!StringUtils.isEmpty(info.getStructureItemId())) {
-			hql += " and (ir.structureItemId = :structureItemId)";
-			parameters.put("structureItemId", info.getStructureItemId());
+		if (!StringUtils.isEmpty(info.getItemId())) {
+			hql += " and (ir.itemId = :itemId)";
+			parameters.put("itemId", info.getItemId());
 		}
 		if (!StringUtils.isEmpty(info.getUserId())) {
 			hql += " and (ir.userId = :userId)";

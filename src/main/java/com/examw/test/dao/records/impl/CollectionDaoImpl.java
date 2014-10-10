@@ -52,13 +52,9 @@ public class CollectionDaoImpl extends BaseDaoImpl<Collection> implements IColle
 	}
 	//添加查询条件
 	private String addWhere(Collection info, String hql,Map<String, Object> parameters) {
-		if (!StringUtils.isEmpty(info.getStructureItemId())) {
-			hql += " and (c.structureItemId = :structureItemId)";
-			parameters.put("structureItemId", info.getStructureItemId());
-		}
 		if (!StringUtils.isEmpty(info.getItemId())) {
 			hql += " and (c.itemId = :itemId)";
-			parameters.put("itemId", info.getUserId());
+			parameters.put("itemId", info.getItemId());
 		}
 		if (!StringUtils.isEmpty(info.getProductId())) {
 			hql += " and (c.productId = :productId)";

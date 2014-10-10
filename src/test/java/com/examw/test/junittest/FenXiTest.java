@@ -13,7 +13,6 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -41,7 +40,7 @@ public class FenXiTest {
 	private IItemService itemService;
 	@Resource
 	private SessionFactory sessionFactorySql;
-	@Test
+	//@Test
 	public void fenXi() throws JsonGenerationException, JsonMappingException, IOException{
 		Session session = sessionFactorySql.openSession();
 		session.beginTransaction();

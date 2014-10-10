@@ -35,7 +35,7 @@ public class NoteServiceImpl implements INoteService{
 	 */
 	@Override
 	public boolean insertNote(Note data) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("插入一条笔记记录[userId=%1$s,structureItemId=%2$s]",data.getUserId(),data.getStructureItemId()));
+		if(logger.isDebugEnabled()) logger.debug(String.format("插入一条笔记记录[userId=%1$s,itemId=%2$s]",data.getUserId(),data.getItemId()));
 		if(data == null) return false;
 		//写一次一条记录
 		data.setId(UUID.randomUUID().toString());

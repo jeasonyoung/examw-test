@@ -42,7 +42,7 @@ public class CollectionServiceImpl implements ICollectionService{
 	 */
 	@Override
 	public boolean insertCollection(Collection data) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("插入一条收藏记录[userId=%1$s,structureItemId=%2$s]",data.getUserId(),data.getStructureItemId()));
+		if(logger.isDebugEnabled()) logger.debug(String.format("插入一条收藏记录[userId=%1$s,itemId=%2$s]",data.getUserId(),data.getItemId()));
 		if(data == null) return false;
 		//写一次一条记录
 		data.setId(UUID.randomUUID().toString());
@@ -52,34 +52,34 @@ public class CollectionServiceImpl implements ICollectionService{
 	}
 	
 	@Override
-	public boolean isCollected(String structureItemId, String userId) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("查询是否有收藏记录[userId=%1$s,structureItemId=%2$s]",userId,structureItemId));
-		return this.collectionDao.loadCollection(structureItemId, userId) != null;
+	public boolean isCollected(String itemId, String userId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("查询是否有收藏记录[userId=%1$s,itemId=%2$s]",userId,itemId));
+		return this.collectionDao.loadCollection(itemId, userId) != null;
 	}
 	
 	@Override
-	public boolean deleteCollection(String structureItemId, String userId) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("查询是否有收藏记录[userId=%1$s,structureItemId=%2$s]",userId,structureItemId));
-		Collection data = this.collectionDao.loadCollection(structureItemId, userId);
+	public boolean deleteCollection(String itemId, String userId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("查询是否有收藏记录[userId=%1$s,itemId=%2$s]",userId,itemId));
+		Collection data = this.collectionDao.loadCollection(itemId, userId);
 		if(data == null){
-			if(logger.isDebugEnabled()) logger.debug(String.format("此收藏记录[userId=%1$s,structureItemId=%2$s]不存在",userId,structureItemId));
+			if(logger.isDebugEnabled()) logger.debug(String.format("此收藏记录[userId=%1$s,itemId=%2$s]不存在",userId,itemId));
 			return false;
 		}
 		this.collectionDao.delete(data);
 		return true;
 	}
 	@Override
-	public Json collectOrCancel(String structureItemId, String itemId,String userId) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("收藏或取消收藏[userId=%1$s,structureItemId=%2$s]",userId,structureItemId));
-		Collection data = this.collectionDao.loadCollection(structureItemId, userId);
+	public Json collectOrCancel(String itemId,String userId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("收藏或取消收藏[userId=%1$s,itemId=%2$s]",userId,itemId));
+		Collection data = this.collectionDao.loadCollection(itemId, userId);
 		Json json = new Json();
 		if(data == null){
-			if(logger.isDebugEnabled()) logger.debug(String.format("收藏记录[userId=%1$s,structureItemId=%2$s]",userId,structureItemId));
+			if(logger.isDebugEnabled()) logger.debug(String.format("收藏记录[userId=%1$s,itemId=%2$s]",userId,itemId));
 			data = new Collection();
 			data.setCreateTime(new Date());
 			data.setId(UUID.randomUUID().toString());
 			data.setItemId(itemId);
-			data.setStructureItemId(structureItemId);
+			data.setItemId(itemId);
 			data.setUserId(userId);
 			this.collectionDao.save(data);
 			json.setSuccess(true);

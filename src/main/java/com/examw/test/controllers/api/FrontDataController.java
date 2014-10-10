@@ -152,7 +152,7 @@ public class FrontDataController {
 	@ResponseBody
 	public Map<String,Object> findNotes(NoteInfo info,HttpServletRequest request){
 		if(logger.isDebugEnabled()) logger.debug("查询试题笔记...");
-		if(StringUtils.isEmpty(info.getStructureItemId())) return null;
+		if(StringUtils.isEmpty(info.getItemId())) return null;
 		Map<String,Object> map = new HashMap<String,Object>();
 		Long total = this.noteService.total(info);
 		map.put("total", total);
@@ -165,7 +165,7 @@ public class FrontDataController {
 	@ResponseBody
 	public Json addNotes(Note data){
 		if(logger.isDebugEnabled()) logger.debug("查询试题笔记...");
-		if(data==null || StringUtils.isEmpty(data.getStructureItemId())) return null;
+		if(data==null || StringUtils.isEmpty(data.getItemId())) return null;
 		Json json = new Json();
 		json.setSuccess(this.noteService.insertNote(data));
 		if(json.isSuccess()){
@@ -182,10 +182,10 @@ public class FrontDataController {
 	 */
 	@RequestMapping(value = {"/item/collection"}, method = {RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public Json collection(String structureItemId,String itemId,String userId){
+	public Json collection(String itemId,String userId){
 		if(logger.isDebugEnabled()) logger.debug("查询试题笔记...");
-		if(StringUtils.isEmpty(structureItemId)||StringUtils.isEmpty(userId)) return null;
-		return this.collectionService.collectOrCancel(structureItemId,itemId,userId);
+		if(StringUtils.isEmpty(itemId)||StringUtils.isEmpty(userId)) return null;
+		return this.collectionService.collectOrCancel(itemId,userId);
 	}
 	/**
 	 *
@@ -194,7 +194,7 @@ public class FrontDataController {
 	@ResponseBody
 	public Json saveItemRecord(@RequestBody ItemRecord info){
 		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据[包含题目]");
-		if(StringUtils.isEmpty(info.getStructureItemId())||StringUtils.isEmpty(info.getUserId())) return null;
+		if(StringUtils.isEmpty(info.getItemId())||StringUtils.isEmpty(info.getUserId())) return null;
 		Json result = new Json();
 		result.setSuccess(this.itemRecordService.insertRecord(info));
 		if(result.isSuccess())

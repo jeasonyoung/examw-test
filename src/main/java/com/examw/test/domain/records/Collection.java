@@ -10,8 +10,9 @@ import java.util.Date;
  */
 public class Collection implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id,structureItemId,userId,itemId,userAnswer,productId;
+	private String id,userId,itemId,userAnswer,productId;
 	private Date createTime;
+	private String content;	//题目内容
 	/**
 	 * 获取 ID
 	 * @return id
@@ -27,22 +28,6 @@ public class Collection implements Serializable {
 	 */
 	public void setId(String id) {
 		this.id = id;
-	}
-	/**
-	 * 获取 结构题目ID
-	 * @return structureItemId
-	 * 结构题目ID
-	 */
-	public String getStructureItemId() {
-		return structureItemId;
-	}
-	/**
-	 * 设置 结构题目ID
-	 * @param structureItemId
-	 * 结构题目ID
-	 */
-	public void setStructureItemId(String structureItemId) {
-		this.structureItemId = structureItemId;
 	}
 	/**
 	 * 获取 用户ID
@@ -124,6 +109,22 @@ public class Collection implements Serializable {
 	 */
 	public void setProductId(String productId) {
 		this.productId = productId;
+	}
+	/**
+	 * 获取 试题内容[JSON格式]
+	 * @return content
+	 * 试题内容
+	 */
+	public String getContent() {
+		return content;
+	}
+	/**
+	 * 设置 试题内容
+	 * @param content
+	 * 试题内容
+	 */
+	public void setContent(String content) {
+		this.content = content;
 	}
 	
 }

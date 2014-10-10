@@ -16,4 +16,11 @@ public interface IPaperRecordService{
 	 * @return
 	 */
 	List<PaperRecordInfo> findPaperRecords(PaperRecordInfo info);
+	
+	/**
+	 * 查找单个试卷记录
+	 * @param info
+	 * @return
+	 */
+	PaperRecordInfo findRecord(PaperRecordInfo info);
 }
