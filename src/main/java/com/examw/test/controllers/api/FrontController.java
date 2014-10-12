@@ -29,7 +29,7 @@ import com.examw.test.service.syllabus.IKnowledgeService;
 import com.examw.test.service.syllabus.ISyllabusService;
 
 /**
- * 前端考试数据控制器。
+ * 前端业务数据接口。
  * 
  * @author yangyong
  * @since 2014年9月25日

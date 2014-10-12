@@ -2,29 +2,41 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 	<!-- service -->
-	<bean id="paperRecordService" class="com.examw.test.service.records.impl.PaperRecordServiceImpl">
-		<!-- 做题记录数据操作接口 -->
-		<property name="paperRecordDao" ref="paperRecordDao" />
+	<!-- 用户试卷记录服务 -->
+	<bean id="userPaperRecordService" class="com.examw.test.service.records.impl.UserPaperRecordServiceImpl">
+	    <!-- 用户试卷记录数据接口 -->
+	    <property name="userPaperRecordDao" ref="userPaperRecordDao" />
+	    <!-- 产品用户数据接口 -->
+	    <property name="productUserDao" ref="productUserDao" />
+	    <!-- 试卷数据接口 -->
+	    <property name="paperDao" ref="paperDao" />
+	    <!-- 产品数据接口 -->
+	    <property name="productDao" ref="productDao" />
+	    <!-- 终端类型数据接口 -->
+	    <property name="softwareTypeDao" ref="softwareTypeDao" />
+	    <!-- 用户试题记录服务接口 -->
+	    <property name="userItemRecordService" ref="userItemRecordService" />
 	</bean>
-	<!-- 做题记录服务 -->
-	<bean id="itemRecordService" class="com.examw.test.service.records.impl.ItemRecordServiceImpl">
-		<!-- 做题记录数据操作接口 -->
-		<property name="itemRecordDao" ref="itemRecordDao" />
+	<!-- 用户试题记录服务 -->
+	<bean id="userItemRecordService" class="com.examw.test.service.records.impl.UserItemRecordServiceImpl">
+	    <!-- 用户试题记录数据接口 -->
+	    <property name="userItemRecordDao" ref="userItemRecordDao" />
+	    <!-- 用户试卷记录数据接口 -->
+	    <property name="userPaperRecordDao" ref="userPaperRecordDao" />
+	    <!-- 试卷结构数据接口 -->
+	    <property name="structureDao" ref="structureDao" />
+	    <!-- 终端类型数据接口 -->
+	    <property name="softwareTypeDao" ref="softwareTypeDao" />
 	</bean>
-	<!-- 错题记录服务 -->
-	<bean id="errorItemRecordService" class="com.examw.test.service.records.impl.ErrorItemRecordServiceImpl">
-		<!-- 做题记录数据操作接口 -->
-		<property name="errorItemRecordDao" ref="errorItemRecordDao" />
+	<!-- 用户试题收藏服务 -->
+	<bean id="userItemFavoriteService" class="com.examw.test.service.records.impl.UserItemFavoriteServiceImpl">
+	    <!-- 用户试题收藏数据接口 -->
+	    <property name="userItemFavoriteDao" ref="userItemFavoriteDao" />
+	    <!-- 产品用户数据接口 -->
+	    <property name="productUserDao" ref="productUserDao" />
+	    <!-- 考试科目数据接口 -->
+	    <property name="subjectDao" ref="subjectDao" />
+	    <!-- 终端类型数据接口 -->
+	    <property name="softwareTypeDao" ref="softwareTypeDao" />
 	</bean>
-	<!-- 题目收藏服务 -->
-	<bean id="collectionService" class="com.examw.test.service.records.impl.CollectionServiceImpl">
-		<!-- 做题记录数据操作接口 -->
-		<property name="collectionDao" ref="collectionDao" />
-	</bean>
-	<!-- 做题笔记服务 -->
-	<bean id="noteService" class="com.examw.test.service.records.impl.NoteServiceImpl">
-		<!-- 做题记录数据操作接口 -->
-		<property name="noteDao" ref="noteDao" />
-	</bean>
-	<!-- 基础设置 服务接口实现 end -->
 </beans>

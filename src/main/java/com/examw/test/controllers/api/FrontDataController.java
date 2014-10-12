@@ -1,206 +1,348 @@
 package com.examw.test.controllers.api;
 
-import java.util.HashMap;
-import java.util.Map;
 
-import javax.annotation.Resource; 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.model.Json;
-import com.examw.test.domain.records.ItemRecord;
-import com.examw.test.domain.records.Note;
-import com.examw.test.model.front.PaperFrontInfo;
-import com.examw.test.model.records.NoteInfo;
-import com.examw.test.service.library.IItemService;
-import com.examw.test.service.library.IPaperService;
-import com.examw.test.service.products.IProductService;
-import com.examw.test.service.records.ICollectionService;
-import com.examw.test.service.records.IItemRecordService;
-import com.examw.test.service.records.INoteService;
-import com.examw.test.service.settings.ICategoryService;
-import com.examw.test.service.settings.ISubjectService;
-import com.examw.test.service.syllabus.IKnowledgeService;
-import com.examw.test.service.syllabus.ISyllabusService;
+import com.examw.test.model.records.UserItemFavoriteInfo;
+import com.examw.test.model.records.UserItemRecordInfo;
+import com.examw.test.model.records.UserPaperRecordInfo;
+import com.examw.test.service.records.IUserItemFavoriteService;
+import com.examw.test.service.records.IUserItemRecordService;
+import com.examw.test.service.records.IUserPaperRecordService;
 
 /**
- * 考试分类-考试控制器
+ * 前端用户数据接口。
  * @author fengwei.
  * @since 2014年9月5日 上午10:41:23.
  */
 @Controller
-@RequestMapping(value = { "/api/data" })
+@RequestMapping(value = { "/api/data/user" })
 public class FrontDataController {
 	private static final Logger logger = Logger.getLogger(FrontDataController.class);
+	//用户试卷记录服务。
 	@Resource
-	private ICategoryService categoryService;
+	private IUserPaperRecordService userPaperRecordService;
+	//用户试题记录服务。
 	@Resource
-	private IProductService productService;
+	private IUserItemRecordService userItemRecordService;
+	//用户收藏记录服务。
 	@Resource
-	private ISubjectService subjectService;
-	@Resource
-	private ISyllabusService syllabusService;
-	@Resource
-	private IPaperService paperService;
-	@Resource
-	private IItemService itemService;
-	@Resource
-	private IKnowledgeService knowledgeService;
-	@Resource
-	private IItemRecordService itemRecordService;
-	@Resource
-	private INoteService noteService;
-	@Resource
-	private ICollectionService collectionService;
-	
-	
-	
-//	/**
-//	 * 加载产品下的试卷列表
-//	 * @param productId
-//	 * @param info
-//	 * @return
-//	 */
-//	@RequestMapping(value = {"/papers"}, method = {RequestMethod.POST,RequestMethod.GET})
-//	@ResponseBody
-//	public Map<String,Object> loadPapers(String productId,PaperInfo info,String userId){
-//		if(logger.isDebugEnabled()) logger.debug("试卷列表数据");
-//		Map<String, Object> map = new HashMap<String, Object>();
-//		if(StringUtils.isEmpty(productId)) return map;
-//		//List<Subject> list = this.productService.loadSubjectList(productId);
-//		
-//		//科目集合
-//<<<<<<< HEAD
-//		map.put("SUBJECTLIST", this.subjectService.conversion(list));
-//=======
-//		map.put("SUBJECTLIST", this.subjectService.changeModel(list));
-//		//地区集合
-//		map.put("AREALIST", this.productService.loadAreaList(productId));
-//>>>>>>> branch 'master' of git@github.com:jeasonyoung/examw-test.git
-		//试卷类型映射
-		//map.put("PAPERTYPE", this.productService.getPaperTypeMap());
-		//试卷列表
-//		DataGrid<PaperInfo> dg = this.paperService.datagrid(info);
-//		map.put("PAPERLIST", dg.getRows());
-//		//总条数
-//		map.put("TOTAL",dg.getTotal());
-	//	map.put("PAPERLIST", this.paperService.loadPaperFrontInfo(info, userId));
-		//map.put("TOTAL",this.paperService.totalPaperFrontInfo(info));
-//		return map;
-	//}
-//	/**
-//	 * 加载试卷基本信息数据
-//	 * @param paperId
-//	 * @return
-//	 */
-//	@RequestMapping(value = {"/paper"}, method = {RequestMethod.POST,RequestMethod.GET})
-//	@ResponseBody
-//	public PaperPreview loadPaperInfo(String paperId){
-//		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据");
-//		if(StringUtils.isEmpty(paperId)) return null;
-//		return this.paperService.loadPaperInfo(paperId);
-//	}
-//	/**
-//	 * 加载试卷的详细信息[包含题目数据]
-//	 * @param paperId
-//	 * @return
-//	 */
-//	@RequestMapping(value = {"/paper/do"}, method = {RequestMethod.POST,RequestMethod.GET})
-//	@ResponseBody
-//	public PaperPreview loadPaperDetail(String paperId,String userId){
-//		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据[包含题目]");
-//		if(StringUtils.isEmpty(paperId)||StringUtils.isEmpty(userId)) return null;
-//		return this.paperService.loadPaperPreviewAndAddRecord(paperId,userId);
-//	}
-//	
-//	@RequestMapping(value = {"/paper/submit"}, method = {RequestMethod.POST,RequestMethod.GET})
-//	@ResponseBody
-//	public Json submitPaper(String paperId,String userId,HttpServletRequest request){
-//		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据[包含题目]");
-//		if(StringUtils.isEmpty(paperId)||StringUtils.isEmpty(userId)) return null;
-//		String model = request.getParameter("model");
-//		String limitTime = request.getParameter("limitTime");
-//		String chooseAnswers = request.getParameter("chooseAnswers");
-//		String textAnswers = request.getParameter("textAnswers");
-//		logger.debug(chooseAnswers);
-//		return this.paperService.submitPaper(Integer.valueOf(limitTime), chooseAnswers, textAnswers,Integer.valueOf(model), paperId,userId);
-//	}
-	
-	@RequestMapping(value = {"/paper/record"}, method = {RequestMethod.POST,RequestMethod.GET})
-	@ResponseBody
-	public PaperFrontInfo paperRecord(String paperId,String userId,HttpServletRequest request){
-		if(logger.isDebugEnabled()) logger.debug("试卷解析详情");
-		if(StringUtils.isEmpty(paperId)||StringUtils.isEmpty(userId)) return null;
-		//return this.paperService.loadPaperRecordDetail(paperId, userId);
-		return null;
-	}
+	private IUserItemFavoriteService userItemFavoriteService;
 	/**
-	 * 查询试题笔记
-	 * @param structureItemId
-	 * @param userId
-	 * @param request
+	 * 添加用户试卷记录。
+	 * @param info
+	 * 用户试卷记录信息。
 	 * @return
 	 */
-	@RequestMapping(value = {"/item/notes"}, method = {RequestMethod.POST,RequestMethod.GET})
+	@RequestMapping(value = {"/paper/record/add"}, method = {RequestMethod.POST})
 	@ResponseBody
-	public Map<String,Object> findNotes(NoteInfo info,HttpServletRequest request){
-		if(logger.isDebugEnabled()) logger.debug("查询试题笔记...");
-		if(StringUtils.isEmpty(info.getStructureItemId())) return null;
-		Map<String,Object> map = new HashMap<String,Object>();
-		Long total = this.noteService.total(info);
-		map.put("total", total);
-		if(total.equals(0)) return map;
-		logger.debug("page = "+info.getPage()+"   rows = "+info.getRows());
-		map.put("rows", this.noteService.findNotes(info));
-		return map;
-	}
-	@RequestMapping(value = {"/item/addnote"}, method = {RequestMethod.POST,RequestMethod.GET})
-	@ResponseBody
-	public Json addNotes(Note data){
-		if(logger.isDebugEnabled()) logger.debug("查询试题笔记...");
-		if(data==null || StringUtils.isEmpty(data.getStructureItemId())) return null;
-		Json json = new Json();
-		json.setSuccess(this.noteService.insertNote(data));
-		if(json.isSuccess()){
-			json.setMsg("添加成功");
-			json.setData(data);
-		}
-		return json;
-	}
-	/**
-	 * 收藏或取消收藏
-	 * @param structureItemId
-	 * @param userId
-	 * @return
-	 */
-	@RequestMapping(value = {"/item/collection"}, method = {RequestMethod.POST,RequestMethod.GET})
-	@ResponseBody
-	public Json collection(String structureItemId,String itemId,String userId){
-		if(logger.isDebugEnabled()) logger.debug("查询试题笔记...");
-		if(StringUtils.isEmpty(structureItemId)||StringUtils.isEmpty(userId)) return null;
-		return this.collectionService.collectOrCancel(structureItemId,itemId,userId);
-	}
-	/**
-	 *
-	 */
-	@RequestMapping(value = {"/record/save"}, method = {RequestMethod.POST,RequestMethod.GET})
-	@ResponseBody
-	public Json saveItemRecord(@RequestBody ItemRecord info){
-		if(logger.isDebugEnabled()) logger.debug("试卷基本信息数据[包含题目]");
-		if(StringUtils.isEmpty(info.getStructureItemId())||StringUtils.isEmpty(info.getUserId())) return null;
+	public Json addPaperRecord(@RequestBody UserPaperRecordInfo info){
+		if(logger.isDebugEnabled()) logger.debug("添加用户试卷记录...");
 		Json result = new Json();
-		result.setSuccess(this.itemRecordService.insertRecord(info));
-		if(result.isSuccess())
-			result.setMsg("提交成功");
-		else
-			result.setMsg("提交失败");
+		try {
+			result.setData(this.userPaperRecordService.update(info));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("添加用户试卷记录发生异常：" + e.getMessage(), e);
+		}
+		return result;
+	}
+	/**
+	 * 添加用户试题记录。
+	 * @param paperRecordId
+	 * 所属试卷记录ID。
+	 * @param data
+	 * 试题记录集合。
+	 * @return
+	 */
+	@RequestMapping(value = {"/item/{paperRecordId}/record/add"}, method = {RequestMethod.POST})
+	@ResponseBody
+	public Json addItemRecord(@PathVariable String paperRecordId, @RequestBody List<UserItemRecordInfo> data){
+		if(logger.isDebugEnabled()) logger.debug(String.format("添加用户试题记录［试卷记录ID paperRecordId = %s ］...", paperRecordId));
+		Json result = new Json();
+		try {
+			this.userItemRecordService.addItemRecord(paperRecordId, data);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("添加用户试题记录发生异常：" + e.getMessage(), e);
+		}
+		return result;
+	}
+	/**
+	 * 添加用户试题收藏。
+	 * @param userId
+	 * @param info
+	 * @return
+	 */
+	@RequestMapping(value = {"/{userId}/favorite/add"}, method = {RequestMethod.POST})
+	@ResponseBody
+	public Json addItemFavorite(@PathVariable String userId,@RequestBody UserItemFavoriteInfo info){
+		if(logger.isDebugEnabled()) logger.debug(String.format("添加用户［userId = %s］试题收藏..", userId));
+		Json result = new Json();
+		try {
+			info.setUserId(userId);
+			result.setData(this.userItemFavoriteService.update(info));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("添加用户试题收藏发生异常：" + e.getMessage(), e);
+		}
+		return result;
+	}
+	/**
+	 * 获取试卷最高得分。
+	 * @param paperId
+	 * 所属试卷ID。
+	 * @return
+	 */
+	@RequestMapping(value = {"/paper/{paperId}/score"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public Json loadPaperMaxScore(@PathVariable String paperId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("获取试卷［paperId = %s］最高得分...", paperId));
+		Json result = new Json();
+		try {
+			result.setData(this.userPaperRecordService.findMaxScore(paperId));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("获取试卷最高得分发生异常：" + e.getMessage(), e);
+		}
+		return result;
+	}
+	/**
+	 * 获取试卷参考人次。
+	 * @param paperId
+	 * 所属试卷ID。
+	 * @return
+	 */
+	@RequestMapping(value = {"/paper/{paperId}/total"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public Json loadPaperUsersTotal(String paperId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("获取试卷［paperId = %s］参考人次...", paperId));
+		Json result = new Json();
+		try {
+			result.setData(this.userPaperRecordService.findUsersTotal(paperId));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("获取试卷参考人次发生异常：" + e.getMessage(), e);
+		}
+		return result;
+	}
+	/**
+	 * 加载用户试卷记录数据。
+	 * @param userId
+	 * 用户ID。
+	 * @param paperId
+	 * 试卷ID。
+	 * @return
+	 */
+	@RequestMapping(value = {"/{userId}/paper/{paperId}/record"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public Json loadUserPaperRecord(@PathVariable String userId,@PathVariable String paperId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId = %1$s］试卷［paperId = %2$s］记录数据...", userId,paperId));
+		Json result = new Json();
+		try {
+			result.setData(this.userPaperRecordService.load(userId, paperId));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("加载用户试卷记录数据发生异常：" + e.getMessage(), e);
+		}
+		return result;
+	}
+	/**
+	 * 加载用户试卷最新试题记录数据。
+	 * @param userId
+	 * 所属用户ID。
+	 * @param paperId
+	 * 所属试卷ID
+	 * @return
+	 */
+	@RequestMapping(value = {"/{userId}/paper/{paperId}/record/item/last"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public Json loadUserPaperItemLastRecord(@PathVariable String userId,@PathVariable String paperId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId = %1$s］试卷［paperId = %2$s］最新试题记录数据...", userId,paperId));
+		Json result = new Json();
+		try {
+			result.setData(this.userItemRecordService.loadUserPaperLastRecord(userId, paperId));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("加载用户最新试题记录数据发生异常：" + e.getMessage(), e);
+		}
+		return result;
+	}
+	/**
+	 * 加载用户试题最新记录数据。
+	 * @param userId
+	 * 所属用户ID。
+	 * @param paperId
+	 * 所属试卷ID
+	 * @return
+	 */
+	@RequestMapping(value = {"/{userId}/paper/{paperId}/item/{itemId}/record/last"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public Json loadUserPaperItemLastRecord(@PathVariable String userId,@PathVariable String paperId,@PathVariable String itemId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId = %1$s］试卷［paperId = %2$s］试题［itemId = %3$s］最新记录数据...", userId,paperId,itemId));
+		Json result = new Json();
+		try {
+			result.setData(this.userItemRecordService.loadUserPaperLastRecord(userId, paperId, itemId));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("加载用户试题最新记录数据发生异常：" + e.getMessage(), e);
+		}
+		return result;
+	}
+	/**
+	 * 加载用户错题集
+	 * @param userId
+	 * 所属用户ID
+	 * @param paperId
+	 * 试卷ID
+	 * @return
+	 */
+	@RequestMapping(value = {"/{userId}/errors/{paperId}", "/{userId}/errors"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public Json  loadUserErrorItems(@PathVariable String userId, @PathVariable String paperId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId = %1$s］［paperId = %2$s］错题集合...", userId,paperId));
+		Json result = new Json();
+		try {
+			result.setData(this.userItemRecordService.loadUserErrorItems(userId, paperId));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("加载用户错题集数据发生异常：" + e.getMessage(), e);
+		}
+		return result;
+	}
+	/**
+	 * 判断用户是否收藏试题。
+	 * @param userId
+	 * 所属用户ID。
+	 * @param itemId
+	 * 所属试题ID。
+	 * @return
+	 */
+	@RequestMapping(value = {"/{userId}/favorite/{itemId}/exists"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public Json existsItemFavorite(@PathVariable String userId,@PathVariable String itemId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("判断用户［userId = %1$s］是否收藏试题［itemId = %2$s］...", userId,itemId));
+		Json result = new Json();
+		try {
+			result.setData(this.userItemFavoriteService.exists(userId, itemId));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("判断用户是否收藏试题发生异常：" + e.getMessage(), e);
+		}
+		return result;
+	}
+	/**
+	 * 加载试题被收藏的次数。
+	 * @param itemId
+	 * 所属试题ID。
+	 * @return
+	 */
+	@RequestMapping(value = {"/favorite/{itemId}/total"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public Json loadItemFavoriteTotal(@PathVariable String itemId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试题［itemId = %s］被收藏的次数...", itemId));
+		Json result = new Json();
+		try {
+			result.setData(this.userItemFavoriteService.totalItemFavorites(itemId));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("加载试题被收藏的次数发生异常：" + e.getMessage(), e);
+		}
+		return result;
+	}
+	/**
+	 * 加载用户收藏试题总数。
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping(value = {"/{userId}/favorite/total"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public Json loadUserFavoriteTotal(@PathVariable String userId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId = %s］收藏试题总数...", userId));
+		Json result = new Json();
+		try {
+			result.setData(this.userItemFavoriteService.totalUserFavorites(userId));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("加载用户收藏试题总数发生异常：" + e.getMessage(), e);
+		}
+		return result;
+	}
+	/**
+	 * 加载用户收藏试题集合。
+	 * @param userId
+	 * @param info
+	 * @return
+	 */
+	@RequestMapping(value = {"/{userId}/favorites"}, method = {RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public Json loadItemFavorites(@PathVariable String userId,UserItemFavoriteInfo info){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId = %s］收藏试题集合...", userId));
+		Json result = new Json();
+		try {
+			info.setUserId(userId);
+			result.setData(this.userItemFavoriteService.datagrid(info));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("加载用户收藏试题集合发生异常：" + e.getMessage(), e);
+		}
+		return result;
+	}
+	/**
+	 * 删除试题收藏。
+	 * @param favoriteId
+	 * 试题收藏ID。
+	 * @return
+	 */
+	@RequestMapping(value = {"/favorite/{favoriteId}/delete"}, method = {RequestMethod.GET, RequestMethod.DELETE})
+	public Json deleteItemFavorite(@PathVariable String favoriteId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("删除试题收藏［favoriteId = %s］...", favoriteId));
+		Json result = new Json();
+		try {
+			this.userItemFavoriteService.delete(new String[]{favoriteId});
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("删除试题收藏发生异常：" + e.getMessage(), e);
+		}
 		return result;
 	}
 }

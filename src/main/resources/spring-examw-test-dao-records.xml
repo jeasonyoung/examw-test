@@ -2,26 +2,22 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 	<!-- dao -->
-	<!--  考试记录   数据接口实现 begin -->
-	<!-- 试卷记录数据接口 -->
-	<bean id="paperRecordDao" class="com.examw.test.dao.records.impl.PaperRecordDaoImpl">
+	<!--  用户记录   数据接口实现 begin -->
+	
+	<!-- 用户试卷记录数据接口 -->
+	<bean id="userPaperRecordDao" class="com.examw.test.dao.records.impl.UserPaperRecordDaoImpl">
 		<property name="sessionFactory"  ref="sessionFactory" />
 	</bean>
-	<!-- 做题记录数据接口 -->
-	<bean id="itemRecordDao" class="com.examw.test.dao.records.impl.ItemRecordDaoImpl">
+	
+	<!-- 用户试题记录数据接口 -->
+	<bean id="userItemRecordDao" class="com.examw.test.dao.records.impl.UserItemRecordDaoImpl">
 		<property name="sessionFactory"  ref="sessionFactory" />
 	</bean>
-	<!-- 错题记录数据接口 -->
-	<bean id="errorItemRecordDao" class="com.examw.test.dao.records.impl.ErrorItemRecordDaoImpl">
+	
+	<!-- 用户试题收藏数据接口 -->
+	<bean id="userItemFavoriteDao" class="com.examw.test.dao.records.impl.UserItemFavoriteDaoImpl">
 		<property name="sessionFactory"  ref="sessionFactory" />
 	</bean>
-	<!-- 试题收藏试题 -->
-	<bean id="collectionDao" class="com.examw.test.dao.records.impl.CollectionDaoImpl">
-		<property name="sessionFactory"  ref="sessionFactory" />
-	</bean>
-	<!-- 笔记数据接口 -->
-	<bean id="noteDao" class="com.examw.test.dao.records.impl.NoteDaoImpl">
-		<property name="sessionFactory"  ref="sessionFactory" />
-	</bean>
-	<!-- 考试记录   数据接口实现 end -->
+	
+	<!-- 用户记录   数据接口实现 end -->
 </beans>

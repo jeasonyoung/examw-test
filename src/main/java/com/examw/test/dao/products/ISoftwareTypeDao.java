@@ -28,4 +28,11 @@ public interface ISoftwareTypeDao extends IBaseDao<SoftwareType>{
 	 * 数据总数。
 	 */
 	Long total(SoftwareTypeInfo info);
+	/**
+	 * 加载软件类型。
+	 * @param code
+	 * 软件类型代码。
+	 * @return
+	 */
+	SoftwareType load(Integer code);
 }

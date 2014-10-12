@@ -48,7 +48,6 @@ public class SoftwareTypeDaoImpl extends BaseDaoImpl<SoftwareType> implements IS
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.count(hql, parameters);
 	}
-
 	// 添加查询条件到HQL。
 	private String addWhere(SoftwareTypeInfo info, String hql,Map<String, Object> parameters) {
 		if (!StringUtils.isEmpty(info.getName())) {
@@ -57,5 +56,17 @@ public class SoftwareTypeDaoImpl extends BaseDaoImpl<SoftwareType> implements IS
 		}
 		return hql;
 	}
+	/*
+	 * 加载软件类型数据。
+	 * @see com.examw.test.dao.products.ISoftwareTypeDao#load(java.lang.Integer)
+	 */
+	@Override
+	public SoftwareType load(Integer code) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载软件类型［code = %d］数据...", code));
+		final String hql = "from SoftwareType s where s.code = :code";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("code", code);
+		List<SoftwareType> list = this.find(hql, parameters, 0, 0);
+		return (list == null || list.size() == 0) ? null : list.get(0);
+	}
 }
-

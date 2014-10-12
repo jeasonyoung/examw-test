@@ -1,107 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="com.examw.test.domain.records">
-	<!-- 试卷的考试记录 -->
-	<class name="PaperRecord" table="tbl_Examw_Test_Records_PaperRecords">
-		<!-- 记录ID -->
-		<id name="id"  type="string"  length="64" />
-		<!-- 试卷ID -->
-		<property name="paperId" column="paper_id" type="string" length="64" not-null="true" />
-		<!-- 用户ID -->
-		<property name="userId" column="user_id" type="string" length="64" not-null="true" />
-		<!-- 上一次考试时间 -->
-		<property name="lastTime" column="last_time" type="timestamp" />
-		<!-- 得分 -->
-		<property name="score" type="big_decimal" />
-		<!-- 状态[已完成|未完成] -->
-		<property name="status" type="integer" not-null="true"/>
-		<!-- 使用时间[秒] -->
-		<property name="time" type="integer"/>
-		<!-- 未做完已经使用时间 -->
-		<property name="usedTime" column="used_time" type="integer"/>
-		<!-- 产品ID -->
-		<property name="productId" column="product_id" type="string" length="64"/>
+	<!-- 用户试卷记录 -->
+	<class name="UserPaperRecord" table="tbl_Examw_Test_Records_UserPaperRecords">
+	    <cache usage="read-write" />
+	    <!-- 试卷记录ID -->
+	    <id name="id" type="string" length="64" />
+	    <!-- 所属用户 -->
+	    <many-to-one name="user" column="user_id" class="com.examw.test.domain.products.ProductUser" not-null="true"/>
+	    <!-- 所属试卷 -->
+	    <many-to-one name="paper" column="paper_id" class="com.examw.test.domain.library.Paper" not-null="true"/>
+	    <!-- 所属产品 -->
+	    <many-to-one name="product" column="product_id" class="com.examw.test.domain.products.Product" not-null="true"/>
+	    <!-- 所属终端类型 -->
+	    <many-to-one name="terminal" column="terminal_id" class="com.examw.test.domain.products.SoftwareType" />
+	    <!-- 状态 -->
+	    <property name="status" type="integer" not-null="true"/>
+	    <!-- 得分 -->
+	    <property name="score" type="big_decimal" />
+	    <!-- 用时（秒） -->
+	    <property name="usedTime" type="long" />
+	    <!-- 创建时间 -->
+	    <property name="createTime" column="create_time" type="timestamp" />
+	    <!-- 最后修改时间 -->
+	    <property name="lastTime" column="last_time" type="timestamp" />
+	    <!-- 试题记录集合 -->
+	    <set name="items" inverse="false" cascade="save-update" order-by="lastTime desc">
+	        <key column="user_paper_id" />
+	        <one-to-many class="UserItemRecord"/>
+	    </set>
 	</class>
-	
-	<!-- 试题的做题记录  -->
-	<class name="ItemRecord" table="tbl_Examw_Test_Records_ItemRecords">
-		<!-- 记录ID -->
-		<id name="id"  type="string"  length="64" />
-		<!-- 结构题目ID -->
-		<property name="structureItemId" column="structure_item_id" type="string"  length="128" not-null="true"/>
-		<!-- 试卷ID -->
-		<property name="paperId" column="paper_id" type="string" length="64" not-null="true" />
-		<!-- 用户ID -->
-		<property name="userId" column="user_id" type="string" length="64" not-null="true" />
-		<!-- 得分 -->
-		<property name="score" type="big_decimal" />
-		<!-- 使用时间[秒] -->
-		<property name="time" type="integer"/>
-		<!-- 用户答案 -->
-		<property name="answer" type="text"/>
-		<!-- 上一次提交时间 -->
-		<property name="lastTime" column="last_time" type="timestamp" />
-		<!-- 做题终端 -->
-		<property name="terminal" type="integer" />
-		<!-- ip地址 -->
-		<property name="ip" type="string" length="32"	/>
-		<!-- 回答状态 [-1:答错,0:没答,1:答对,2:少答]-->
-		<property name="status" type="integer" />
-		<!-- 产品ID -->
-		<property name="productId" column="product_id" type="string" length="64"/>
+	<!-- 用户试题记录  -->
+	<class name="UserItemRecord" table="tbl_Examw_Test_Records_UserItemRecords">
+	    <cache usage="read-write" />
+	    <!-- 试题记录ID -->
+	    <id name="id" type="string" length="64" />
+	    <!-- 所属试卷记录 -->
+	    <many-to-one name="paperRecord" column="user_paper_id" class="UserPaperRecord" not-null="true" />
+	    <!-- 所属试卷结构 -->
+	    <many-to-one name="structure" column="structure_id" class="com.examw.test.domain.library.Structure" />
+	    <!-- 所属试题ID -->
+	    <property name="itemId" type="string" length="64" />
+	    <!-- 试题内容JSON -->
+	    <property name="itemContent" type="text" />
+	    <!-- 用户答案 -->
+	    <property name="answer" type="text" />
+	    <!-- 所属终端类型 -->
+	    <many-to-one name="terminal" column="terminal_id" class="com.examw.test.domain.products.SoftwareType" />
+	    <!-- 状态 -->
+	    <property name="status" type="integer" not-null="true"/>
+	    <!-- 得分 -->
+	    <property name="score" type="big_decimal" />
+	    <!-- 用时（秒） -->
+	    <property name="usedTime" type="long" />
+	    <!-- 创建时间 -->
+	    <property name="createTime" column="create_time" type="timestamp" />
+	    <!-- 最后修改时间 -->
+	    <property name="lastTime" column="last_time" type="timestamp" />
 	</class>
-	
-	<!-- 错题记录 -->
-	<class name="ErrorItemRecord" table="tbl_Examw_Test_Records_ErrorItemRecords">
-		<!-- 记录ID -->
-		<id name="id"  type="string"  length="64" />
-		<!-- 结构题目ID -->
-		<property name="structureItemId" column="structure_item_id" type="string"  length="128" not-null="true"/>
-		<!-- 用户ID -->
-		<property name="userId" column="user_id" type="string" length="64" not-null="true" />
-		<!-- 试题ID -->
-		<property name="itemId" column="item_id" type="string" length="64" />
-		<!-- 错误次数 -->
-		<property name="errorTimes" column="error_times" type="integer"/>
-		<!-- 历史答案 -->
-		<property name="historyAnswers" column="history_answers" type="text"/>
-		<!-- 记录时间 -->
-		<property name="createTime" column="create_time" type="timestamp" />
-		<!-- 产品ID -->
-		<property name="productId" column="product_id" type="string" length="64"/>
-	</class>
-	
-	<!-- 题目收藏 -->
-	<class name="Collection" table="tbl_Examw_Test_Records_Collections">
-		<!-- 收藏ID -->
-		<id name="id"  type="string"  length="64" />
-		<!-- 结构题目ID -->
-		<property name="structureItemId" column="structure_item_id" type="string"  length="128" not-null="true"/>
-		<!-- 用户ID -->
-		<property name="userId" column="user_id" type="string" length="64" not-null="true" />
-		<!-- 试题ID -->
-		<property name="itemId" column="item_id" type="string" length="64" />
-		<!-- 收藏时间 -->
-		<property name="createTime" column="create_time" type="timestamp" />
-		<!-- 用户收藏时的答案 -->
-		<property name="userAnswer" column="user_answer" type="text"/>
-		<!-- 产品ID -->
-		<property name="productId" column="product_id" type="string" length="64"/>
-	</class>
-	
-	<!-- 题目笔记 -->
-	<class name="Note" table="tbl_Examw_Test_Records_Notes">
-		<!-- 笔记ID -->
-		<id name="id"  type="string"  length="64" />
-		<!-- 结构题目ID -->
-		<property name="structureItemId" column="structure_item_id" type="string"  length="128" not-null="true"/>
-		<!-- 试题ID -->
-		<property name="itemId" column="item_id" type="string" length="64" />
-		<!-- 用户ID -->
-		<property name="userId" column="user_id" type="string" length="64" not-null="true" />
-		<!-- 创建时间 -->
-		<property name="createTime" column="create_time" type="timestamp" />
-		<!-- 笔记内容 -->
-		<property name="content" type="text" not-null="true"/>	
+	<!-- 用户试题收藏 -->
+	<class name="UserItemFavorite" table="tbl_Examw_Test_Records_UserItemFavorites">
+	    <cache usage="read-write" />
+	    <!-- 试题收藏ID -->
+	    <id name="id" type="string" length="64" />
+	    <!-- 所属用户 -->
+	    <many-to-one name="user" column="user_id" class="com.examw.test.domain.products.ProductUser" unique-key="user_favorite_item_key" not-null="true"/>
+	    <!-- 所属试题ID -->
+	    <property name="itemId" type="string" length="64" unique-key="user_favorite_item_key"  not-null="true" />
+	    <!-- 试题题型 -->
+	    <property name="itemType" type="integer" />
+	    <!-- 试题内容JSON -->
+	    <property name="itemContent" type="text" />
+	    <!-- 所属科目 -->
+	    <many-to-one name="subject" column="subject_id" class="com.examw.test.domain.settings.Subject" />
+	    <!-- 所属终端类型 -->
+	    <many-to-one name="terminal" column="terminal_id" class="com.examw.test.domain.products.SoftwareType" />
+	    <!--  备注信息 -->
+	    <property name="remarks" type="text" />
+	    <!-- 收藏时间 -->
+	    <property name="createTime" column="create_time" type="timestamp" />
 	</class>
 </hibernate-mapping>
