@@ -89,6 +89,10 @@ public class SyllabusDaoImpl extends BaseDaoImpl<Syllabus> implements ISyllabusD
 	public void delete(Syllabus data){
 		if(logger.isDebugEnabled()) logger.debug("删除数据...");
 		if(data == null) return;
+		int size = 0;
+		if(data.getKnowledges() != null && (size = data.getKnowledges().size()) > 0){
+			throw new RuntimeException(String.format("关联了［%d］知识点，暂不能删除！", size));
+		}
 		if(data.getChildren() != null && data.getChildren().size() > 0){
 			for(Syllabus p : data.getChildren()){
 				if(p == null) continue;

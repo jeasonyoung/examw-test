@@ -32,6 +32,11 @@
 			<key column="pid" />
 			<one-to-many class="Syllabus"/>
 		</set>
+		<!-- 知识点集合 -->
+		<set name="knowledges" inverse="true" cascade="save-update" order-by="code asc">
+		    <key column="syllabus_id" />
+		    <one-to-many class="Knowledge"/>
+		</set>
 	</class>
 	<!-- 教材课本 -->
 	<class name="TextBook" table="tbl_Examw_Test_Syllabus_TextBooks">

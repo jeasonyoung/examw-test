@@ -125,6 +125,7 @@ $(function(){
 	};
 	//syllabus points
 	${dg}_syllabus_points = function(id,title){
+		title = "考试大纲要点［" + title +"］";
 		var d = $("<div/>").dialog({
 			title:title,width:800, height:600,
 			href:"<@s.url '/syllabus/syllabus/'/>"+id + "/points_list",

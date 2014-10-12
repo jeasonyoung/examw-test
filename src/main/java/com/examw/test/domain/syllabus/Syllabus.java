@@ -16,6 +16,7 @@ public class Syllabus implements Serializable {
 	private Syllabus parent;
 	private Set<Syllabus> children;
 	private Integer orderNo;
+	private Set<Knowledge> knowledges;
 	/**
 	 * 获取要点ID。
 	 * @return 要点ID。
@@ -105,5 +106,20 @@ public class Syllabus implements Serializable {
 	 */
 	public void setOrderNo(Integer orderNo) {
 		this.orderNo = orderNo;
+	}
+	/**
+	 * 获取知识点集合。
+	 * @return 知识点集合。
+	 */
+	public Set<Knowledge> getKnowledges() {
+		return knowledges;
+	}
+	/**
+	 * 设置知识点集合。
+	 * @param knowledges 
+	 *	  知识点集合。
+	 */
+	public void setKnowledges(Set<Knowledge> knowledges) {
+		this.knowledges = knowledges;
 	}
 }

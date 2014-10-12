@@ -138,6 +138,8 @@ public class SyllabusController {
 		node.setText(root.getTitle());
 		Map<String, Object> attributes = new HashMap<String, Object>();
 		attributes.put("pid", root.getPid());
+		attributes.put("id", root.getId());
+		attributes.put("title", root.getTitle());
 		attributes.put("orderNo", root.getOrderNo());
 		node.setAttributes(attributes);
 		if(root.getChildren() != null && root.getChildren().size() > 0){
