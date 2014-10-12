@@ -1,7 +1,7 @@
 package com.examw.test.domain.syllabus;
 
 import java.io.Serializable;
-
+import java.util.Set;
 /**
  * 出版社。
  * @author yangyong.
@@ -10,6 +10,7 @@ import java.io.Serializable;
 public class Press implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String id,name;
+	private Set<TextBook> books;
 	/**
 	 * 获取出版社ID。
 	 * @return 出版社ID。
@@ -39,5 +40,20 @@ public class Press implements Serializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+	/**
+	 * 获取教材集合。
+	 * @return 教材集合。
+	 */
+	public Set<TextBook> getBooks() {
+		return books;
+	}
+	/**
+	 * 设置教材集合。
+	 * @param books 
+	 *	  教材集合。
+	 */
+	public void setBooks(Set<TextBook> books) {
+		this.books = books;
 	}
 }

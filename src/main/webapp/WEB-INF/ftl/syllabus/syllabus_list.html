@@ -10,9 +10,7 @@ $(function(){
 	var exam_tree = $("#${module}_exam_tree").tree({
 		url:"<@s.url '/settings/category/subject-tree'/>",
 		lines:true,
-		onLoadError:function(e){
-			<@error_dialog "e"/>
-		},
+		onLoadError:function(e){ <@error_dialog "e"/> },
 		onBeforeLoad:function(){
 			current_exam_id = current_subject_id = "";
 		},
@@ -31,87 +29,57 @@ $(function(){
 	//dg
 	var dg=$("#${dg}").datagrid({
 		url:"<@s.url '/syllabus/syllabus/datagrid'/>",
-		fit:true,
-		fitColumns:true,
-		rownumbers:true,
-		pagination:true,
-		pagePosition:"bottom",
-		pageSize:20,
-		pageList:[20,30,40],
-		border:true,
-		striped:true,
-		idField:"id",
-		sortName:"code",
-		sortOrder:"asc",
+		fit:true,fitColumns:true,rownumbers:true,
+		pagination:true,pagePosition:"bottom",pageSize:20,pageList:[20,30,40],
+		border:true,striped:true,idField:"id",
+		sortName:"orderNo",sortOrder:"asc",
 		columns:[[{
-			field:"id",
-			checkbox:true
+			field:"id",checkbox:true
 		},{
-			title:"所属科目",
-			field:"subName",
-			width:30,
-			align:"left",
-			sortable:true
+			title:"所属考试",field:"examName",width:50,align:"left",sortable:true
 		},{
-			title:"要点代码",
-			field:"code",
-			width:25,
-			align:"left",
-			sortable:true
+			title:"所属科目",field:"subjectName",width:30,align:"left",sortable:true
 		},{
-			title:"要点名称",
-			field:"title",
-			width:30,
-			align:"left",
-			sortable:true
+			title:"名称",field:"title",width:100,align:"left",sortable:true
 		},{
-			title:"要点全称",
-			field:"fullName",
-			width:50,
-			align:"left"
+			title:"操作",field:"opt",width:20,align:"center",sortable:false,
+			 formatter:function(value,row,index){
+				 return "<a href='#' onclick='${dg}_syllabus_points(\""+row["id"] +"\",\"" +row["title"]+ "\");'>［要点管理］</a>";
+			 }
 		}]],
 		toolbar:"#${dg}_toobar",
-		onLoadError:function(e){
-			<@error_dialog "e"/>
-		},
+		onLoadError:function(e){ <@error_dialog "e"/> },
 		onDblClickRow:function(rowIndex,rowData){
-			edit_window("修改大纲",rowIndex,rowData);
+			edit_window("编辑大纲",rowIndex,rowData,null);
 		}
 	});
+	<@shiro.hasPermission name="${PER_UPDATE}">
 	//add
 	var m = false;
 	${dg}_add = function(){
 		if(m) return;
 		m = true;
-		$.getJSON("<@s.url '/syllabus/syllabus/code'/>?random="+new Date().getTime(),function(data){
+		$.getJSON("<@s.url '/syllabus/syllabus/order'/>?_=" + Math.random(),function(data){
 			m = false;
 			edit_window("新增大纲",0,null,data);
 		});
 	};
+	</@shiro.hasPermission>
 	//edit
-	function edit_window(title,index,row,code){
-		var exam_id = current_exam_id,syll_id = "",syll_pid = "";
-		if(row && row.id){
-			exam_id = row.examId;
-			current_subject_id = row.subId;
-			if(!row.pid){
-				syll_id = row.id;
-			}else{
-				syll_pid = row.pid;
-				syll_id = row.id;
-			}
+	function edit_window(title,index,row,order){
+		var exam_id = current_exam_id,subject_id = current_subject_id;
+		if(row){
+			if(row.examId)exam_id = row.examId;
+			if(row.subjectId)subject_id = row.subjectId;
 		}
 		var d = $("<div/>").dialog({
-			title:title,
-			width:530,
-			height:250,
-			href:"<@s.url '/syllabus/syllabus/edit'/>?examId="+exam_id+"&subId=" + current_subject_id +"&syllId="+syll_id+"&syllPid="+syll_pid,
+			title:title,width:530, height:250,
+			href:"<@s.url '/syllabus/syllabus/edit'/>?examId=" + exam_id,
 			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">    
 			{
-				text:"保存",
-				iconCls:"icon-save",
+				text:"保存",iconCls:"icon-save",
 				handler:function(){
 					$.messager.progress();
 					$("#${module}_edit_form").form("submit",{
@@ -146,25 +114,27 @@ $(function(){
 			},
 			</@shiro.hasPermission>
 			{
-				text:"关闭",
-				iconCls:"icon-cancel",
-				handler:function(){
-					d.dialog("close");
-				}
+				text:"关闭",iconCls:"icon-cancel",
+				handler:function(){ d.dialog("close"); }
 			}],
-			onClose:function(){
-				$(this).dialog("destroy");
-			},
+			onClose:function(){ $(this).dialog("destroy");},
 			onLoad:function(){
-				if(code && !row){
-					$("#${module}_edit_form").form("load",{"code":code});
-					return;
-				}
-				if(row){
-					$("#${module}_edit_form").form("load",row);
-				}
+				$("#${module}_edit_form").form("load",row ? row : {"orderNo":order,"examId":exam_id,"subjectId":subject_id});
 			}
 	  });
+	};
+	//syllabus points
+	${dg}_syllabus_points = function(id,title){
+		var d = $("<div/>").dialog({
+			title:title,width:800, height:600,
+			href:"<@s.url '/syllabus/syllabus/'/>"+id + "/points_list",
+			modal:true,
+			buttons:[{
+				text:"关闭",iconCls:"icon-cancel",
+				handler:function(){ d.dialog("close"); }
+			}],
+			onClose:function(){ $(this).dialog("destroy");}
+		});
 	};
 	//search
 	${dg}_search = function(){
@@ -189,9 +159,7 @@ $(function(){
 				$.ajax({
 					url:"<@s.url '/syllabus/syllabus/delete'/>",
 					type:"POST",
-					data:{
-						id:ids.join("|")
-					},
+					data:{ id:ids.join("|") },
 					dataType:"json",
 					error:function(e){
 						$.messager.progress("close");
@@ -239,7 +207,7 @@ $(function(){
 			<@shiro.hasPermission name="${PER_DELETE}">
 			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="${dg}_delete()">删除</a>
 			</@shiro.hasPermission>
-			<label>要点名称：<input name="title" type="text" style="width:198px;"/></label>
+			<label>名称：<input name="title" type="text" style="width:198px;"/></label>
 			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="${dg}_search()" style="margin-left:10px;">查询</a>
 		</div>
 	</div>

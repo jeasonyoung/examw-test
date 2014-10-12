@@ -1,4 +1,4 @@
-<#--行政地区设置列表-->
+<#--出版社列表-->
 <#include "comm.ftl"/>
 <#assign module="syllabus_press"/>
 <#assign dg="${module}_dg"/>
@@ -8,52 +8,36 @@ $(function(){
 	//dg
 	var dg=$("#${dg}").datagrid({
 		url:"<@s.url '/syllabus/press/datagrid'/>",
-		fit:true,
-		fitColumns:true,
-		rownumbers:true,
-		pagination:true,
-		pagePosition:"bottom",
-		pageSize:20,
-		pageList:[20,30,40],
-		border:true,
-		striped:true,
-		idField:"id",
-		sortName:"name",
+		fit:true,fitColumns:true,rownumbers:true,
+		pagination:true,pagePosition:"bottom",pageSize:20,pageList:[20,30,40],
+		border:true,striped:true,
+		idField:"id",sortName:"name",
 		columns:[[{
-			field:"id",
-			checkbox:true
+			field:"id",checkbox:true
 		},{
 			title:"出版社名称",
-			field:"name",
-			width:20,
-			align:"left",
-			sortable:true
+			field:"name",width:100,align:"left",sortable:true
 		}]],
 		toolbar:"#${dg}_toobar",
-		onLoadError:function(e){
-			<@error_dialog "e"/>
-		},
+		onLoadError:function(e){ <@error_dialog "e"/> },
 		onDblClickRow:function(rowIndex,rowData){
 			edit_window("修改出版社",rowIndex,rowData,null);
 		}
 	});
+	<@shiro.hasPermission name="${PER_UPDATE}">
 	//add
-	${dg}_add = function(){
-		edit_window("新增出版社",0,null);
-	};
+	${dg}_add = function(){ edit_window("新增出版社",0,null); };
+	</@shiro.hasPermission>
 	//edit
 	function edit_window(title,index,row){
 		var d = $("<div/>").dialog({
-			title:title,
-			width:400,
-			height:140,
+			title:title, width:400,height:140,
 			href:"<@s.url '/syllabus/press/edit'/>",
 			modal:true,
 			buttons:[
 			 <@shiro.hasPermission name="${PER_UPDATE}">
 			  {
-				text:"保存",
-				iconCls:"icon-save",
+				text:"保存",iconCls:"icon-save",
 				handler:function(){
 					$.messager.progress();
 					$("#${module}_edit_form").form("submit",{
@@ -88,15 +72,10 @@ $(function(){
 			},
 			</@shiro.hasPermission>
 			{
-				text:"关闭",
-				iconCls:"icon-cancel",
-				handler:function(){
-					d.dialog("close");
-				}
+				text:"关闭",iconCls:"icon-cancel",
+				handler:function(){ d.dialog("close"); }
 			}],
-			onClose:function(){
-				$(this).dialog("destroy");
-			},
+			onClose:function(){ $(this).dialog("destroy"); },
 			onLoad:function(){
 				if(row) $("#${module}_edit_form").form("load",row);
 			}
@@ -123,9 +102,7 @@ $(function(){
 				$.ajax({
 					url:"<@s.url '/syllabus/press/delete'/>",
 					type:"POST",
-					data:{
-						id:ids.join("|")
-					},
+					data:{ id:ids.join("|") },
 					dataType:"json",
 					error:function(e){
 						$.messager.progress("close");

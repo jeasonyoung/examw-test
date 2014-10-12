@@ -1,0 +1,43 @@
+<#--考试大纲要点列表-->
+<#include "comm.ftl"/>
+<#assign module="syllabus_syllabus_points"/>
+<script type="text/javascript">
+<!--
+$(function(){
+	//edit
+	${module}_edit = function(node){
+		alert(node.text);
+	};
+	//add
+	${module}_add = function(o){
+		alert($(o).text());
+	};
+	//remove
+	${module}_remove = function(o){
+		alert($(o).text());
+	};
+	//reload
+	${module}_reload = function(){
+		$("#${module}_list_tree").tree("reload");
+	};
+});
+//-->
+</script>
+<ul id="${module}_list_tree" class="easyui-tree" data-options="url:'<@s.url '/syllabus/syllabus/${current_syllabus_id}/tree'/>',
+															 onDblClick:function(node){
+															 	${module}_edit(node);
+															 },
+															 onContextMenu:function(e,node){
+															 	e.preventDefault();
+															 	$('#${module}_list_tree').tree('select',node.target);
+															 	$('#${module}_list_menus').menu('show',{ left: e.pageX,top: e.pageY });
+															 }"></ul>
+<div id="${module}_list_menus" class="easyui-menu" style="width:120px;">
+	<@shiro.hasPermission name="${PER_UPDATE}">
+	<div onclick="${module}_add(this)" data-options="iconCls:'icon-add'">新增大纲要点</div>
+	</@shiro.hasPermission>
+	<@shiro.hasPermission name="${PER_DELETE}">
+	<div onclick="${module}_remove(this)" data-options="iconCls:'icon-remove'">移除大纲要点</div>
+	</@shiro.hasPermission>
+	<div onclick="${module}_reload()" data-options="iconCls:'icon-reload'">刷新</div>
+</div>

@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
-import com.examw.model.TreeNode;
 import com.examw.test.dao.settings.ISubjectDao;
 import com.examw.test.dao.syllabus.ISyllabusDao;
 import com.examw.test.domain.settings.Subject;
@@ -70,29 +69,7 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 	@Override
 	protected SyllabusInfo changeModel(Syllabus data) {
 		if(logger.isDebugEnabled()) logger.debug(" 数据模型转换 Syllabus => SyllabusInfo ...");
-		if(data == null) return null;
-		SyllabusInfo info = new SyllabusInfo();
-		BeanUtils.copyProperties(data, info, new String[]{"children"});
-		info.setFullTitle(this.buildFullTitle(data));
-		if(data.getParent() != null) info.setPid(data.getParent().getId());
-		if(data.getSubject() != null){
-			info.setSubjectId(data.getSubject().getId());
-			info.setSubjectName(data.getSubject().getName());
-			if(data.getSubject().getExam() != null){
-				info.setExamId(data.getSubject().getExam().getId());
-				info.setExamName(data.getSubject().getExam().getName());
-			}
-		}
-		if(data.getChildren() != null && data.getChildren().size() > 0){
-			Set<SyllabusInfo> children = new TreeSet<>();
-			for(Syllabus syllabus : data.getChildren()){
-				if(syllabus == null) continue;
-				SyllabusInfo e = this.changeModel(syllabus);
-				if(e != null) children.add(e);
-			}
-			if(children.size() > 0) info.setChildren(children);
-		}
-		return info;
+		return this.changeModel(data, false);
 	}
 	/*
 	 * 数据模型转换。
@@ -101,15 +78,36 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 	@Override
 	public SyllabusInfo conversion(Syllabus syllabus) {
 		if(logger.isDebugEnabled()) logger.debug("数据模型转换 Syllabus => SyllabusInfo ...");
-		return this.changeModel(syllabus);
+		return this.changeModel(syllabus, true);
 	}
-	//加载大纲全称。
-	private String buildFullTitle(Syllabus data){
-		if(data == null) return null;
-		if(data.getParent() == null) return data.getTitle();
-		StringBuilder builder = new StringBuilder(data.getTitle());
-		builder.insert(0, this.buildFullTitle(data.getParent()) + ">");
-		return builder.toString();
+	//数据模型转换。
+	private SyllabusInfo changeModel(Syllabus source,boolean hasChild){
+		if(source == null) return null;
+		SyllabusInfo target = new SyllabusInfo();
+		BeanUtils.copyProperties(source, target, new String[]{"children"}); 
+		if(source.getSubject() != null){
+			target.setSubjectId(source.getSubject().getId());
+			target.setSubjectName(source.getSubject().getName());
+			if(source.getSubject().getExam() != null){
+				target.setExamId(source.getSubject().getExam().getId());
+				target.setExamName(source.getSubject().getExam().getName());
+			}
+		}
+		if(hasChild && (source.getChildren() != null && source.getChildren().size() > 0)){
+			Set<SyllabusInfo> children = new TreeSet<>();
+			for(Syllabus syllabus : source.getChildren()){
+				if(syllabus == null) continue;
+				SyllabusInfo e = this.changeModel(syllabus, hasChild);
+				if(e != null){
+					e.setPid(target.getId());
+					children.add(e);
+				}
+			}
+			if(children.size() > 0){
+				target.setChildren(children);
+			}
+		}
+		return target;
 	}
 	/*
 	 * 更新数据。
@@ -126,25 +124,17 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 			data = new Syllabus();
 		}
 		BeanUtils.copyProperties(info, data, new String[]{"children"});
-		if(!StringUtils.isEmpty(info.getPid()) && (data.getParent() == null || !data.getParent().getId().equalsIgnoreCase(info.getPid()))){
+		if(StringUtils.isEmpty(info.getPid())) {
+			data.setParent(null);
+		}else if (data.getParent() == null || !data.getParent().getId().equalsIgnoreCase(info.getPid())) {
 			Syllabus parent = this.syllabusDao.load(Syllabus.class, info.getPid());
 			if(parent != null && !parent.getId().equalsIgnoreCase(data.getId())) {
 				data.setParent(parent);
 			}
 		}
 		data.setSubject(StringUtils.isEmpty(info.getSubjectId()) ? null : this.subjectDao.load(Subject.class, info.getSubjectId()));
-		
-		info.setFullTitle(this.buildFullTitle(data));
 		if(isAdded) this.syllabusDao.save(data);
-		if(data.getSubject() != null){
-			info.setSubjectId(data.getSubject().getId());
-			info.setSubjectName(data.getSubject().getName());
-			if(data.getSubject().getExam() != null){
-				info.setExamId(data.getSubject().getExam().getId());
-				info.setExamName(data.getSubject().getExam().getName());
-			}
-		}
-		return info;
+		return this.changeModel(data);
 	}
 	/*
 	 * 删除数据。
@@ -163,48 +153,13 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 		}
 	}
 	/*
-	 * 加载考试大纲树结构。
-	 * @see com.examw.test.service.syllabus.ISyllabusService#loadSyllabuses(java.lang.String, java.lang.String)
-	 */
-	@Override
-	public List<TreeNode> loadSyllabuses(String subjectId, String ignore) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("加载科目［subjectId = %s］ 大纲，忽略［syllabusId = %s］...", subjectId, ignore));
-		List<TreeNode> treeNodes = new ArrayList<>();
-		List<Syllabus> syllabuses = this.syllabusDao.loadFristSyllabuss(subjectId);
-		if(syllabuses != null && syllabuses.size() > 0){
-			 for(Syllabus syllabus : syllabuses){
-				 TreeNode node = this.createNode(syllabus, ignore);
-				 if(node != null){
-					 treeNodes.add(node);
-				 }
-			 }
-		}
-		return treeNodes;
-	}
-	//创建节点。
-	private TreeNode createNode(Syllabus data,String ignore){
-		if(data == null || (!StringUtils.isEmpty(ignore) && data.getId().equalsIgnoreCase(ignore))) return null;
-		TreeNode node = new TreeNode();
-		node.setId(data.getId());
-		node.setText(data.getTitle());
-		if(data.getChildren() != null){
-			List<TreeNode> children = new ArrayList<>();
-			for(Syllabus s : data.getChildren()){
-				TreeNode e = this.createNode(s, ignore);
-				if(e != null) children.add(e);
-			}
-			if(children.size() > 0)node.setChildren(children);
-		}
-		return node;
-	}
-	/*
 	 * 加载最大的代码值。
 	 * @see com.examw.oa.service.check.ICatalogService#loadMaxCode()
 	 */
 	@Override
-	public Integer loadMaxCode() {
+	public Integer loadMaxOrder(String parentSyllabusId) {
 		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
-		return this.syllabusDao.loadMaxCode();
+		return this.syllabusDao.loadMaxOrder(parentSyllabusId);
 	}
 	/*
 	 *  加载科目下的考试大纲。
@@ -218,7 +173,7 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 		List<Syllabus> syllabuses = this.syllabusDao.loadFristSyllabuss(subjectId);
 		if(syllabuses != null && syllabuses.size() > 0){
 			for(Syllabus syllabus : syllabuses){
-				SyllabusInfo info = this.changeModel(syllabus);
+				SyllabusInfo info = this.conversion(syllabus);
 				if(info != null){
 					list.add(info);
 				}

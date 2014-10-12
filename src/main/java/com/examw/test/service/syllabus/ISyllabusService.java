@@ -2,7 +2,6 @@ package com.examw.test.service.syllabus;
 
 import java.util.List;
 
-import com.examw.model.TreeNode;
 import com.examw.test.domain.syllabus.Syllabus;
 import com.examw.test.model.syllabus.SyllabusInfo;
 import com.examw.test.service.IBaseDataService;
@@ -12,16 +11,6 @@ import com.examw.test.service.IBaseDataService;
  * @since 2014-08-06.
  */
 public interface ISyllabusService extends IBaseDataService<SyllabusInfo> {
-	/**
-	 * 加载科目下大纲树数据。
-	 * @param sudId
-	 * 所属科目ID。
-	 * @param ignore
-	 * 需忽略的大纲ID。
-	 * @return
-	 * 大纲节点集合。
-	 */
-	 List<TreeNode> loadSyllabuses(String subjectId,String ignore);
 	 /**
 	  * 加载科目下考试大纲集合。
 	  * @param subjectId
@@ -31,10 +20,12 @@ public interface ISyllabusService extends IBaseDataService<SyllabusInfo> {
 	  */
 	 List<SyllabusInfo> loadSyllabuses(String subjectId);
 	 /**
-	 * 加载最大代码值。
+	 * 加载最大排序号。
+	 * @param parentSyllabusId
+	 * 父亲大纲ID。
 	 * @return
 	 */
-	Integer loadMaxCode();
+	Integer loadMaxOrder(String parentSyllabusId);
 	/**
 	 * 数据模型转换。
 	 * @param syllabus

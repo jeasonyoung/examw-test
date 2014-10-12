@@ -55,4 +55,18 @@ public class PressDaoImpl extends BaseDaoImpl<Press> implements IPressDao{
 		}
 		return hql;
 	}
+	/*
+	 * 删除数据。
+	 * @see com.examw.test.dao.impl.BaseDaoImpl#delete(java.lang.Object)
+	 */
+	@Override
+	public void delete(Press data) {
+		if(logger.isDebugEnabled()) logger.debug("删除数据....");
+		if(data == null)return;
+		int size = 0;
+		if(data.getBooks() != null && (size = data.getBooks().size()) > 0){
+			throw new RuntimeException(String.format("关联了［%d］本教材，暂不能删除！", size));
+		}
+		super.delete(data);
+	}
 }

@@ -36,8 +36,10 @@ public interface ISyllabusDao extends IBaseDao<Syllabus>{
 	 */
 	List<Syllabus> loadFristSyllabuss(String subjectId);
 	/**
-	 * 加载最大代码值。
+	 * 加载最大排序号。
+	 * @param parentSyllabusId
+	 * 上级大纲ID。
 	 * @return
 	 */
-	Integer loadMaxCode();
+	Integer loadMaxOrder(String parentSyllabusId);
 }

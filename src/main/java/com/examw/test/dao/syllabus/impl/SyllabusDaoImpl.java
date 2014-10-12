@@ -25,7 +25,7 @@ public class SyllabusDaoImpl extends BaseDaoImpl<Syllabus> implements ISyllabusD
 	@Override
 	public List<Syllabus> loadFristSyllabuss(String subjectId) {
 		if(logger.isDebugEnabled()) logger.debug("加载一级大纲数据［subjectId=" + subjectId + "］集合...");
-		String hql = "from Syllabus s where (s.parent is null) and (s.subject.id = :subjectId) order by s.code";
+		String hql = "from Syllabus s where (s.parent is null) and (s.subject.id = :subjectId) order by s.orderNo";
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("subjectId", subjectId);
 		if(logger.isDebugEnabled())logger.debug(hql);
@@ -44,6 +44,8 @@ public class SyllabusDaoImpl extends BaseDaoImpl<Syllabus> implements ISyllabusD
 		if(!StringUtils.isEmpty(info.getSort())){
 			if(info.getSort().equalsIgnoreCase("subjectName")){
 				info.setSort("subject.name");
+			}else if (info.getSort().equalsIgnoreCase("examName")) {
+				info.setSort("subject.exam.name");
 			}
 			hql += " order by s." + info.getSort() + " " + info.getOrder();
 		}
@@ -97,14 +99,22 @@ public class SyllabusDaoImpl extends BaseDaoImpl<Syllabus> implements ISyllabusD
 		super.delete(data);
 	}
 	/*
-	 * 加载最大代码值。
+	 * 加载最大排序号。
 	 * @see com.examw.test.dao.syllabus.ISyllabusDao#loadMaxCode()
 	 */
 	@Override
-	public Integer loadMaxCode() {
-		if(logger.isDebugEnabled()) logger.debug("加载科目最大代码值...");
-		final String hql = "select max(s.code) from Syllabus";
-		Object obj = this.uniqueResult(hql, null);
+	public Integer loadMaxOrder(String parentSyllabusId) {
+		if(logger.isDebugEnabled()) logger.debug("加载考试大纲最大代码值...");
+		StringBuilder hqlBuilder = new StringBuilder();
+		hqlBuilder.append("select max(s.orderNo) ").append(" from Syllabus s ");
+		Map<String, Object> parameters = new HashMap<>();
+		if(StringUtils.isEmpty(parentSyllabusId)){
+			hqlBuilder.append(" where (s.parent is null) ");
+		}else {
+			hqlBuilder.append(" where (s.parent.id = :pid) ");
+			parameters.put("pid", parentSyllabusId);
+		}
+		Object obj = this.uniqueResult(hqlBuilder.toString(), parameters);
 		return obj == null ? null : (int)obj;
 	}
 }

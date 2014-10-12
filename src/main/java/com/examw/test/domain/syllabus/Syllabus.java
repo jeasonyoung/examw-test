@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Set;
 
 import com.examw.test.domain.settings.Subject;
-
 /**
  * 考试大纲。
  * @author yangyong.
@@ -16,7 +15,7 @@ public class Syllabus implements Serializable {
 	private Subject subject;
 	private Syllabus parent;
 	private Set<Syllabus> children;
-	private Integer code;
+	private Integer orderNo;
 	/**
 	 * 获取要点ID。
 	 * @return 要点ID。
@@ -31,21 +30,6 @@ public class Syllabus implements Serializable {
 	 */
 	public void setId(String id) {
 		this.id = id;
-	}
-	/**
-	 * 获取要点代码。
-	 * @return 要点代码。
-	 */
-	public Integer getCode() {
-		return code;
-	}
-	/**
-	 * 设置要点代码。
-	 * @param code 
-	 *	 要点代码。
-	 */
-	public void setCode(Integer code) {
-		this.code = code;
 	}
 	/**
 	 * 获取要点。
@@ -106,5 +90,20 @@ public class Syllabus implements Serializable {
 	 */
 	public void setChildren(Set<Syllabus> children) {
 		this.children = children;
+	}
+	/**
+	 * 获取排序号。
+	 * @return 排序号。
+	 */
+	public Integer getOrderNo() {
+		return orderNo;
+	}
+	/**
+	 * 设置排序号。
+	 * @param orderNo 
+	 *	 排序号。
+	 */
+	public void setOrderNo(Integer orderNo) {
+		this.orderNo = orderNo;
 	}
 }
