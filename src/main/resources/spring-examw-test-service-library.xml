@@ -164,6 +164,8 @@
 		<property name="productDao" ref="productDao"/>
 		<!-- 试卷服务接口 -->
 		<property name="paperService" ref="paperService"/>
+		<!-- 用户试卷记录服务接口 -->
+		<property name="userPaperRecordService" ref="userPaperRecordService"/>
 	</bean>
 	<!-- 题库管理 服务接口实现 end-->
 </beans>

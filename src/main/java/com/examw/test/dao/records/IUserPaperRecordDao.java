@@ -53,4 +53,13 @@ public interface IUserPaperRecordDao extends IBaseDao<UserPaperRecord> {
 	 * 试卷记录。
 	 */
 	UserPaperRecord load(String userId,String paperId);
+	/**
+	 * 加载某产品下最新的试卷考试记录	[Add by FW 2014.10.12]
+	 * @param userId
+	 * 用户ID
+	 * @param productId
+	 * 产品ID
+	 * @return
+	 */
+	List<UserPaperRecord> findLastedPaperRecordsOfProduct(String userId,String productId);
 }

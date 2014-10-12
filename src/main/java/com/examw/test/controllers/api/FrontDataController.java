@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,6 +40,12 @@ public class FrontDataController {
 	//用户收藏记录服务。
 	@Resource
 	private IUserItemFavoriteService userItemFavoriteService;
+	
+	private ObjectMapper mapper;
+	
+	public FrontDataController() {
+		this.mapper = new ObjectMapper();
+	}
 	/**
 	 * 添加用户试卷记录。
 	 * @param info
@@ -147,6 +154,26 @@ public class FrontDataController {
 		}
 		return result;
 	}
+	
+	/**
+	 * 加载某产品下用户试卷最新记录数据。[Add by FW 2014.10.12]
+	 * @param userId
+	 * 用户ID。
+	 * @param paperId
+	 * 试卷ID。
+	 * @return
+	 */
+	@RequestMapping(value = {"/{userId}/paper/{productId}/records"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public List<UserPaperRecordInfo> loadUserPaperRecords(@PathVariable String userId,@PathVariable String productId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId = %1$s］试卷［paperId = %2$s］记录数据...", userId,productId));
+		try {
+			return this.userPaperRecordService.findLastedPaperRecordsOfProduct(userId, productId);
+		} catch (Exception e) {
+			logger.error("加载用户试卷记录数据发生异常：" + e.getMessage(), e);
+		}
+		return null;
+	}
 	/**
 	 * 加载用户试卷记录数据。
 	 * @param userId
@@ -161,7 +188,7 @@ public class FrontDataController {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId = %1$s］试卷［paperId = %2$s］记录数据...", userId,paperId));
 		Json result = new Json();
 		try {
-			result.setData(this.userPaperRecordService.load(userId, paperId));
+			result.setData(this.mapper.writeValueAsString(this.userPaperRecordService.load(userId, paperId)));
 			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);

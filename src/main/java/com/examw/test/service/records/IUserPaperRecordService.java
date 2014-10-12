@@ -1,6 +1,7 @@
 package com.examw.test.service.records;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import com.examw.service.IDataService;
 import com.examw.test.model.records.UserPaperRecordInfo;
@@ -36,4 +37,14 @@ public interface IUserPaperRecordService extends IDataService<UserPaperRecordInf
 	 * 试卷记录。
 	 */
 	UserPaperRecordInfo load(String userId,String paperId);
+	/**
+	 * 加载某产品下最新的试卷考试记录	[Add by FW 2014.10.12]
+	 * @param userId
+	 * 用户ID
+	 * @param productId
+	 * 产品ID
+	 * @return
+	 */
+	List<UserPaperRecordInfo> findLastedPaperRecordsOfProduct(String userId,String productId);
+	
 }
