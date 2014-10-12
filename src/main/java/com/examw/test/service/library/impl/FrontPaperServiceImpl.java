@@ -22,6 +22,7 @@ import com.examw.test.model.library.FrontPaperInfo;
 import com.examw.test.model.library.PaperPreview;
 import com.examw.test.service.library.IFrontPaperService;
 import com.examw.test.service.library.IPaperService;
+import com.examw.test.service.records.IUserPaperRecordService;
 import com.examw.test.support.PaperItemUtils;
 
 /**
@@ -36,6 +37,7 @@ public class FrontPaperServiceImpl implements IFrontPaperService  {
 	private IProductDao productDao;
 	private IPaperService paperService;
 	private ObjectMapper mapper  = new ObjectMapper();
+	private IUserPaperRecordService userPaperRecordService;
 	/**
 	 * 设置试卷发布数据接口。
 	 * @param paperReleaseDao 
@@ -62,6 +64,15 @@ public class FrontPaperServiceImpl implements IFrontPaperService  {
 	public void setPaperService(IPaperService paperService) {
 		 if(logger.isDebugEnabled()) logger.debug("注入试卷服务接口...");
 		 this.paperService = paperService;
+	}
+	/**
+	 * 设置 用户试卷记录服务接口
+	 * @param userPaperRecordService
+	 * 用户试卷记录服务接口
+	 */
+	public void setUserPaperRecordService(
+			IUserPaperRecordService userPaperRecordService) {
+		this.userPaperRecordService = userPaperRecordService;
 	}
 	/*
 	 * 加载科目下的试卷数量。
@@ -134,6 +145,9 @@ public class FrontPaperServiceImpl implements IFrontPaperService  {
 		if(frontPaperInfo != null){
 			frontPaperInfo.setId(paperRelease.getId());//重置试卷ID。
 			frontPaperInfo.setTotal(paperRelease.getTotal());
+			//增加属性 [Add by FW 2014.10.12]
+			frontPaperInfo.setUserTotal(this.userPaperRecordService.findUsersTotal(paperRelease.getId()));
+			frontPaperInfo.setMaxScore(this.userPaperRecordService.findMaxScore(paperRelease.getId())); 
 		}
 		return frontPaperInfo;
 	}

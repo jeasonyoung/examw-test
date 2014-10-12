@@ -1,6 +1,7 @@
 package com.examw.test.service.records.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -120,7 +121,25 @@ public class UserPaperRecordServiceImpl extends BaseDataServiceImpl<UserPaperRec
 	@Override
 	public UserPaperRecordInfo load(String userId, String paperId) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId = %1$s］的试卷［paperId = %2$s］记录...", userId, paperId));
-		return this.changeModel(this.userPaperRecordDao.load(userId, paperId));
+		return this.changeModel(this.userPaperRecordDao.load(userId, paperId),true);
+	}
+	/*
+	 * 加载某产品下最新的试卷考试记录	[Add by FW 2014.10.12]
+	 * @see com.examw.test.service.records.IUserPaperRecordService#findLastedPaperRecordsOfProduct(java.lang.String, java.lang.String)
+	 */
+	public List<UserPaperRecordInfo> findLastedPaperRecordsOfProduct(String userId,String productId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId = %1$s］的产品［productId = %2$s］的最新考试记录...", userId, productId));
+		List<UserPaperRecord> list = this.userPaperRecordDao.findLastedPaperRecordsOfProduct(userId, productId);
+		List<UserPaperRecordInfo> results = new ArrayList<>();
+		if(list != null && list.size() > 0){
+			for(UserPaperRecord data : list){
+				UserPaperRecordInfo info = this.changeModel(data,false);
+				if(info != null){
+					results.add(info);
+				}
+			}
+		}
+		return results;
 	}
 	/*
 	 * 查询数据。
@@ -137,6 +156,9 @@ public class UserPaperRecordServiceImpl extends BaseDataServiceImpl<UserPaperRec
 	 */
 	@Override
 	protected UserPaperRecordInfo changeModel(UserPaperRecord data) {
+		return changeModel(data,false);
+	}
+	private UserPaperRecordInfo changeModel(UserPaperRecord data,boolean isLoadItems){
 		if(logger.isDebugEnabled()) logger.debug("数据模型转换 UserPaperRecord => UserPaperRecordInfo ...");
 		if(data == null) return null;
 		UserPaperRecordInfo info = new UserPaperRecordInfo();
@@ -153,7 +175,7 @@ public class UserPaperRecordServiceImpl extends BaseDataServiceImpl<UserPaperRec
 		if(data.getTerminal() != null){//终端
 			info.setTerminalCode(data.getTerminal().getCode());
 		}
-		info.setItems(this.changeModelItems(data.getItems()));
+		if(isLoadItems) info.setItems(this.changeModelItems(data.getItems()));
 		return info;
 	}
 	//

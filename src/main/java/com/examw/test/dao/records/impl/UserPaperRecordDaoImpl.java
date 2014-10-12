@@ -114,4 +114,18 @@ public class UserPaperRecordDaoImpl extends BaseDaoImpl<UserPaperRecord> impleme
 		List<UserPaperRecord> list = this.find(hql, parameters, 0, 0);
 		return (list == null || list.size() == 0) ? null : list.get(0);
 	}
+	/*
+	 * 加载某产品下用户不同试卷的最新试卷记录
+	 * @see com.examw.test.dao.records.IUserPaperRecordDao#findLastedPaperRecordsOfProduct(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<UserPaperRecord> findLastedPaperRecordsOfProduct(String userId,
+			String productId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId ＝ %1$s］产品［ productId= %2$s］的最新记录集合...",userId,productId));
+		final String hql = "from UserPaperRecord u where (u.user.id = :userId) and (u.product.id = :productId) group by u.paper.id order by u.lastTime desc,u.createTime desc";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("userId", userId);
+		parameters.put("productId", productId);
+		return this.find(hql, parameters, null, null);
+	}
 }
