@@ -12,7 +12,6 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -40,7 +39,7 @@ public class MainTest {
 	private IItemService itemService;
 	@Resource
 	private SessionFactory sessionFactorySql;
-	@Test
+	//@Test
 	public void ShiTis() throws JsonGenerationException, JsonMappingException, IOException{
 		Session session = sessionFactorySql.openSession();
 //		Transaction transaction= session.beginTransaction();
