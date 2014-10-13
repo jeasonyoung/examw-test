@@ -237,6 +237,7 @@ public class UserPaperRecordServiceImpl extends BaseDataServiceImpl<UserPaperRec
 				}
 			}
 		}
+		data.setLastTime(new Date());
 		this.userPaperRecordDao.saveOrUpdate(data);
 		return this.changeModel(data);
 	}

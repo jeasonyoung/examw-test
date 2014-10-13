@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.examw.model.Paging;
 import com.examw.support.CustomDateSerializer;
@@ -22,7 +23,10 @@ public class UserPaperRecordInfo extends Paging {
 	private Integer status,terminalCode;
 	private Long usedTime;
 	private BigDecimal score;
-	private Date createTime,lastTime;
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Date createTime;
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Date lastTime;
 	private Set<UserItemRecordInfo> items;
 	/**
 	 * 获取记录ID。

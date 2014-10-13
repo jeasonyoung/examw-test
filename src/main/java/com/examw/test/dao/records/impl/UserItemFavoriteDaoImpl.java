@@ -110,4 +110,18 @@ public class UserItemFavoriteDaoImpl extends BaseDaoImpl<UserItemFavorite> imple
 		parameters.put("userId", userId);
 		return this.count(hql, parameters);
 	}
+	/*
+	 * 查询收藏试题
+	 * @see com.examw.test.dao.records.IUserItemFavoriteDao#load(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public UserItemFavorite load(String userId, String itemId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("判断用户［userId = %1$s］是否收藏试题［itemId = %2$s］...", userId,itemId));
+		final String hql = "from UserItemFavorite u where (u.user.id = :userId) and (u.itemId = :itemId)";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("userId", userId);
+		parameters.put("itemId", itemId);
+		List<UserItemFavorite> list = this.find(hql, parameters, null, null);
+		return (list == null || list.size() == 0) ? null : list.get(0);
+	}
 }

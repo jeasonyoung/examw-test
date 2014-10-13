@@ -189,4 +189,19 @@ public class UserItemFavoriteServiceImpl extends BaseDataServiceImpl<UserItemFav
 			}
 		}
 	}
+	/*
+	 * 收藏或取消
+	 * @see com.examw.test.service.records.IUserItemFavoriteService#favorOrCancel(com.examw.test.model.records.UserItemFavoriteInfo)
+	 */
+	@Override
+	public boolean favorOrCancel(UserItemFavoriteInfo info) {
+		if(logger.isDebugEnabled()) logger.debug("收藏或者取消收藏...");
+		UserItemFavorite data = this.userItemFavoriteDao.load(info.getUserId(), info.getItemId());
+		if(data == null){
+			this.update(info);
+		}else{
+			this.userItemFavoriteDao.delete(data);
+		}
+		return true;
+	}
 }

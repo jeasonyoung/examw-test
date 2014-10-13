@@ -34,4 +34,8 @@ public interface IUserItemFavoriteService extends IDataService<UserItemFavoriteI
 	 * @return
 	 */
 	Long totalUserFavorites(String userId);
+	/**
+	 * 收藏或者取消收藏
+	 */
+	boolean favorOrCancel(UserItemFavoriteInfo info);
 }
