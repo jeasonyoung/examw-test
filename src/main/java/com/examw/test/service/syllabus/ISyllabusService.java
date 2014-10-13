@@ -20,6 +20,14 @@ public interface ISyllabusService extends IBaseDataService<SyllabusInfo> {
 	  */
 	 List<SyllabusInfo> loadSyllabuses(String subjectId);
 	 /**
+	  * 获取状态名称。
+	  * @param status
+	  * 状态值。
+	  * @return
+	  * 状态名称。
+	  */
+	 String loadStatusName(Integer status);
+	 /**
 	 * 加载最大排序号。
 	 * @param parentSyllabusId
 	 * 父亲大纲ID。

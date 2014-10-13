@@ -26,17 +26,25 @@ $(function(){
 //-->
 </script>
 <form id="${form}" method="POST" style="padding:10px;">
-	<div style="float:left;margin-top:15px;width:100%;">
+	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">所属科目：</label>
 		<input name="examId" type="text"  style="width:250px;"/>
 		<input name="subjectId" type="text"  style="width:150px;"/>
 		<input type="hidden" name="id">
 	</div>
-	<div style="float:left; margin-top:15px; width:100%;">
+	<div style="float:left; margin-top:12px; width:100%;">
 		<label style="width:75px;">大纲名称：</label>
 		<input type="text" name="title" class="easyui-validatebox"  data-options="required:true" style="width:400px;"/>
 	</div>
-	<div style="float:left; margin-top:15px; width:100%;">
+	<div style="float:left; margin-top:12px; width:100%;">
+		<label style="width:75px;margin-top:2px;">状态：</label>
+		<#list SyllabusStatusMap?keys as key>
+			<label style="padding-top:0px;<#if (key_index > 0)>margin-left:15px;</#if>">
+					<input type="radio" name="status" value="${key}" <#if (key_index == 0)> checked="checked" </#if> />${SyllabusStatusMap[key]}
+				</label>
+		</#list>
+	</div>
+	<div style="float:left; margin-top:12px; width:100%;">
 		<label style="width:75px;">排序号：</label>
 		<input type="text" name="orderNo" class="easyui-numberbox"  data-options="required:true" style="width:70px;"/>
 	</div>

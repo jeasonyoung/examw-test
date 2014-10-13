@@ -10,14 +10,18 @@ $(function(){
 		url:"<@s.url '/syllabus/syllabus/${current_syllabus_id}/tree'/>",
 		onClick:function(node){
 			parent_syllabus_id = node.id;
-			alert(parent_syllabus_id);
+			//alert(parent_syllabus_id);
 		},
 		onDblClick:function(node){
+			if(st){
+				var p = st.tree("getParent",node.target);
+		 		if(p == null)return;
+			}
 		 	${module}_edit(node);
 		},
 		onContextMenu:function(e,node){
 		 	e.preventDefault();
-		 	if(st)st.tree("select",node.target);
+		 	if(st){ st.tree("select",node.target); }
 		 	parent_syllabus_id = node.id;
 		 	$("#${module}_list_menus").menu("show",{ 
 		 		left: e.pageX,top: e.pageY 
@@ -92,8 +96,15 @@ $(function(){
 	};
 	//remove
 	${module}_remove = function(){
-		var node = $("#${module}_list_tree").tree("getSelected");
+		if(!st)return;
+		var node = st.tree("getSelected");
 		if(!node) return;
+		var p = st.tree("getParent",node.target);
+ 		if(p == null){
+ 			$.messager.alert("警告","根节点不允许删除！");
+ 			return;
+ 		}
+		
 		$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
 			if(!r)return;
 			$.messager.progress();
@@ -122,7 +133,7 @@ $(function(){
 	};
 	//reload
 	${module}_reload = function(){
-		$("#${module}_list_tree").tree("reload");
+		if(st)st.tree("reload");
 		parent_syllabus_id = "${current_syllabus_id}";
 	};
 });

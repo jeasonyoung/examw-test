@@ -15,7 +15,7 @@ public class Syllabus implements Serializable {
 	private Subject subject;
 	private Syllabus parent;
 	private Set<Syllabus> children;
-	private Integer orderNo;
+	private Integer status,orderNo;
 	private Set<Knowledge> knowledges;
 	/**
 	 * 获取要点ID。
@@ -46,6 +46,21 @@ public class Syllabus implements Serializable {
 	 */
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	/**
+	 * 获取状态（1-启用，0-停用）。
+	 * @return 状态（1-启用，0-停用）。
+	 */
+	public Integer getStatus() {
+		return status;
+	}
+	/**
+	 * 设置状态（1-启用，0-停用）。
+	 * @param status 
+	 *	  状态（1-启用，0-停用）。
+	 */
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 	/**
 	 * 获取所属科目。

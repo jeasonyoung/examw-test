@@ -14,9 +14,9 @@ import com.examw.model.Paging;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class SyllabusInfo extends Paging implements Comparable<SyllabusInfo> {
 	private static final long serialVersionUID = 1L;
-	private String pid,id,title,subjectId,subjectName,examId,examName;
+	private String pid,id,title,subjectId,subjectName,examId,examName,statusName;
 	private Set<SyllabusInfo> children;
-	private Integer orderNo;
+	private Integer status, orderNo;
 	/**
 	 * 获取上级要点ID。
 	 * @return 上级要点ID。
@@ -136,6 +136,36 @@ public class SyllabusInfo extends Paging implements Comparable<SyllabusInfo> {
 	 */
 	public void setExamName(String examName) {
 		this.examName = examName;
+	}
+	/**
+	 * 获取状态（1-启用，0-停用）。
+	 * @return 状态（1-启用，0-停用）。
+	 */
+	public Integer getStatus() {
+		return status;
+	}
+	/**
+	 * 设置状态（1-启用，0-停用）。
+	 * @param status 
+	 *	  状态（1-启用，0-停用）。
+	 */
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	/**
+	 * 获取状态名称。
+	 * @return 状态名称。
+	 */
+	public String getStatusName() {
+		return statusName;
+	}
+	/**
+	 * 设置状态名称。
+	 * @param statusName 
+	 *	  状态名称。
+	 */
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
 	}
 	/**
 	 * 获取排序号。

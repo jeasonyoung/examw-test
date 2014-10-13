@@ -11,6 +11,7 @@ import com.examw.test.dao.impl.BaseDaoImpl;
 import com.examw.test.dao.syllabus.ISyllabusDao;
 import com.examw.test.domain.syllabus.Syllabus;
 import com.examw.test.model.syllabus.SyllabusInfo;
+import com.examw.test.service.syllabus.SyllabusStatus;
 /**
  * 大纲数据接口实现类。
  * @author lq.
@@ -19,17 +20,19 @@ import com.examw.test.model.syllabus.SyllabusInfo;
 public class SyllabusDaoImpl extends BaseDaoImpl<Syllabus> implements ISyllabusDao {
 	private static final Logger logger = Logger.getLogger(SyllabusDaoImpl.class);
 	/*
-	 * 加载一级大纲。
-	 * @see com.examw.test.dao.syllabus.ISyllabusDao#loadFristSyllabuss(java.lang.String)
+	 *  加载科目下的最新考试大纲。
+	 * @see com.examw.test.dao.syllabus.ISyllabusDao#loadSyllabussLast(java.lang.String)
 	 */
 	@Override
-	public List<Syllabus> loadFristSyllabuss(String subjectId) {
-		if(logger.isDebugEnabled()) logger.debug("加载一级大纲数据［subjectId=" + subjectId + "］集合...");
-		String hql = "from Syllabus s where (s.parent is null) and (s.subject.id = :subjectId) order by s.orderNo";
+	public Syllabus loadSyllabussLast(String subjectId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format(" 加载科目［subjectId = %s］下的最新考试大纲...", subjectId));
+		String hql = "from Syllabus s where (s.parent is null)  and (s.status = :status) and (s.subject.id = :subjectId) order by s.orderNo desc";
 		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("status", SyllabusStatus.ENABLE.getValue());
 		parameters.put("subjectId", subjectId);
 		if(logger.isDebugEnabled())logger.debug(hql);
-		return this.find(hql, parameters, null, null);
+		List<Syllabus> list = this.find(hql, parameters, 0, 0);
+		return (list == null || list.size() == 0) ? null : list.get(0);
 	}
 	/*
 	 * 查询数据。

@@ -22,6 +22,8 @@ import com.examw.model.TreeNode;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.syllabus.SyllabusInfo;
 import com.examw.test.service.syllabus.ISyllabusService;
+import com.examw.test.service.syllabus.SyllabusStatus;
+import com.examw.test.support.PaperItemUtils;
 /**
  * 大纲控制器。
  * @author lq.
@@ -57,6 +59,13 @@ public class SyllabusController {
 	public String edit(String examId, Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
 		model.addAttribute("current_exam_id", examId);
+		
+		Map<String, String> syllabusStatusMap = PaperItemUtils.createTreeMap();
+		for(SyllabusStatus status : SyllabusStatus.values()){
+			if(status == null) continue;
+			syllabusStatusMap.put(String.format("%d", status.getValue()), this.syllabusService.loadStatusName(status.getValue()));
+		}
+		model.addAttribute("SyllabusStatusMap", syllabusStatusMap);
 		
 		return "syllabus/syllabus_edit";
 	}

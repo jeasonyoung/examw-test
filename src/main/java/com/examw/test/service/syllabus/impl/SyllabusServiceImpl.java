@@ -1,7 +1,9 @@
 package com.examw.test.service.syllabus.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -26,6 +28,7 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 	private static final Logger logger = Logger.getLogger(SyllabusServiceImpl.class);
 	private ISyllabusDao syllabusDao;
 	private ISubjectDao subjectDao;
+	private Map<Integer, String> statusMap;
 	/**
 	 * 设置大纲数据接口。
 	 * @param syllabusDao
@@ -43,6 +46,25 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 	public void setSubjectDao(ISubjectDao subjectDao) {
 		if(logger.isDebugEnabled()) logger.debug("注入科目数据接口...");
 		this.subjectDao = subjectDao;
+	}
+	/**
+	 * 设置状态值和名称集合。
+	 * @param statusMap 
+	 *	  设置状态值和名称集合。
+	 */
+	public void setStatusMap(Map<Integer, String> statusMap) {
+		if(logger.isDebugEnabled()) logger.debug("注入设置状态值和名称集合...");
+		this.statusMap = statusMap;
+	}
+	/*
+	 * 加载状态名称。
+	 * @see com.examw.test.service.syllabus.ISyllabusService#loadStatusName(java.lang.Integer)
+	 */
+	@Override
+	public String loadStatusName(Integer status) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载状态［status = %d］名称...", status));
+		if(status == null) return null;
+		return this.statusMap.get(status);
 	}
 	/*
 	 * 查询数据。
@@ -85,6 +107,9 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 		if(source == null) return null;
 		SyllabusInfo target = new SyllabusInfo();
 		BeanUtils.copyProperties(source, target, new String[]{"children"}); 
+		if(target.getStatus() != null){
+			target.setStatusName(this.loadStatusName(target.getStatus()));
+		}
 		if(source.getSubject() != null){
 			target.setSubjectId(source.getSubject().getId());
 			target.setSubjectName(source.getSubject().getName());
@@ -170,14 +195,17 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载科目［subjectId = %s］的考试大纲... ", subjectId));
 		List<SyllabusInfo> list = new ArrayList<>();
 		if(StringUtils.isEmpty(subjectId)) return list;
-		List<Syllabus> syllabuses = this.syllabusDao.loadFristSyllabuss(subjectId);
-		if(syllabuses != null && syllabuses.size() > 0){
-			for(Syllabus syllabus : syllabuses){
-				SyllabusInfo info = this.conversion(syllabus);
-				if(info != null){
-					list.add(info);
-				}
+		Syllabus syllabus = this.syllabusDao.loadSyllabussLast(subjectId);
+		if(syllabus == null || (syllabus.getChildren() == null || syllabus.getChildren().size() == 0)) return list;
+		for(Syllabus child :  syllabus.getChildren()){
+			if(child == null) continue;
+			SyllabusInfo info =  this.conversion(child);
+			if(info != null){
+				list.add(info);
 			}
+		}
+		if(list.size() > 0) {
+			Collections.sort(list);
 		}
 		return list;
 	}

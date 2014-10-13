@@ -28,13 +28,13 @@ public interface ISyllabusDao extends IBaseDao<Syllabus>{
 	 */
 	Long total(SyllabusInfo info);
 	/**
-	 * 加载一级大纲。
+	 * 加载科目下的最新考试大纲。
 	 * @param subjectId
 	 * 所属科目。
 	 * @return
 	 * 查询结果。
 	 */
-	List<Syllabus> loadFristSyllabuss(String subjectId);
+	Syllabus loadSyllabussLast(String subjectId);
 	/**
 	 * 加载最大排序号。
 	 * @param parentSyllabusId
