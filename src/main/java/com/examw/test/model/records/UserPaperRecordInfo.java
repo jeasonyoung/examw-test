@@ -19,7 +19,7 @@ import com.examw.support.CustomDateSerializer;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class UserPaperRecordInfo extends Paging {
 	private static final long serialVersionUID = 1L;
-	private String id,userId,paperId,productId;
+	private String id,userId,paperId,paperName,productId;
 	private Integer status,terminalCode;
 	private Long usedTime;
 	private BigDecimal score;
@@ -87,6 +87,21 @@ public class UserPaperRecordInfo extends Paging {
 	 */
 	public void setProductId(String productId) {
 		this.productId = productId;
+	}
+	/**
+	 * 获取试卷名称。
+	 * @return 试卷名称。
+	 */
+	public String getPaperName() {
+		return paperName;
+	}
+	/**
+	 * 设置试卷名称
+	 * @param productId 
+	 *	试卷名称。
+	 */
+	public void setPaperName(String paperName) {
+		this.paperName = paperName;
 	}
 	/**
 	 * 获取用户终端类型代码。

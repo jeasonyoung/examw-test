@@ -168,6 +168,7 @@ public class UserPaperRecordServiceImpl extends BaseDataServiceImpl<UserPaperRec
 		}
 		if(data.getPaper() != null){//试卷
 			info.setPaperId(data.getPaper().getId());
+			info.setPaperName(data.getPaper().getName());
 		}
 		if(data.getProduct() != null){//产品
 			info.setProductId(data.getProduct().getId());
