@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Set;
 
 import com.examw.test.domain.settings.Subject;
-
 /**
  * 考试大纲。
  * @author yangyong.
@@ -16,7 +15,8 @@ public class Syllabus implements Serializable {
 	private Subject subject;
 	private Syllabus parent;
 	private Set<Syllabus> children;
-	private Integer code;
+	private Integer status,orderNo;
+	private Set<Knowledge> knowledges;
 	/**
 	 * 获取要点ID。
 	 * @return 要点ID。
@@ -33,21 +33,6 @@ public class Syllabus implements Serializable {
 		this.id = id;
 	}
 	/**
-	 * 获取要点代码。
-	 * @return 要点代码。
-	 */
-	public Integer getCode() {
-		return code;
-	}
-	/**
-	 * 设置要点代码。
-	 * @param code 
-	 *	 要点代码。
-	 */
-	public void setCode(Integer code) {
-		this.code = code;
-	}
-	/**
 	 * 获取要点。
 	 * @return 要点。
 	 */
@@ -61,6 +46,21 @@ public class Syllabus implements Serializable {
 	 */
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	/**
+	 * 获取状态（1-启用，0-停用）。
+	 * @return 状态（1-启用，0-停用）。
+	 */
+	public Integer getStatus() {
+		return status;
+	}
+	/**
+	 * 设置状态（1-启用，0-停用）。
+	 * @param status 
+	 *	  状态（1-启用，0-停用）。
+	 */
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 	/**
 	 * 获取所属科目。
@@ -106,5 +106,35 @@ public class Syllabus implements Serializable {
 	 */
 	public void setChildren(Set<Syllabus> children) {
 		this.children = children;
+	}
+	/**
+	 * 获取排序号。
+	 * @return 排序号。
+	 */
+	public Integer getOrderNo() {
+		return orderNo;
+	}
+	/**
+	 * 设置排序号。
+	 * @param orderNo 
+	 *	 排序号。
+	 */
+	public void setOrderNo(Integer orderNo) {
+		this.orderNo = orderNo;
+	}
+	/**
+	 * 获取知识点集合。
+	 * @return 知识点集合。
+	 */
+	public Set<Knowledge> getKnowledges() {
+		return knowledges;
+	}
+	/**
+	 * 设置知识点集合。
+	 * @param knowledges 
+	 *	  知识点集合。
+	 */
+	public void setKnowledges(Set<Knowledge> knowledges) {
+		this.knowledges = knowledges;
 	}
 }

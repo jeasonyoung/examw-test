@@ -20,7 +20,7 @@ import com.examw.test.service.library.PaperType;
  */
 public final class PaperItemUtils {
 	//创建可排序Map。
-	private static Map<String, String> createTreeMap(){
+	public static Map<String, String> createTreeMap(){
 		Map<String, String> map = new TreeMap<String,String>(new Comparator<String>(){
 			@Override
 			public int compare(String o1, String o2) {

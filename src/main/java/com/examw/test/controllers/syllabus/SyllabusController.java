@@ -1,6 +1,9 @@
 package com.examw.test.controllers.syllabus;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -8,7 +11,6 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,6 +22,8 @@ import com.examw.model.TreeNode;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.syllabus.SyllabusInfo;
 import com.examw.test.service.syllabus.ISyllabusService;
+import com.examw.test.service.syllabus.SyllabusStatus;
+import com.examw.test.support.PaperItemUtils;
 /**
  * 大纲控制器。
  * @author lq.
@@ -42,6 +46,7 @@ public class SyllabusController {
 		if(logger.isDebugEnabled()) logger.debug("加载列表页面...");
 		model.addAttribute("PER_UPDATE",ModuleConstant.SYLLABUSS_SYLLABUS + ":" + Right.UPDATE);
 		model.addAttribute("PER_DELETE",ModuleConstant.SYLLABUSS_SYLLABUS + ":" + Right.DELETE);
+		
 		return "syllabus/syllabus_list";
 	}
 	/**
@@ -51,23 +56,61 @@ public class SyllabusController {
 	 */
 	@RequiresPermissions({ModuleConstant.SYLLABUSS_SYLLABUS+ ":" + Right.VIEW})
 	@RequestMapping(value="/edit", method = RequestMethod.GET)
-	public String edit(String syllId,String syllPid,String examId,String subId,Model model){
+	public String edit(String examId, Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
-		model.addAttribute("CURRENT_SYLL_ID", syllId);
-		model.addAttribute("CURRENT_SYLL_PID", syllPid);
-		model.addAttribute("CURRENT_EXAM_ID", StringUtils.isEmpty(examId) ? "" : examId.trim());
-		model.addAttribute("CURRENT_SUBJECT_ID", StringUtils.isEmpty(subId) ? "" : subId.trim());
+		model.addAttribute("current_exam_id", examId);
+		
+		Map<String, String> syllabusStatusMap = PaperItemUtils.createTreeMap();
+		for(SyllabusStatus status : SyllabusStatus.values()){
+			if(status == null) continue;
+			syllabusStatusMap.put(String.format("%d", status.getValue()), this.syllabusService.loadStatusName(status.getValue()));
+		}
+		model.addAttribute("SyllabusStatusMap", syllabusStatusMap);
+		
 		return "syllabus/syllabus_edit";
 	}
 	/**
-	 * 加载最大的代码。
+	 * 加载考试大纲要点列表页面。
+	 * @param syllabusId
+	 * @param model
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.SYLLABUSS_SYLLABUS+ ":" + Right.VIEW})
-	@RequestMapping(value="/code", method=RequestMethod.GET)
+	@RequestMapping(value = {"/{syllabusId}/points_list"}, method = RequestMethod.GET)
+	public String pointsList(@PathVariable String syllabusId,Model model){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试大纲要点［syllabusId = %s］列表页面...",syllabusId));
+		model.addAttribute("PER_UPDATE",ModuleConstant.SYLLABUSS_SYLLABUS + ":" + Right.UPDATE);
+		model.addAttribute("PER_DELETE",ModuleConstant.SYLLABUSS_SYLLABUS + ":" + Right.DELETE);
+		
+		model.addAttribute("current_syllabus_id", syllabusId);
+		
+		return "syllabus/syllabus_points_list";
+	}
+	/**
+	 * 加载考试大纲要点编辑页面。
+	 * @param syllabusId
+	 * @param model
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.SYLLABUSS_SYLLABUS+ ":" + Right.VIEW})
+	@RequestMapping(value = {"/{syllabusId}/points_edit"}, method = RequestMethod.GET)
+	public String pointsEdit(@PathVariable String syllabusId,Model model){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试大纲要点［parent_syllabusId = %s］编辑页面...",syllabusId));
+		
+		model.addAttribute("current_parent_syllabus_id", syllabusId);
+		
+		return "syllabus/syllabus_points_edit";
+	}
+	/**
+	 * 加载最大的排序号。
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.SYLLABUSS_SYLLABUS+ ":" + Right.VIEW})
+	@RequestMapping(value="/order", method=RequestMethod.GET)
 	@ResponseBody
-	public Integer loadMaxCode(){
-		Integer max = this.syllabusService.loadMaxCode();
+	public Integer loadMaxOrder(String syllabusId){
+		if(logger.isDebugEnabled()) logger.debug("加载考试大纲最大排序号...");
+		Integer max = this.syllabusService.loadMaxOrder(syllabusId);
 		if(max == null) max = 0;
 		return max + 1;
 	}
@@ -81,6 +124,47 @@ public class SyllabusController {
 	public DataGrid<SyllabusInfo> datagrid(SyllabusInfo info){
 		if(logger.isDebugEnabled()) logger.debug("加载列表数据...");
 		return this.syllabusService.datagrid(info);
+	}
+	/**
+	 * 加载考试大纲树数据。
+	 * @param syllabusId
+	 * 考试大纲ID。
+	 * @return
+	 */
+	@RequestMapping(value = {"/{syllabusId}/tree"}, method = {RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public List<TreeNode> loadSyllabus(@PathVariable String syllabusId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试大纲［syllabusId = %s］树数据...", syllabusId));
+		List<TreeNode> nodes = new ArrayList<>();
+		nodes.add(this.createSyllabusNode(this.syllabusService.conversion(this.syllabusService.loadSyllabus(syllabusId))));
+		return nodes;
+	}
+	//创建考试大纲树结构。
+	private TreeNode createSyllabusNode(SyllabusInfo root){
+		if(root == null) return null;
+		TreeNode node = new TreeNode();
+		node.setId(root.getId());
+		node.setText(root.getTitle());
+		Map<String, Object> attributes = new HashMap<String, Object>();
+		attributes.put("pid", root.getPid());
+		attributes.put("id", root.getId());
+		attributes.put("title", root.getTitle());
+		attributes.put("orderNo", root.getOrderNo());
+		node.setAttributes(attributes);
+		if(root.getChildren() != null && root.getChildren().size() > 0){
+			List<TreeNode> childrenNodes = new ArrayList<>();
+			for(SyllabusInfo child : root.getChildren()){
+				if(child == null) continue;
+				TreeNode e = this.createSyllabusNode(child);
+				if(e != null){
+					childrenNodes.add(e);
+				}
+			}
+			if(childrenNodes.size() > 0){
+				node.setChildren(childrenNodes);
+			}
+		}
+		return node;
 	}
 	/**
 	 * 更新数据。
@@ -126,27 +210,4 @@ public class SyllabusController {
 		}
 		return result;
 	}
-	/**
-	 * 加载科目下的大纲树结构数据。
-	 * @param subId
-	 * 加载条件。
-	 * @param ignore
-	 * 加载条件。
-	 * @return
-	 */
-	@RequestMapping(value="/tree/{subjectId}", method = {RequestMethod.GET, RequestMethod.POST})
-	@ResponseBody
-	public List<TreeNode> tree(@PathVariable String subjectId,String ignore){
-		if(logger.isDebugEnabled()) logger.debug("加载科目［"+subjectId+"］下的大纲［ignore="+ignore+"］树...");
-		return this.syllabusService.loadSyllabuses(subjectId, ignore);
-	}
-//	/**
-//	 * 加载所有大纲树结构数据。
-//	 * @return
-//	 */
-//	@RequestMapping(value = "/trees", method = {RequestMethod.GET,RequestMethod.POST})
-//	@ResponseBody
-//	public List<TreeNode> trees(String ignore){
-//		return this.syllabusService.loadAllSyllabuss(ignore);
-//	}
 }

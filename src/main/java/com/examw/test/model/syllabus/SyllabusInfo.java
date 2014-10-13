@@ -14,80 +14,50 @@ import com.examw.model.Paging;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class SyllabusInfo extends Paging implements Comparable<SyllabusInfo> {
 	private static final long serialVersionUID = 1L;
-	private String pid,id,title,fullTitle,subjectId,subjectName,examId,examName;
+	private String pid,id,title,subjectId,subjectName,examId,examName,statusName;
 	private Set<SyllabusInfo> children;
-	private Integer code;
+	private Integer status, orderNo;
 	/**
-	 * 获取上级大纲ID。
-	 * @return 上级大纲ID。
+	 * 获取上级要点ID。
+	 * @return 上级要点ID。
 	 */
 	public String getPid() {
 		return pid;
 	}
 	/**
-	 * 设置上级大纲ID。
+	 * 设置上级要点ID。
 	 * @param pid
-	 * 上级大纲ID。
+	 * 上级要点ID。
 	 */
 	public void setPid(String pid) {
 		this.pid = pid;
 	}
 	/**
-	 * 获取要点全称。
-	 * @return 要点全称。
-	 */
-	public String getFullTitle() {
-		return fullTitle;
-	}
-	/**
-	 * 设置要点全称。
-	 * @param fullTitle
-	 * 要点全称。
-	 */
-	public void setFullTitle(String fullTitle) {
-		this.fullTitle = fullTitle;
-	}
-	/**
-	 * 获取大纲ID。
-	 * @return 大纲ID。
+	 * 获取要点ID。
+	 * @return 要点ID。
 	 */
 	public String getId() {
 		return id;
 	}
 	/**
-	 * 设置大纲ID。
+	 * 设置要点ID。
 	 * @param id
-	 * 大纲ID。
+	 * 要点ID。
 	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 	/**
-	 * 获取大纲代码。
-	 * @return 大纲代码。
-	 */
-	public Integer getCode() {
-		return code;
-	}
-	/**
-	 * 设置大纲代码。
-	 * @param code
-	 * 大纲代码。
-	 */
-	public void setCode(Integer code) {
-		this.code = code;
-	}
-	/**
-	 * 获取大纲标题。
-	 * @return 大纲标题。
+	 * 获取要点。
+	 * @return 要点。
 	 */
 	public String getTitle() {
 		return title;
 	}
 	/**
-	 * 设置大纲标题。
+	 * 设置要点。
 	 * @param title
-	 * 大纲标题。
+	 * 要点。
 	 */
 	public void setTitle(String title) {
 		this.title = title;
@@ -123,49 +93,94 @@ public class SyllabusInfo extends Paging implements Comparable<SyllabusInfo> {
 		this.subjectName = subjectName;
 	}
 	/**
-	 * 获取子大纲集合。
-	 * @return 子大纲集合。
+	 * 获取子要点集合。
+	 * @return 子要点集合。
 	 */
 	public Set<SyllabusInfo> getChildren() {
 		return children;
 	}
 	/**
-	 * 设置子大纲集合。
+	 * 设置子要点集合。
 	 * @param children
-	 * 子大纲集合。
+	 * 	子要点集合。
 	 */
 	public void setChildren(Set<SyllabusInfo> children) {
 		this.children = children;
 	}
 	/**
-	 * 获取所属考试类别ID。
-	 * @return 所属考试类别ID。
+	 * 获取所属考试ID。
+	 * @return 所属考试ID。
 	 */
 	public String getExamId() {
 		return examId;
 	}
 	/**
-	 * 设置所属考试类别ID。
-	 * @param cateId
-	 * 所属考试类别ID。
+	 * 设置所属考试ID。
+	 * @param examId
+	 * 所属考试ID。
 	 */
 	public void setExamId(String examId) {
 		this.examId = examId;
 	}
 	/**
-	 * 获取所属考试类别名称。
-	 * @return 所属考试类别名称。
+	 * 获取所属考试名称。
+	 * @return 所属考试名称。
 	 */
 	public String getExamName() {
 		return examName;
 	}
 	/**
-	 * 设置所属考试类别名称。
-	 * @param cateName
-	 * 所属考试类别名称。
+	 * 设置所属考试名称。
+	 * @param examName
+	 * 所属考试名称。
 	 */
 	public void setExamName(String examName) {
 		this.examName = examName;
+	}
+	/**
+	 * 获取状态（1-启用，0-停用）。
+	 * @return 状态（1-启用，0-停用）。
+	 */
+	public Integer getStatus() {
+		return status;
+	}
+	/**
+	 * 设置状态（1-启用，0-停用）。
+	 * @param status 
+	 *	  状态（1-启用，0-停用）。
+	 */
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	/**
+	 * 获取状态名称。
+	 * @return 状态名称。
+	 */
+	public String getStatusName() {
+		return statusName;
+	}
+	/**
+	 * 设置状态名称。
+	 * @param statusName 
+	 *	  状态名称。
+	 */
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
+	}
+	/**
+	 * 获取排序号。
+	 * @return 排序号。
+	 */
+	public Integer getOrderNo() {
+		return orderNo;
+	}
+	/**
+	 * 设置排序号。
+	 * @param orderNo
+	 * 	排序号。
+	 */
+	public void setOrderNo(Integer orderNo) {
+		this.orderNo = orderNo;
 	}
 	/*
 	 * 排序比较。
@@ -174,7 +189,7 @@ public class SyllabusInfo extends Paging implements Comparable<SyllabusInfo> {
 	@Override
 	public int compareTo(SyllabusInfo o) {
 		if(this == o) return 0;
-		int index = this.getCode() - o.getCode();
+		int index = this.getOrderNo() - o.getOrderNo();
 		if(index == 0){
 			index = this.getTitle().compareToIgnoreCase(o.getTitle());
 			if(index == 0){
