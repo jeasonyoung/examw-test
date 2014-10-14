@@ -1,14 +1,11 @@
 package com.examw.test.controllers.api;
 
 
-import java.io.IOException;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +18,7 @@ import com.examw.model.Json;
 import com.examw.test.model.records.UserItemFavoriteInfo;
 import com.examw.test.model.records.UserItemRecordInfo;
 import com.examw.test.model.records.UserPaperRecordInfo;
+import com.examw.test.model.settings.FrontSubjectInfo;
 import com.examw.test.service.records.IUserItemFavoriteService;
 import com.examw.test.service.records.IUserItemRecordService;
 import com.examw.test.service.records.IUserPaperRecordService;
@@ -59,19 +57,6 @@ public class FrontDataController {
 	@ResponseBody
 	public Json addPaperRecord(@RequestBody UserPaperRecordInfo info){
 		if(logger.isDebugEnabled()) logger.debug("添加用户试卷记录...");
-		if(logger.isDebugEnabled())
-			try {
-				logger.debug(mapper.writeValueAsString(info));
-			} catch (JsonGenerationException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (JsonMappingException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
 		Json result = new Json();
 		try {
 			result.setData(this.userPaperRecordService.update(info));
@@ -116,6 +101,12 @@ public class FrontDataController {
 	@ResponseBody
 	public Json addItemFavorite(@PathVariable String userId,@RequestBody UserItemFavoriteInfo info){
 		if(logger.isDebugEnabled()) logger.debug(String.format("添加用户［userId = %s］试题收藏..", userId));
+		if(logger.isDebugEnabled())
+			try {
+				logger.debug(this.mapper.writeValueAsString(info));
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 		Json result = new Json();
 		try {
 			info.setUserId(userId);
@@ -373,6 +364,17 @@ public class FrontDataController {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId = %s］收藏试题集合...", userId));
 		try {
 			return this.userItemFavoriteService.datagrid(info).getRows();
+		} catch (Exception e) {
+			logger.error("加载用户收藏试题集合发生异常：" + e.getMessage(), e);
+		}
+		return null;
+	}
+	@RequestMapping(value = {"/{productId}/{userId}/favorite/subjects"}, method = {RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public List<FrontSubjectInfo> loadItemFavoriteList(@PathVariable String productId,@PathVariable String userId,UserItemFavoriteInfo info){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId = %s］收藏试题集合...", userId));
+		try {
+			return this.userItemFavoriteService.loadProductFrontSubjects(productId, userId);
 		} catch (Exception e) {
 			logger.error("加载用户收藏试题集合发生异常：" + e.getMessage(), e);
 		}

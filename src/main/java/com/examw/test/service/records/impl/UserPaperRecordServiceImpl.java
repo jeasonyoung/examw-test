@@ -26,6 +26,7 @@ import com.examw.test.domain.records.UserPaperRecord;
 import com.examw.test.model.records.UserItemRecordInfo;
 import com.examw.test.model.records.UserPaperRecordInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
+import com.examw.test.service.library.IPaperService;
 import com.examw.test.service.records.IUserItemRecordService;
 import com.examw.test.service.records.IUserPaperRecordService;
 
@@ -43,6 +44,7 @@ public class UserPaperRecordServiceImpl extends BaseDataServiceImpl<UserPaperRec
 	private IProductDao productDao;
 	private ISoftwareTypeDao softwareTypeDao;
 	private IUserItemRecordService userItemRecordService;
+	private IPaperService paperService;
 	/**
 	 * 设置用户试卷记录数据接口。
 	 * @param userPaperRecordDao 
@@ -95,6 +97,15 @@ public class UserPaperRecordServiceImpl extends BaseDataServiceImpl<UserPaperRec
 	public void setUserItemRecordService(IUserItemRecordService userItemRecordService) {
 		if(logger.isDebugEnabled()) logger.debug("注入用户试题记录服务接口...");
 		this.userItemRecordService = userItemRecordService;
+	}
+	
+	/**
+	 * 设置 试卷服务接口
+	 * @param paperService
+	 * 
+	 */
+	public void setPaperService(IPaperService paperService) {
+		this.paperService = paperService;
 	}
 	/*
 	 * 查询试卷最高得分。
@@ -169,6 +180,8 @@ public class UserPaperRecordServiceImpl extends BaseDataServiceImpl<UserPaperRec
 		if(data.getPaper() != null){//试卷
 			info.setPaperId(data.getPaper().getId());
 			info.setPaperName(data.getPaper().getName());
+			info.setPaperType(data.getPaper().getType());
+			info.setPaperTypeName(this.paperService.loadTypeName(info.getPaperType()));
 		}
 		if(data.getProduct() != null){//产品
 			info.setProductId(data.getProduct().getId());

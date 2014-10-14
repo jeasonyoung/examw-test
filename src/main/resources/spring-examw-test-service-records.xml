@@ -16,6 +16,8 @@
 	    <property name="softwareTypeDao" ref="softwareTypeDao" />
 	    <!-- 用户试题记录服务接口 -->
 	    <property name="userItemRecordService" ref="userItemRecordService" />
+	    <!-- paperService -->
+	    <property name="paperService" ref="paperService" />
 	</bean>
 	<!-- 用户试题记录服务 -->
 	<bean id="userItemRecordService" class="com.examw.test.service.records.impl.UserItemRecordServiceImpl">

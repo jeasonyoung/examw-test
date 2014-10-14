@@ -1,7 +1,10 @@
 package com.examw.test.service.records.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -12,13 +15,18 @@ import com.examw.test.dao.products.IProductUserDao;
 import com.examw.test.dao.products.ISoftwareTypeDao;
 import com.examw.test.dao.records.IUserItemFavoriteDao;
 import com.examw.test.dao.settings.ISubjectDao;
+import com.examw.test.domain.products.Product;
 import com.examw.test.domain.products.ProductUser;
 import com.examw.test.domain.products.SoftwareType;
 import com.examw.test.domain.records.UserItemFavorite;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.records.UserItemFavoriteInfo;
+import com.examw.test.model.settings.FrontSubjectInfo;
+import com.examw.test.model.settings.SubjectInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
+import com.examw.test.service.products.IProductService;
 import com.examw.test.service.records.IUserItemFavoriteService;
+import com.examw.test.service.settings.ISubjectService;
 
 /**
  * 用户试题收藏服务接口实现类。
@@ -32,6 +40,8 @@ public class UserItemFavoriteServiceImpl extends BaseDataServiceImpl<UserItemFav
 	private IProductUserDao productUserDao;
 	private ISubjectDao subjectDao;
 	private ISoftwareTypeDao softwareTypeDao;
+	private ISubjectService subjectService;
+	private IProductService productService;
 	/**
 	 * 设置用户试题收藏数据接口。
 	 * @param userItemFavoriteDao 
@@ -67,6 +77,24 @@ public class UserItemFavoriteServiceImpl extends BaseDataServiceImpl<UserItemFav
 	public void setSoftwareTypeDao(ISoftwareTypeDao softwareTypeDao) {
 		if(logger.isDebugEnabled()) logger.debug("注入用户终端类型数据接口...");
 		this.softwareTypeDao = softwareTypeDao;
+	}
+	
+	/**
+	 * 设置 科目服务 
+	 * @param subjectService
+	 * 
+	 */
+	public void setSubjectService(ISubjectService subjectService) {
+		this.subjectService = subjectService;
+	}
+	
+	/**
+	 * 设置 产品服务接口
+	 * @param productService
+	 * 
+	 */
+	public void setProductService(IProductService productService) {
+		this.productService = productService;
 	}
 	/*
 	 * 判断用户是否收藏试题。
@@ -203,5 +231,43 @@ public class UserItemFavoriteServiceImpl extends BaseDataServiceImpl<UserItemFav
 			this.userItemFavoriteDao.delete(data);
 		}
 		return true;
+	}
+	
+	/*
+	 * 加载产品科目数据集合。
+	 * @see com.examw.test.service.products.IFrontProductService#loadProductSubjects(java.lang.String)
+	 */
+	@Override
+	public List<FrontSubjectInfo> loadProductFrontSubjects(String productId,String userId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载产品［productId = %s］下的科目数据集合", productId));
+		if(StringUtils.isEmpty(productId)) return null;
+		Product product = this.productService.loadProduct(productId);
+		if(product == null) throw new RuntimeException(String.format("产品［%s］不存在！", productId));
+		return this.changeFrontSubjectModel(product.getSubjects(),userId);
+	}
+	
+	//数据模型转换。
+	private List<FrontSubjectInfo> changeFrontSubjectModel(Set<Subject> subjects,final String userId){
+		if(logger.isDebugEnabled()) logger.debug("数据模型转换 Set<Subject> => List<SubjectInfo> ...");
+		List<FrontSubjectInfo> list = new ArrayList<>();
+		if(subjects != null && subjects.size() > 0){
+			for(Subject subject : subjects){
+				if(subject == null) continue;
+				SubjectInfo info = this.subjectService.conversion(subject);
+				FrontSubjectInfo data = new FrontSubjectInfo();
+				BeanUtils.copyProperties(info, data);
+				final String subjectId = subject.getId();
+				data.setTotalFavors(this.userItemFavoriteDao.total(new UserItemFavoriteInfo(){
+					private static final long serialVersionUID = 1L;
+					@Override
+					public String getSubjectId() {return subjectId;}
+					@Override
+					public String getUserId() {return userId;}
+				}));
+				if(info != null) list.add(data);
+			}
+		}
+		if(list.size() > 0) Collections.sort(list);
+		return list;
 	}
 }
