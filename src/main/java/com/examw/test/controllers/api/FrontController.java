@@ -19,13 +19,13 @@ import com.examw.test.model.settings.AreaInfo;
 import com.examw.test.model.settings.ExamInfo;
 import com.examw.test.model.settings.FrontCategoryInfo;
 import com.examw.test.model.settings.SubjectInfo;
-import com.examw.test.model.syllabus.KnowledgeInfo;
+import com.examw.test.model.syllabus.ChapterKnowledgeInfo;
 import com.examw.test.model.syllabus.SyllabusInfo;
 import com.examw.test.service.library.IFrontPaperService;
 import com.examw.test.service.products.IFrontProductService;
 import com.examw.test.service.settings.IExamService;
 import com.examw.test.service.settings.IFrontCategoryService;
-import com.examw.test.service.syllabus.IKnowledgeService;
+import com.examw.test.service.syllabus.IChapterKnowledgeService;
 import com.examw.test.service.syllabus.ISyllabusService;
 
 /**
@@ -52,7 +52,7 @@ public class FrontController {
 	private ISyllabusService syllabusService;
 	//注入大纲知识点服务接口。
 	@Resource
-	private IKnowledgeService knowledgeService;
+	private IChapterKnowledgeService knowledgeService;
 	//注入前端试卷服务接口。
 	@Resource
 	private IFrontPaperService frontPaperService;
@@ -206,7 +206,7 @@ public class FrontController {
 	 */
 	@RequestMapping(value = {"/syllabus/{syllabusId}/knowledges"}, method = {RequestMethod.GET})
 	@ResponseBody
-	public List<KnowledgeInfo> loadKnowledges(@PathVariable String syllabusId,String textBookId){
+	public List<ChapterKnowledgeInfo> loadKnowledges(@PathVariable String syllabusId,String textBookId){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载知识点[subjectId = %1$s，textBookId = %2$s]信息...", syllabusId,textBookId));
 		return this.knowledgeService.loadKnowledges(syllabusId, textBookId);
 	}
@@ -217,7 +217,7 @@ public class FrontController {
 	 */
 	@RequestMapping(value = {"/knowledges/{knowledgeId}"}, method = {RequestMethod.GET})
 	@ResponseBody
-	public KnowledgeInfo loadKnowledge(@PathVariable String knowledgeId){
+	public ChapterKnowledgeInfo loadKnowledge(@PathVariable String knowledgeId){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载知识点［knowledgeId = %s］信息...", knowledgeId));
 		return this.knowledgeService.conversion(this.knowledgeService.loadKnowledge(knowledgeId));
 	}

@@ -5,18 +5,22 @@
 	<!-- 考试大纲数据接口实现begin -->
 	<!-- 出版社Dao -->
 	<bean id="pressDao" class="com.examw.test.dao.syllabus.impl.PressDaoImpl">
-		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	<!-- 大纲Dao -->
 	<bean id="syllabusDao" class="com.examw.test.dao.syllabus.impl.SyllabusDaoImpl">
-		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	<!-- 教材Dao -->
-	<bean id="textBookDao" class="com.examw.test.dao.syllabus.impl.TextBookDaoImpl">
-		<property name="sessionFactory" ref="sessionFactory"/>
+	<bean id="bookDao" class="com.examw.test.dao.syllabus.impl.BookDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<!-- 教材章节Dao -->
+	<bean id="bookChapterDao" class="com.examw.test.dao.syllabus.impl.BookChapterDaoImpl">
+	    <property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	<!-- 知识点Dao -->
-	<bean id="knowledgeDao" class="com.examw.test.dao.syllabus.impl.KnowledgeDaoImpl">
+	<bean id="chapterKnowledgeDao" class="com.examw.test.dao.syllabus.impl.ChapterKnowledgeDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>
 	<!-- 考试大纲数据接口实现end -->

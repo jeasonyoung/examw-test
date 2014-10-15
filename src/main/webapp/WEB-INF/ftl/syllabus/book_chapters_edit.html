@@ -1,0 +1,22 @@
+<#--教材章节编辑页面-->
+<#include "comm.ftl"/>
+<#assign module="syllabus_book_chapter"/>
+<#assign form="${module}_edit_form"/>
+<form id="${form}" method="POST">
+	<div style="float:left; margin-top:12px; width:100%;">
+		<div style="float:left;">
+			<label style="width:75px;">章节标题：</label>
+			<input type="text" name="title" class="easyui-validatebox"  data-options="required:true" style="width:368px;"/>
+			<input type="hidden" name="pid" /><input type="hidden" name="id" />
+		</div>
+		<div style="float:left;">
+			<label style="width:60px;">排序号：</label>
+			<input type="text" name="orderNo" class="easyui-numberbox"  data-options="required:true" style="width:50px;"/>
+		</div>
+	</div>
+	<div style="float:left; margin-top:12px; width:100%;">
+		<div style="float:left;margin-left:12px;">
+			<input name="content" class="easyui-textbox" data-options="multiline:true" style="width:550px;height:100px" />
+		</div>
+    </div>
+</form>

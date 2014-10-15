@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 	<!-- service -->
 	<!-- 考试大纲服务接口实现 begin-->
-	<!-- 出版社服务 -->
+	<!-- 出版社服务接口 -->
 	<bean id="pressService" class="com.examw.test.service.syllabus.impl.PressServiceImpl">
 		<!-- 出版社数据接口 -->
 		<property name="pressDao" ref="pressDao"/>
 	</bean>
-	<!-- 大纲服务 -->
+	<!-- 考试大纲服务接口 -->
 	<bean id="syllabusService" class="com.examw.test.service.syllabus.impl.SyllabusServiceImpl">
 		<!-- 大纲数据接口 -->
 		<property name="syllabusDao" ref="syllabusDao"/>
@@ -17,30 +17,44 @@
 		<!-- 大纲状态 -->
 		<property name="statusMap">
 		    <map>
-		        <entry key="0" value="停用" />
-		        <entry key="1" value="启用" />
+		        <entry key="0" value="${STATUS_DISABLE}" />
+		        <entry key="1" value="${STATUS_ENABLED}" />
 		    </map>
 		</property>
 	</bean>
-	<!-- 教材服务 -->
-	<bean id="textbookService" class="com.examw.test.service.syllabus.impl.TextBookServiceImpl">
+	<!-- 教材服务接口 -->
+	<bean id="bookService" class="com.examw.test.service.syllabus.impl.BookServiceImpl">
 		<!-- 教材数据接口 -->
-		<property name="textBookDao" ref="textBookDao"/>
-		<!-- 科目数据接口 -->
-		<property name="subjectDao" ref="subjectDao"/>
+		<property name="bookDao" ref="bookDao"/>
 		<!-- 出版社数据接口 -->
 		<property name="pressDao" ref="pressDao"/>
-		<!-- 知识点数据接口 -->
-		<property name="knowledgeService" ref="knowledgeService"/>
+		<!-- 科目数据接口 -->
+		<property name="subjectDao" ref="subjectDao"/>
+		<!-- 地区数据接口 -->
+		<property name="areaDao" ref="areaDao" />
+		<!-- 教材状态 -->
+		<property name="statusMap">
+		    <map>
+		        <entry key="0" value="${STATUS_DISABLE}" />
+		        <entry key="1" value="${STATUS_ENABLED}" />
+		    </map>
+		</property>
+	</bean>
+	<!--  教材章节服务接口 -->
+	<bean id="bookChapterService" class="com.examw.test.service.syllabus.impl.BookChapterServiceImpl">
+	    <!-- 章节数据接口 -->
+	    <property name="bookChapterDao" ref="bookChapterDao" />
+	    <!-- 教材数据接口 -->
+	    <property name="bookDao" ref="bookDao" />
 	</bean>
 	<!-- 知识点服务 -->
-	<bean id="knowledgeService" class="com.examw.test.service.syllabus.impl.KnowledegeServiceImpl">
-		<!-- 知识点数据接口 -->
-		<property name="knowledgeDao" ref="knowledgeDao"/>
-		<!-- 考试大纲数据接口 -->
-		<property name="syllabusDao" ref="syllabusDao" />
-		<!-- 教材数据接口 -->
-		<property name="textBookDao" ref="textBookDao" />
+	<bean id="chapterKnowledgeService" class="com.examw.test.service.syllabus.impl.ChapterKnowledgeServiceImpl">
+	    <!-- 知识点数据接口 -->
+	    <property name="chapterKnowledgeDao" ref="chapterKnowledgeDao" />
+	    <!-- 教材章节数据接口 -->
+	    <property name="bookChapterDao" ref="bookChapterDao" />
+	    <!-- 考试大纲数据接口 -->
+	    <property name="syllabusDao" ref="syllabusDao" />
 	</bean>
 	<!-- 考试大纲 服务接口实现 end-->
 </beans>

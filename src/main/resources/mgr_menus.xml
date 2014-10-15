@@ -24,8 +24,8 @@
   	<module id="ETS0000004" icon="" name="考试大纲" uri="" order="4">
   		<module id="ETS0000104" icon="" name="出版社管理" uri="/syllabus/press" order="1"/>
   		<module id="ETS0000204" icon="" name="大纲设置" uri="/syllabus/syllabus" order="2"/>
-  		<module id="ETS0000304" icon="" name="教材设置" uri="/syllabus/textbook" order="3"/>
-  		<module id="ETS0000404" icon="" name="知识点管理" uri="/syllabus/knowledge" order="4"/>
+  		<module id="ETS0000304" icon="" name="教材设置" uri="/syllabus/book" order="3"/>
+  		<!-- <module id="ETS0000404" icon="" name="知识点管理" uri="/syllabus/knowledge" order="4"/> -->
   	</module>
   	<module id="ETS0000005" icon="" name="产品管理" uri="" order="5">
   		<module id="ETS0000105" icon="" name="产品管理" uri="/products/product" order="1"/>

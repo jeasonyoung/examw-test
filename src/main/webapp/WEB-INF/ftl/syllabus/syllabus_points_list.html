@@ -10,14 +10,15 @@ $(function(){
 		url:"<@s.url '/syllabus/syllabus/${current_syllabus_id}/tree'/>",
 		onClick:function(node){
 			parent_syllabus_id = node.id;
-			//alert(parent_syllabus_id);
 		},
 		onDblClick:function(node){
 			if(st){
 				var p = st.tree("getParent",node.target);
 		 		if(p == null)return;
 			}
-		 	${module}_edit(node);
+			if(node.attributes){
+				points_edit_window("编辑大纲要点",node.attributes);
+			}
 		},
 		onContextMenu:function(e,node){
 		 	e.preventDefault();
@@ -28,12 +29,7 @@ $(function(){
 		 	});
 		 }
 	});
-	//edit
-	${module}_edit = function(node){
-		if(node.attributes){
-			points_edit_window("编辑大纲要点",node.attributes);
-		}
-	};
+	<@shiro.hasPermission name="${PER_UPDATE}">
 	//add
 	var show = false;
 	${module}_add = function(){
@@ -44,6 +40,7 @@ $(function(){
 			points_edit_window("新增大纲要点",{"orderNo":data});
 		});
 	};
+	</@shiro.hasPermission>
 	//edit_window
 	function points_edit_window(title,row){
 		var pid = parent_syllabus_id;
@@ -54,7 +51,9 @@ $(function(){
 			title:title,width:600, height:160,
 			href:"<@s.url '/syllabus/syllabus/'/>"+pid + "/points_edit",
 			modal:true,
-			buttons:[{
+			buttons:[
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			{
 				text:"保存",iconCls:"icon-save",
 				handler:function(){
 					$.messager.progress();
@@ -84,7 +83,9 @@ $(function(){
 						}
 					});
 				}
-			},{
+			},
+			</@shiro.hasPermission>
+			{
 				text:"关闭",iconCls:"icon-cancel",
 				handler:function(){ d.dialog("close"); }
 			}],
@@ -94,6 +95,7 @@ $(function(){
 			}
 		});
 	};
+	<@shiro.hasPermission name="${PER_DELETE}">
 	//remove
 	${module}_remove = function(){
 		if(!st)return;
@@ -104,7 +106,6 @@ $(function(){
  			$.messager.alert("警告","根节点不允许删除！");
  			return;
  		}
-		
 		$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
 			if(!r)return;
 			$.messager.progress();
@@ -131,6 +132,7 @@ $(function(){
 			});
 		});
 	};
+	</@shiro.hasPermission>
 	//reload
 	${module}_reload = function(){
 		if(st)st.tree("reload");

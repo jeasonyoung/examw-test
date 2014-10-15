@@ -11,7 +11,7 @@
 		<!-- 教材集合 -->
 		<set name="books" inverse="true" cascade="save-update">
 		    <key column="press_id" />
-		    <one-to-many class="TextBook"/>
+		    <one-to-many class="Book"/>
 		</set>
 	</class>
 	<!-- 考试大纲 -->
@@ -37,40 +37,99 @@
 		<!-- 知识点集合 -->
 		<set name="knowledges" inverse="true" cascade="save-update" order-by="code asc">
 		    <key column="syllabus_id" />
-		    <one-to-many class="Knowledge"/>
+		    <one-to-many class="ChapterKnowledge"/>
 		</set>
 	</class>
-	<!-- 教材课本 -->
-	<class name="TextBook" table="tbl_Examw_Test_Syllabus_TextBooks">
+	<!-- 教材 -->
+	<class name="Book" table="tbl_Examw_Test_Syllabus_Books">
 		<cache usage="read-write" />
 		<!-- 教材ID -->
 		<id name="id"  type="string"  length="64" />
 		<!-- 教材名称 -->
 		<property name="name" type="string" length="32" not-null="true"/>
-		<!-- 教材价格 -->
-		<property name="price" type="big_decimal" />
-		<!-- 所属科目 -->
-		<many-to-one name="subject" column="subject_id" class="com.examw.test.domain.settings.Subject" not-null="true"/>
+		<!-- 教材描述 -->
+		<property name="description" type="text" />
+		<!-- 状态（0-停用，1-禁用） -->
+		<property name="status" type="integer" />
 		<!-- 所属出版社 -->
 		<many-to-one name="press" column="press_id" class="Press" not-null="true"/>
-		<!-- 知识点集合 -->
-		<set name="knowledges" inverse="false" cascade="save-update" order-by="code asc">
-			<key column="book_id" />
-			<one-to-many class="Knowledge"/>
+		<!-- 所属科目 -->
+		<many-to-one name="subject" column="subject_id" class="com.examw.test.domain.settings.Subject" not-null="true"/>
+		<!-- 教材价格 -->
+		<property name="price" type="big_decimal" />
+		<!-- 优惠价格 -->
+		<property name="discount" type="big_decimal" />
+		<!-- 所属地区集合 -->
+		<set name="areas" inverse="false" cascade="save-update"  table="tbl_Examw_Test_Syllabus_BookAreas">
+		    <!-- 教材ID  -->
+		    <key column="book_id" />
+		    <!-- 地区ID -->
+		    <many-to-many class="com.examw.test.domain.settings.Area" column="area_id" />
+		</set>
+		<!-- 所属章节集合 -->
+		<set name="chapters" inverse="true"  cascade="save-update" order-by="orderNo asc">
+		    <key column="book_id" />
+		    <one-to-many class="BookChapter" />
+		</set>
+		<!-- 排序号 -->
+		<property name="orderNo" type="integer" />
+		<!-- 最后修改用户ID -->
+		<property name="lastUserId" type="string" length="64" />
+		<!-- 最后修改用户名 -->
+		<property name="lastUserName" type="string" length="32" />
+		<!-- 创建时间 -->
+	    <property name="createTime" column="create_time" type="timestamp" />
+	    <!-- 最后修改时间 -->
+	    <property name="lastTime" column="last_time" type="timestamp" />
+	</class>
+	<!-- 教材章节 -->
+	<class name="BookChapter" table="tbl_Examw_Test_Syllabus_BookChapters">
+	    <cache usage="read-write" />
+	    <!-- 章节ID -->
+	    <id name="id" type="string" length="64" />
+	    <!-- 章节标题 -->
+	    <property name="title" type="string" length="1024" not-null="true" />
+	    <!-- 章节内容 -->
+	    <property name="content" type="text" />
+	    <!-- 所属教材 -->
+	    <many-to-one name="book" column="book_id" class="Book" />
+	    <!--  知识点集合 -->
+	    <set name="knowledges" inverse="true"  cascade="save-update" order-by="orderNo asc">
+	        <key column="chapter_id" />
+	        <one-to-many class="ChapterKnowledge" />
+	    </set>
+	    <!-- 排序号 -->
+	    <property name="orderNo" type="integer" />
+	    <!-- 父章节 -->
+	    <many-to-one name="parent" column="pid" class="BookChapter" />
+	    <!-- 子章节集合 -->
+	    <set name="children" inverse="true" cascade="save-update" order-by="orderNo asc">
+			<key column="pid" />
+			<one-to-many class="BookChapter"/>
 		</set>
 	</class>
-	<!-- 知识点 -->
-	<class name="Knowledge" table="tbl_Examw_Test_Syllabus_Knowledges">
-		<cache usage="read-write" />
-		<!-- 知识点ID -->
-		<id name="id"  type="string"  length="64" />
-		<!-- 知识点代码 -->
-		<property name="code" type="integer" />
-		<!-- 知识点内容 -->
-		<property name="content" type="text" />
-		<!-- 所属教材 -->
-		<many-to-one name="book" column="book_id" class="TextBook" />
-		<!-- 所属大纲要点 -->
-		<many-to-one name="syllabus" column="syllabus_id" class="Syllabus" />
+	<!-- 章节下知识点 -->
+	<class name="ChapterKnowledge" table="tbl_Examw_Test_Syllabus_ChapterKnowledges">
+	    <cache usage="read-write" />
+	    <!-- 知识点ID -->
+	    <id name="id"  type="string"  length="64" />
+	    <!-- 知识点标题 -->
+	    <property name="title" type="string" length="1024" not-null="true" />
+	    <!-- 知识点描述 -->
+	    <property name="description" type="text" />
+	    <!-- 所属章节 -->
+	    <many-to-one name="chapter" column="chapter_id" class="BookChapter" />
+	    <!-- 所属大纲要点 -->
+	    <many-to-one name="syllabus" column="syllabus_id" class="Syllabus"/>
+	    <!-- 排序号 -->
+	    <property name="orderNo" type="integer" />
+	    <!-- 最后修改用户ID -->
+		<property name="lastUserId" type="string" length="64" />
+		<!-- 最后修改用户名 -->
+		<property name="lastUserName" type="string" length="32" />
+		<!-- 创建时间 -->
+	    <property name="createTime" column="create_time" type="timestamp" />
+	    <!-- 最后修改时间 -->
+	    <property name="lastTime" column="last_time" type="timestamp" />
 	</class>
 </hibernate-mapping>

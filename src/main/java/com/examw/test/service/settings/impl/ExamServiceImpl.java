@@ -136,26 +136,18 @@ public class ExamServiceImpl extends BaseDataServiceImpl<Exam, ExamInfo> impleme
 		BeanUtils.copyProperties(info, data);
 		//设置考试分类
 		data.setCategory(StringUtils.isEmpty(info.getCategoryId()) ?  null : this.categoryDao.load(Category.class, info.getCategoryId()));
-		if(data.getCategory() != null){
-			info.setCategoryName(data.getCategory().getName());
-		}
 		//设置地区
-		List<String> listAreaName = new ArrayList<>();
 		Set<Area> areas = new HashSet<>();
 		if(info.getAreaId() != null){
 			for(String areaId : info.getAreaId()){
 				if(StringUtils.isEmpty(areaId)) continue;
 				Area area = this.areaDao.load(Area.class, areaId);
-				if(area != null){
-					areas.add(area);
-					listAreaName.add(area.getName());
-				}
+				if(area != null)areas.add(area);
 			}
 		}
 		data.setAreas(areas);
-		info.setAreaName(listAreaName.toArray(new String[0]));
 		if(isAdded)this.examDao.save(data);
-		return info;
+		return this.changeModel(data);
 	}
 	/*
 	 * 删除数据
