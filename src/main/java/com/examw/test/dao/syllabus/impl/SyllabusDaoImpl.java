@@ -49,6 +49,8 @@ public class SyllabusDaoImpl extends BaseDaoImpl<Syllabus> implements ISyllabusD
 				info.setSort("subject.name");
 			}else if (info.getSort().equalsIgnoreCase("examName")) {
 				info.setSort("subject.exam.name");
+			}else if(info.getSort().equalsIgnoreCase("statusName")){
+				info.setSort("status");
 			}
 			hql += " order by s." + info.getSort() + " " + info.getOrder();
 		}

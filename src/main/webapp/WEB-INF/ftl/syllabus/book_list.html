@@ -1,6 +1,6 @@
 <#--教材列表-->
 <#include "comm.ftl"/>
-<#assign module="syllabus_textbook"/>
+<#assign module="syllabus_book"/>
 <#assign dg="${module}_dg"/>
 <script type="text/javascript">
 <!--
@@ -10,9 +10,7 @@ $(function(){
 	var exam_tree = $("#${module}_exam_tree").tree({
 		url:"<@s.url '/settings/category/subject-tree'/>",
 		lines:true,
-		onLoadError:function(e){
-			<@error_dialog "e"/>
-		},
+		onLoadError:function(e){ <@error_dialog "e"/> },
 		onBeforeLoad:function(){
 			current_exam_id = current_subject_id = "";
 		},
@@ -30,84 +28,105 @@ $(function(){
 	});
 	//dg
 	var dg = $("#${dg}").datagrid({
-		url:"<@s.url '/syllabus/textbook/datagrid'/>",
-		fit:true,
-		fitColumns:true,
-		rownumbers:true,
-		pagination:true,
-		pagePosition:"bottom",
-		pageSize:20,
-		pageList:[20,30,40],
-		border:true,
-		striped:true,
-		idField:"id",
-		sortName:"price",
-		sortOrder:"asc",
+		url:"<@s.url '/syllabus/book/datagrid'/>",
+		fit:true,fitColumns:true,rownumbers:true,
+		pagination:true,pagePosition:"bottom",pageSize:20,pageList:[20,30,40],
+		border:true,striped:true,
+		idField:"id",sortName:"orderNo",sortOrder:"desc",
 		columns:[[{
-			field:"id",
-			checkbox:true
+			field:"id",checkbox:true
 		},{
-			title:"所属科目",
-			field:"subName",
-			width:15,
-			align:"left",
-			sortable:true
-		}
-		,{
-			title:"教材名称",
-			field:"name",
-			width:25,
-			align:"left",
-			sortable:true
-		}
-		,{
-			title:"所属出版社",
-			field:"pressName",
-			width:15,
-			align:"left",
-			sortable:true
-		}
-		,{
-			title:"价格",
-			field:"price",
-			width:5,
-			align:"conter",
-			sortable:true
+			title:"所属科目",field:"subjectName", width:30, align:"left",sortable:true
+		},{
+			title:"教材名称",field:"name",width:25,align:"left",sortable:true
+		},{
+			title:"所属出版社",field:"pressName",width:30,align:"left",sortable:true
+		},{
+			title:"价格",field:"price", width:10, align:"right",sortable:true
+		},{
+			title:"优惠价格",field:"discount", width:10, align:"right",sortable:true
+		},{
+			title:"所属地区",field:"areaName", width:20, align:"center",sortable:true
+		},{
+			title:"状态",field:"statusName", width:8, align:"center",sortable:true
+		},{
+			title:"操作1",field:"opt1", width:10, align:"center",
+			formatter:function(value,row,index){
+				return "<a href='#' onclick='${dg}_book_chapters(\""+row["id"] +"\",\"" +row["name"]+ "\");' title='教材章节管理'>[章节]</a>";
+			}
+		},{
+			title:"操作2",field:"opt2", width:10, align:"center",
+			formatter:function(value,row,index){ 
+				return "<a href='#' onclick='${dg}_book_knowledges(\""+row["id"] +"\",\"" +row["name"]+ "\");' title='知识点管理'>[知识点]</a>"; 
+			}
 		}]],
 		toolbar:"#${dg}_toobar",
-		onLoadError:function(e){
-			<@error_dialog "e"/>
-		},
+		onLoadError:function(e){ <@error_dialog "e"/> },
 		onDblClickRow:function(rowIndex,rowData){
-			edit_window("修改教材",rowIndex,rowData);
+			edit_window("编辑教材",rowIndex,rowData, null);
 		}
 	});
-	//add
-	${dg}_add = function(){
-		edit_window("新增教材",0,null);
+	//chapters
+	${dg}_book_chapters = function(id,title){
+		title = "教材［"+title+"］章节管理";
+		var d = $("<div/>").dialog({
+			title:title,width:800,height:600,
+			href:"<@s.url '/syllabus/book/'/>"+id + "/chapters/list",
+			modal:true,
+			buttons:[{
+				text:"关闭",iconCls:"icon-cancel",
+				handler:function(){d.dialog("close"); }
+			}],
+			onClose:function(){ $(this).dialog("destroy"); }
+		});
 	};
+	//knowledges
+	${dg}_book_knowledges = function(id,title){
+		title = "教材［"+title+"］知识点管理";
+		var d = $("<div/>").dialog({
+			title:title,width:800,height:600,
+			//href:"<@s.url '/syllabus/book/edit'/>?examId="+id,
+			modal:true,
+			buttons:[{
+				text:"关闭",iconCls:"icon-cancel",
+				handler:function(){d.dialog("close"); }
+			}],
+			onClose:function(){ $(this).dialog("destroy"); }
+		});
+	};
+	<@shiro.hasPermission name="${PER_UPDATE}">
+	//add
+	var m = false;
+	${dg}_add = function(){
+		if(m) return;
+		m = true;
+		$.getJSON("<@s.url '/syllabus/book/order'/>?_=" + Math.random(),function(data){
+			m = false;
+			edit_window("新增教材",0,null,data);
+		});
+	};
+	</@shiro.hasPermission>
 	//edit
-	function edit_window(title,index,row){
-		var exam_id = current_exam_id;
+	function edit_window(title,index,row,order){
+		var exam_id = current_exam_id,subject_id = current_subject_id;
 		if(row){
-			exam_id = row.examId;
-			current_subject_id = row.subId;
+			if(row.examId)exam_id = row.examId;
+			if(row.subjectId)subject_id = row.subjectId;
 		}
 		var d = $("<div/>").dialog({
 			title:title,
-			width:550,
-			height:250,
-			href:"<@s.url '/syllabus/textbook/edit'/>?examId="+exam_id+"&subId=" + current_subject_id,
+			width:600,
+			height:400,
+			href:"<@s.url '/syllabus/book/edit'/>?examId="+exam_id,
 			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">      
 			{
-				text:"保存",
-				iconCls:"icon-save",
+				text:"保存",iconCls:"icon-save",
 				handler:function(){
 					$.messager.progress();
 					$("#${module}_edit_form").form("submit",{
-						url:"<@s.url '/syllabus/textbook/update'/>",
+						url:"<@s.url '/syllabus/book/update'/>",
 						onSubmit: function(){
 							var isValid = $(this).form("validate");
 							if (!isValid)$.messager.progress("close");
@@ -138,17 +157,15 @@ $(function(){
 			},
 			</@shiro.hasPermission>
 			{
-				text:"关闭",
-				iconCls:"icon-cancel",
+				text:"关闭",iconCls:"icon-cancel",
 				handler:function(){
 					d.dialog("close");
 				}
 			}],
-			onClose:function(){
-				$(this).dialog("destroy");
-			},
+			onClose:function(){ $(this).dialog("destroy"); },
 			onLoad:function(){
-				if(row) $("#${module}_edit_form").form("load",row);
+				var data = row ? row : {"examId":exam_id,"subjectId":subject_id,"orderNo":order};
+				$("#${module}_edit_form").form("load",data);
 			}
 	  });
 	};
@@ -156,7 +173,7 @@ $(function(){
 	${dg}_search = function(){
 		dg.datagrid("load",{
 			"examId":current_exam_id,
-			"subId":current_subject_id,
+			"subjectId":current_subject_id,
 			name:$("#${dg}_toobar input[name='name']").val()
 		});
 	};
@@ -215,7 +232,7 @@ $(function(){
 		}]"  style="padding:5px;width:195px;">
 		<ul id="${module}_exam_tree"></ul>
 	</div>
-	<div data-options="region:'center',title:'大纲列表'">
+	<div data-options="region:'center',title:'教材列表'">
 		<table id="${dg}"></table>
 		<div id="${dg}_toobar">
 			<@shiro.hasPermission name="${PER_UPDATE}">

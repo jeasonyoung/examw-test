@@ -1,0 +1,160 @@
+<#--教材章节列表-->
+<#include "comm.ftl"/>
+<#assign module="syllabus_book_chapter"/>
+<script type="text/javascript">
+<!--
+$(function(){
+	var current_chapter_id = "";
+	//tree
+	var t = $("#${module}_list_tree").tree({
+		url:"<@s.url '/syllabus/book/${current_book_id}/chapters'/>",
+		lines:true,
+		onBeforeLoad:function(n,p){
+			current_chapter_id = "";
+		},
+		onClick:function(node){
+			current_chapter_id = node.id;
+			$(node.target).tooltip({
+				trackMouse:true,
+				content:function(){
+					return node.attributes["content"];
+				},
+				onDestroy:function(){
+					$(this).tooltip("destroy");
+				}
+			});
+		},
+		onDblClick:function(node){
+			current_chapter_id = node.id;
+		 	if(node.attributes){
+		 		chapter_window_edit("编辑章节",node.attributes,null);
+		 	}
+		},
+		onContextMenu:function(e,node){
+		 	e.preventDefault();
+		 	if(t){ t.tree("select",node.target); }
+		 	current_chapter_id = node.id;
+		 	$("#${module}_list_menus").menu("show",{ 
+		 		left: e.pageX,top: e.pageY 
+		 	});
+		 }
+	});
+	<@shiro.hasPermission name="${PER_UPDATE}">
+	//add
+	var m = false;
+	${module}_add = function(top){
+		if(m)return;
+		m = true;
+		var pid = (top) ? "" : current_chapter_id;
+		$.getJSON("<@s.url '/syllabus/book/chapters/order'/>?pid="+pid +"&_=" + Math.random(),function(data){
+			m = false;
+			chapter_window_edit("新增章节",null,data);
+		});
+	};
+	</@shiro.hasPermission>
+	//window_edit
+	function chapter_window_edit(title,row,order){
+		var d = $("<div/>").dialog({
+			title:title,width:600,height:240,
+			href:"<@s.url '/syllabus/book/${current_book_id}/chapters/edit'/>",
+			modal:true,
+			buttons:[
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			{
+				text:"保存",iconCls:"icon-save",
+				handler:function(){
+					$.messager.progress();
+					$("#${module}_edit_form").form("submit",{
+						url:"<@s.url '/syllabus/book/${current_book_id}/chapters/update'/>",
+						onSubmit: function(){
+							var isValid = $(this).form("validate");
+							if (!isValid)$.messager.progress("close");
+							return isValid;
+						},
+						onLoadError:function(e){
+							$.messager.progress("close");
+							<@error_dialog "e"/>
+						},
+						success:function(data){
+							$.messager.progress("close");
+							var data = $.parseJSON(data);
+							if(data.success){
+								d.dialog("close");
+								${module}_reload();
+							}else{
+								$.messager.show({
+									title:"保存异常",
+									msg:data.msg
+								});
+							}
+						}
+					});
+				}
+			},
+			</@shiro.hasPermission>
+			{
+				text:"关闭",iconCls:"icon-cancel",
+				handler:function(){d.dialog("close"); }
+			}],
+			onClose:function(){ $(this).dialog("destroy"); },
+			onLoad:function(){
+				var data = row ? row : {"pid":current_chapter_id,"orderNo":order};
+				$("#${module}_edit_form").form("load",data);
+			}
+		});
+	}
+	<@shiro.hasPermission name="${PER_DELETE}">
+	//remove
+	${module}_remove = function(){
+		if(!t)return;
+		var node = t.tree("getSelected");
+		if(!node) return;
+		$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
+			if(!r)return;
+			$.messager.progress();
+			$.ajax({
+				url:"<@s.url '/syllabus/book/chapters/delete'/>",
+				type:"POST",
+				data:{ id:node.id },
+				dataType:"json",
+				error:function(e){
+					$.messager.progress("close");
+					<@error_dialog "e"/>
+				},
+				success:function(data,textStatus){
+					$.messager.progress("close");
+					if(data.success){
+						${module}_reload();
+					}else{
+						$.messager.show({
+							title:"提示",
+							msg:data.msg
+						});
+					}
+				}
+			});
+		});
+	};
+	</@shiro.hasPermission>
+	//reload
+	${module}_reload = function(){
+		if(t)t.tree("reload");
+	};
+});
+//-->
+</script>
+<div class="easyui-panel" data-options="fit:true,border:false,title:'<div style=\'float:right;margin-right:20px;\'><small style=\'font-weight:normal;font-style:italic;color:red;\'>[点击添加一级章节 => ]</small></div>',tools:[{
+		iconCls:'icon-add',
+		handler:function(){ ${module}_reload();${module}_add(true); }
+	}]" style="padding:5px;background:#eee;">
+	<ul id="${module}_list_tree" class="easyui-tree"></ul>
+	<div id="${module}_list_menus" class="easyui-menu" style="width:120px;">
+		<@shiro.hasPermission name="${PER_UPDATE}">
+		<div onclick="${module}_add(false)" data-options="iconCls:'icon-add'">新增章节</div>
+		</@shiro.hasPermission>
+		<@shiro.hasPermission name="${PER_DELETE}">
+		<div onclick="${module}_remove()" data-options="iconCls:'icon-remove'">移除章节</div>
+		</@shiro.hasPermission>
+		<div onclick="${module}_reload()" data-options="iconCls:'icon-reload'">刷新</div>
+	</div>
+</div>

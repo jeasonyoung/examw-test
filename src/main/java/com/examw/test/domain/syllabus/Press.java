@@ -10,7 +10,7 @@ import java.util.Set;
 public class Press implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String id,name;
-	private Set<TextBook> books;
+	private Set<Book> books;
 	/**
 	 * 获取出版社ID。
 	 * @return 出版社ID。
@@ -45,7 +45,7 @@ public class Press implements Serializable {
 	 * 获取教材集合。
 	 * @return 教材集合。
 	 */
-	public Set<TextBook> getBooks() {
+	public Set<Book> getBooks() {
 		return books;
 	}
 	/**
@@ -53,7 +53,7 @@ public class Press implements Serializable {
 	 * @param books 
 	 *	  教材集合。
 	 */
-	public void setBooks(Set<TextBook> books) {
+	public void setBooks(Set<Book> books) {
 		this.books = books;
 	}
 }

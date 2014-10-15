@@ -12,6 +12,7 @@ $(function(){
 		onLoadError:function(e){ <@error_dialog "e"/> },
 		onSelect:function(record){
 			if(subject_cbb){
+				subject_cbb.combobox("clear");
 				subject_cbb.combobox("reload","<@s.url '/settings/subject/all'/>?examId=" + record.id);
 			}
 		}

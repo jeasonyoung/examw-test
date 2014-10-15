@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.examw.model.Json;
 import com.examw.test.domain.security.Right;
-import com.examw.test.service.syllabus.IKnowledgeService;
+import com.examw.test.service.syllabus.IChapterKnowledgeService;
 /**
  * 知识点控制器。
  * @author lq.
@@ -23,7 +23,7 @@ public class KnowledegeController {
 	private static final Logger logger = Logger.getLogger(KnowledegeController.class);
 	//知识点服务
 	@Resource
-	private IKnowledgeService knowService;
+	private IChapterKnowledgeService knowService;
 	/**
 	 * 获取列表页面。
 	 * @return

@@ -43,9 +43,9 @@ $(function(){
 			title:"名称",field:"title",width:100,align:"left",sortable:true
 		},{
 			title:"操作",field:"opt",width:20,align:"center",sortable:false,
-			 formatter:function(value,row,index){
-				 return "<a href='#' onclick='${dg}_syllabus_points(\""+row["id"] +"\",\"" +row["title"]+ "\");'>［要点管理］</a>";
-			 }
+			formatter:function(value,row,index){
+				return "<a href='#' onclick='${dg}_syllabus_points(\""+row["id"] +"\",\"" +row["title"]+ "\");'>［要点管理］</a>";
+			}
 		}]],
 		toolbar:"#${dg}_toobar",
 		onLoadError:function(e){ <@error_dialog "e"/> },

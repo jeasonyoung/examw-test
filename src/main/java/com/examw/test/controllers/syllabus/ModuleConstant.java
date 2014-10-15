@@ -16,7 +16,7 @@ public final class ModuleConstant {
 	/**
 	 * 教材设置ID。
 	 */
-	public static final String SYLLABUS_TEXTBOOK = "ETS0000304";
+	public static final String SYLLABUS_BOOK = "ETS0000304";
 	/**
 	 * 知识点管理ID。
 	 */

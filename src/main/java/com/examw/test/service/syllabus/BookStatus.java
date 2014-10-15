@@ -1,12 +1,11 @@
 package com.examw.test.service.syllabus;
-
 /**
- * 考试大纲状态枚举。
+ * 教材状态枚举。
  * 
  * @author yangyong
  * @since 2014年10月13日
  */
-public enum SyllabusStatus {
+public enum BookStatus {
 	/**
 	 * 启用。
 	 */
@@ -17,7 +16,7 @@ public enum SyllabusStatus {
 	DISABLE(0x00);
 	private int value;
 	//私有构造函数。
-	private SyllabusStatus(int value){
+	private BookStatus(int value){
 		this.value = value;
 	}
 	/**
@@ -32,12 +31,12 @@ public enum SyllabusStatus {
 	 * @param value
 	 * @return
 	 */
-	public static SyllabusStatus convert(int value){
+	public static BookStatus convert(int value){
 		switch(value){
 			//禁用
-			case 0x00 : return SyllabusStatus.DISABLE;
+			case 0x00 : return BookStatus.DISABLE;
 			//启用
-			case 0x01: return SyllabusStatus.ENABLE;
+			case 0x01: return BookStatus.ENABLE;
 		}
 		throw new RuntimeException("不存在［value="+value+"］！");
 	}
