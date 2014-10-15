@@ -1,7 +1,10 @@
 package com.examw.test.service.records;
 
+import java.util.List;
+
 import com.examw.service.IDataService;
 import com.examw.test.model.records.UserItemFavoriteInfo;
+import com.examw.test.model.settings.FrontSubjectInfo;
 
 /**
  * 用户试题收藏服务接口。
@@ -34,4 +37,14 @@ public interface IUserItemFavoriteService extends IDataService<UserItemFavoriteI
 	 * @return
 	 */
 	Long totalUserFavorites(String userId);
+	/**
+	 * 收藏或者取消收藏
+	 */
+	boolean favorOrCancel(UserItemFavoriteInfo info);
+	/**
+	 * 带收藏个数的科目信息
+	 * @param productId
+	 * @return
+	 */
+	List<FrontSubjectInfo> loadProductFrontSubjects(String productId,String userId);
 }

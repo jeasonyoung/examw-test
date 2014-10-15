@@ -4,9 +4,11 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
+import com.examw.support.CustomDateDeserializer;
 import com.examw.support.CustomDateSerializer;
 /**
  * 用户试题记录信息。
@@ -170,6 +172,7 @@ public class UserItemRecordInfo implements Serializable,Comparable<UserItemRecor
 	 * @param createTime 
 	 *	  创建时间。
 	 */
+	@JsonDeserialize(using = CustomDateDeserializer.LongDate.class)  
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
@@ -186,6 +189,7 @@ public class UserItemRecordInfo implements Serializable,Comparable<UserItemRecor
 	 * @param lastTime 
 	 *	  最后修改时间。
 	 */
+	@JsonDeserialize(using = CustomDateDeserializer.LongDate.class)  
 	public void setLastTime(Date lastTime) {
 		this.lastTime = lastTime;
 	}

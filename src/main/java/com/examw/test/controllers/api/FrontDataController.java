@@ -18,6 +18,7 @@ import com.examw.model.Json;
 import com.examw.test.model.records.UserItemFavoriteInfo;
 import com.examw.test.model.records.UserItemRecordInfo;
 import com.examw.test.model.records.UserPaperRecordInfo;
+import com.examw.test.model.settings.FrontSubjectInfo;
 import com.examw.test.service.records.IUserItemFavoriteService;
 import com.examw.test.service.records.IUserItemRecordService;
 import com.examw.test.service.records.IUserPaperRecordService;
@@ -100,11 +101,16 @@ public class FrontDataController {
 	@ResponseBody
 	public Json addItemFavorite(@PathVariable String userId,@RequestBody UserItemFavoriteInfo info){
 		if(logger.isDebugEnabled()) logger.debug(String.format("添加用户［userId = %s］试题收藏..", userId));
+		if(logger.isDebugEnabled())
+			try {
+				logger.debug(this.mapper.writeValueAsString(info));
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 		Json result = new Json();
 		try {
 			info.setUserId(userId);
-			result.setData(this.userItemFavoriteService.update(info));
-			result.setSuccess(true);
+			result.setSuccess(this.userItemFavoriteService.favorOrCancel(info));
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
@@ -351,6 +357,28 @@ public class FrontDataController {
 			logger.error("加载用户收藏试题集合发生异常：" + e.getMessage(), e);
 		}
 		return result;
+	}
+	@RequestMapping(value = {"/{userId}/favorite/list"}, method = {RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public List<UserItemFavoriteInfo> loadItemFavoriteList(@PathVariable String userId,UserItemFavoriteInfo info){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId = %s］收藏试题集合...", userId));
+		try {
+			return this.userItemFavoriteService.datagrid(info).getRows();
+		} catch (Exception e) {
+			logger.error("加载用户收藏试题集合发生异常：" + e.getMessage(), e);
+		}
+		return null;
+	}
+	@RequestMapping(value = {"/{productId}/{userId}/favorite/subjects"}, method = {RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public List<FrontSubjectInfo> loadItemFavoriteList(@PathVariable String productId,@PathVariable String userId,UserItemFavoriteInfo info){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId = %s］收藏试题集合...", userId));
+		try {
+			return this.userItemFavoriteService.loadProductFrontSubjects(productId, userId);
+		} catch (Exception e) {
+			logger.error("加载用户收藏试题集合发生异常：" + e.getMessage(), e);
+		}
+		return null;
 	}
 	/**
 	 * 删除试题收藏。

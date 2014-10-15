@@ -40,7 +40,7 @@
 	    <!-- 所属试卷结构 -->
 	    <many-to-one name="structure" column="structure_id" class="com.examw.test.domain.library.Structure" />
 	    <!-- 所属试题ID -->
-	    <property name="itemId" type="string" length="64" />
+	    <property name="itemId" type="string" length="128" />
 	    <!-- 试题内容JSON -->
 	    <property name="itemContent" type="text" />
 	    <!-- 用户答案 -->
@@ -66,7 +66,7 @@
 	    <!-- 所属用户 -->
 	    <many-to-one name="user" column="user_id" class="com.examw.test.domain.products.ProductUser" unique-key="user_favorite_item_key" not-null="true"/>
 	    <!-- 所属试题ID -->
-	    <property name="itemId" type="string" length="64" unique-key="user_favorite_item_key"  not-null="true" />
+	    <property name="itemId" type="string" length="128" unique-key="user_favorite_item_key"  not-null="true" />
 	    <!-- 试题题型 -->
 	    <property name="itemType" type="integer" />
 	    <!-- 试题内容JSON -->

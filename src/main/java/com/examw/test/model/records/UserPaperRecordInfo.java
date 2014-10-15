@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.examw.model.Paging;
 import com.examw.support.CustomDateSerializer;
@@ -18,11 +19,14 @@ import com.examw.support.CustomDateSerializer;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class UserPaperRecordInfo extends Paging {
 	private static final long serialVersionUID = 1L;
-	private String id,userId,paperId,productId;
-	private Integer status,terminalCode;
+	private String id,userId,paperId,paperName,paperTypeName,productId,subjectId;
+	private Integer status,terminalCode,paperType;
 	private Long usedTime;
 	private BigDecimal score;
-	private Date createTime,lastTime;
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Date createTime;
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Date lastTime;
 	private Set<UserItemRecordInfo> items;
 	/**
 	 * 获取记录ID。
@@ -83,6 +87,21 @@ public class UserPaperRecordInfo extends Paging {
 	 */
 	public void setProductId(String productId) {
 		this.productId = productId;
+	}
+	/**
+	 * 获取试卷名称。
+	 * @return 试卷名称。
+	 */
+	public String getPaperName() {
+		return paperName;
+	}
+	/**
+	 * 设置试卷名称
+	 * @param productId 
+	 *	试卷名称。
+	 */
+	public void setPaperName(String paperName) {
+		this.paperName = paperName;
 	}
 	/**
 	 * 获取用户终端类型代码。
@@ -190,5 +209,53 @@ public class UserPaperRecordInfo extends Paging {
 	 */
 	public void setItems(Set<UserItemRecordInfo> items) {
 		this.items = items;
+	}
+	/**
+	 * 获取 试卷类型名称
+	 * @return paperTypeName
+	 * 试卷类型名称
+	 */
+	public String getPaperTypeName() {
+		return paperTypeName;
+	}
+	/**
+	 * 设置 试卷类型名称
+	 * @param paperTypeName
+	 * 试卷类型名称
+	 */
+	public void setPaperTypeName(String paperTypeName) {
+		this.paperTypeName = paperTypeName;
+	}
+	/**
+	 * 获取  试卷类型
+	 * @return paperType
+	 *  试卷类型
+	 */
+	public Integer getPaperType() {
+		return paperType;
+	}
+	/**
+	 * 设置 试卷类型
+	 * @param paperType
+	 *  试卷类型
+	 */
+	public void setPaperType(Integer paperType) {
+		this.paperType = paperType;
+	}
+	/**
+	 * 设置 科目ID
+	 * @param subjectId
+	 * 科目ID
+	 */
+	public void setSubjectId(String subjectId) {
+		this.subjectId = subjectId;
+	}
+	/**
+	 * 获取 科目ID
+	 * @return subjectId
+	 * 科目ID
+	 */
+	public String getSubjectId() {
+		return subjectId;
 	}
 }

@@ -52,4 +52,11 @@ public interface IUserItemFavoriteDao extends IBaseDao<UserItemFavorite> {
 	 * @return
 	 */
 	Long totalUserFavorites(String userId);
+	/**
+	 * 查询收藏
+	 * @param userId
+	 * @param itemId
+	 * @return
+	 */
+	UserItemFavorite load(String userId,String itemId);
 }

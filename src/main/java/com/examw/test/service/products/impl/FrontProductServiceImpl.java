@@ -34,6 +34,7 @@ public class FrontProductServiceImpl implements IFrontProductService {
 	private ISubjectService subjectService;
 	private IAreaService areaService;
 	private IFrontPaperService frontPaperService;
+	
 	/**
 	 * 设置产品服务接口。
 	 * @param productService 
