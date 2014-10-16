@@ -26,6 +26,11 @@
 		<property name="status" type="integer" />
 		<!-- 所属科目 -->
 		<many-to-one name="subject" column="subject_id" class="com.examw.test.domain.settings.Subject" not-null="true"/>
+		<!-- 结构集合 -->
+		<set name="structures" inverse="true" cascade="save-update" order-by="orderNo asc">
+		    <key column="paper_id" />
+		    <one-to-many class="Structure" />
+		</set>
 		<!-- 价格（考试币） -->
 		<property name="price" type="integer" />
 		<!-- 总分 -->
@@ -141,7 +146,7 @@
 			<many-to-many class="com.examw.test.domain.syllabus.Syllabus" column="syllabus_id" />
 		</set>
 		<!-- 所属试卷结构集合 -->
-		<set name="structures" inverse="true" order-by="createTime desc">
+		<set name="structures" inverse="true" cascade="save-update" order-by="orderNo asc">
 			<key column="item_id" />
 			<one-to-many class="StructureItem"/>
 		</set>

@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,6 +21,7 @@ import com.examw.model.DataGrid;
 import com.examw.model.Json;
 import com.examw.model.TreeNode;
 import com.examw.test.domain.security.Right;
+import com.examw.test.domain.syllabus.Syllabus;
 import com.examw.test.model.syllabus.SyllabusInfo;
 import com.examw.test.service.syllabus.ISyllabusService;
 import com.examw.test.service.syllabus.SyllabusStatus;
@@ -136,7 +138,31 @@ public class SyllabusController {
 	public List<TreeNode> loadSyllabus(@PathVariable String syllabusId){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试大纲［syllabusId = %s］树数据...", syllabusId));
 		List<TreeNode> nodes = new ArrayList<>();
-		nodes.add(this.createSyllabusNode(this.syllabusService.conversion(this.syllabusService.loadSyllabus(syllabusId))));
+		Syllabus root = this.syllabusService.loadSyllabus(syllabusId);
+		if(root == null) return nodes;
+		TreeNode e = this.createSyllabusNode(this.syllabusService.conversion(root));
+		if(e != null) nodes.add(e);
+		return nodes;
+	}
+	/**
+	 * 加载考试大纲要点树数据。
+	 * @param syllabusId
+	 * 考试大纲ID。
+	 * @return
+	 */
+	@RequestMapping(value = {"/tree"}, method = {RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public List<TreeNode> loadSyllabusChildren(String syllabusId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试大纲［syllabusId = %s］要点树数据...", syllabusId));
+		List<TreeNode> nodes = new ArrayList<>();
+		if(StringUtils.isEmpty(syllabusId)) return nodes;
+		 Syllabus root = this.syllabusService.loadSyllabus(syllabusId);
+		 if(root == null || root.getChildren() == null) return nodes;
+		 for(Syllabus child : root.getChildren()){
+			 if(child == null) continue;
+			 TreeNode e = this.createSyllabusNode(this.syllabusService.conversion(child));
+			 if(e != null) nodes.add(e);
+		 }
 		return nodes;
 	}
 	//创建考试大纲树结构。
@@ -209,5 +235,16 @@ public class SyllabusController {
 			logger.error("删除数据大纲["+id+"]时发生异常:", e);
 		}
 		return result;
+	}
+	/**
+	 * 加载科目下的考试大纲集合。
+	 * @param subjectId
+	 * @return
+	 */
+	@RequestMapping(value = {"/all/subjects/{subjectId}"}, method = { RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public List<SyllabusInfo> loadAllSyllabuses(@PathVariable String subjectId){
+		if(logger.isDebugEnabled()) logger.debug(String.format(" 加载科目［subjectId = %s］下的考试大纲集合...", subjectId));
+		return this.syllabusService.loadAllSyllabuses(subjectId);
 	}
 }

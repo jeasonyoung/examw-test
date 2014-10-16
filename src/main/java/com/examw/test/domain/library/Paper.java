@@ -3,6 +3,7 @@ package com.examw.test.domain.library;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Set;
 
 import com.examw.test.domain.settings.Area;
 import com.examw.test.domain.settings.Subject;
@@ -20,8 +21,8 @@ public class Paper implements Serializable {
 	private Subject subject;
 	private Source source;
 	private Area area;
+	private Set<Structure> structures;
 	private Date createTime,lastTime,publishTime;
-	
 	/**
 	 * 获取试卷ID。
 	 * @return 试卷ID。
@@ -201,6 +202,21 @@ public class Paper implements Serializable {
 	 */
 	public void setArea(Area area) {
 		this.area = area;
+	}
+	/**
+	 * 获取试卷结构集合。
+	 * @return 试卷结构集合。
+	 */
+	public Set<Structure> getStructures() {
+		return structures;
+	}
+	/**
+	 * 设置试卷结构集合。
+	 * @param structures 
+	 *	  试卷结构集合。
+	 */
+	public void setStructures(Set<Structure> structures) {
+		this.structures = structures;
 	}
 	/**
 	 * 获取创建时间。

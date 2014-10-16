@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -134,7 +135,14 @@ public class PaperItemController {
 		if(logger.isDebugEnabled()) logger.debug(String.format("删除试卷结构下试题［%s］数据...",  id));
 		Json result = new Json();
 		try {
-			this.paperItemService.delete(id.split("\\|"));
+			String[] array = id.split("\\|");
+			for(String str : array){
+				if(StringUtils.isEmpty(str) || str.indexOf("$") == -1) continue;
+				String[] str_attrs = str.split("\\$");
+				String structrure_id = str_attrs[0], item_id =  str_attrs[1];
+				if(StringUtils.isEmpty(structrure_id) || StringUtils.isEmpty(item_id)) continue;
+				this.paperItemService.delete(structrure_id, new String[]{item_id});
+			}
 			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);

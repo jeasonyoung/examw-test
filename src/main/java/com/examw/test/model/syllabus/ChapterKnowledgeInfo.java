@@ -14,7 +14,8 @@ import com.examw.model.Paging;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class ChapterKnowledgeInfo extends Paging implements Comparable<ChapterKnowledgeInfo> {
 	private static final long serialVersionUID = 1L;
-	private String id,title,description,chapterId,chapterName,topSyllabusId,syllabusId,syllabusName,lastUserId,lastUserName;
+	private String id,title,description,bookId,chapterId,chapterName,
+							topSyllabusId,topSyllabusName,syllabusId,syllabusName,lastUserId,lastUserName;
 	private Integer orderNo;
 	private Date createTime,lastTime;
 	/**
@@ -63,6 +64,21 @@ public class ChapterKnowledgeInfo extends Paging implements Comparable<ChapterKn
 		this.description = description;
 	}
 	/**
+	 * 获取所属教材ID。
+	 * @return 所属教材ID。
+	 */
+	public String getBookId() {
+		return bookId;
+	}
+	/**
+	 * 设置所属教材ID。
+	 * @param bookId 
+	 *	  所属教材ID。
+	 */
+	public void setBookId(String bookId) {
+		this.bookId = bookId;
+	}
+	/**
 	 * 获取所属章节ID。
 	 * @return 所属章节ID。
 	 */
@@ -106,6 +122,21 @@ public class ChapterKnowledgeInfo extends Paging implements Comparable<ChapterKn
 	 */
 	public void setTopSyllabusId(String topSyllabusId) {
 		this.topSyllabusId = topSyllabusId;
+	}
+	/**
+	 * 获取所属考试大纲名称。
+	 * @return 所属考试大纲名称。
+	 */
+	public String getTopSyllabusName() {
+		return topSyllabusName;
+	}
+	/**
+	 * 设置所属考试大纲名称。
+	 * @param topSyllabusName 
+	 *	  所属考试大纲名称。
+	 */
+	public void setTopSyllabusName(String topSyllabusName) {
+		this.topSyllabusName = topSyllabusName;
 	}
 	/**
 	 * 获取大纲要点ID。

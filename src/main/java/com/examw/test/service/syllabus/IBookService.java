@@ -8,6 +8,14 @@ import com.examw.test.service.IBaseDataService;
  */
 public interface IBookService extends IBaseDataService<BookInfo> {
 	/**
+	 * 加载教材信息。
+	 * @param bookId
+	 * 教材ID。
+	 * @return
+	 * 教材数据。
+	 */
+	BookInfo loadBook(String bookId);
+	/**
 	 * 加载教材状态名称。
 	 * @param status
 	 * @return

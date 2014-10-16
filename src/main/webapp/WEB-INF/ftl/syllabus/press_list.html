@@ -11,6 +11,9 @@ $(function(){
 		fit:true,fitColumns:true,rownumbers:true,
 		pagination:true,pagePosition:"bottom",pageSize:20,pageList:[20,30,40],
 		border:true,striped:true,
+		queryParams:{
+			"name":$("#${dg}_toobar input[name='name']").val()
+		},
 		idField:"id",sortName:"name",
 		columns:[[{
 			field:"id",checkbox:true
@@ -84,7 +87,7 @@ $(function(){
 	//search
 	${dg}_search = function(){
 		dg.datagrid("load",{
-			  name:$("#${dg}_toobar input[name='name']").val()
+			  "name":$("#${dg}_toobar input[name='name']").val()
 		});
 	};
 	<@shiro.hasPermission name="${PER_DELETE}">

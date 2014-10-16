@@ -75,11 +75,10 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 			parameters.put("examId", info.getExamId());
 		}
 		if(!StringUtils.isEmpty(info.getSubjectId())){
-			// 2014-09-10 fengwei 多个科目的情况一起查
-			if(info.getSubjectId().contains(","))
-			{
-				hql += " and (p.subject.id in ("+info.getSubjectId().replaceAll("([a-z0-9-]{36})", "'$1'")+"))";
-			}else{
+			if(info.getSubjectId().indexOf(",") > -1){
+				hql += " and (p.subject.id in (:subjectId)) ";
+				parameters.put("subjectId", info.getSubjectId().split(","));
+			}else {
 				hql += " and (p.subject.id = :subjectId) ";
 				parameters.put("subjectId", info.getSubjectId());
 			}
@@ -109,7 +108,13 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 		if(logger.isDebugEnabled()) logger.debug("删除数据...");
 		if(data == null) return;
 		if(!StringUtils.isEmpty(data.getStatus()) && (data.getStatus() != PaperStatus.NONE.getValue())){
-			String msg = "数据［"+data.getId() +","+ data.getName()+"］已被审核或发布不允许删除！";
+			String msg = String.format("数据［paperId = %1$s, paperName = %2$s］已被审核或发布不允许删除！",data.getId(),data.getName());
+			if(logger.isDebugEnabled()) logger.debug(msg);
+			throw new RuntimeException(msg);
+		}
+		int count = 0;
+		if(data.getStructures() != null && (count = data.getStructures().size()) > 0){
+			String msg = String.format("试卷［%1$s］下存在［%2$d］试卷结构，暂不能删除！", data.getName(), count);
 			if(logger.isDebugEnabled()) logger.debug(msg);
 			throw new RuntimeException(msg);
 		}
@@ -132,7 +137,7 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 	 */
 	@Override
 	public Long loadAllAuditCount() {
-		final String hql = "select count(*) from Paper p where p.status = :status ";
+		final String hql = "select count(*) from Paper p where p.status = :status "; 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("status", PaperStatus.AUDIT.getValue());
 		Object obj = this.uniqueResult(hql, parameters);
