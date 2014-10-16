@@ -40,5 +40,9 @@
 	    <property name="subjectDao" ref="subjectDao" />
 	    <!-- 终端类型数据接口 -->
 	    <property name="softwareTypeDao" ref="softwareTypeDao" />
+	    <!-- 产品服务接口 -->
+	    <property name="productService" ref="productService" />
+	    <!-- 科目服务接口 -->
+	    <property name="subjectService" ref="subjectService" />
 	</bean>
 </beans>
