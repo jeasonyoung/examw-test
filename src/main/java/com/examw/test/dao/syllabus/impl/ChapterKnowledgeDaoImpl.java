@@ -29,7 +29,9 @@ public class ChapterKnowledgeDaoImpl extends BaseDaoImpl<ChapterKnowledge> imple
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
 			if(info.getSort().equalsIgnoreCase("chapterName")){
-				info.setSort("chapter.name");
+				info.setSort("chapter.title");
+			}else if(info.getSort().equalsIgnoreCase("syllabusName")){
+				info.setSort("syllabus.title");
 			}
 			hql += " order by k." + info.getSort() + " " + info.getOrder();
 		}
@@ -54,6 +56,10 @@ public class ChapterKnowledgeDaoImpl extends BaseDaoImpl<ChapterKnowledge> imple
 		if(!StringUtils.isEmpty(info.getTitle())){
 			hql += " and  (k.title like :title) ";
 			parameters.put("title", "%" + info.getTitle()+"%");
+		}
+		if(!StringUtils.isEmpty(info.getBookId())){
+			hql += " and (k.chapter.book.id = :bookId) ";
+			parameters.put("bookId", info.getBookId());
 		}
 		if(!StringUtils.isEmpty(info.getChapterId())){
 			hql += "  and (k.chapter.id = :chapterId) ";

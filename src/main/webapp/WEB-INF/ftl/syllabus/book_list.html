@@ -50,14 +50,9 @@ $(function(){
 		},{
 			title:"状态",field:"statusName", width:8, align:"center",sortable:true
 		},{
-			title:"操作1",field:"opt1", width:10, align:"center",
+			title:"操作",field:"opt1", width:15, align:"center",
 			formatter:function(value,row,index){
-				return "<a href='#' onclick='${dg}_book_chapters(\""+row["id"] +"\",\"" +row["name"]+ "\");' title='教材章节管理'>[章节]</a>";
-			}
-		},{
-			title:"操作2",field:"opt2", width:10, align:"center",
-			formatter:function(value,row,index){ 
-				return "<a href='#' onclick='${dg}_book_knowledges(\""+row["id"] +"\",\"" +row["name"]+ "\");' title='知识点管理'>[知识点]</a>"; 
+				return "<a href='#' onclick='${dg}_book_chapters(\""+row["id"] +"\",\"" +row["name"]+ "\");' title='教材章节/知识点管理'>[章节/知识点]</a>";
 			}
 		}]],
 		toolbar:"#${dg}_toobar",
@@ -68,24 +63,10 @@ $(function(){
 	});
 	//chapters
 	${dg}_book_chapters = function(id,title){
-		title = "教材［"+title+"］章节管理";
+		title = "教材［"+title+"］章节/知识点管理";
 		var d = $("<div/>").dialog({
 			title:title,width:800,height:600,
 			href:"<@s.url '/syllabus/book/'/>"+id + "/chapters/list",
-			modal:true,
-			buttons:[{
-				text:"关闭",iconCls:"icon-cancel",
-				handler:function(){d.dialog("close"); }
-			}],
-			onClose:function(){ $(this).dialog("destroy"); }
-		});
-	};
-	//knowledges
-	${dg}_book_knowledges = function(id,title){
-		title = "教材［"+title+"］知识点管理";
-		var d = $("<div/>").dialog({
-			title:title,width:800,height:600,
-			//href:"<@s.url '/syllabus/book/edit'/>?examId="+id,
 			modal:true,
 			buttons:[{
 				text:"关闭",iconCls:"icon-cancel",

@@ -73,7 +73,7 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 	@Override
 	protected List<Syllabus> find(SyllabusInfo info) {
 		if(logger.isDebugEnabled())logger.debug("查询数据...");
-		return this.syllabusDao.findSyllabuss(info);
+		return this.syllabusDao.findSyllabuses(info);
 	}
 	/*
 	 * 数据统计。
@@ -187,12 +187,12 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 		return this.syllabusDao.loadMaxOrder(parentSyllabusId);
 	}
 	/*
-	 *  加载科目下的考试大纲。
-	 * @see com.examw.test.service.syllabus.ISyllabusService#loadSyllabuses(java.lang.String)
+	 * 加载科目下最新的大纲要点集合。
+	 * @see com.examw.test.service.syllabus.ISyllabusService#loadLastSyllabuses(java.lang.String)
 	 */
 	@Override
-	public List<SyllabusInfo> loadSyllabuses(String subjectId) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("加载科目［subjectId = %s］的考试大纲... ", subjectId));
+	public List<SyllabusInfo> loadLastSyllabuses(String subjectId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载科目［subjectId = %s］下最新的大纲要点集合... ", subjectId));
 		List<SyllabusInfo> list = new ArrayList<>();
 		if(StringUtils.isEmpty(subjectId)) return list;
 		Syllabus syllabus = this.syllabusDao.loadSyllabussLast(subjectId);
@@ -208,6 +208,15 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 			Collections.sort(list);
 		}
 		return list;
+	}
+	/*
+	 * 加载科目下全部的考试大纲。
+	 * @see com.examw.test.service.syllabus.ISyllabusService#loadAllSyllabuses(java.lang.String)
+	 */
+	@Override
+	public List<SyllabusInfo> loadAllSyllabuses(String subjectId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载科目［subjectId = %s］下最新的大纲要点集合...", subjectId));
+		return this.changeModel(this.syllabusDao.findSyllabusesBySubject(subjectId));
 	}
 	/*
 	 * 加载考试大纲数据。

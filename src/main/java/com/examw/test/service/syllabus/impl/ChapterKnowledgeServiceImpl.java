@@ -126,8 +126,19 @@ public class ChapterKnowledgeServiceImpl extends BaseDataServiceImpl<ChapterKnow
 		if(data.getSyllabus() != null){
 			info.setSyllabusId(data.getSyllabus().getId());
 			info.setSyllabusName(data.getSyllabus().getTitle());
+			this.buildTopSyllabus(data.getSyllabus(), info);
 		}
 		return info;
+	}
+	//构建所属考试大纲版本。
+	private void buildTopSyllabus(Syllabus syllabus, ChapterKnowledgeInfo info){
+		if(syllabus == null || info == null) return;
+		if(syllabus.getParent() == null){
+			info.setTopSyllabusId(syllabus.getId());
+			info.setTopSyllabusName(syllabus.getTitle());
+			return;
+		}
+		this.buildTopSyllabus(syllabus.getParent(), info);
 	}
 	/*
 	 * 数据更新。

@@ -39,7 +39,7 @@ public class SyllabusDaoImpl extends BaseDaoImpl<Syllabus> implements ISyllabusD
 	 * @see com.examw.test.dao.syllabus.ISyllabusDao#findSyllabuss(com.examw.test.model.syllabus.SyllabusInfo)
 	 */
 	@Override
-	public List<Syllabus> findSyllabuss(SyllabusInfo info) {
+	public List<Syllabus> findSyllabuses(SyllabusInfo info) {
 		if(logger.isDebugEnabled())logger.debug("查询数据...");
 		String hql = "from Syllabus s where (s.parent is null) ";
 		Map<String, Object> parameters = new HashMap<>();
@@ -85,6 +85,18 @@ public class SyllabusDaoImpl extends BaseDaoImpl<Syllabus> implements ISyllabusD
 			parameters.put("title", "%"+ info.getTitle() +"%");
 		}
 		return hql;
+	}
+	/*
+	 * 加载科目下的大纲集合。
+	 * @see com.examw.test.dao.syllabus.ISyllabusDao#findSyllabusesBySubject(java.lang.String)
+	 */
+	@Override
+	public List<Syllabus> findSyllabusesBySubject(String subjectId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载科目［subjectId = %s］下的考试大纲集合...", subjectId));
+		final String hql = "from Syllabus s where (s.parent is null) and  (s.subject.id = :subjectId) ";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("subjectId", subjectId);
+		return this.find(hql, parameters, null, null);
 	}
 	/*
 	 * 删除数据。

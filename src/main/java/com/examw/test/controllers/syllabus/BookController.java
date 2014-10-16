@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model; 
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod; 
@@ -24,9 +23,11 @@ import com.examw.model.TreeNode;
 import com.examw.test.domain.security.Right; 
 import com.examw.test.model.syllabus.BookChapterInfo;
 import com.examw.test.model.syllabus.BookInfo;
+import com.examw.test.model.syllabus.ChapterKnowledgeInfo;
 import com.examw.test.service.syllabus.BookStatus;
 import com.examw.test.service.syllabus.IBookChapterService;
 import com.examw.test.service.syllabus.IBookService;
+import com.examw.test.service.syllabus.IChapterKnowledgeService;
 import com.examw.test.support.PaperItemUtils;
 /**
  * 教材控制器。
@@ -43,6 +44,9 @@ public class BookController {
 	//教材章节服务接口。
 	@Resource
 	private IBookChapterService bookChapterService;
+	//章节知识点服务接口。
+	@Resource
+	private IChapterKnowledgeService chapterKnowledgeService;
 	/**
 	 * 获取列表页面。
 	 * @return
@@ -241,7 +245,7 @@ public class BookController {
 		if(logger.isDebugEnabled()) logger.debug(String.format("更新教材［bookId = %s］章节数据...", bookId));
 		Json result = new Json();
 		try {
-			info.setBookId(StringUtils.isEmpty(info.getPid()) ?  bookId : null);
+			info.setBookId(bookId);
 			this.bookChapterService.update(info);
 			result.setSuccess(true);
 		} catch (Exception e) {
@@ -272,76 +276,95 @@ public class BookController {
 		}
 		return result;
 	}
-	
-//	/**
-//	 * 获取知识点编辑页面。
-//	 * @return
-//	 * 编辑页面。
-//	 */
-//	@RequiresPermissions({ModuleConstant.SYLLABUS_TEXTBOOK+ ":" + Right.VIEW})
-//	@RequestMapping(value="/syll/edit/{bookId}", method = RequestMethod.GET)
-//	public String editKnow(@PathVariable String bookId,Model model){
-//		if(logger.isDebugEnabled()) logger.debug("加载知识点编辑页面...");
-//		model.addAttribute("CURRENT_BOOK_ID", bookId);
-//		model.addAttribute("PER_UPDATE",ModuleConstant.SYLLABUS_TEXTBOOK + ":" + Right.UPDATE);
-//		model.addAttribute("PER_DELETE",ModuleConstant.SYLLABUS_TEXTBOOK + ":" + Right.DELETE);
-//		return "syllabus/know_edit";
-//	}
-//	/**
-//	 * 教材下知识点数据列表。
-//	 * @param info
-//	 * 查询知识点。
-//	 * @return
-//	 * 查询结果。
-//	 */
-//	@RequiresPermissions({ModuleConstant.SYLLABUS_TEXTBOOK+ ":" + Right.VIEW})
-//	@RequestMapping(value="/{bookId}/datagrid", method = RequestMethod.POST)
-//	@ResponseBody
-//	public DataGrid<ChapterKnowledgeInfo> dgStructureItems(@PathVariable String bookId, ChapterKnowledgeInfo info){
-//		if(logger.isDebugEnabled()) logger.debug("加载教材下的［"+bookId+"］知识点数据列表...");
-//		if(info == null)info = new ChapterKnowledgeInfo();
-//		info.setBookId(bookId);
-//		return this.knowledgeService.datagrid(info);
-//	}
-//	/**
-//	 * 获取添加知识点页面。
-//	 * @return
-//	 * 添加页面。
-//	 */
-//	@RequiresPermissions({ModuleConstant.SYLLABUS_TEXTBOOK+ ":" + Right.VIEW})
-//	@RequestMapping(value="/add", method = RequestMethod.GET)
-//	public String add(String bookId,String syllId,Model model){
-//		if(logger.isDebugEnabled()) logger.debug("加载添加知识点页面...");
-//		model.addAttribute("CURRENT_BOOK_ID", bookId);
-//		model.addAttribute("CURRENT_SYLL_ID", syllId);
-//		return "syllabus/know_add";
-//	}
-
-
-//	/**
-//	 * 更新知识点数据。
-//	 * @param info
-//	 * 更新源数据。
-//	 * @return
-//	 * 更新后数据。
-//	 */
-//	@RequiresPermissions({ModuleConstant.SYLLABUS_TEXTBOOK+ ":" + Right.VIEW})
-//	@RequestMapping(value="/{bookId}/update", method = RequestMethod.POST)
-//	@ResponseBody
-//	public Json updateStructure(@PathVariable String bookId, ChapterKnowledgeInfo info){
-//		if(logger.isDebugEnabled()) logger.debug("更新知识点数据...");
-//		Json result = new Json();
-//		try {
-//			info.setBookId(bookId);
-//			result.setData(this.knowledgeService.update(info));
-//			result.setSuccess(true);
-//		} catch (Exception e) {
-//			result.setSuccess(false);
-//			result.setMsg(e.getMessage());
-//			logger.error("更新知识点数据发生异常", e);
-//		}
-//		return result;
-//	}
-
-
+	/**
+	 * 加载教材章节下的知识点集合。
+	 * @param bookId
+	 * 所属教材。
+	 * @param info
+	 * 查询条件。
+	 * @return
+	 * 知识点集合。
+	 */
+	@RequiresPermissions({ModuleConstant.SYLLABUS_BOOK + ":" + Right.VIEW})
+	@RequestMapping(value = {"/{bookId}/knowledges"}, method = RequestMethod.POST)
+	@ResponseBody
+	public DataGrid<ChapterKnowledgeInfo> loadKnowledges(@PathVariable String bookId, ChapterKnowledgeInfo info){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载教材［bookId ＝ %s］章节下的知识点集合...", bookId));
+		info.setBookId(bookId);
+		return this.chapterKnowledgeService.datagrid(info);
+	}
+	/**
+	 * 加载知识点编辑页面。
+	 * @param bookId
+	 * 教材ID。
+	 * @param model
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.SYLLABUS_BOOK + ":" + Right.VIEW})
+	@RequestMapping(value = {"/{bookId}/knowledge/edit"}, method = RequestMethod.GET)
+	public String loadKnowledgeEdit(@PathVariable String bookId,String syllabusId,Model model){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载教材［bookId = %s］章节知识点编辑页面", bookId));
+		model.addAttribute("current_book_id", bookId);
+		model.addAttribute("current_syllabus_id", syllabusId);
+		BookInfo info = this.bookService.loadBook(bookId);
+		if(info == null) throw new RuntimeException(String.format("教材［bookId ＝ ％s］不存在！", bookId));
+		model.addAttribute("current_subject_id", info.getSubjectId());
+		return "syllabus/book_knowledges_edit"; 
+	}
+	/**
+	 * 加载章节下知识点排序号。
+	 * @param chapterId
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.SYLLABUS_BOOK + ":" + Right.VIEW})
+	@RequestMapping(value = {"/knowledges/order"}, method = RequestMethod.GET)
+	@ResponseBody
+	public Integer loadKnowledgeMaxCode(String chapterId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载章节［chapterId = %s］下知识点排序号...", chapterId));
+		Integer order = this.chapterKnowledgeService.loadMaxCode(chapterId);
+		if(order == null) order = 0;
+		return order + 1;
+	}
+	/**
+	 * 更新知识点数据。
+	 * @param info
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.SYLLABUS_BOOK + ":" + Right.UPDATE})
+	@RequestMapping(value = {"/knowledge/update"}, method = RequestMethod.POST)
+	@ResponseBody
+	public Json updateKnowledge(ChapterKnowledgeInfo info){
+		if(logger.isDebugEnabled()) logger.debug("更新知识点数据...");
+		Json result = new Json();
+		try {
+			result.setData(this.chapterKnowledgeService.update(info));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("更新教材章节数据发生异常", e);
+		}
+		return result;
+	}
+	/**
+	 * 删除知识点数据。
+	 * @param id
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.SYLLABUS_BOOK + ":" + Right.DELETE})
+	@RequestMapping(value = {"/knowledges/delete"}, method = RequestMethod.POST)
+	@ResponseBody
+	public Json deleteKnowledges(String id){
+		if(logger.isDebugEnabled()) logger.debug("删除知识点数据［"+ id +"］...");
+		Json result = new Json();
+		try {
+			this.chapterKnowledgeService.delete(id.split("\\|"));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("删除数据教材知识点["+id+"]时发生异常:", e);
+		}
+		return result;
+	}
 }

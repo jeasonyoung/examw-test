@@ -81,6 +81,16 @@ public class BookServiceImpl extends BaseDataServiceImpl<Book, BookInfo> impleme
 		this.statusMap = statusMap;
 	}
 	/*
+	 * 加载教材信息。
+	 * @see com.examw.test.service.syllabus.IBookService#loadBook(java.lang.String)
+	 */
+	@Override
+	public BookInfo loadBook(String bookId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载教材［bookId = %s］信息...", bookId));
+		if(StringUtils.isEmpty(bookId)) return null;
+		return this.changeModel(this.bookDao.load(Book.class, bookId));
+	}
+	/*
 	 * 加载状态名称。
 	 * @see com.examw.test.service.syllabus.IBookService#loadStatusName(java.lang.Integer)
 	 */

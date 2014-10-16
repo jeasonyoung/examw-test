@@ -185,7 +185,7 @@ public class FrontController {
 	@ResponseBody
 	public List<SyllabusInfo> loadSubjectSyllabuses(@PathVariable String subjectId){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载科目[subjectId = %s]下的考试大纲...", subjectId));
-		return this.syllabusService.loadSyllabuses(subjectId);
+		return this.syllabusService.loadLastSyllabuses(subjectId);
 	}
 	/**
 	 * 加载考试大纲数据。
