@@ -2,7 +2,7 @@
 <#macro item_choice info>
 <div style="float:left;width:100%;">
 	<dl style="float:left;margin-left:15px;">
-		<dt>${info.content}</dt>
+		<dt><#if (info.orderNo > 0)>${info.orderNo}.</#if> ${info.content}</dt>
 		<dt>[选项]:</dt>
 		<#list info.children as c>
 			<dd>${c.content}</dd>
@@ -24,7 +24,7 @@
 <#macro item_judge info>
 <div style="float:left;width:100%;">
 	<dl style="float:left;margin-left:15px;">
-		<dt>${info.content}</dt>
+		<dt><#if (info.orderNo > 0)>${info.orderNo}.</#if>${info.content}</dt>
 		<dt>[答案]:</dt>
 		<#if (info.answer??) && (ItemJudgeAnswers??)>
 			<#list ItemJudgeAnswers?keys as key>
@@ -42,7 +42,7 @@
 <#macro item_qanda info>
 <div style="float:left;width:100%;">
 	<dl style="float:left;margin-left:15px;">
-		<dt>${info.content}</dt>
+		<dt><#if (info.orderNo > 0)>${info.orderNo}.</#if>${info.content}</dt>
 		<dt>[答案]:</dt>
 		<dd>${info.answer}</dd>
 		<dt>[解析]:</dt>
@@ -54,7 +54,7 @@
 <#macro item_share_title info>
 <div style="float:left;width:100%;">
 	<dl style="float:left;margin-left:15px;">
-		<dt>${info.content}</dt>
+		<dt><#if (info.orderNo > 0)>${info.orderNo}.</#if>${info.content}</dt>
 		<dt>[子题集合]:</dt>
 		<#list info.children as c>
 			<dd>
@@ -82,7 +82,7 @@
 <#macro item_share_answer info>
 <div style="float:left;width:100%;">
 	<dl style="float:left;margin-left:15px;">
-		<dt>${info.content}</dt>
+		<dt><#if (info.orderNo > 0)>${info.orderNo}.</#if>${info.content}</dt>
 		<#if info.children??>
 			<dt>[共享答案]:</dt>
 			<#assign len = (info.children?size) - 1 />

@@ -115,27 +115,33 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 		}
 		String msg = null;
 		if(parent.getStatus() == ItemStatus.AUDIT.getValue()){
-			msg = "题目已审核，不允许删除！";
+			msg = "试题已审核，不允许删除！";
 			if(logger.isDebugEnabled()) logger.debug(msg);
 			throw new RuntimeException(msg);
 		}
-		this.autoDelete(data);
-	}
-	/**
-	 * 自动删除题目数据。
-	 * @param data
-	 */
-	protected void autoDelete(Item data){
-		if(data == null) return;
-		if(data.getChildren() == null || data.getChildren().size() == 0){
-			super.delete(data);
-			return;
+		int count = 0;
+		if(parent.getStructures() != null && (count = parent.getStructures().size()) > 0){
+			msg = String.format("试题［%1$s］被关联在［%2$d］试卷结构中，暂不能删除！", parent.getContent(), count);
+			if(logger.isDebugEnabled()) logger.debug(msg);
+			throw new RuntimeException(msg);
 		}
-		for(Item item : data.getChildren()){
-			if(item == null) continue;
-			this.autoDelete(item);
-		} 
+		super.delete(parent);
 	}
+//	/**
+//	 * 自动删除题目数据。
+//	 * @param data
+//	 */
+//	protected void autoDelete(Item data){
+//		if(data == null) return;
+//		if(data.getChildren() == null || data.getChildren().size() == 0){
+//			super.delete(data);
+//			return;
+//		}
+//		for(Item item : data.getChildren()){
+//			if(item == null) continue;
+//			this.autoDelete(item);
+//		} 
+//	}
 	/*
 	 * 加载试题。
 	 * @see com.examw.test.dao.library.IItemDao#loadItemByCode(java.lang.String)
