@@ -75,7 +75,20 @@ public class UserItemRecordServiceImpl implements IUserItemRecordService {
 	@Override
 	public List<UserItemRecordInfo> loadUserErrorItems(String userId,String paperId) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId = %1$s］试卷［paperId = %2$s］错题集合...", userId, paperId));
-		List<UserItemRecord> dataList = this.userItemRecordDao.loadUserErrorItems(userId, paperId);
+		List<UserItemRecord> dataList = this.userItemRecordDao.loadUserErrorItems(userId, paperId,null);
+		if(dataList == null || dataList.size() == 0) return null;
+		List<UserItemRecordInfo> list = new ArrayList<>();
+		for(UserItemRecord item : dataList){
+			if(item == null) continue;
+			UserItemRecordInfo info = this.conversion(item);
+			if(info != null) list.add(info);
+		}
+		return list;
+	}
+	@Override
+	public List<UserItemRecordInfo> loadUserErrorItems(String userId,String paperId,String subjectId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId = %1$s］科目［subjectId = %2$s］错题集合...", userId, subjectId));
+		List<UserItemRecord> dataList = this.userItemRecordDao.loadUserErrorItems(userId, paperId,subjectId);
 		if(dataList == null || dataList.size() == 0) return null;
 		List<UserItemRecordInfo> list = new ArrayList<>();
 		for(UserItemRecord item : dataList){

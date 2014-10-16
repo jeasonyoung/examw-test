@@ -26,7 +26,7 @@ public class UserItemRecordDaoImpl extends BaseDaoImpl<UserItemRecord> implement
 	 * @see com.examw.test.dao.records.IUserItemRecordDao#loadUserErrorItems(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<UserItemRecord> loadUserErrorItems(String userId, String paperId) {
+	public List<UserItemRecord> loadUserErrorItems(String userId, String paperId,String subjectId) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId = %1$s］试卷［paperId = %2$s］错题记录集合...", userId, paperId));
 		StringBuilder hqlBuilder = new StringBuilder();
 		hqlBuilder.append("from UserItemRecord u ")
@@ -39,6 +39,18 @@ public class UserItemRecordDaoImpl extends BaseDaoImpl<UserItemRecord> implement
 			hqlBuilder.append(" and ").append("(").append("u.paperRecord.paper.id").append("=").append(":paperId").append(") ");
 			parameters.put("paperId", paperId);
 		}
+		if(!StringUtils.isEmpty(subjectId)){
+			if(!subjectId.contains(","))
+			{
+				hqlBuilder.append(" and ").append("(").append("u.paperRecord.paper.subject.id").append("=").append(":subjectId").append(") ");
+				parameters.put("subjectId", subjectId);
+			}else{
+				String[] subjectIds = subjectId.split(",");
+				hqlBuilder.append(" and ").append("(").append("u.paperRecord.paper.subject.id").append(" in ").append("(:subjectId)").append(") ");
+				parameters.put("subjectId", subjectIds);
+			}
+		}
+		hqlBuilder.append(" group by u.itemId");
 		hqlBuilder.append(" order by ").append("u.lastTime desc").append(",").append("u.createTime desc");
 		return this.find(hqlBuilder.toString(), parameters, null, null);
 	}

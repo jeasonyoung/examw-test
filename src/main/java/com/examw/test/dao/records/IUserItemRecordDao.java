@@ -21,7 +21,7 @@ public interface IUserItemRecordDao extends IBaseDao<UserItemRecord> {
 	 * @return
 	 * 错题记录。
 	 */
-	List<UserItemRecord> loadUserErrorItems(String userId,String paperId);
+	List<UserItemRecord> loadUserErrorItems(String userId,String paperId,String subjectId);
 	/**
 	 * 加载用户试卷的最新试题记录。
 	 * @param userId

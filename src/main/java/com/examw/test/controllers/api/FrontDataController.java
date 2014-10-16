@@ -257,20 +257,11 @@ public class FrontDataController {
 	 * 试卷ID
 	 * @return
 	 */
-	@RequestMapping(value = {"/{userId}/errors/{paperId}", "/{userId}/errors"}, method = {RequestMethod.GET})
+	@RequestMapping(value = {"/{userId}/errors"}, method = {RequestMethod.GET,RequestMethod.POST})
 	@ResponseBody
-	public Json  loadUserErrorItems(@PathVariable String userId, @PathVariable String paperId){
+	public List<UserItemRecordInfo>  loadUserErrorItems(@PathVariable String userId, String paperId,String subjectId){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId = %1$s］［paperId = %2$s］错题集合...", userId,paperId));
-		Json result = new Json();
-		try {
-			result.setData(this.userItemRecordService.loadUserErrorItems(userId, paperId));
-			result.setSuccess(true);
-		} catch (Exception e) {
-			result.setSuccess(false);
-			result.setMsg(e.getMessage());
-			logger.error("加载用户错题集数据发生异常：" + e.getMessage(), e);
-		}
-		return result;
+		return this.userItemRecordService.loadUserErrorItems(userId, paperId,subjectId);
 	}
 	/**
 	 * 判断用户是否收藏试题。

@@ -22,6 +22,7 @@ public interface IUserItemRecordService {
 	 * 错题记录。
 	 */
 	List<UserItemRecordInfo> loadUserErrorItems(String userId,String paperId);
+	List<UserItemRecordInfo> loadUserErrorItems(String userId,String paperId,String subjectId);
 	/**
 	 * 数据模型转换。
 	 * @param source
