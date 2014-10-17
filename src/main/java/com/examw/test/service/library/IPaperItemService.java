@@ -27,8 +27,8 @@ public interface IPaperItemService extends IBaseDataService<StructureItemInfo> {
 	 * 删除试卷结构下的试题。
 	 * @param structureId
 	 * 试卷结构ID。
-	 * @param itemIds
+	 * @param itemId
 	 * 试题ID。
 	 */
-	void delete(String structureId,String[] itemIds);
+	void delete(String structureId,String itemId);
 }

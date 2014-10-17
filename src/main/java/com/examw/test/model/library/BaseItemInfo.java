@@ -17,7 +17,7 @@ import com.examw.support.CustomDateSerializer;
 public abstract class BaseItemInfo<T extends BaseItemInfo<T>>  extends Paging implements Comparable<BaseItemInfo<T>> {
 	private static final long serialVersionUID = 1L;
 	private String pid,id,typeName,statusName,optName,examId,examName,subjectId,subjectName, 
-			content,answer,analysis,checkCode,sourceId,sourceName,areaId,areaName;
+			content,answer,analysis,checkCode,sourceId,sourceName,areaId,areaName,userId,userName;
 	private Integer type,level,year,opt,status,orderNo,count;
 	private Date createTime,lastTime;
 	/**
@@ -379,6 +379,36 @@ public abstract class BaseItemInfo<T extends BaseItemInfo<T>>  extends Paging im
 	 */
 	public void setOrderNo(Integer orderNo) {
 		this.orderNo = orderNo;
+	}
+	/**
+	 * 获取当前用户ID。
+	 * @return 当前用户ID。
+	 */
+	public String getUserId() {
+		return userId;
+	}
+	/**
+	 * 设置当前用户ID。
+	 * @param userId 
+	 *	  当前用户ID。
+	 */
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+	/**
+	 * 获取当前用户名。
+	 * @return 当前用户名。
+	 */
+	public String getUserName() {
+		return userName;
+	}
+	/**
+	 * 设置当前用户名。
+	 * @param userName 
+	 *	  当前用户名。
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	/**
 	 * 获取创建时间。

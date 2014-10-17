@@ -95,10 +95,8 @@ public class UserItemRecordDaoImpl extends BaseDaoImpl<UserItemRecord> implement
 	public void batchSaveItemRecord(UserItemRecord[] itemRecords) {
 		if(logger.isDebugEnabled()) logger.debug("批量添加用户试题记录...");
 		if(itemRecords == null || itemRecords.length == 0) return;
-		Session session = null;
 		try {
-			session = this.getCurrentSession();
-			session.beginTransaction();
+			Session session = this.getCurrentSession();
 			UserItemRecord record = null;
 			for(int i = 0; i < itemRecords.length; i++){
 				record = itemRecords[i];
@@ -109,15 +107,9 @@ public class UserItemRecordDaoImpl extends BaseDaoImpl<UserItemRecord> implement
 					session.clear();
 				}
 			}
-			session.getTransaction().commit();//提交事务
-		} catch (Exception e) {
-			session.getTransaction().rollback();
+		} catch (Exception e) { 
 			logger.error("发生异常：" + e.getMessage(), e);
 			throw e;
-		}finally{
-			if(session != null && session.isOpen()){
-				session.close();
-			}
 		}
 	}
 }

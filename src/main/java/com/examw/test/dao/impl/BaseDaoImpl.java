@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Cache;
+import org.hibernate.CacheMode;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -134,7 +135,7 @@ public class BaseDaoImpl<T> implements IBaseDao<T> {
 	@SuppressWarnings("rawtypes")
 	protected List query(String hql, Map<String, Object> parameters,Integer page, Integer rows){
 		if(logger.isDebugEnabled()) logger.debug(String.format("查询数据［hql = %1$s］［page = %2$d］［rows = %3$d］...", hql, page, rows));
-		if(hql == null || hql.isEmpty()) return null;
+		if(StringUtils.isEmpty(hql)) return null;
 		Query query = this.getCurrentSession().createQuery(hql);
 		if(query != null){
 			this.addParameters(query, parameters);
@@ -148,11 +149,24 @@ public class BaseDaoImpl<T> implements IBaseDao<T> {
 	/**
 	 * 添加参数集合。
 	 * @param query
+	 * 查询对象。
 	 * @param parameters
+	 * 参数集合。
 	 */
-	@SuppressWarnings("rawtypes")
 	protected void addParameters(Query query, Map<String, Object> parameters){
-		if(logger.isDebugEnabled()) logger.debug("添加参数集合...");
+		 this.addParameters(query, parameters, true);
+	}
+	/**
+	 * 添加参数集合。
+	 * @param query
+	 * 查询对象。
+	 * @param parameters
+	 * 参数集合。
+	 * @param hasCache
+	 * 是否使用二级缓存中的查询缓存。
+	 */
+	protected void addParameters(Query query, Map<String, Object> parameters, boolean hasCache){
+		if(logger.isDebugEnabled()) logger.debug(String.format("添加参数集合［hasCache = %s］...", hasCache));
 		if(query == null) return;
 		if(parameters == null || parameters.size() == 0) return;
 		Object  value = null;
@@ -161,13 +175,38 @@ public class BaseDaoImpl<T> implements IBaseDao<T> {
 			 if(value != null && value.getClass().isArray()){
 				query.setParameterList(entry.getKey(), (Object[])value);
 			 }else if (value != null && (value instanceof Collection)) {
-				query.setParameterList(entry.getKey(), (Collection)value);
+				query.setParameterList(entry.getKey(), (Collection<?>)value);
 			}else {
 				query.setParameter(entry.getKey(), value);
 			}
 		}
-		//是否启用缓存。
-		query.setCacheable(true);
+		if(hasCache){
+			query.setCacheable(true);//是否启用缓存。
+		}else {
+			query.setCacheable(false);
+			query.setCacheMode(CacheMode.IGNORE);
+		}
+	}
+	/**
+	 * 执行HQL语句。
+	 * @param hql
+	 * HQL语句。
+	 * @param parameters
+	 * 参数集合。
+	 * @param hasCache
+	 * 是否启用二级缓存。
+	 * @return
+	 * 执行数据条数。
+	 */
+	protected Integer execuateUpdate(String hql, Map<String, Object> parameters){
+		if(logger.isDebugEnabled()) logger.debug(String.format("执行HQL语句［%s］...", hql));
+		if(StringUtils.isEmpty(hql)) return null;
+		Query query = this.getCurrentSession().createQuery(hql);
+		if(query != null){
+			this.addParameters(query, parameters);
+			return query.executeUpdate();
+		}
+		return null;
 	}
 	/**
 	 * 统计数据总数。
@@ -201,21 +240,6 @@ public class BaseDaoImpl<T> implements IBaseDao<T> {
 		}
 		return null;
 	}
-	/**
-	 * 执行HQL语句。
-	 * @param hql
-	 * @param parameters
-	 */
-	protected Integer executeUpdate(String hql,Map<String, Object> parameters){
-		if(logger.isDebugEnabled()) logger.debug(String.format("执行HQL语句［hql = %s］!", hql));
-		if(StringUtils.isEmpty(hql)) return null;
-		Query query = this.getCurrentSession().createQuery(hql);
-		if(query != null){
-			this.addParameters(query, parameters);
-			return query.executeUpdate();
-		}
-		return null;
-	}
 	/*
 	 * 手动清除二级缓存。
 	 * @see com.examw.test.dao.IBaseDao#evict(java.lang.Class)
@@ -235,5 +259,17 @@ public class BaseDaoImpl<T> implements IBaseDao<T> {
 	public void merge(Object object){
 		if(object == null) return;
 		this.getCurrentSession().merge(object);
+	}
+	/*
+	 * 清理缓存
+	 * @see com.examw.test.dao.IBaseDao#flush()
+	 */
+	@Override
+	public void flush() {
+		Session session = this.getCurrentSession();
+		if(session != null){
+			session.flush();
+			session.clear();
+		}
 	}
 }

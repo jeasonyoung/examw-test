@@ -127,21 +127,6 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 		}
 		super.delete(parent);
 	}
-//	/**
-//	 * 自动删除题目数据。
-//	 * @param data
-//	 */
-//	protected void autoDelete(Item data){
-//		if(data == null) return;
-//		if(data.getChildren() == null || data.getChildren().size() == 0){
-//			super.delete(data);
-//			return;
-//		}
-//		for(Item item : data.getChildren()){
-//			if(item == null) continue;
-//			this.autoDelete(item);
-//		} 
-//	}
 	/*
 	 * 加载试题。
 	 * @see com.examw.test.dao.library.IItemDao#loadItemByCode(java.lang.String)

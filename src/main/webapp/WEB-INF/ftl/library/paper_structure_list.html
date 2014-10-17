@@ -226,11 +226,12 @@ $(function(){
 						success:function(callback,textStatus){
 							$.messager.progress("close");
 							if(callback.success){
-								alert("index=" + index);
-								dg.datagrid(row ? "updateRow" : "insertRow",{
-									index:index,
+								var rows = callback.data;
+								index = dg.datagrid("getRowIndex", rows["id"]);
+								dg.datagrid((index > -1) ? "updateRow" : "insertRow",{
+									index:(index > -1 ? index : 0),
 									row:callback.data
-								});
+								}); 
 								d.dialog("close");
 							}else{
 								$.messager.show({
@@ -266,7 +267,7 @@ $(function(){
 				$.messager.progress();
 				var ids = [];
 				for(var i = 0; i < rows.length; i++){
-					ids.push(rows[0].structureId + "$" + rows[0].id);
+					ids.push(rows[i].structureId + "$" + rows[i].id);
 				}
 				$.ajax({
 					url:"<@s.url '/library/paper/items/delete'/>",

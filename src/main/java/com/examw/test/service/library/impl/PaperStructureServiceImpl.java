@@ -137,7 +137,7 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 			data = new Structure();
 			data.setPaper(paper);
 		}
-		BeanUtils.copyProperties(info, data);
+		BeanUtils.copyProperties(info, data,new String[]{"items"});
 		if (isAdded) this.structureDao.save(data);
 	}
 	/*

@@ -174,9 +174,9 @@ public class PaperItemServiceImpl extends BaseDataServiceImpl<StructureItem,Stru
 	 * @see com.examw.test.service.library.IPaperItemService#delete(java.lang.String, java.lang.String[])
 	 */
 	@Override
-	public void delete(String structureId, String[] itemIds) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("删除试卷结构［structureId = %1$s］下的试题［itemIds = %2$s］...", structureId, itemIds));
-		Integer count = this.structureDao.deleteStructrureItems(structureId, itemIds);
-		if(logger.isDebugEnabled()) logger.debug(String.format("成功删除［%d］条数据!", count));
+	public void delete(String structureId, String itemId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("删除试卷结构［structureId = %1$s］下的试题［itemIds = %2$s］...", structureId, itemId));
+		if(StringUtils.isEmpty(structureId) || StringUtils.isEmpty(itemId)) return;
+		 this.structureDao.deleteStructureItems(structureId, itemId);
 	}
 }

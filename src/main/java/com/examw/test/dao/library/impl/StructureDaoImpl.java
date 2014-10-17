@@ -121,17 +121,18 @@ public class StructureDaoImpl extends BaseDaoImpl<Structure> implements IStructu
 		return obj == null ?  null : (long)obj;
 	}
 	/*
-	 * 删除试卷结构下的试题。
-	 * @see com.examw.test.dao.library.IStructureDao#deleteStructrureItems(java.lang.String, java.lang.String[])
+	 * 删除试卷结构试题。
+	 * @see com.examw.test.dao.library.IStructureDao#deleteStructureItems(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Integer deleteStructrureItems(String structureId, String[] itemIds) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("删除试卷结构［structureId = %1$s］下的试题［itemIds = %2$s］...", structureId, itemIds));
-		if(StringUtils.isEmpty(structureId) || itemIds == null || itemIds.length == 0) return null;
-		final String hql = "delete from StructureItem s where (s.structure.id = :structureId) and (s.item.id in (:itemId)) ";
+	public void deleteStructureItems(String structureId, String itemId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("删除试卷［structureId = %1$s］结构［itemId = %2$s］试题..", structureId,itemId));
+		final String hql = "delete from StructureItem si where (si.structure.id = :structureId) and (si.item.id = :itemId)";
+		if(StringUtils.isEmpty(structureId) || StringUtils.isEmpty(itemId)) return;
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("structureId", structureId);
-		parameters.put("itemId", itemIds);
-		return this.executeUpdate(hql, parameters);
+		parameters.put("itemId", itemId);
+		int count = this.execuateUpdate(hql, parameters);
+		if(logger.isDebugEnabled()) logger.debug(String.format("删除数据［%d］", count));
 	}
 }

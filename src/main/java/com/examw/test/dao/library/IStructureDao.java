@@ -52,9 +52,11 @@ public interface IStructureDao extends IBaseDao<Structure> {
 	 */
 	Long totalStructureItems(String structureId);
 	/**
-	 * 删除试卷结构下的试题。
+	 * 删除试卷结构试题。
 	 * @param structureId
-	 * @param itemIds
+	 * 所属试卷结构ID。
+	 * @param itemId
+	 * 试题ID。
 	 */
-	Integer deleteStructrureItems(String structureId, String[] itemIds);
+	void deleteStructureItems(String structureId,String itemId);
 }

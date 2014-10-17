@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.examw.aware.IUserAware;
 import com.examw.model.DataGrid;
 import com.examw.model.Json;
 import com.examw.test.domain.security.Right;
@@ -30,14 +31,39 @@ import com.examw.test.support.PaperItemUtils;
  */
 @Controller
 @RequestMapping(value = "/library/paper/items")
-public class PaperItemController {
+public class PaperItemController implements IUserAware {
 	private static final Logger logger = Logger.getLogger(PaperItemController.class);
+	private String userId,userName;
 	//注入试卷试题服务接口。
 	@Resource
 	private IPaperItemService paperItemService;
 	//注入试题服务接口。
 	@Resource
 	private IItemService itemService;
+	/*
+	 * 注入用户ID。
+	 * @see com.examw.aware.IUserAware#setUserId(java.lang.String)
+	 */
+	@Override
+	public void setUserId(String userId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("注入用户ID［%s］...", userId));
+		this.userId = userId;
+	}
+	/*
+	 * 注入用户名。
+	 * @see com.examw.aware.IUserAware#setUserName(java.lang.String)
+	 */
+	@Override
+	public void setUserName(String userName) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("注入用户名［%s］...", userName));
+		this.userName = userName;
+	}
+	/*
+	 * 注入用户昵称。
+	 * @see com.examw.aware.IUserAware#setUserNickName(java.lang.String)
+	 */
+	@Override
+	public void setUserNickName(String arg0) {}
 	/**
 	 * 加载试卷试题列数据。
 	 * @param info
@@ -113,6 +139,8 @@ public class PaperItemController {
 		try { 
 			info.setPaperId(paperId);
 			info.setStructureId(structureId);
+			info.setUserId(this.userId);
+			info.setUserName(this.userName);
 			result.setData(this.paperItemService.update(info));
 			result.setSuccess(true);
 		} catch (Exception e) {
@@ -136,12 +164,12 @@ public class PaperItemController {
 		Json result = new Json();
 		try {
 			String[] array = id.split("\\|");
-			for(String str : array){
-				if(StringUtils.isEmpty(str) || str.indexOf("$") == -1) continue;
-				String[] str_attrs = str.split("\\$");
+			for(int i = 0; i < array.length; i++){
+				if(StringUtils.isEmpty(array[i]) || array[i].indexOf("$") == -1) continue;
+				String[] str_attrs = array[i].split("\\$");
 				String structrure_id = str_attrs[0], item_id =  str_attrs[1];
 				if(StringUtils.isEmpty(structrure_id) || StringUtils.isEmpty(item_id)) continue;
-				this.paperItemService.delete(structrure_id, new String[]{item_id});
+				this.paperItemService.delete(structrure_id, item_id);
 			}
 			result.setSuccess(true);
 		} catch (Exception e) {
