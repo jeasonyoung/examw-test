@@ -11,7 +11,15 @@ import com.examw.test.model.products.ProductUserInfo;
  * @author fengwei.
  * @since 2014年8月11日 下午4:00:55.
  */
-public interface IProductUserDao extends IBaseDao<ProductUser>{
+public interface IProductUserDao extends IBaseDao<ProductUser> {
+	/**
+	 * 根据用户代码加载数据。
+	 * @param code
+	 * 用户代码。
+	 * @return
+	 * 用户数据。
+	 */
+	ProductUser loadUserByCode(String code);
 	/**
 	 * 查询产品用户数据
 	 * @param info

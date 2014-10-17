@@ -113,16 +113,4 @@ public class ProductUserController {
 		}
 		return result;
 	}
-	/**
-	 * 加载来源代码值。
-	 * @return
-	 */
-	@RequiresPermissions({ModuleConstant.PRODUCTS_PRODUCTUSER + ":" + Right.VIEW})
-	@RequestMapping(value="/code", method = RequestMethod.GET)
-	@ResponseBody
-	public Integer code(){
-		Integer max = this.productUserService.loadMaxCode();
-		if(max == null) max = 0;
-		return max+1;
-	}
 }

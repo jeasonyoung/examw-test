@@ -48,7 +48,6 @@ public class ProductUserDaoImpl extends BaseDaoImpl<ProductUser> implements IPro
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.count(hql, parameters);
 	}
-
 	// 添加查询条件到HQL。
 	private String addWhere(ProductUserInfo info, String hql,Map<String, Object> parameters) {
 		if (!StringUtils.isEmpty(info.getName())) {
@@ -65,5 +64,17 @@ public class ProductUserDaoImpl extends BaseDaoImpl<ProductUser> implements IPro
 		}
 		return hql;
 	}
+	/*
+	 * 根据用户代码加载数据。
+	 * @see com.examw.test.dao.products.IProductUserDao#loadUserByCode(java.lang.String)
+	 */
+	@Override
+	public ProductUser loadUserByCode(String code) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("用户代码［code = %s］加载数据...", code));
+		final String hql = "from ProductUser pu where pu.code = :code order by pu.lastTime desc,pu.createTime desc";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("code", code);
+		List<ProductUser> list = this.find(hql, parameters, 0, 0);
+		return (list == null || list.size() == 0) ? null : list.get(0);
+	}
 }
-

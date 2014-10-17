@@ -105,7 +105,7 @@
 		<!-- 用户ID -->
 		<id name="id"  type="string"  length="64" />
 		<!-- 用户代码 -->
-		<property name="code" type="integer" unique="true" not-null="true"/>
+		<property name="code" type="string"  length="64" unique="true" not-null="true"/>
 		<!-- 用户名称 -->
 		<property name="name" type="string" length="32" not-null="true" />
 		<!-- 手机号码 -->
