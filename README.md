@@ -11,3 +11,6 @@ show create table tbl_Examw_Test_Settings_Exams;
 1.alter table tbl_Examw_Test_Settings_Exams drop foreign key FK_5h95ggk5t4aqbiqp23fvxyttt;(删除外键)
 2.alter table tbl_Examw_Test_Settings_Exams drop column area_id;
 
+#update mysql 2014-10-17 
+#更新产品用户代码code数据类型 integer => string
+1.alter table tbl_Examw_Test_Products_Users modify code varchar(64);

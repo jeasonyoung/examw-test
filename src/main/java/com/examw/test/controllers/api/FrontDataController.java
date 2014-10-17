@@ -19,6 +19,8 @@ import com.examw.test.model.records.UserItemFavoriteInfo;
 import com.examw.test.model.records.UserItemRecordInfo;
 import com.examw.test.model.records.UserPaperRecordInfo;
 import com.examw.test.model.settings.FrontSubjectInfo;
+import com.examw.test.service.products.FrontUserInfo;
+import com.examw.test.service.products.IProductUserService;
 import com.examw.test.service.records.IUserItemFavoriteService;
 import com.examw.test.service.records.IUserItemRecordService;
 import com.examw.test.service.records.IUserPaperRecordService;
@@ -41,11 +43,38 @@ public class FrontDataController {
 	//用户收藏记录服务。
 	@Resource
 	private IUserItemFavoriteService userItemFavoriteService;
+	//产品用户服务。
+	@Resource
+	private IProductUserService productUserService;
 	
 	private ObjectMapper mapper;
-	
+	/**
+	 * 构造函数。
+	 */
 	public FrontDataController() {
 		this.mapper = new ObjectMapper();
+	}
+	/**
+	 * 验证前端用户。
+	 * @param info
+	 * 前端用户信息。
+	 * @return
+	 * 验证结果。
+	 */
+	@RequestMapping(value = {""}, method = { RequestMethod.POST })
+	@ResponseBody
+	public Json verfiyUser(FrontUserInfo info){
+		if(logger.isDebugEnabled()) logger.debug("验证前端用户...");
+		Json result = new Json();
+		try {
+			result.setData(this.productUserService.verifyFrontUser(info));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("验证前端用户生异常：" + e.getMessage(), e);
+		}
+		return result;
 	}
 	/**
 	 * 添加用户试卷记录。

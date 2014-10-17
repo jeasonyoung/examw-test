@@ -10,10 +10,9 @@ import java.util.Date;
  */
 public class ProductUser implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id,name,mobile;
+	private String id,code,name,mobile;
 	private Integer status;
 	private Date createTime,lastTime;
-	private Integer code;
 	/**
 	 * 状态－启用。
 	 */
@@ -45,7 +44,7 @@ public class ProductUser implements Serializable {
 	 * 获取用户代码。
 	 * @return 用户代码。
 	 */
-	public Integer getCode() {
+	public String getCode() {
 		return code;
 	}
 	/**
@@ -53,7 +52,7 @@ public class ProductUser implements Serializable {
 	 * @param code 
 	 *	  用户代码。
 	 */
-	public void setCode(Integer code) {
+	public void setCode(String code) {
 		this.code = code;
 	}
 	/**

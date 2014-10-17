@@ -10,10 +10,13 @@ import com.examw.test.service.IBaseDataService;
  */
 public interface IProductUserService extends IBaseDataService<ProductUserInfo>{
 	/**
-	 * 加载最大代码值
+	 * 验证前端用户。
+	 * @param info
+	 * 前端用户信息。
 	 * @return
+	 * 产品用户信息。
 	 */
-	Integer loadMaxCode();
+	ProductUserInfo verifyFrontUser(FrontUserInfo info);
 	/**
 	 * 加载状态名称。
 	 * @param status
