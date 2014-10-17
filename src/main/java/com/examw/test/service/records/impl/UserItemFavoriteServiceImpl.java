@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
+import com.examw.model.Json;
 import com.examw.test.dao.products.IProductUserDao;
 import com.examw.test.dao.products.ISoftwareTypeDao;
 import com.examw.test.dao.records.IUserItemFavoriteDao;
@@ -124,6 +125,15 @@ public class UserItemFavoriteServiceImpl extends BaseDataServiceImpl<UserItemFav
 		return this.userItemFavoriteDao.totalUserFavorites(userId);
 	}
 	/*
+	 * 统计用户收藏试题数量...
+	 * @see com.examw.test.service.records.IUserItemFavoriteService#totalUserFavorites(com.examw.test.model.records.UserItemFavoriteInfo)
+	 */
+	@Override
+	public Long totalUserFavorites(UserItemFavoriteInfo info) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("统计用户［userId = %s］收藏试题数量...", info.getUserId()));
+		return this.userItemFavoriteDao.total(info);
+	}
+	/*
 	 * 查询数据。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#find(java.lang.Object)
 	 */
@@ -222,15 +232,19 @@ public class UserItemFavoriteServiceImpl extends BaseDataServiceImpl<UserItemFav
 	 * @see com.examw.test.service.records.IUserItemFavoriteService#favorOrCancel(com.examw.test.model.records.UserItemFavoriteInfo)
 	 */
 	@Override
-	public boolean favorOrCancel(UserItemFavoriteInfo info) {
+	public Json favorOrCancel(UserItemFavoriteInfo info) {
 		if(logger.isDebugEnabled()) logger.debug("收藏或者取消收藏...");
+		Json json = new Json();
 		UserItemFavorite data = this.userItemFavoriteDao.load(info.getUserId(), info.getItemId());
 		if(data == null){
 			this.update(info);
+			json.setData(0);
 		}else{
 			this.userItemFavoriteDao.delete(data);
+			json.setData(1);
 		}
-		return true;
+		json.setSuccess(true);
+		return json;
 	}
 	
 	/*

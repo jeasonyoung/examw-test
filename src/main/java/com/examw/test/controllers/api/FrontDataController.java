@@ -101,16 +101,10 @@ public class FrontDataController {
 	@ResponseBody
 	public Json addItemFavorite(@PathVariable String userId,@RequestBody UserItemFavoriteInfo info){
 		if(logger.isDebugEnabled()) logger.debug(String.format("添加用户［userId = %s］试题收藏..", userId));
-		if(logger.isDebugEnabled())
-			try {
-				logger.debug(this.mapper.writeValueAsString(info));
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
 		Json result = new Json();
 		try {
 			info.setUserId(userId);
-			result.setSuccess(this.userItemFavoriteService.favorOrCancel(info));
+			return this.userItemFavoriteService.favorOrCancel(info);
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
