@@ -110,7 +110,7 @@ public class FrontPaperServiceImpl implements IFrontPaperService  {
 		 if(logger.isDebugEnabled()) logger.debug(String.format("加载产品［productId = %s］下的试卷集合...", productId));
 		 Product product = this.productDao.load(Product.class, productId);
 		 if(product == null) throw new RuntimeException(String.format("产品［productId = %s］不存在！", productId));
-		 return this.changeModel(this.paperReleaseDao.loadReleases(this.buildProductSubjectIds(product.getSubjects()), new String[]{ product.getArea().getId() }));
+		 return this.changeModel(this.paperReleaseDao.loadReleases(this.buildProductSubjectIds(product.getSubjects()), product.getArea()==null?null:new String[]{ product.getArea().getId() }));
 	}
 	//构建产品科目ID数组。
 	private String[] buildProductSubjectIds(Set<Subject> subjects){
