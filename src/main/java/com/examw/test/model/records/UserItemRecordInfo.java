@@ -202,10 +202,10 @@ public class UserItemRecordInfo implements Serializable,Comparable<UserItemRecor
 		if(this == o) return 0;
 		int index = 0;
 		if(this.getLastTime() != null && o.getLastTime() != null){
-			index = (int)(this.getLastTime().getTime() - o.getLastTime().getTime());
+			index = (int)(o.getLastTime().getTime() - this.getLastTime().getTime());
 		}
 		if((index == 0) && (this.getCreateTime() != null && o.getCreateTime() != null)){
-			index = (int)(this.getCreateTime().getTime() - o.getCreateTime().getTime());
+			index = (int)(o.getCreateTime().getTime() - this.getCreateTime().getTime());
 		}
 		if(index == 0){
 			index = this.getId().compareToIgnoreCase(o.getId());

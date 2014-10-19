@@ -166,6 +166,11 @@ public class FrontProductServiceImpl implements IFrontProductService {
 		if(StringUtils.isEmpty(productId)) return null;
 		Product product = this.productService.loadProduct(productId);
 		if(product == null) throw new RuntimeException(String.format("产品［%s］不存在！", productId));
+		if(product.getArea()!=null){
+			List<AreaInfo> result = new ArrayList<AreaInfo>();
+			result.add(this.areaService.conversion(product.getArea()));
+			return result;
+		}
 		return this.changeModelArea(product.getExam().getAreas());
 	}
 	//数据模型转换。
