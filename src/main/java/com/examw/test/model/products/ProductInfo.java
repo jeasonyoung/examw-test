@@ -16,9 +16,9 @@ import com.examw.support.CustomDateSerializer;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class ProductInfo extends Paging implements Comparable<ProductInfo>{
 	private static final long serialVersionUID = 1L;
-	private String id,name,content,examId,examName,areaId,areaName,statusName;
+	private String id,name,content,categoryId,categoryName,examId,examName,areaId,areaName,statusName;
 	private String[] subjectId,subjectName;
-	private Integer code,status;
+	private Integer orderNo,status;
 	private BigDecimal price,discount;
 	private Date createTime,lastTime;
 	/**
@@ -35,21 +35,6 @@ public class ProductInfo extends Paging implements Comparable<ProductInfo>{
 	 */
 	public void setId(String id) {
 		this.id = id;
-	}
-	/**
-	 * 获取产品代码。
-	 * @return 产品代码。
-	 */
-	public Integer getCode() {
-		return code;
-	}
-	/**
-	 * 设置产品代码。
-	 * @param code 
-	 *	  产品代码。
-	 */
-	public void setCode(Integer code) {
-		this.code = code;
 	}
 	/**
 	 * 获取产品名称。
@@ -80,6 +65,36 @@ public class ProductInfo extends Paging implements Comparable<ProductInfo>{
 	 */
 	public void setContent(String content) {
 		this.content = content;
+	}
+	/**
+	 * 获取所属考试类别ID。
+	 * @return 所属考试类别ID。
+	 */
+	public String getCategoryId() {
+		return categoryId;
+	}
+	/**
+	 * 设置所属考试类别ID。
+	 * @param catalogId 
+	 *	  所属考试类别ID。
+	 */
+	public void setCategoryId(String categoryId) {
+		this.categoryId = categoryId;
+	}
+	/**
+	 * 获取所属考试类别名称。
+	 * @return 所属考试类别名称。
+	 */
+	public String getCategoryName() {
+		return categoryName;
+	}
+	/**
+	 * 设置所属考试类别名称。
+	 * @param categoryName 
+	 *	  所属考试类别名称。
+	 */
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
 	}
 	/**
 	 * 获取所属考试ID。
@@ -249,6 +264,21 @@ public class ProductInfo extends Paging implements Comparable<ProductInfo>{
 		this.statusName = statusName;
 	}
 	/**
+	 * 获取排序号。
+	 * @return 排序号。
+	 */
+	public Integer getOrderNo() {
+		return orderNo;
+	}
+	/**
+	 * 设置排序号。
+	 * @param orderNo 
+	 *	  排序号。
+	 */
+	public void setOrderNo(Integer orderNo) {
+		this.orderNo = orderNo;
+	}
+	/**
 	 * 获取包含科目名称。
 	 * @return 包含科目名称。
 	 */
@@ -270,7 +300,7 @@ public class ProductInfo extends Paging implements Comparable<ProductInfo>{
 	@Override
 	public int compareTo(ProductInfo o) {
 		if(this == o) return 0;
-		int index = this.getCode() - o.getCode();
+		int index = this.getOrderNo() - o.getOrderNo();
 		if(index == 0){
 			index = this.getName().compareToIgnoreCase(o.getName());
 			if(index == 0){

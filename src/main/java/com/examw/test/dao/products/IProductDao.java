@@ -19,14 +19,24 @@ public interface IProductDao extends IBaseDao<Product>{
 	 */
 	List<Product> findProducts(ProductInfo info);
 	/**
+	 * 加载产品数据集合。
+	 * @param examId
+	 * 所属考试ID。
+	 * @return
+	 * 产品数据集合。
+	 */
+	List<Product> loadProducts(String examId);
+	/**
 	 * 查询统计
 	 * @param info 查询条件
 	 * @return	产品数据
 	 */
 	Long total(ProductInfo info);
 	/**
-	 * 加载最大代码。
-	 * @return
+	 * 加载最大排序号。
+	 * @param examId
+	 * 所属考试ID。
+	 * @return 最大排序号。
 	 */
-	Integer loadMaxCode();
+	Integer loadMaxOrder(String examId);
 }

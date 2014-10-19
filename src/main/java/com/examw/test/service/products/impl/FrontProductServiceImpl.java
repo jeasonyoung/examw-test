@@ -19,6 +19,7 @@ import com.examw.test.model.settings.SubjectInfo;
 import com.examw.test.service.library.IFrontPaperService;
 import com.examw.test.service.products.IFrontProductService;
 import com.examw.test.service.products.IProductService;
+import com.examw.test.service.products.ProductStatus;
 import com.examw.test.service.settings.IAreaService;
 import com.examw.test.service.settings.ISubjectService;
 
@@ -34,7 +35,6 @@ public class FrontProductServiceImpl implements IFrontProductService {
 	private ISubjectService subjectService;
 	private IAreaService areaService;
 	private IFrontPaperService frontPaperService;
-	
 	/**
 	 * 设置产品服务接口。
 	 * @param productService 
@@ -50,6 +50,7 @@ public class FrontProductServiceImpl implements IFrontProductService {
 	 *	 科目服务接口。
 	 */
 	public void setSubjectService(ISubjectService subjectService) {
+		if(logger.isDebugEnabled()) logger.debug("注入科目服务接口...");
 		this.subjectService = subjectService;
 	}
 	/**
@@ -58,6 +59,7 @@ public class FrontProductServiceImpl implements IFrontProductService {
 	 *	  地区服务接口。
 	 */
 	public void setAreaService(IAreaService areaService) {
+		if(logger.isDebugEnabled()) logger.debug("注入地区服务接口...");
 		this.areaService = areaService;
 	}
 	/**
@@ -81,9 +83,9 @@ public class FrontProductServiceImpl implements IFrontProductService {
 			@Override
 			public String getExamId() { return examId;}
 			@Override
-			public Integer getStatus() {return Product.STATUS_NONE;}	//状态必须正常
+			public Integer getStatus() {return ProductStatus.ENABLE.getValue();}	//状态必须正常
 			@Override
-			public String getSort() {return "code"; }
+			public String getSort() {return "orderNo"; }
 			@Override
 			public String getOrder() {return "desc"; }
 		}).getRows();
@@ -111,7 +113,6 @@ public class FrontProductServiceImpl implements IFrontProductService {
 	private FrontProductInfo changeModel(ProductInfo product){
 		if(logger.isDebugEnabled()) logger.debug("数据模型转换 ProductInfo => FrontProductInfo ");
 		if(product == null) return null;
-		//FrontProductInfo info = (FrontProductInfo) product;
 		FrontProductInfo info = new FrontProductInfo();
 		BeanUtils.copyProperties(product, info);
 		info.setPaperCount(this.frontPaperService.loadPapersCount(info.getSubjectId()));

@@ -135,7 +135,7 @@ public class SoftwareServiceImpl extends BaseDataServiceImpl<Software,SoftwareIn
 		return this.softwareDao.total(info);
 	}
 	/*
-	 * 插入or更新数据
+	 * 更新数据
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#update(java.lang.Object)
 	 */
 	@Override
@@ -153,10 +153,10 @@ public class SoftwareServiceImpl extends BaseDataServiceImpl<Software,SoftwareIn
 		}
 		info.setCreateTime(data.getCreateTime());
 		BeanUtils.copyProperties(info, data);
-		if(data.getStatus() == null){
-			data.setStatus(Product.STATUS_NONE);
-			info.setStatus(Product.STATUS_NONE);
-		}
+//		if(data.getStatus() == null){
+//			data.setStatus(Product.STATUS_NONE);
+//			info.setStatus(Product.STATUS_NONE);
+//		}
 		if(info.getProductId()!=null && (data.getProduct()==null || !data.getProduct().getId().equalsIgnoreCase(info.getProductId()))){
 			Product product = this.productDao.load(Product.class, info.getProductId());
 			if(product!=null)

@@ -1,7 +1,7 @@
 package com.examw.test.controllers.products;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -9,17 +9,17 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.model.DataGrid;
 import com.examw.model.Json;
-import com.examw.test.domain.products.Product;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.products.ProductInfo;
 import com.examw.test.service.products.IProductService;
+import com.examw.test.service.products.ProductStatus;
+import com.examw.test.support.PaperItemUtils;
 
 /**
  * 产品控制器
@@ -46,19 +46,9 @@ public class ProductController {
 		return "products/product_list";
 	}
 	/**
-	 * 查询数据。
-	 * @return
-	 */
-	@RequiresPermissions({ModuleConstant.PRODUCTS_PRODUCT + ":" + Right.VIEW})
-	@RequestMapping(value="/datagrid", method = RequestMethod.POST)
-	@ResponseBody
-	public DataGrid<ProductInfo> datagrid(ProductInfo info){
-		if(logger.isDebugEnabled()) logger.debug("加载列表数据...");
-		return this.productService.datagrid(info);
-	}
-	
-	/**
 	 * 获取编辑页面。
+	 * @param catalogId
+	 * 所属考试类别ID。
 	 * @param examId
 	 * 所属考试ID
 	 * @param model
@@ -68,10 +58,42 @@ public class ProductController {
 	 */
 	@RequiresPermissions({ModuleConstant.PRODUCTS_PRODUCT + ":" + Right.UPDATE})
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
-	public String edit(String examId,Model model){
+	public String edit(String categoryId, String examId,Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
-		model.addAttribute("CURRENT_EXAM_ID", StringUtils.isEmpty(examId)?"":examId);
+		model.addAttribute("current_category_id", categoryId);
+		model.addAttribute("current_exam_id", examId);
+		
+		Map<String, String> productStatusMap = PaperItemUtils.createTreeMap();
+		for(ProductStatus status : ProductStatus.values()){
+			productStatusMap.put(String.format("%d", status.getValue()), this.productService.loadStatusName(status.getValue()));
+		}
+		model.addAttribute("ProductStatusMap", productStatusMap);
+		
 		return "products/product_edit";
+	}
+	/**
+	 * 加载最大排序号。
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.PRODUCTS_PRODUCT + ":" + Right.VIEW})
+	@RequestMapping(value="/order", method = RequestMethod.GET)
+	@ResponseBody
+	public Integer loadMaxOrder(String examId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试［examId = %s］下最大排序号...", examId));
+		Integer max = this.productService.loadMaxOrder(examId);
+		if(max == null) max = 0;
+		return max + 1;
+	}
+	/**
+	 * 查询数据。
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.PRODUCTS_PRODUCT + ":" + Right.VIEW})
+	@RequestMapping(value="/datagrid", method = RequestMethod.POST)
+	@ResponseBody
+	public DataGrid<ProductInfo> datagrid(ProductInfo info){
+		if(logger.isDebugEnabled()) logger.debug("加载列表数据...");
+		return this.productService.datagrid(info);
 	}
 	/**
 	 * 更新数据。
@@ -117,38 +139,14 @@ public class ProductController {
 		}
 		return result;
 	}
-	
 	/**
-	 * 产品的下拉数据
+	 * 加载考试下产品数据集合。
 	 * @return
 	 */
-	@RequestMapping(value="/combo", method = {RequestMethod.POST,RequestMethod.GET})
+	@RequestMapping(value="/all", method = {RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public List<ProductInfo> combo(final String examId){
-		if(StringUtils.isEmpty(examId)) return new ArrayList<>();
-		return this.productService.datagrid(new ProductInfo(){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public String getSort(){ return "code"; }
-			@Override
-			public String getOrder() { return "asc"; }
-			@Override
-			public String getExamId() {return examId;}
-			@Override
-			public Integer getStatus() {return Product.STATUS_NONE;}
-		}).getRows();
-	}
-	
-	/**
-	 * 加载来源代码值。
-	 * @return
-	 */
-	@RequiresPermissions({ModuleConstant.PRODUCTS_PRODUCT + ":" + Right.VIEW})
-	@RequestMapping(value="/code", method = RequestMethod.GET)
-	@ResponseBody
-	public Integer code(){
-		Integer max = this.productService.loadMaxCode();
-		if(max == null) max = 0;
-		return max + 1;
+	public List<ProductInfo> loadProducts(String examId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试［examId = %s］下产品数据集合...", examId)); 
+		return this.productService.loadProducts(examId);
 	}
 }

@@ -42,6 +42,7 @@ public class SubjectController {
 	@RequiresPermissions({ModuleConstant.SETTINGS_SUBJECT + ":" + Right.VIEW})
 	@RequestMapping(value={"","/list"}, method = RequestMethod.GET)
 	public String list(Model model){
+		if(logger.isDebugEnabled()) logger.debug("加载科目列表页面...");
 		model.addAttribute("PER_UPDATE", ModuleConstant.SETTINGS_SUBJECT + ":" + Right.UPDATE);
 		model.addAttribute("PER_DELETE", ModuleConstant.SETTINGS_SUBJECT + ":" + Right.DELETE);
 		return "settings/subject_list";
@@ -53,6 +54,7 @@ public class SubjectController {
 	@RequiresPermissions({ModuleConstant.SETTINGS_SUBJECT + ":" + Right.UPDATE})
 	@RequestMapping(value="/edit", method = RequestMethod.GET)
 	public String edit(String categoryId,String examId,Model model){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载科目［categoryId = %1$s  examId = %2$s］编辑页面...", categoryId,examId));
 		model.addAttribute("CURRENT_CATEGORY_ID", StringUtils.isEmpty(categoryId) ?  "" : categoryId);
 		model.addAttribute("CURRENT_EXAM_ID", StringUtils.isEmpty(examId) ? "" : examId);
 		return "settings/subject_edit";
@@ -65,17 +67,20 @@ public class SubjectController {
 	@RequestMapping(value="/datagrid", method = RequestMethod.POST)
 	@ResponseBody
 	public DataGrid<SubjectInfo> datagrid(SubjectInfo info){
+		if(logger.isDebugEnabled()) logger.debug("查询数据...");
 		return this.subjectService.datagrid(info);
 	}
 	/**
-	 * 根据考试ID获取考试科目信息。
+	 * 加载考试下的科目数据。
 	 * @param examId
+	 * 所属考试ID。
 	 * @return
 	 */
 	@RequestMapping(value="/all", method = {RequestMethod.GET,RequestMethod.POST})
 	@ResponseBody
-	public List<SubjectInfo> all(String examId)
+	public List<SubjectInfo> loadSubjects(String examId)
 	{
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试［examId = %s］下的科目数据...", examId));
 		return this.subjectService.loadAllSubjects(examId);
 	}
 	/**
@@ -89,6 +94,7 @@ public class SubjectController {
 	@RequestMapping(value="/update", method = RequestMethod.POST)
 	@ResponseBody
 	public Json update(SubjectInfo info){
+		if(logger.isDebugEnabled()) logger.debug("更新数据...");
 		Json result = new Json();
 		try {
 			result.setData(this.subjectService.update(info));
@@ -109,6 +115,7 @@ public class SubjectController {
 	@RequestMapping(value="/delete", method = RequestMethod.POST)
 	@ResponseBody
 	public Json delete(String id){
+		if(logger.isDebugEnabled()) logger.debug(String.format("删除数据［id = %s］...", id));
 		Json result = new Json();
 		try {
 			this.subjectService.delete(id.split("\\|"));
@@ -120,7 +127,6 @@ public class SubjectController {
 		}
 		return result;
 	}
-	
 	/**
 	 * 加载来源代码值。
 	 * @return
@@ -129,6 +135,7 @@ public class SubjectController {
 	@RequestMapping(value="/code", method = RequestMethod.GET)
 	@ResponseBody
 	public Integer code(){
+		if(logger.isDebugEnabled()) logger.debug("加载来源代码值...");
 		Integer max = this.subjectService.loadMaxCode();
 		if(max == null) max = 0;
 		return max + 1;

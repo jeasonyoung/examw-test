@@ -21,7 +21,7 @@ $(function(){
 				 current_exam_id = "";
 			 }else if(node.attributes.type == "exam"){
 				 var parent = t.tree("getParent",node.target);
-				 current_category_id = parent.id;
+				 if(parent)current_category_id = parent.id;
 				 current_exam_id = node.id;
 			 }else{
 				 current_category_id = current_exam_id = "";
@@ -33,94 +33,70 @@ $(function(){
 	//dg
 	var dg=$("#${dg}").datagrid({
 		url:"<@s.url '/products/product/datagrid'/>",
-		fit:true,
-		fitColumns:true,
-		rownumbers:true,
-		pagination:true,
-		pagePosition:"bottom",
-		pageSize:20,
-		pageList:[20,30,40],
-		border:true,
-		striped:true,
-		idField:"id",
-		sortName:"code",
-		sortOrder:"asc",
+		fit:true,fitColumns:true,rownumbers:true,border:true,
+		pagination:true,pagePosition:"bottom",pageSize:20,pageList:[20,30,40],
+		striped:true,idField:"id",sortName:"orderNo",sortOrder:"asc",
+		queryParams:{
+			"name":$("#${dg}_toobar input[name='name']").val(),
+			 "examId":current_exam_id
+		},
 		columns:[[{
-			field:"id",
-			checkbox:true
+			field:"id",checkbox:true
 		},{
-			title:"所属考试",
-			field:"examName",
-			width:10,
-			align:"left"
+			title:"所属考试",field:"examName",width:20,align:"left",sortable:true
 		},{
-			title:"产品代码",
-			field:"code",
-			width:5,
-			align:"center",
-			sortable:true
+			title:"产品名称",field:"name",width:30,align:"left",sortable:true
 		},{
-			title:"产品名称",
-			field:"name",
-			width:30,
-			align:"center",
-			sortable:true
+			title:"定价",field:"price",width:10,align:"right",sortable:true
 		},{
-			title:"定价",
-			field:"price",
-			width:8,
-			align:"center",
-			sortable:true
+			title:"优惠价",field:"discount",width:10,align:"right",sortable:true
 		},{
-			title:"优惠价",
-			field:"discount",
-			width:8,
-			align:"center",
-			sortable:true
+			title:"状态",field:"statusName",width:10,align:"center"
 		},{
-			title:"状态",
-			field:"statusName",
-			width:8,
-			align:"center"
+			title:"创建时间",field:"createTime",width:12,align:"center",sortable:true
 		},{
-			title:"创建时间",
-			field:"createTime",
-			width:12,
-			align:"center",
-			sortable:true
-		},{
-			title:"修改时间",
-			field:"lastTime",
-			width:12,
-			align:"center",
-			sortable:true
+			title:"修改时间",field:"lastTime",width:12,align:"center",sortable:true
 		}]],
 		toolbar:"#${dg}_toobar",
-		onLoadError:function(e){
-			<@error_dialog "e"/>
-		},
+		onLoadError:function(e){ <@error_dialog "e"/> },
 		onDblClickRow:function(rowIndex,rowData){
 			edit_window("编辑产品",rowIndex,rowData,null);
 		}
 	});
+	//search
+	${dg}_search = function(){
+		dg.datagrid("load",{
+			  "name":$("#${dg}_toobar input[name='name']").val(),
+			  "examId":current_exam_id
+		});
+	};
+	<@shiro.hasPermission name="${PER_UPDATE}">
+	//add
+	var m = false;
+	${dg}_add = function(){
+		if(m) return;
+		m = true;
+		$.getJSON("<@s.url '/products/product/order'/>",function(order){
+			m = false;
+			edit_window("新增产品",0,null,order);
+		});
+	};
+	</@shiro.hasPermission>
 	//edit
-	function edit_window(title,index,row,code){
-		var c_id = current_category_id,e_id = current_exam_id;
+	function edit_window(title,index,row,order){
+		var category_id = current_category_id,exam_id = current_exam_id;
 		if(row != null){
-			c_id = row.categoryId;
-			e_id = row.examId;
+			if(row.categoryId)category_id = row.categoryId;
+			if(row.examId)exam_id = row.examId;
 		}
 		var d = $("<div/>").dialog({
-			title:title,
-			width:600,
-			height:500,
-			href:"<@s.url '/products/product/edit'/>?categoryId="+c_id+"&examId=" + e_id,
+			title:title,width:600,height:500,
+			href:"<@s.url '/products/product/edit'/>?categoryId=" + category_id + "&examId=" + exam_id,
 			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
 			  {
-				text:"保存",
-				iconCls:"icon-save",
+				text:"保存",iconCls:"icon-save",
 				handler:function(){
 					$.messager.progress();
 					$("#${module}_edit_form").form("submit",{
@@ -155,40 +131,15 @@ $(function(){
 			},
 			</@shiro.hasPermission>
 			{
-				text:"关闭",
-				iconCls:"icon-cancel",
-				handler:function(){
-					d.dialog("close");
-				}
+				text:"关闭",iconCls:"icon-cancel",
+				handler:function(){ d.dialog("close"); }
 			}],
-			onClose:function(){
-				$(this).dialog("destroy");
-			},
+			onClose:function(){ $(this).dialog("destroy"); },
 			onLoad:function(){
-				if(code && !row){
-					$("#${module}_edit_form").form("load",{"code":code});
-					return;
-				}
-				if(row) $("#${module}_edit_form").form("load",row);
+				var data = row ? row : {"orderNo":order,"categoryId":category_id,"examId":exam_id}
+				$("#${module}_edit_form").form("load",data);
 			}
 	  });
-	};
-	//search
-	${dg}_search = function(){
-		dg.datagrid("load",{
-			  name:$("#${dg}_toobar input[name='name']").val(),
-			  examId:current_exam_id
-		});
-	};
-	//add
-	var m = false;
-	${dg}_add = function(){
-		if(m) return;
-		m = true;
-		$.getJSON("<@s.url '/products/product/code'/>",function(data){
-			m = false;
-			edit_window("新增产品",0,null,data);
-		});
 	};
 	<@shiro.hasPermission name="${PER_DELETE}">
 	//delete
@@ -205,9 +156,7 @@ $(function(){
 				$.ajax({
 					url:"<@s.url '/products/product/delete'/>",
 					type:"POST",
-					data:{
-						id:ids.join("|")
-					},
+					data:{ id:ids.join("|") },
 					dataType:"json",
 					error:function(e){
 						$.messager.progress("close");

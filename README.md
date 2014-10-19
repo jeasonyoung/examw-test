@@ -14,3 +14,11 @@ show create table tbl_Examw_Test_Settings_Exams;
 #update mysql 2014-10-17 
 #更新产品用户代码code数据类型 integer => string
 1.alter table tbl_Examw_Test_Products_Users modify code varchar(64);
+
+#update mysql 2014-10-17
+#删除产品代码Code字段
+1.alter table tbl_Examw_Test_Products_Products drop column code;
+#删除产品创建时间createTime字段
+2.alter table tbl_Examw_Test_Products_Products drop column createTime;
+#删除产品最后修改时间lastTime字段。
+3.alter table tbl_Examw_Test_Products_Products drop column lastTime;

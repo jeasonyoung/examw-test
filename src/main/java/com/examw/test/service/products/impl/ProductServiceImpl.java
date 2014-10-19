@@ -70,11 +70,31 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 		this.statusMap = statusMap;
 	}
 	/*
+	 * 加载状态名称映射
+	 * @see com.examw.test.service.products.IProductService#loadStatusName(java.lang.Integer)
+	 */
+	@Override
+	public String loadStatusName(Integer status) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载产品状态［status = %d］名称...", status));
+		if(status == null || statusMap == null) return null;
+		return statusMap.get(status);
+	}
+	/*
+	 * 加载考试下产品集合。
+	 * @see com.examw.test.service.products.IProductService#loadProducts(java.lang.String)
+	 */
+	@Override
+	public List<ProductInfo> loadProducts(String examId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试［%s］下产品集合...", examId));
+		return this.changeModel(this.productDao.loadProducts(examId));
+	}
+	/*
 	 * 查询数据
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#find(java.lang.Object)
 	 */
 	@Override
 	protected List<Product> find(ProductInfo info) {
+		if(logger.isDebugEnabled()) logger.debug("查询数据...");
 		return this.productDao.findProducts(info);
 	}
 	/*
@@ -84,14 +104,17 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 	@Override
 	protected ProductInfo changeModel(Product data) {
 		if (logger.isDebugEnabled())	logger.debug("[产品]数据模型转换...");
-		if (data == null)
-			return null;
+		if (data == null) return null;
 		ProductInfo info = new ProductInfo();
 		BeanUtils.copyProperties(data, info);
 		//所属考试
 		if(data.getExam() != null){
 			info.setExamId(data.getExam().getId());
 			info.setExamName(data.getExam().getName());
+			if(data.getExam().getCategory() != null){
+				info.setCategoryId(data.getExam().getCategory().getId());
+				info.setCategoryName(data.getExam().getCategory().getName());
+			}
 		}
 		//所属地区
 		if(data.getArea() != null){
@@ -110,7 +133,7 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 			info.setSubjectId(subjectIds.toArray(new String[0]));
 			info.setSubjectName(subjectNames.toArray(new String[0]));
 		}
-		info.setStatusName(this.loadStatusName(data.getStatus()));
+		info.setStatusName(this.loadStatusName(info.getStatus()));
 		return info;
 	}
 	/*
@@ -128,6 +151,7 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 	 */
 	@Override
 	protected Long total(ProductInfo info) {
+		if(logger.isDebugEnabled()) logger.debug("查询数据统计...");
 		return this.productDao.total(info);
 	}
 	/*
@@ -136,20 +160,21 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 	 */
 	@Override
 	public ProductInfo update(ProductInfo info) {
-		if (logger.isDebugEnabled())	logger.debug("更新数据...");
+		if (logger.isDebugEnabled()) logger.debug("更新数据...");
 		if(info == null) return null;
 		boolean isAdded = false;
 		Product  data = StringUtils.isEmpty(info.getId()) ?  null : this.productDao.load(Product.class, info.getId());
 		if(isAdded = (data == null)){
-			if(StringUtils.isEmpty(info.getId())) info.setId(UUID.randomUUID().toString());
+			if(StringUtils.isEmpty(info.getId())){
+				info.setId(UUID.randomUUID().toString());
+			}
+			info.setCreateTime(new Date());
 			data = new Product();
-			data.setCreateTime(new Date());
 		}else{
 			info.setCreateTime(data.getCreateTime());
-			info.setStatus(data.getStatus());
+			if(info.getCreateTime() == null) info.setCreateTime(new Date());
 		}
 		BeanUtils.copyProperties(info, data);
-		if(data.getStatus() == null) data.setStatus(Product.STATUS_NONE);
 		//所属考试
 		data.setExam(StringUtils.isEmpty(info.getExamId()) ?  null : this.examDao.load(Exam.class, info.getExamId()));
 		//包含科目
@@ -185,25 +210,6 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 		}
 	}
 	/*
-	 * 加载最大的代码值
-	 * @see com.examw.test.service.products.IProductService#loadMaxCode()
-	 */
-	@Override
-	public Integer loadMaxCode() {
-		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
-		return this.productDao.loadMaxCode();
-	}
-	/*
-	 * 加载状态名称映射
-	 * @see com.examw.test.service.products.IProductService#loadStatusName(java.lang.Integer)
-	 */
-	@Override
-	public String loadStatusName(Integer status) {
-		if(logger.isDebugEnabled()) logger.debug("加载产品状态名称：" + status);
-		if(status == null || statusMap == null) return null;
-		return statusMap.get(status);
-	}
-	/*
 	 * 加载产品数据。
 	 * @see com.examw.test.service.products.IProductService#loadProduct(java.lang.String)
 	 */
@@ -212,5 +218,14 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载产品[%s]信息...", productId));
 		if(StringUtils.isEmpty(productId)) return null;
 		return this.productDao.load(Product.class, productId);
+	}
+	/*
+	 * 加载考试下最大排序号。
+	 * @see com.examw.test.service.products.IProductService#loadMaxOrder(java.lang.String)
+	 */
+	@Override
+	public Integer loadMaxOrder(String examId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试［examId = %s］下最大排序号...", examId));
+		return this.productDao.loadMaxOrder(examId);
 	}
 }

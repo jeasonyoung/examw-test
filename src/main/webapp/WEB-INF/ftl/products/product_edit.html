@@ -1,82 +1,56 @@
 <#--科目设置编辑-->
 <#include "comm.ftl"/>
 <#assign module="products_product"/>
-<script type="text/javascript">
-<!--
-$(function(){
-	var current_category_select = 0;
-	//分类树
-	//category__exam_tree
-	var c_t = $("#${module}_edit_form input[name='examId']").combotree({
-		url:"<@s.url '/settings/category/exams-tree'/>",
-		required:true,
-		valueField:"id",
-		textField:"name",
-		onLoadError:function(e){
-			<@error_dialog "e"/>
-		},
-		onLoadSuccess:function(){
-			var id = "${CURRENT_EXAM_ID}";
-			if($.trim(id) == "") return;
-			c_t.combotree("setValue",id);
-		},
-		onSelect:function(record){
-			current_category_select = current_category_select+1;
-			if(current_category_select == 1 && "${CURRENT_EXAM_ID}" == record.id) return;
-			if(s_t){
-				s_t.combobox("clear");
-				s_t.combobox("reload","<@s.url '/settings/subject/all'/>?examId=" + record.id);
-			}
-		}
-	});
-	//科目下拉
-	//subject_tree
-	var s_t = $("#${module}_edit_form input[name='subjectId']").combobox({
-		url:"<@s.url '/settings/subject/all'/>?examId=${CURRENT_EXAM_ID}",
-		required:true,
-		multiple:true,
-		valueField:"id",
-		textField:"name",
-		onLoadError:function(e){
-			<@error_dialog "e"/>
-		},
-		onLoadSuccess:function(){
-			
-		}
-	});
-});
-//-->
-</script>
-
-<form id="${module}_edit_form" method="POST" style="padding:10px;">
+<#assign form="${module}_edit_form"/>
+<form id="${form}" method="POST" style="padding:10px;">
 	<div style="float:left;margin-top:2px;width:100%;">
-		<label style="width:100px;">所属考试：</label>
-		<input type="text" name="examId"  style="width:450px;"/>
+		<label style="width:75px;">所属考试：</label>
+		<input name="categoryId"  class="easyui-combotree" data-options="url:'<@s.url '/settings/category/tree'/>',required:true,onChange:function(n,o){
+					$('#${form}_examId').combobox('clear');$('#${form}_subjectId').combobox('clear');
+					if(n)$('#${form}_examId').combobox('reload','<@s.url '/settings/exam/all?categoryId='/>' + n);
+				}" style="width:228px;"/>
+		<input id="${form}_examId" name="examId" class="easyui-combobox" data-options="url:'<@s.url '/settings/exam/all?categoryId=${current_category_id}'/>',
+				required:true,valueField:'id',textField:'name',onSelect:function(record){
+					$('#${form}_subjectId').combobox('clear');
+					$('#${form}_subjectId').combobox('reload','<@s.url '/settings/subject/all?examId='/>' + record.id);
+				}" style="width:218px;"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
-		<label style="width:100px;">科目(可多选)：</label>
-		<input type="text" name="subjectId"  style="width:450px;"/>
+		<label style="width:75px;">所属科目：</label>
+		<input id="${form}_subjectId" name="subjectId" class="easyui-combobox" data-options="url:'<@s.url '/settings/subject/all?examId=${current_exam_id}'/>',
+				required:true,valueField:'id',textField:'name',multiple:true,onLoadError:function(e){ <@error_dialog 'e'/> },
+				icons:[{iconCls:'icon-sum',handler:function(e){var opts = []; var rows = $(e.data.target).combobox('getData');
+				 if(rows && $.isArray(rows)){ $.each(rows,function(i,n){opts.push(n['id']); }); $(e.data.target).combobox('setValues', opts); } }},
+				{iconCls:'icon-clear',handler:function(e){$(e.data.target).combobox('clear');}}]" style="width:450px;"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
-		<label style="width:100px;">产品代码：</label>
-		<input type="text" name="code" class="easyui-numberbox" style="width:445px;" data-options="required:true"/>
-		<input type="hidden" name="id"/>
-	</div>
-	<div style="float:left;margin-top:12px;width:100%;">
-		<label style="width:100px;">产品名称：</label>
-		<input type="text" name="name" class="easyui-validatebox" style="width:445px;" data-options="required:true"/>
+		<label style="width:75px;">产品名称：</label>
+		<input type="text" name="name" class="easyui-textbox" style="width:452px;" data-options="required:true"/>
+		<input type="hidden" name="id" />
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<div style="float:left;">
-			<label style="width:100px;">原价：</label>
-			<input type="text" name="price" class="easyui-numberbox" value="100" data-options="min:0,precision:2" style="width:175px;" />
+			<label style="width:75px;">产品价格：</label>
+			<input type="text" name="price" class="easyui-numberbox" value="0" data-options="min:0,precision:2" style="width:60px;" />
 		</div>
-		<div style="float:left;margin-left:8px;">
-			<label style="width:92px;">优惠价：</label>
-			<input type="text" name="discount"class="easyui-numberbox" value="0" data-options="min:0,precision:2" style="width:175px;" />
+		<div style="float:left;">
+			<label style="width:60px;">优惠价：</label>
+			<input type="text" name="discount"class="easyui-numberbox" value="0" data-options="min:0,precision:2" style="width:60px;" />
+		</div>
+		<div style="float:left;">
+			<label style="margin-top:3px;width:50px;">状态：</label>
+			<#list ProductStatusMap?keys as key>
+			<label style="padding-top:0px;<#if (key_index > 0)>margin-left:12px;</#if> ">
+				<input type="radio" name="status" value="${key}"  <#if (key_index == 0)> checked="checked" </#if> />${ProductStatusMap[key]}
+			</label>
+			</#list>
+		</div>
+		<div style="float:left;">
+			<label style="margin-top:2px;width:60px;">排序号：</label>
+			<input name="orderNo" class="easyui-numberbox" data-options="value:0"  style="width:50px;" />
 		</div>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
-		<textarea name="content" class="easyui-ueditor" data-options="width:550,height:150"></textarea>
+		<textarea name="content" class="easyui-ueditor" data-options="width:550,height:200"></textarea>
 	</div>
 </form>

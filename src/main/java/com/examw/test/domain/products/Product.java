@@ -18,21 +18,12 @@ public class Product implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String id,name,content;
 	private Exam exam;
-	private Set<Subject> subjects;
-	private BigDecimal price,discount;
-	private Date createTime,lastTime;
-	private Integer status;
-	private Set<RelationProduct> relations;
-	private Integer code;
 	private Area area;
-	/**
-	 * 状态－正常。
-	 */
-	public static final int STATUS_NONE = 0;
-	/**
-	 * 状态－删除。
-	 */
-	public static final int STATUS_DELETE = -1;
+	private BigDecimal price,discount;
+	private Integer orderNo,status;
+	private Set<Subject> subjects;
+	private Set<RelationProduct> relations;
+	private Date createTime,lastTime;
 	/**
 	 * 获取产品ID。
 	 * @return 产品ID。
@@ -47,21 +38,6 @@ public class Product implements Serializable {
 	 */
 	public void setId(String id) {
 		this.id = id;
-	}
-	/**
-	 * 获取产品代码。
-	 * @return 产品代码。
-	 */
-	public Integer getCode() {
-		return code;
-	}
-	/**
-	 * 设置产品代码。
-	 * @param code 
-	 *	  产品代码。
-	 */
-	public void setCode(Integer code) {
-		this.code = code;
 	}
 	/**
 	 * 获取产品名称。
@@ -169,36 +145,6 @@ public class Product implements Serializable {
 		this.discount = discount;
 	}
 	/**
-	 * 获取创建时间。
-	 * @return 创建时间。
-	 */
-	public Date getCreateTime() {
-		return createTime;
-	}
-	/**
-	 * 设置创建时间。
-	 * @param createTime 
-	 *	  创建时间。
-	 */
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
-	/**
-	 * 获取更新时间。
-	 * @return 更新时间。
-	 */
-	public Date getLastTime() {
-		return lastTime;
-	}
-	/**
-	 * 设置更新时间。
-	 * @param lastTime 
-	 *	  更新时间。
-	 */
-	public void setLastTime(Date lastTime) {
-		this.lastTime = lastTime;
-	}
-	/**
 	 * 获取状态。
 	 * @return 状态。
 	 */
@@ -227,5 +173,50 @@ public class Product implements Serializable {
 	 */
 	public void setRelations(Set<RelationProduct> relations) {
 		this.relations = relations;
+	}
+	/**
+	 * 获取排序号。
+	 * @return 排序号。
+	 */
+	public Integer getOrderNo() {
+		return orderNo;
+	}
+	/**
+	 * 设置排序号。
+	 * @param orderNo 
+	 *	  排序号。
+	 */
+	public void setOrderNo(Integer orderNo) {
+		this.orderNo = orderNo;
+	}
+	/**
+	 * 获取创建时间。
+	 * @return 创建时间。
+	 */
+	public Date getCreateTime() {
+		return createTime;
+	}
+	/**
+	 * 设置创建时间。
+	 * @param createTime 
+	 *	  创建时间。
+	 */
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+	/**
+	 * 获取更新时间。
+	 * @return 更新时间。
+	 */
+	public Date getLastTime() {
+		return lastTime;
+	}
+	/**
+	 * 设置更新时间。
+	 * @param lastTime 
+	 *	  更新时间。
+	 */
+	public void setLastTime(Date lastTime) {
+		this.lastTime = lastTime;
 	}
 }

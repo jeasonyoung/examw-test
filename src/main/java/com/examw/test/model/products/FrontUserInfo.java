@@ -1,4 +1,4 @@
-package com.examw.test.service.products;
+package com.examw.test.model.products;
 
 import java.io.Serializable;
 

@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.model.Json;
+import com.examw.test.model.products.FrontUserInfo;
 import com.examw.test.model.records.UserItemFavoriteInfo;
 import com.examw.test.model.records.UserItemRecordInfo;
 import com.examw.test.model.records.UserPaperRecordInfo;
 import com.examw.test.model.settings.FrontSubjectInfo;
-import com.examw.test.service.products.FrontUserInfo;
 import com.examw.test.service.products.IProductUserService;
 import com.examw.test.service.records.IUserItemFavoriteService;
 import com.examw.test.service.records.IUserItemRecordService;

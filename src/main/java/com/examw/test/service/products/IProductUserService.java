@@ -1,5 +1,6 @@
 package com.examw.test.service.products;
 
+import com.examw.test.model.products.FrontUserInfo;
 import com.examw.test.model.products.ProductUserInfo;
 import com.examw.test.service.IBaseDataService;
 

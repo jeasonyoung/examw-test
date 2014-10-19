@@ -11,7 +11,6 @@ import com.examw.test.dao.impl.BaseDaoImpl;
 import com.examw.test.dao.products.IProductDao;
 import com.examw.test.domain.products.Product;
 import com.examw.test.model.products.ProductInfo;
-
 /**
  * 产品数据接口实现类
  * @author fengwei.
@@ -30,10 +29,9 @@ public class ProductDaoImpl extends BaseDaoImpl<Product> implements IProductDao{
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
-			if("examId".equals(info.getSort()))
-			{
-				info.setSort("exam.id");
-			} 
+			if(info.getSort().equalsIgnoreCase("examName")){
+				info.setSort("exam.name");
+			}
 			hql += " order by p." + info.getSort() + " " + info.getOrder();
 		}
 		if(logger.isDebugEnabled()) logger.debug(hql);
@@ -62,21 +60,35 @@ public class ProductDaoImpl extends BaseDaoImpl<Product> implements IProductDao{
 			hql += " and (p.exam.id in (:examId))";
 			parameters.put("examId", info.getExamId().split(","));
 		}
-		if(info.getStatus()!=null){
+		if(info.getStatus() != null){
 			hql += " and (p.status = :status)";
 			parameters.put("status", info.getStatus());
 		}
 		return hql;
 	}
 	/*
-	 * 加载最大代码值。
-	 * @see com.examw.test.dao.products.IProductDao#loadMaxCode()
+	 * 加载最大排序号。
+	 * @see com.examw.test.dao.products.IProductDao#loadMaxOrder(java.lang.String)
 	 */
 	@Override
-	public Integer loadMaxCode() {
-		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
-		final String hql = "select max(p.code) from Product p";
-		Object obj = this.uniqueResult(hql, null);
+	public Integer loadMaxOrder(String examId) {
+		if(logger.isDebugEnabled()) logger.debug("加载最大排序号...");
+		final String hql = "select max(p.orderNo) from Product p where (p.exam.id = :examId) ";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("examId", examId);
+		Object obj = this.uniqueResult(hql, parameters);
 		return obj == null ? null : (int)obj;
+	}
+	/*
+	 * 加载考试下产品数据集合。
+	 * @see com.examw.test.dao.products.IProductDao#loadProducts(java.lang.String)
+	 */
+	@Override
+	public List<Product> loadProducts(String examId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试［examId = %s］下产品数据集合...", examId));
+		final String hql = "from Product p where (p.exam.id = :examId) ";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("examId", examId);
+		return this.find(hql, parameters, null, null);
 	}
 }

@@ -20,9 +20,8 @@
 		<!-- 状态-名称映射 -->
 		<property name="statusMap">
 		    <map>
-		        <entry key="0" value="禁用"/>
-		        <entry key="1" value="启用"/>
-		        <entry key="-1" value="删除"/>
+		        <entry key="0" value="${STATUS_DISABLE}"/>
+		        <entry key="1" value="${STATUS_ENABLED}"/>
 		    </map>
 		</property>
 	</bean>
@@ -37,8 +36,8 @@
 		<!-- 状态-名称映射 -->
 		<property name="statusMap">
 		    <map>
-		        <entry key="0" value="正常"/>
-		        <entry key="-1" value="删除"/>
+		         <entry key="0" value="${STATUS_DISABLE}"/>
+		        <entry key="1" value="${STATUS_ENABLED}"/>
 		    </map>
 		</property>
 	</bean>
@@ -66,8 +65,8 @@
 		<!-- 状态-名称映射 -->
 		<property name="statusMap">
 		    <map>
-		        <entry key="0" value="正常"/>
-		        <entry key="-1" value="删除"/>
+		         <entry key="0" value="${STATUS_DISABLE}"/>
+		        <entry key="1" value="${STATUS_ENABLED}"/>
 		    </map>
 		</property>
 	</bean>

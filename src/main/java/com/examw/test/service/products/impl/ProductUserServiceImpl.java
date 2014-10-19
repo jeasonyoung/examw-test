@@ -11,9 +11,9 @@ import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.products.IProductUserDao;
 import com.examw.test.domain.products.ProductUser;
+import com.examw.test.model.products.FrontUserInfo;
 import com.examw.test.model.products.ProductUserInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
-import com.examw.test.service.products.FrontUserInfo;
 import com.examw.test.service.products.IProductUserService;
 
 /**
