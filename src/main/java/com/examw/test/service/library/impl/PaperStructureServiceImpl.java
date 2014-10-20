@@ -16,6 +16,7 @@ import com.examw.test.domain.library.Structure;
 import com.examw.test.model.library.StructureInfo;
 import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperStructureService;
+import com.examw.test.service.library.PaperStatus;
 
 /**
  * 试卷结构服务实现类。
@@ -136,6 +137,10 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 			}
 			data = new Structure();
 			data.setPaper(paper);
+		} 
+		Integer paperStatus = null;
+		if(data.getPaper() != null && (paperStatus = data.getPaper().getStatus()) != PaperStatus.NONE.getValue()){
+			throw new RuntimeException(String.format("所属试卷［状态＝%s］不允许修改试卷结构！", PaperStatus.convert(paperStatus)));
 		}
 		BeanUtils.copyProperties(info, data,new String[]{"items"});
 		if (isAdded) this.structureDao.save(data);

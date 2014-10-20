@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.examw.test.service.library.IPaperReleaseService;
@@ -19,6 +20,7 @@ import com.examw.test.service.library.IPaperReleaseService;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:spring-examw-test.xml"})
+@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
 public class TestPaperRelease {
 	private static final Logger logger = Logger.getLogger(TestPaperRelease.class);
 	@Resource

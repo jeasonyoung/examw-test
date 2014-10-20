@@ -110,9 +110,9 @@ public class PaperItemServiceImpl extends BaseDataServiceImpl<StructureItem,Stru
 			throw new RuntimeException(msg);
 		}
 		if((structure.getPaper() == null) || (structure.getPaper().getStatus() != PaperStatus.NONE.getValue())){
-			logger.error(msg =  (structure.getPaper() == null ? "试卷不存在！" : String.format("试卷［％1$s］状态［%2$d］不允许更新！", 
-																																			structure.getPaper().getName(), 
-																																			structure.getPaper().getStatus())));
+			logger.error(msg =  (structure.getPaper() == null ? "试卷不存在！" : String.format("试卷［%1$s］状态［%2$s］不允许更新！", 
+																																			structure.getPaper().getName(),
+																																			PaperStatus.convert(structure.getPaper().getStatus()))));
 			
 			throw new RuntimeException(msg);
 		}
