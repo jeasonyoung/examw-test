@@ -63,11 +63,11 @@ public class FrontDataController {
 	 */
 	@RequestMapping(value = {""}, method = { RequestMethod.POST })
 	@ResponseBody
-	public Json verfiyUser(FrontUserInfo info){
+	public Json verfiyUser(@RequestBody FrontUserInfo info){
 		if(logger.isDebugEnabled()) logger.debug("验证前端用户...");
 		Json result = new Json();
 		try {
-			result.setData(this.productUserService.verifyFrontUser(info));
+			result.setData(this.productUserService.verifyFrontUser(info).getId());
 			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);
