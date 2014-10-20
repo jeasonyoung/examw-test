@@ -6,6 +6,7 @@
         <!-- 添加触发器 -->
         <property name="triggers">
             <list>
+                <!-- 自动发布试卷任务 -->
                 <bean class="org.springframework.scheduling.quartz.CronTriggerBean">
                     <!-- 任务明细 -->
                     <property name="jobDetail">
@@ -15,7 +16,19 @@
                         </bean>
                     </property>
                     <!-- 触发时间 -->
-                    <property name="cronExpression" value="0 0/2 * * * ?" />
+                    <property name="cronExpression" value="0 0/5 * * * ?" />
+                </bean>
+                <!-- 自动检查试卷状态任务 -->
+                <bean class="org.springframework.scheduling.quartz.CronTriggerBean">
+                    <!-- 任务明细 -->
+                    <property name="jobDetail">
+                        <bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+                            <property name="targetObject" ref="paperReleaseService" />
+                            <property name="targetMethod" value="updateCheckRelease" />
+                        </bean>
+                    </property>
+                    <!-- 触发时间 -->
+                    <property name="cronExpression" value="0 0/10 * * * ?" />
                 </bean>
             </list>
         </property>

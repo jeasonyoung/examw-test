@@ -4,12 +4,16 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Set;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+
 /**
  * 试卷结构信息基类。
  * 
  * @author yangyong
  * @since 2014年9月22日
  */
+@JsonSerialize(include = Inclusion.NON_NULL)
 public class StructureInfo implements Serializable,Comparable<StructureInfo> {
 	private static final long serialVersionUID = 1L;
 	private String id,title,description,typeName;

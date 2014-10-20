@@ -11,6 +11,7 @@ import com.examw.test.dao.library.IPaperDao;
 import com.examw.test.dao.library.IPaperReleaseDao;
 import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.library.PaperRelease;
+import com.examw.test.model.library.PaperInfo;
 import com.examw.test.model.library.PaperPreview;
 import com.examw.test.service.library.IPaperPreviewService;
 import com.examw.test.service.library.IPaperReleaseService;
@@ -67,7 +68,7 @@ public class PaperReleaseServiceImpl implements IPaperReleaseService {
 	 */
 	@Override
 	public void deleteRelease(String paperId) {
-		if(logger.isDebugEnabled())logger.debug("删除已发布试卷:" + paperId);
+		if(logger.isDebugEnabled())logger.debug(String.format("删除已发布试卷:%s", paperId));
 		if(StringUtils.isEmpty(paperId)) return;
 		this.paperReleaseDao.deleteRelease(paperId);
 	}
@@ -76,30 +77,35 @@ public class PaperReleaseServiceImpl implements IPaperReleaseService {
 	 * @see com.examw.test.service.library.IPaperReleaseService#updateRelease()
 	 */
 	@Override
-	public void updateRelease() throws Exception {
-		if(logger.isDebugEnabled()) logger.debug("开始发布试卷....");
-		Long count = this.paperDao.loadAllAuditCount();
-		if(count == null || count <= 0){
-			if(logger.isDebugEnabled())logger.debug("没有需要发布的试卷!");
-			return;
-		}
-		if(logger.isDebugEnabled())logger.debug(String.format("共有［%d］要发布...", count));
-		int total = count.intValue(),index = 0;
-		while(total > 0){
-			int size = (total > CONST_BATCH_VALUE) ? CONST_BATCH_VALUE : total;
-			List<Paper> papers = this.paperDao.loadAllAudit(size);
-			if(papers != null && papers.size() > 0){
-				for(Paper paper : papers){
-					if(paper == null) continue;
-					if(logger.isDebugEnabled()) logger.debug(String.format("[%1$d]发布试卷:[％2$s]%3$s", ++index, paper.getId(), paper.getName()));
-					try{
-						this.updateRelease(paper);
-					}catch(Exception e){
-						logger.error("发布试卷发生异常:" + e.getMessage(), e);
+	public void updateRelease() {
+		try{
+			if(logger.isDebugEnabled()) logger.debug("开始发布试卷....");
+			Long count = this.paperDao.loadAllAuditCount();
+			if(count == null || count <= 0){
+				if(logger.isDebugEnabled())logger.debug("没有需要发布的试卷!");
+				return;
+			}
+			if(logger.isDebugEnabled())logger.debug(String.format("共有［%d］要发布...", count));
+			int total = count.intValue(),index = 0;
+			while(total > 0){
+				int size = (total > CONST_BATCH_VALUE) ? CONST_BATCH_VALUE : total;
+				List<Paper> papers = this.paperDao.loadAllAudit(size);
+				if(papers != null && papers.size() > 0){
+					for(Paper paper : papers){
+						if(paper == null) continue;
+						if(logger.isDebugEnabled()) logger.debug(String.format("[%1$d]发布试卷:[％2$s]%3$s", ++index, paper.getId(), paper.getName()));
+						try{
+							this.updateRelease(paper);
+						}catch(Exception e){
+							logger.error("发布试卷发生异常:" + e.getMessage(), e);
+						}
 					}
 				}
+				total -= size;
 			}
-			total -= size;
+		}catch(Exception e){
+			logger.error(String.format("批量发布试卷时发生异常：%s", e.getMessage()), e);
+			e.printStackTrace();
 		}
 	}
 	/*
@@ -107,16 +113,21 @@ public class PaperReleaseServiceImpl implements IPaperReleaseService {
 	 * @see com.examw.test.service.library.IPaperReleaseService#updateRelease(java.lang.String)
 	 */
 	@Override
-	public void updateRelease(String paperId) throws Exception {
-		if(logger.isDebugEnabled())logger.debug("发布试卷:" + paperId);
-		if(StringUtils.isEmpty(paperId))return;
-		//试卷。
-		Paper paper = this.paperDao.load(Paper.class, paperId);
-		if(paper == null){
-			if(logger.isDebugEnabled()) logger.debug("试卷不存在!");
-			return;
+	public void updateRelease(String paperId) {
+		try{
+			if(logger.isDebugEnabled())logger.debug(String.format("发布试卷［paperId = %s］...", paperId));
+			if(StringUtils.isEmpty(paperId))return;
+			//试卷。
+			Paper paper = this.paperDao.load(Paper.class, paperId);
+			if(paper == null){
+				if(logger.isDebugEnabled()) logger.debug(String.format("试卷［paperId = %s］不存在!", paperId));
+				return;
+			}
+			this.updateRelease(paper);
+		}catch(Exception e){
+			logger.error(String.format("发布试卷［%1$s］发生异常：%2$s", paperId,e.getMessage()),  e);
+			e.printStackTrace();
 		}
-		this.updateRelease(paper);
 	}
 	//发布试卷。
 	private void updateRelease(Paper paper) throws Exception {
@@ -133,8 +144,7 @@ public class PaperReleaseServiceImpl implements IPaperReleaseService {
 			return;
 		}
 		PaperRelease paperRelease = this.paperReleaseDao.load(PaperRelease.class, paper.getId());
-		boolean isAdded = false;
-		if(isAdded = (paperRelease == null)){
+		if(paperRelease == null){
 			paperRelease = new PaperRelease();
 			paperRelease.setId(paper.getId());
 			paperRelease.setPaper(paper);
@@ -143,7 +153,82 @@ public class PaperReleaseServiceImpl implements IPaperReleaseService {
 		paperRelease.setTitle(paperPreview.getName());
 		paperRelease.setTotal(paperPreview.getTotal());
 		paperRelease.setContent(this.mapper.writeValueAsString(paperPreview));
-		if(isAdded) this.paperReleaseDao.save(paperRelease);
+		 this.paperReleaseDao.saveOrUpdate(paperRelease);
 		paper.setStatus(PaperStatus.PUBLISH.getValue());
+		paper.setPublishTime(new Date());
+		this.paperDao.saveOrUpdate(paper);
+	}
+	/*
+	 * 检查发布。
+	 * @see com.examw.test.service.library.IPaperReleaseService#checkRelease()
+	 */
+	@Override
+	public void updateCheckRelease() {
+		try{
+			if(logger.isDebugEnabled()) logger.debug("检查试卷发布...");
+			this.updateCheckPublishedRelease();
+			this.updateCheckNonAuditRelease();
+		}catch(Exception e){
+			logger.debug(String.format("检查试卷发布时发生异常：%s", e.getMessage()), e);
+			e.printStackTrace();
+		}
+	}
+	//检查已发布的试卷。
+	private void updateCheckPublishedRelease(){
+		if(logger.isDebugEnabled()) logger.debug("检查试卷试卷状态为已发布的试卷是否存在....");
+		List<Paper> papers = this.paperDao.findPapers(new PaperInfo(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public Integer getStatus() { return PaperStatus.PUBLISH.getValue(); }
+			@Override
+			public String getSort() { return "lastTime";}
+			@Override
+			public String getOrder() {return "desc";}
+		});
+		if(papers == null || papers.size() == 0){
+			if(logger.isDebugEnabled()) logger.debug("未找到状态为［已发布］的试卷数据！");
+			return;
+		}
+		for(Paper paper : papers){
+			if(paper == null) continue;
+			if(!this.paperReleaseDao.hasRelease(paper.getId())){
+				if(logger.isDebugEnabled()) logger.debug(String.format("未找到试卷［paperId = %1$s］［paperName = %2$s］的发布数据，开始重新发布...", paper.getId(), paper.getName()));
+				try{
+					this.updateRelease(paper);
+				}catch(Exception e){
+					logger.error(String.format("重新发布试卷［paperId = %1$s, paperName = %2$s］时发生异常：%3$s", paper.getId(),paper.getName(),e.getMessage()), e);
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	//删除试卷状态重置为未审核的已发布的试卷内容。
+	private void updateCheckNonAuditRelease(){
+		if(logger.isDebugEnabled()) logger.debug("删除试卷状态重置为未审核的已发布的试卷内容...");
+		List<Paper> papers = this.paperDao.findPapers(new PaperInfo(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public Integer getStatus() { return PaperStatus.NONE.getValue(); }
+			@Override
+			public String getSort() { return "lastTime";}
+			@Override
+			public String getOrder() {return "desc";}
+		});
+		if(papers == null || papers.size() == 0){
+			if(logger.isDebugEnabled()) logger.debug("未找到状态为［未审核］的试卷数据！");
+			return;
+		}
+		for(Paper paper : papers){
+			if(paper == null) continue;
+			if(this.paperReleaseDao.hasRelease(paper.getId())){
+				try{
+					if(logger.isDebugEnabled()) logger.debug(String.format("删除试卷状态重置为［未审核］的试卷［paperId = %1$s］［paperName = %2$s］发布内容...", paper.getId(), paper.getName()));
+					this.deleteRelease(paper.getId());
+				}catch(Exception e){
+					logger.error(String.format("删除发布试卷［paperId = %1$s, paperName = %2$s］时发生异常：%3$s", paper.getId(),paper.getName(),e.getMessage()), e);
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }

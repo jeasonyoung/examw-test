@@ -1,6 +1,7 @@
 package com.examw.test.model.library;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 /**
@@ -32,6 +33,7 @@ public class PaperPreview extends BasePaperInfo {
 	 * 获取试卷题目总数。
 	 * @return 试卷题目总数。
 	 */
+	@JsonIgnore
 	public Integer getTotal() {
 		int total = 0;
 		if(this.structures != null && this.structures.size() > 0){
