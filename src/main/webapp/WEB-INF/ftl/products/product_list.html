@@ -35,7 +35,7 @@ $(function(){
 		url:"<@s.url '/products/product/datagrid'/>",
 		fit:true,fitColumns:true,rownumbers:true,border:true,
 		pagination:true,pagePosition:"bottom",pageSize:20,pageList:[20,30,40],
-		striped:true,idField:"id",sortName:"orderNo",sortOrder:"asc",
+		striped:true,idField:"id",sortName:"orderNo",sortOrder:"desc",
 		queryParams:{
 			"name":$("#${dg}_toobar input[name='name']").val(),
 			 "examId":current_exam_id
@@ -47,15 +47,15 @@ $(function(){
 		},{
 			title:"产品名称",field:"name",width:30,align:"left",sortable:true
 		},{
+			title:"所属科目",field:"subjectName",width:20,align:"left"
+		},{
+			title:"所属地区",field:"areaName",width:10,align:"center",sortable:true
+		},{
 			title:"定价",field:"price",width:10,align:"right",sortable:true
 		},{
 			title:"优惠价",field:"discount",width:10,align:"right",sortable:true
 		},{
-			title:"状态",field:"statusName",width:10,align:"center"
-		},{
-			title:"创建时间",field:"createTime",width:12,align:"center",sortable:true
-		},{
-			title:"修改时间",field:"lastTime",width:12,align:"center",sortable:true
+			title:"状态",field:"statusName",width:10,align:"center",sortable:true
 		}]],
 		toolbar:"#${dg}_toobar",
 		onLoadError:function(e){ <@error_dialog "e"/> },
@@ -76,7 +76,7 @@ $(function(){
 	${dg}_add = function(){
 		if(m) return;
 		m = true;
-		$.getJSON("<@s.url '/products/product/order'/>",function(order){
+		$.getJSON("<@s.url '/products/product/order?examId='/>" + current_exam_id,function(order){
 			m = false;
 			edit_window("新增产品",0,null,order);
 		});

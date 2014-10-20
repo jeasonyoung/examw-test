@@ -31,6 +31,10 @@ public class ProductDaoImpl extends BaseDaoImpl<Product> implements IProductDao{
 		if(!StringUtils.isEmpty(info.getSort())){
 			if(info.getSort().equalsIgnoreCase("examName")){
 				info.setSort("exam.name");
+			}else if(info.getSort().equalsIgnoreCase("areaName")){
+				info.setSort("area.name");
+			}else if(info.getSort().equalsIgnoreCase("statusName")){
+				info.setSort("status");
 			}
 			hql += " order by p." + info.getSort() + " " + info.getOrder();
 		}

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Set;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
 import com.examw.model.Paging;
 import com.examw.support.CustomDateSerializer;
@@ -14,6 +15,7 @@ import com.examw.support.CustomDateSerializer;
  * @author yangyong
  * @since 2014年8月30日
  */
+@JsonSerialize(include = Inclusion.NON_NULL)
 public abstract class BaseItemInfo<T extends BaseItemInfo<T>>  extends Paging implements Comparable<BaseItemInfo<T>> {
 	private static final long serialVersionUID = 1L;
 	private String pid,id,typeName,statusName,optName,examId,examName,subjectId,subjectName, 

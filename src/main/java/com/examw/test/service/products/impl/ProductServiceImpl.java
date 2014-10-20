@@ -13,9 +13,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.products.IProductDao;
+import com.examw.test.dao.settings.IAreaDao;
 import com.examw.test.dao.settings.IExamDao;
 import com.examw.test.dao.settings.ISubjectDao;
 import com.examw.test.domain.products.Product;
+import com.examw.test.domain.settings.Area;
 import com.examw.test.domain.settings.Exam;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.products.ProductInfo;
@@ -32,6 +34,7 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 	private IProductDao productDao;
 	private IExamDao examDao;
 	private ISubjectDao subjectDao;
+	private IAreaDao areaDao;
 	private Map<Integer,String> statusMap;
 	/**
 	 * 设置产品数据接口
@@ -59,6 +62,15 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 	public void setSubjectDao(ISubjectDao subjectDao) {
 		if(logger.isDebugEnabled()) logger.debug("注入考试科目数据接口...");
 		this.subjectDao = subjectDao;
+	}
+	/**
+	 * 设置地区数据接口。
+	 * @param areaDao 
+	 *	  areaDao
+	 */
+	public void setAreaDao(IAreaDao areaDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入地区数据接口...");
+		this.areaDao = areaDao;
 	}
 	/**
 	 * 设置产品状态名称映射。
@@ -177,6 +189,8 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 		BeanUtils.copyProperties(info, data);
 		//所属考试
 		data.setExam(StringUtils.isEmpty(info.getExamId()) ?  null : this.examDao.load(Exam.class, info.getExamId()));
+		//所属地区
+		data.setArea(StringUtils.isEmpty(info.getAreaId()) ?  null : this.areaDao.load(Area.class, info.getAreaId()));
 		//包含科目
 		Set<Subject> subjects = new HashSet<Subject>();
 		if(info.getSubjectId() !=null){

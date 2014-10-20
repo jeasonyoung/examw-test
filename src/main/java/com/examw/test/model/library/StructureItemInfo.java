@@ -2,12 +2,16 @@ package com.examw.test.model.library;
 
 import java.util.Set;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+
 /**
  * 试卷结构试题。
  * 
  * @author yangyong
  * @since 2014年9月27日
  */
+@JsonSerialize(include = Inclusion.NON_NULL)
 public class StructureItemInfo extends BaseItemInfo<StructureItemInfo>{
 	private static final long serialVersionUID = 1L;
 	private String paperId, structureId;
