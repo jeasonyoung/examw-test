@@ -1,6 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="com.examw.test.domain.products">
+    <!-- 产品 -->
+	<class name="Product" table="tbl_Examw_Test_Products_Products">
+		<cache usage="read-write" />
+		<!-- 产品ID -->
+		<id name="id"  type="string"  length="64" />
+		<!-- 产品名称 -->
+		<property name="name" type="string" length="32" not-null="true" />
+		<!-- 所属考试  -->
+		<many-to-one name="exam" column="exam_id" class="com.examw.test.domain.settings.Exam" />
+		<!-- 所属地区 -->
+		<many-to-one name="area" column="area_id" class="com.examw.test.domain.settings.Area" />
+		<!-- 产品定价 -->
+		<property name="price" type="big_decimal" />
+		<!-- 产品优惠价 -->
+		<property name="discount" type="big_decimal" />
+		<!-- 产品介绍 -->
+		<property name="content" type="text" />
+		<!--  状态(0-停用，－1-启用) -->
+		<property name="status" type="integer" />
+		<!-- 排序号 -->
+		<property name="orderNo" type="integer" />
+		<!-- 包含科目集合 -->
+		<set name="subjects" inverse="false" cascade="save-update" table="tbl_Examw_Test_Products_ProductSubjects">
+			<key column="product_id" />
+			<many-to-many class="com.examw.test.domain.settings.Subject" column="subject_id" />
+		</set>
+		<!-- 产品被关联集合 -->
+		<set name="relations" inverse="true" order-by="createTime desc">
+			<key column="product_id" />
+			<one-to-many class="RelationProduct"/>
+		</set>
+		<!-- 创建时间 -->
+		<property name="createTime" column="create_time" type="timestamp" />
+		<!-- 最后修改时间 -->
+		<property name="lastTime" column="last_time" type="timestamp" />
+	</class>
 	<!-- 软件类型 -->
 	<class name="SoftwareType" table="tbl_Examw_Test_Products_SoftwareTypes">
 		<cache usage="read-write" />
@@ -63,42 +99,7 @@
 		<!-- 最后修改时间 -->
 		<property name="lastTime" type="timestamp" />
 	</class>
-	<!-- 产品 -->
-	<class name="Product" table="tbl_Examw_Test_Products_Products">
-		<cache usage="read-write" />
-		<!-- 产品ID -->
-		<id name="id"  type="string"  length="64" />
-		<!-- 产品名称 -->
-		<property name="name" type="string" length="32" not-null="true" />
-		<!-- 所属考试  -->
-		<many-to-one name="exam" column="exam_id" class="com.examw.test.domain.settings.Exam" />
-		<!-- 所属地区 -->
-		<many-to-one name="area" column="area_id" class="com.examw.test.domain.settings.Area" />
-		<!-- 产品定价 -->
-		<property name="price" type="big_decimal" />
-		<!-- 产品优惠价 -->
-		<property name="discount" type="big_decimal" />
-		<!-- 产品介绍 -->
-		<property name="content" type="text" />
-		<!--  状态(0-停用，－1-启用) -->
-		<property name="status" type="integer" />
-		<!-- 排序号 -->
-		<property name="orderNo" type="integer" />
-		<!-- 包含科目集合 -->
-		<set name="subjects" inverse="false" cascade="save-update" table="tbl_Examw_Test_Products_ProductSubjects">
-			<key column="product_id" />
-			<many-to-many class="com.examw.test.domain.settings.Subject" column="subject_id" />
-		</set>
-		<!-- 产品被关联集合 -->
-		<set name="relations" inverse="true" order-by="createTime desc">
-			<key column="product_id" />
-			<one-to-many class="RelationProduct"/>
-		</set>
-		<!-- 创建时间 -->
-		<property name="createTime" column="create_time" type="timestamp" />
-		<!-- 最后修改时间 -->
-		<property name="lastTime" column="last_time" type="timestamp" />
-	</class>
+	
 	<!-- 产品用户 -->
 	<class name="ProductUser" table="tbl_Examw_Test_Products_Users">
 		<cache usage="read-write" />

@@ -33,6 +33,8 @@
 		<property name="examDao" ref="examDao" />
 		<!-- 科目数据操作接口 -->
 		<property name="subjectDao" ref="subjectDao" />
+		<!-- 地区数据操作接口 -->
+		<property name="areaDao" ref="areaDao" />
 		<!-- 状态-名称映射 -->
 		<property name="statusMap">
 		    <map>

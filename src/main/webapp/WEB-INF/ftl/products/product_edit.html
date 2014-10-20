@@ -6,13 +6,15 @@
 	<div style="float:left;margin-top:2px;width:100%;">
 		<label style="width:75px;">所属考试：</label>
 		<input name="categoryId"  class="easyui-combotree" data-options="url:'<@s.url '/settings/category/tree'/>',required:true,onChange:function(n,o){
-					$('#${form}_examId').combobox('clear');$('#${form}_subjectId').combobox('clear');
+					$('#${form}_examId').combobox('clear');$('#${form}_subjectId').combobox('clear');$('#${form}_areaId').combobox('clear');
 					if(n)$('#${form}_examId').combobox('reload','<@s.url '/settings/exam/all?categoryId='/>' + n);
 				}" style="width:228px;"/>
 		<input id="${form}_examId" name="examId" class="easyui-combobox" data-options="url:'<@s.url '/settings/exam/all?categoryId=${current_category_id}'/>',
 				required:true,valueField:'id',textField:'name',onSelect:function(record){
 					$('#${form}_subjectId').combobox('clear');
 					$('#${form}_subjectId').combobox('reload','<@s.url '/settings/subject/all?examId='/>' + record.id);
+					$('#${form}_areaId').combobox('clear');
+					$('#${form}_areaId').combobox('reload','<@s.url 'settings/exam/areas?examId='/>' + record.id);
 				}" style="width:218px;"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
@@ -30,27 +32,35 @@
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<div style="float:left;">
-			<label style="width:75px;">产品价格：</label>
-			<input type="text" name="price" class="easyui-numberbox" value="0" data-options="min:0,precision:2" style="width:60px;" />
+			<label style="width:75px;">所属地区：</label>
+			<input id="${form}_areaId" name="areaId" class="easyui-combobox" data-options="url:'<@s.url '/settings/exam/areas?examId=${current_exam_id}'/>',
+					valueField:'id',textField:'name',onLoadError:function(e){ <@error_dialog 'e'/> },
+					icons:[{ iconCls:'icon-clear',handler:function(e){ $(e.data.target).combobox('clear');} }]"  style="width:228px;" />
 		</div>
 		<div style="float:left;">
-			<label style="width:60px;">优惠价：</label>
-			<input type="text" name="discount"class="easyui-numberbox" value="0" data-options="min:0,precision:2" style="width:60px;" />
-		</div>
-		<div style="float:left;">
-			<label style="margin-top:3px;width:50px;">状态：</label>
+			<label style="margin-top:3px;width:75px;">状态：</label>
 			<#list ProductStatusMap?keys as key>
 			<label style="padding-top:0px;<#if (key_index > 0)>margin-left:12px;</#if> ">
 				<input type="radio" name="status" value="${key}"  <#if (key_index == 0)> checked="checked" </#if> />${ProductStatusMap[key]}
 			</label>
 			</#list>
 		</div>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
 		<div style="float:left;">
-			<label style="margin-top:2px;width:60px;">排序号：</label>
-			<input name="orderNo" class="easyui-numberbox" data-options="value:0"  style="width:50px;" />
+			<label style="width:75px;">产品价格：</label>
+			<input type="text" name="price" class="easyui-numberbox" value="0" data-options="min:0,precision:2" style="width:100px;" />
+		</div>
+		<div style="float:left;">
+			<label style="width:95px;">优惠价：</label>
+			<input type="text" name="discount"class="easyui-numberbox" value="0" data-options="min:0,precision:2" style="width:100px;" />
+		</div>
+		<div style="float:left;">
+			<label style="width:100px;">排序号：</label>
+			<input name="orderNo" class="easyui-numberbox" data-options="value:0"  style="width:60px;" />
 		</div>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
-		<textarea name="content" class="easyui-ueditor" data-options="width:550,height:200"></textarea>
+		<textarea name="content" class="easyui-ueditor" data-options="width:550,height:170"></textarea>
 	</div>
 </form>
