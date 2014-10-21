@@ -52,6 +52,14 @@ public interface IStructureDao extends IBaseDao<Structure> {
 	 */
 	Long totalStructureItems(String structureId);
 	/**
+	 * 统计试题被试卷关联次数。
+	 * @param itemId
+	 * 所属试题ID。
+	 * @return
+	 * 关联次数。
+	 */
+	Long totalItemCount(String itemId);
+	/**
 	 * 删除试卷结构试题。
 	 * @param structureId
 	 * 所属试卷结构ID。

@@ -1,5 +1,4 @@
 package com.examw.test.service.library;
-
 /**
  * 试卷类型枚举
  * @author yangyong
@@ -21,7 +20,15 @@ public enum PaperType {
 	/**
 	 * 练习题。
 	 */
-	PRACTICE(0x04);
+	PRACTICE(0x04),
+	/**
+	 * 章节练习。
+	 */
+	CHAPTER(0x05),
+	/**
+	 * 每日一练。
+	 */
+	Daily(0x06);
 	
 	private int value;
 	//构造函数。

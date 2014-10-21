@@ -5,7 +5,7 @@ import java.util.List;
 import com.examw.test.dao.IBaseDao;
 import com.examw.test.domain.library.Item;
 import com.examw.test.model.library.ItemInfo;
-
+import com.examw.test.service.library.ItemType;
 /**
  * 题目数据操作接口。
  * 
@@ -13,6 +13,17 @@ import com.examw.test.model.library.ItemInfo;
  * @since 2014年8月8日
  */
 public interface IItemDao extends IBaseDao<Item> {
+	/**
+	 * 加载试题集合。
+	 * @param subjectId
+	 * 所属科目ID。
+	 * @param itemType
+	 * 所属题型。
+	 * @param areaId
+	 * 所属地区。
+	 * @return
+	 */
+	List<Item> loadItems(String subjectId, ItemType itemType,String areaId);
 	/**
 	 * 查询数据。
 	 * @param info

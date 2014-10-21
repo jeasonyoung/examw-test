@@ -29,6 +29,8 @@
 				<entry key="2" value="模拟题" />
 				<entry key="3" value="预测题" />
 				<entry key="4" value="练习题" />
+				<entry key="5" value="章节练习" />
+				<entry key="6" value="每日一练" />
 		    </map>
 		</property>
 		<!-- 试卷状态 -->
@@ -135,6 +137,13 @@
 		</property>
 		<!-- 试卷服务接口 -->
 		<property name="paperService" ref="paperService" />
+	</bean>
+	<!-- 随机选题服务 -->
+	<bean id="randomItemService" class="com.examw.test.service.library.impl.RandomItemServiceImpl">
+	    <!-- 试卷结构数据接口 -->
+	    <property name="structureDao"  ref="structureDao" />
+	    <!-- 试题数据接口 -->
+	    <property name="itemDao" ref="itemDao" />
 	</bean>
 	<!-- 试卷预览服务 -->
 	<bean id="paperPreviewService" class="com.examw.test.service.library.impl.PaperPreviewServiceImpl">

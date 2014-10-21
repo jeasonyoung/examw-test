@@ -114,7 +114,7 @@ public class StructureDaoImpl extends BaseDaoImpl<Structure> implements IStructu
 	public Long totalStructureItems(String structureId) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("统计试卷结构［structureId = %s］下的试题数量...", structureId));
 		if(StringUtils.isEmpty(structureId)) return null;
-		final String hql = "select count(*) from StructureItem s where s.structure.id = :structureId ";
+		final String hql = "select sum(s.item.count) from StructureItem s where s.structure.id = :structureId ";
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("structureId", structureId);
 		Object obj = this.uniqueResult(hql, parameters);
@@ -134,5 +134,19 @@ public class StructureDaoImpl extends BaseDaoImpl<Structure> implements IStructu
 		parameters.put("itemId", itemId);
 		int count = this.execuateUpdate(hql, parameters);
 		if(logger.isDebugEnabled()) logger.debug(String.format("删除数据［%d］", count));
+	}
+	/*
+	 * 统计试题被试卷关联次数。
+	 * @see com.examw.test.dao.library.IStructureDao#totalItemCount(java.lang.String)
+	 */
+	@Override
+	public Long totalItemCount(String itemId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("统计试题［itemId = %s］被试卷关联次数...", itemId));
+		final String hql = "select count(*) from StructureItem si where (si.item.id = :itemId) ";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("itemId", itemId);
+		if(logger.isDebugEnabled()) logger.debug(hql);
+		Object obj = this.uniqueResult(hql, parameters);
+		return (obj == null) ? null : (long)obj;
 	}
 }

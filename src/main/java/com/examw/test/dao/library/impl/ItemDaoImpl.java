@@ -12,6 +12,7 @@ import com.examw.test.dao.library.IItemDao;
 import com.examw.test.domain.library.Item;
 import com.examw.test.model.library.ItemInfo;
 import com.examw.test.service.library.ItemStatus;
+import com.examw.test.service.library.ItemType;
 import com.examw.test.service.library.PaperType;
 
 /**
@@ -170,5 +171,20 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 		parameters.put("subjectId", subjectIds);
 		Object obj = this.uniqueResult(hql, parameters);
 		return obj == null ? false : (long)obj > 0;
+	}
+	/*
+	 * 加载试题集合。
+	 * @see com.examw.test.dao.library.IItemDao#loadItems(java.lang.String, com.examw.test.service.library.ItemType, java.lang.String)
+	 */
+	@Override
+	public List<Item> loadItems(String subjectId, ItemType itemType,String areaId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试题［subjectId = %1$s］［itemType = %2$s］［areaId = %3$s］集合...", subjectId, itemType,areaId));
+		String hql = "from Item i where (i.parent is null) and (i.subject.id = :subjectId) and (i.type = :type) and ((i.area is null) or (i.area.code = 0) or (i.area.id = :areaId))";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("subjectId", subjectId);
+		parameters.put("type", itemType.getValue());
+		parameters.put("areaId", areaId);
+		if(logger.isDebugEnabled()) logger.debug(hql);
+		return this.find(hql, parameters, null, null);
 	}
 }

@@ -16,12 +16,7 @@
 <!-- easyui -->
 <script type="text/javascript" src="<@s.url "/resources/easyui.1.4/jquery.easyui.min.js"/>"></script>
 <script type="text/javascript" src="<@s.url "/resources/easyui.1.4/locale/easyui-lang-zh_CN.js"/>"></script>
-<!--  富文本编辑器 -->
-<!-- <link rel="stylesheet" href="<@s.url "/resources/editor/themes/default/default.css"/>"/>
-<script type="text/javascript" src="<@s.url "/resources/editor/kindeditor-min.js"/>"></script>
-<script type="text/javascript" src="<@s.url "/resources/editor/lang/zh_CN.js"/>"></script>
-<script type="text/javascript" src="<@s.url "/resources/easyui-kindeditor.js"/>"></script> -->
-
+<!--ueditor-->
 <script type="text/javascript" charset="utf-8" src="<@s.url '/resources/ueditor.1.4.3/ueditor.config.js'/>"></script>
 <script type="text/javascript" charset="utf-8" src="<@s.url '/resources/ueditor.1.4.3/ueditor.all.js'/>"></script>
 <script type="text/javascript" src="<@s.url "/resources/easyui-ueditor.js"/>"></script>

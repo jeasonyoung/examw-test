@@ -62,16 +62,16 @@ public class Structure implements Serializable {
 		this.description = description;
 	}
 	/**
-	 * 获取题目总数。
-	 * @return 题目总数。
+	 * 获取试题总数。
+	 * @return 试题总数。
 	 */
 	public Integer getTotal() {
 		return total;
 	}
 	/**
-	 * 设置题目总数。
+	 * 设置试题总数。
 	 * @param total 
-	 *	  题目总数。
+	 *	  试题总数。
 	 */
 	public void setTotal(Integer total) {
 		this.total = total;
@@ -107,31 +107,31 @@ public class Structure implements Serializable {
 		this.orderNo = orderNo;
 	}
 	/**
-	 * 获取题目分数。
-	 * @return 题目分数。
+	 * 获取试题分数。
+	 * @return 试题分数。
 	 */
 	public BigDecimal getScore() {
 		return score;
 	}
 	/**
-	 * 设置题目分数。
+	 * 设置试题分数。
 	 * @param score
-	 * 题目分数。
+	 * 试题分数。
 	 */
 	public void setScore(BigDecimal score) {
 		this.score = score;
 	}
 	/**
-	 * 获取题目最少分数。
-	 * @return 题目最少分数。
+	 * 获取试题最少分数。
+	 * @return 试题最少分数。
 	 */
 	public BigDecimal getMin() {
 		return min;
 	}
 	/**
-	 * 设置题目最少分数。
+	 * 设置试题最少分数。
 	 * @param min 
-	 *	  题目最少分数。
+	 *	  试题最少分数。
 	 */
 	public void setMin(BigDecimal min) {
 		this.min = min;
@@ -152,16 +152,16 @@ public class Structure implements Serializable {
 		this.paper = paper;
 	}
 	/**
-	 * 获取结构下题目集合。
-	 * @return 结构下题目集合。
+	 * 获取结构下试题集合。
+	 * @return 结构下试题集合。
 	 */
 	public Set<StructureItem> getItems() {
 		return items;
 	}
 	/**
-	 * 设置结构下题目集合。
+	 * 设置结构下试题集合。
 	 * @param items 
-	 *	  结构下题目集合。
+	 *	  结构下试题集合。
 	 */
 	public void setItems(Set<StructureItem> items) {
 		this.items = items;

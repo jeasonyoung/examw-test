@@ -21,6 +21,21 @@ public class StructureItem implements Serializable,Comparable<StructureItem> {
 		this.setCreateTime(new Date());
 	}
 	/**
+	 * 构造函数。
+	 * @param structure
+	 * 所属结构。
+	 * @param item
+	 * 所属试题。
+	 * @param orderNo
+	 * 排序号。
+	 */
+	public StructureItem(Structure structure, Item item, Integer orderNo){
+		this();
+		this.setStructure(structure);
+		this.setItem(item);
+		this.setOrderNo(orderNo);
+	}
+	/**
 	 * 获取试卷结构。
 	 * @return 试卷结构。
 	 */

@@ -20,6 +20,7 @@ import com.examw.test.domain.security.Right;
 import com.examw.test.model.library.StructureItemInfo;
 import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperItemService;
+import com.examw.test.service.library.IRandomItemService;
 import com.examw.test.service.library.ItemType;
 import com.examw.test.support.PaperItemUtils;
 
@@ -40,6 +41,9 @@ public class PaperItemController implements IUserAware {
 	//注入试题服务接口。
 	@Resource
 	private IItemService itemService;
+	//注入随机导入试题服务接口。
+	@Resource
+	private IRandomItemService randomItemService;
 	/*
 	 * 注入用户ID。
 	 * @see com.examw.aware.IUserAware#setUserId(java.lang.String)
@@ -147,6 +151,27 @@ public class PaperItemController implements IUserAware {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
 			logger.error("更新数据发生异常", e);
+		}
+		return result;
+	}
+	/**
+	 * 随机导入试卷结构试题。
+	 * @param structureId
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE})
+	@RequestMapping(value = "/random/{structureId}", method = RequestMethod.POST)
+	@ResponseBody
+	public Json randomImportStructureItems(@PathVariable String structureId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("随机导入试卷结构［structureId = %s］试题...", structureId));
+		Json result = new Json();
+		try {  
+			this.randomItemService.addRandomItem(structureId);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("随机导入试卷结构试题发生异常", e);
 		}
 		return result;
 	}
