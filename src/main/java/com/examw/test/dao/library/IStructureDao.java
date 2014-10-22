@@ -37,12 +37,19 @@ public interface IStructureDao extends IBaseDao<Structure> {
 	 */
 	Long totalItems(StructureItemInfo info);
 	/**
-	 * 加载试卷结构下最大排序号。
+	 * 加载试卷结构最大排序号。
+	 * @param paperId
+	 * 所属试卷ID。
+	 * @return
+	 */
+	Integer loadPaperMaxOrder(String paperId);
+	/**
+	 * 加载试卷结构下试题最大排序号。
 	 * @param structureId
 	 * 结构ID。
 	 * @return
 	 */
-	Integer loadItemMaxOrderNo(String structureId);
+	Integer loadItemMaxOrder(String structureId);
 	/**
 	 * 统计结构下的试题数量。
 	 * @param structureId

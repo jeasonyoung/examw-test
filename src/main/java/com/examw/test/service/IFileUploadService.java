@@ -1,5 +1,7 @@
 package com.examw.test.service;
 
+import com.examw.test.model.AttachmentInfo;
+
 /**
  * 上传文件服务。
  * @author yangyong.
@@ -7,15 +9,22 @@ package com.examw.test.service;
  */
 public interface IFileUploadService {
 	/**
-	 * 上传文件。
+	 * 文件上传。
 	 * @param fileName
 	 * 文件名称。
+	 * @param contentType
+	 * 内容类型。
 	 * @param data
-	 * 文件数据。
-	 * @param root
-	 * 根文件路径。
+	 * 数据。
 	 * @return
-	 * 文件路径。
 	 */
-	String upload(String fileName,byte[] data, String root);
+	String addUpload(String fileName,String contentType, byte[] data) throws Exception;
+	/**
+	 * 附件下载。
+	 * @param fileId
+	 * 文件ID。
+	 * @return
+	 * 附件信息。
+	 */
+	AttachmentInfo download(String fileId) throws Exception;
 }

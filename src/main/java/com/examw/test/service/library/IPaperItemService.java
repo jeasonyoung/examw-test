@@ -11,12 +11,12 @@ import com.examw.test.service.IBaseDataService;
  */
 public interface IPaperItemService extends IBaseDataService<StructureItemInfo> {
 	/**
-	 * 加载试卷结构下最大的排序号。
+	 * 加载试卷结构下试题最大的排序号。
 	 * @param structureId
 	 * 所属结构ID。
 	 * @return
 	 */
-	Integer loadMaxOrderNo(String structureId);
+	Integer loadMaxOrder(String structureId);
 	/**
 	 * 数据模型转换。
 	 * @param source

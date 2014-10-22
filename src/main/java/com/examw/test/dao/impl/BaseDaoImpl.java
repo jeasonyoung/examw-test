@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.hibernate.Cache;
 import org.hibernate.CacheMode;
+import org.hibernate.LobHelper;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -271,5 +272,13 @@ public class BaseDaoImpl<T> implements IBaseDao<T> {
 			session.flush();
 			session.clear();
 		}
+	}
+	/*
+	 * 获取二进制工具对象。
+	 * @see com.examw.test.dao.IBaseDao#getLobHelper()
+	 */
+	@Override
+	public LobHelper getLobHelper() {
+		return this.getCurrentSession().getLobHelper();
 	}
 }

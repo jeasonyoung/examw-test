@@ -100,13 +100,26 @@ public class StructureDaoImpl extends BaseDaoImpl<Structure> implements IStructu
 		return hql;
 	}
 	/*
-	 * 加载试卷结构下最大排序号。
+	 * 加载试卷结构最大排序号。
+	 * @see com.examw.test.dao.library.IStructureDao#loadPaperMaxOrder(java.lang.String)
+	 */
+	@Override
+	public Integer loadPaperMaxOrder(String paperId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［paperId = %s］结构最大排序号...", paperId));
+		final String hql = "select max(s.orderNo) from Structure s where s.paper.id = :paperId";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("paperId", paperId);
+		Object obj = this.uniqueResult(hql, parameters);
+		return obj == null ?  null : (int)obj;
+	}
+	/*
+	 * 加载试卷结构下试题最大排序号。
 	 * @see com.examw.test.dao.library.IStructureDao#loadItemMaxOrderNo(java.lang.String)
 	 */
 	@Override
-	public Integer loadItemMaxOrderNo(String structureId) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷结构［structureId = %s］下最大排序号...", structureId));
-		String hql = "select max(s.orderNo) from StructureItem s where s.structure.id = :structureId ";
+	public Integer loadItemMaxOrder(String structureId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷结构［structureId = %s］下试题最大排序号...", structureId));
+		final String hql = "select max(s.orderNo) from StructureItem s where s.structure.id = :structureId ";
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("structureId", structureId);
 		Object obj = this.uniqueResult(hql, parameters);

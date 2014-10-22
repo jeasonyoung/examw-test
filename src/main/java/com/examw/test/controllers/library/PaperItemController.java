@@ -91,7 +91,7 @@ public class PaperItemController implements IUserAware {
 	@ResponseBody
 	public Integer loadstructureItemsMaxOrderNo(@PathVariable String structureId){
 		if(logger.isDebugEnabled()) logger.debug("加载试卷结构下的排序号...");
-		Integer max = this.paperItemService.loadMaxOrderNo(structureId);
+		Integer max = this.paperItemService.loadMaxOrder(structureId);
 		if(max == null) max = 0;
 		return max + 1;
 	}

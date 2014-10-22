@@ -16,6 +16,11 @@
 	<import resource="spring-examw-test-service-records.xml"/>
 	<!-- 文件上传服务 -->
 	<bean id="fileUploadService" class="com.examw.test.service.impl.FileUploadServiceImpl">
-		<property name="storagePath" value="${uploadFolder}" />
+	    <!-- 临时存储目录 -->
+		<property name="tempStoragePath" value="${uploadFolder}" />
+		<!-- 附件数据接口 -->
+		<property name="attachmentDao" ref="attachmentDao" />
+		<!-- 附件存储数据接口 -->
+		<property name="attachmentStorageDao" ref="attachmentStorageDao"/>
 	</bean>
 </beans>

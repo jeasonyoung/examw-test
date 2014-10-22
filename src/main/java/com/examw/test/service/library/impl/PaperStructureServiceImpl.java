@@ -57,6 +57,15 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 		this.itemService = itemService;
 	}
 	/*
+	 * 加载试卷结构最大排序号。
+	 * @see com.examw.test.service.library.IPaperStructureService#loadMaxOrder(java.lang.String)
+	 */
+	@Override
+	public Integer loadMaxOrder(String paperId) {
+		if(logger.isDebugEnabled()) logger.error(String.format("加载试卷［paperId = %s］结构最大排序号...", paperId));
+		return this.structureDao.loadPaperMaxOrder(paperId);
+	}
+	/*
 	 * 加载结构数据。
 	 * @see com.examw.test.service.library.IPaperStructureService#loadStructures(java.lang.String)
 	 */

@@ -7,33 +7,16 @@
 $(function(){
 	var dg = $("#${dg}").datagrid({
 		url:"<@s.url '/library/source/datagrid'/>",
-		fit:true,
-		fitColumns:true,
-		rownumbers:true,
-		pagination:true,
-		pagePosition:"bottom",
-		pageSize:20,
-		pageList:[20,30,40],
-		border:true,
-		striped:true,
-		idField:"id",
-		sortName:"code",
-		sortOrder:"asc",
+		fit:true,fitColumns:true,rownumbers:true,
+		pagination:true,pagePosition:"bottom",pageSize:20,pageList:[20,30,40],
+		border:true,striped:true,
+		idField:"id",sortName:"code",sortOrder:"asc",
 		columns:[[{
-			field:"id",
-			checkbox:true
+			field:"id",checkbox:true
 		},{
-			title:"来源代码",
-			field:"code",
-			width:20,
-			align:"left",
-			sortable:true
+			title:"来源代码",field:"code",width:20,align:"left",sortable:true
 		},{
-			title:"来源名称",
-			field:"name",
-			width:120,
-			align:"left",
-			sortable:true
+			title:"来源名称",field:"name",width:120,align:"left",sortable:true
 		}]],
 		toolbar:"#${dg}_toobar",
 		onLoadError:function(e){

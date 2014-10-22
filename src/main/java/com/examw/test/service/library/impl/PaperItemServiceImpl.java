@@ -46,9 +46,9 @@ public class PaperItemServiceImpl extends BaseDataServiceImpl<StructureItem,Stru
 	 * 加载试卷结构最大题序号。
 	 * @see com.examw.test.service.library.IPaperItemService#loadMaxOrderNo(java.lang.String)
 	 */
-	public Integer loadMaxOrderNo(String structureId){
+	public Integer loadMaxOrder(String structureId){
 		if (logger.isDebugEnabled())logger.debug("加载试卷结构下最大的排序号...");
-		return this.structureDao.loadItemMaxOrderNo(structureId);
+		return this.structureDao.loadItemMaxOrder(structureId);
 	}
 	/*
 	 * 查询数据。

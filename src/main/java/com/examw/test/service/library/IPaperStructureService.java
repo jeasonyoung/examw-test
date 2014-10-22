@@ -13,6 +13,13 @@ import com.examw.test.model.library.StructureInfo;
  */
 public interface IPaperStructureService {
 	/**
+	 * 加载试卷结构最大排序号。
+	 * @param paperId
+	 * 所属试卷ID。
+	 * @return
+	 */
+	Integer loadMaxOrder(String paperId);
+	/**
 	 * 加载试卷结构集合。
 	 * @param paperId
 	 * 所属试卷ID。

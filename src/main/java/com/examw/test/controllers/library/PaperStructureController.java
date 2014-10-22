@@ -65,6 +65,20 @@ public class PaperStructureController {
 		return "library/paper_structure_list";
 	}
 	/**
+	 * 加载试卷结构排序号。
+	 * @param paperId
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.VIEW})
+	@RequestMapping(value="/order/{paperId}", method = RequestMethod.GET)
+	@ResponseBody
+	public Integer loadMaxOrder(@PathVariable String paperId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［paperId = %s］结构最大排序号...", paperId));
+		Integer order = this.paperStructureService.loadMaxOrder(paperId);
+		if(order == null) order = 0;
+		return order + 1;
+	}
+	/**
 	 * 加载试卷结构编辑页面。
 	 * @param model
 	 * @return

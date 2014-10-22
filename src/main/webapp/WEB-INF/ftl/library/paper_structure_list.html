@@ -32,7 +32,7 @@ $(function(){
 			return o;
 		},
 		onClick:function(node){ setCurrentValue(node); ${dg}_search(); },
-		onDblClick:function(node){ setCurrentValue(node); structure_edit_window("编辑试卷结构",node.attributes); }
+		onDblClick:function(node){ setCurrentValue(node); structure_edit_window("编辑试卷结构",node.attributes,null); }
 	});
 	function setCurrentValue(node){
 		if(!node || (typeof(node) == "string")){
@@ -47,10 +47,18 @@ $(function(){
 	};
 	<@shiro.hasPermission name="${PER_UPDATE}">
 	//add structure
-	${module}_add = function(){ structure_edit_window("新增试卷结构",null); };
+	var m = false;
+	${module}_add = function(){ 
+		if(m)return;
+		m = true;
+		$.getJSON("<@s.url '/library/paper/structure/order/${current_paper_id}'/>?_=" + Math.random(),function(order){
+			m = false;
+			structure_edit_window("新增试卷结构",null,order); 
+		});
+	};
 	</@shiro.hasPermission>
 	//edit structure
-	function structure_edit_window(title,row){
+	function structure_edit_window(title,row,order){
 		var d = $("<div/>").dialog({
 			title:title,width:400,height:300,
 			href:"<@s.url '/library/paper/structure/edit'/>",
@@ -95,7 +103,8 @@ $(function(){
 			}],
 			onClose:function(){ $(this).dialog("destroy"); },
 			onLoad:function(){
-				if(row)$("#${module}_edit_form").form("load",row);
+				var data = (row ? row : {"orderNo" : order})
+				$("#${module}_edit_form").form("load",data);
 			}
 		});
 	}
