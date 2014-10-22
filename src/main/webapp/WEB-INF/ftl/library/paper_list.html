@@ -74,8 +74,20 @@ $(function(){
 			modal:true,
 			buttons:[{
 				text:"重置试题排序号",iconCls:"icon-save",
-				handler:function(){ 
-					///TODO:
+				handler:function(){
+					$.messager.confirm("警告","确认重置试卷中试题的排序号？",function(r){
+						if(r){
+							$.messager.progress({ text:"正在重置试题排序号，请稍后..." });
+							$.post("<@s.url '/library/paper/items/update/'/>" + paperId + "/order" ,function(callback){
+								$.messager.progress('close');
+								if(callback.success){
+									 d.dialog("refresh");
+								}else{
+									$.messager.show({title:"提示", msg:callback.msg });
+								}
+							},"json");
+						}
+					});
 				}
 			},{
 				text:"关闭",iconCls:"icon-cancel",

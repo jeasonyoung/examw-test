@@ -140,6 +140,8 @@
 	</bean>
 	<!-- 随机选题服务 -->
 	<bean id="randomItemService" class="com.examw.test.service.library.impl.RandomItemServiceImpl">
+	    <!-- 试卷数据接口 -->
+	    <property name="paperDao" ref="paperDao" />
 	    <!-- 试卷结构数据接口 -->
 	    <property name="structureDao"  ref="structureDao" />
 	    <!-- 试题数据接口 -->

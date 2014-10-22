@@ -155,6 +155,28 @@ public class PaperItemController implements IUserAware {
 		return result;
 	}
 	/**
+	 * 重置试卷试题的排序号。
+	 * @param paperId
+	 * 所属试卷ID。
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE})
+	@RequestMapping(value = "/update/{paperId}/order", method = RequestMethod.POST)
+	@ResponseBody
+	public Json resetPaperItemsOrder(@PathVariable String paperId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("重置试卷［paperId = %s］试题的排序号...", paperId));
+		Json result = new Json();
+		try {  
+			this.randomItemService.updateItemOrder(paperId);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("重置试卷试题的排序号发生异常", e);
+		}
+		return result;
+	}
+	/**
 	 * 随机导入试卷结构试题。
 	 * @param structureId
 	 * @return

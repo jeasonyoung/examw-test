@@ -61,6 +61,12 @@ public class StructureDaoImpl extends BaseDaoImpl<Structure> implements IStructu
 		String hql = "from StructureItem s where (1 = 1) ";
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhereItems(info, hql, parameters);
+		if(!StringUtils.isEmpty(info.getSort())){
+			if(info.getSort().equalsIgnoreCase("typeName")){
+				info.setSort("type");
+			}
+			hql += String.format(" order by s.%1$s  %2$s", info.getSort(), info.getOrder());
+		}
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.query(hql, parameters, info.getPage(), info.getRows());
 	}

@@ -13,8 +13,10 @@ import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.library.IItemDao;
+import com.examw.test.dao.library.IPaperDao;
 import com.examw.test.dao.library.IStructureDao;
 import com.examw.test.domain.library.Item;
+import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.library.Structure;
 import com.examw.test.domain.library.StructureItem;
 import com.examw.test.domain.settings.Area;
@@ -32,8 +34,18 @@ import com.examw.test.service.library.PaperStatus;
 public class RandomItemServiceImpl implements IRandomItemService {
 	private static final Logger logger = Logger.getLogger(RandomItemServiceImpl.class);
 	private static final int push_item_random_for_count = 3;//抽题随机循环次数。
+	private IPaperDao paperDao;
 	private IStructureDao structureDao;
 	private IItemDao itemDao;
+	/**
+	 * 设置试卷数据接口。
+	 * @param paperDao 
+	 *	  试卷数据接口。
+	 */
+	public void setPaperDao(IPaperDao paperDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入试卷数据接口...");
+		this.paperDao = paperDao;
+	}
 	/**
 	 * 设置试卷结构数据接口。
 	 * @param structureDao 
@@ -182,8 +194,25 @@ public class RandomItemServiceImpl implements IRandomItemService {
 	@Override
 	public void updateItemOrder(String paperId) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("整理试卷［paperId = %s］的排序号...", paperId));
+		String msg =  null;
+		if(StringUtils.isEmpty(paperId)){
+			logger.error(msg = "试卷ID为空！");
+			throw new RuntimeException(msg);
+		}
+		Paper paper = this.paperDao.load(Paper.class, paperId);
+		if(paper == null){
+			logger.error(msg = String.format("试卷［%s］不存在！", paperId));
+			throw new RuntimeException(msg);
+		}
+		if(paper.getStatus() != PaperStatus.NONE.getValue()){
+			logger.error(msg = String.format("试卷状态［%s］，不允许操作！", PaperStatus.convert(paper.getStatus())));
+			throw new RuntimeException(msg);
+		}
 		List<Structure> structures = this.structureDao.loadStructures(paperId);
-		if(structures == null || structures.size() == 0) return;
+		if(structures == null || structures.size() == 0){
+			logger.error(msg = String.format("试卷［%s］没有试卷结构！", paperId));
+			throw new RuntimeException(msg);
+		}
 		int index = 0;
 		for(Structure structure : structures){
 			if(structure == null || structure.getItems() == null || structure.getItems().size() == 0) continue;
