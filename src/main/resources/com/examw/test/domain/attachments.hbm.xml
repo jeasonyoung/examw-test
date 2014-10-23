@@ -13,6 +13,8 @@
          <property name="extension" type="string" length="32" />
          <!-- 附件内容类型 -->
          <property name="contentType" type="string" length="64" />
+         <!-- 附件大小 -->
+        <property name="size" type="long" />
          <!-- 附件存储 -->
          <many-to-one name="storage" column="storage_id" class="AttachmentStorage" />
          <!-- 上传时间 -->
@@ -22,7 +24,7 @@
     <class name="AttachmentStorage" table="tbl_Examw_Test_Attachments_Storages">
         <!-- 附件存储ID -->
         <id name="id" type="string"  length="64" />
-        <!-- 附件大小(K) -->
+        <!-- 附件大小 -->
         <property name="size" type="long" />
         <!-- 附件内容 -->
         <property name="content" type="blob" />
