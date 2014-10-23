@@ -120,4 +120,12 @@ public class Exam implements Serializable {
 	public void setSubjects(Set<Subject> subjects) {
 		this.subjects = subjects;
 	}
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return String.format("id=%1$s,code=%2$s,name=%3$s,abbr=%2$s", this.getId(), this.getCode(), this.getName(), this.getAbbr());
+	}
 }

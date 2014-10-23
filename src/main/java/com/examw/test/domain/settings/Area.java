@@ -1,7 +1,6 @@
 package com.examw.test.domain.settings;
 
 import java.io.Serializable;
-
 /**
  * 行政地区。
  * @author yangyong.
@@ -70,5 +69,13 @@ public class Area implements Serializable {
 	 */
 	public void setAbbr(String abbr) {
 		this.abbr = abbr;
+	}
+	/*
+	 * 对象字符串表示。
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return String.format("id=%1$s,code=%2$s,name=%3$s,abbr=%4$s", this.getId(), this.getCode(), this.getName(), this.getAbbr());
 	}
 }

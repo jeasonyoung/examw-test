@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.examw.test.dao.IBaseDao;
 import com.examw.test.domain.library.Item;
+import com.examw.test.domain.settings.Area;
+import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.library.ItemInfo;
 import com.examw.test.service.library.ItemType;
 /**
@@ -13,17 +15,6 @@ import com.examw.test.service.library.ItemType;
  * @since 2014年8月8日
  */
 public interface IItemDao extends IBaseDao<Item> {
-	/**
-	 * 加载试题集合。
-	 * @param subjectId
-	 * 所属科目ID。
-	 * @param itemType
-	 * 所属题型。
-	 * @param areaId
-	 * 所属地区。
-	 * @return
-	 */
-	List<Item> loadItems(String subjectId, ItemType itemType,String areaId);
 	/**
 	 * 查询数据。
 	 * @param info
@@ -61,4 +52,24 @@ public interface IItemDao extends IBaseDao<Item> {
 	 * @return
 	 */
 	boolean hasRealItem(String[] subjectIds);
+	/**
+	 * 加载科目题型下的试题集合。
+	 * @param subject
+	 * 所属科目。
+	 * @param itemType
+	 * 所属题型。
+	 * @param area
+	 * 所属地区。
+	 * @return
+	 * 试题集合。
+	 */
+	List<Item> loadItems(Subject subject, ItemType itemType,Area area);
+	/**
+	 * 加载科目下的题型集合。
+	 * @param subject
+	 * 所属科目。
+	 * @return
+	 * 题型集合。
+	 */
+	List<ItemType> loadItemTypes(Subject subject);
 }

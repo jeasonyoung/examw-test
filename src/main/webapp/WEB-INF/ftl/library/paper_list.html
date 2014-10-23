@@ -39,9 +39,11 @@ $(function(){
 			},{
 				title:"试卷名称",field:"name",width:50,align:"left",sortable:true
 			},{
-				title:"来源",field:"sourceName",width:25,align:"left",sortable:true
+				title:"来源",field:"sourceName",width:15,align:"left",sortable:true
 			},{
-				title:"创建时间",field:"createTime",width:18,align:"center",sortable:true
+				title:"所属地区",field:"areaName",width:15,align:"left",sortable:true
+			},{
+				title:"创建时间",field:"createTime",width:20,align:"center",sortable:true
 			},{
 				title:"类型",field:"typeName",width:15,align:"center",sortable:true
 			},{
@@ -49,7 +51,7 @@ $(function(){
 			},{
 				title:"操作",field:"opt",width:15,align:"center",
 				formatter:function(value,row,index){
-					return "<a href='#' onclick='${dg}_paper_structure(\""+ row["id"] +"\",\"" + row["name"] +"\")'>试卷结构</a>";
+					return "<a href='#' onclick='${dg}_paper_structure(\""+ row["id"] +"\",\"" + row["name"] +"\","+ row["status"] +")'>试卷结构</a>";
 				}
 			},{
 				title:"预览",field:"preview",width:10,align:"center",
@@ -66,13 +68,12 @@ $(function(){
 		}
 	});
 	//paper structures
-	${dg}_paper_structure = function(paperId,paperName){
+	${dg}_paper_structure = function(paperId,paperName,status){
 		var title = "试卷[" + paperName +  "]结构";
-		var d = $("<div/>").dialog({
-			title:title,width:800,height:600,
-			href:"<@s.url '/library/paper/structure/list/'/>" + paperId,
-			modal:true,
-			buttons:[{
+		var btns = [];
+		<@shiro.hasPermission name="${PER_UPDATE}">
+		 if(status == ${paper_status_none_value}){
+			 btns.push({
 				text:"重置试题排序号",iconCls:"icon-save",
 				handler:function(){
 					$.messager.confirm("警告","确认重置试卷中试题的排序号？",function(r){
@@ -89,10 +90,18 @@ $(function(){
 						}
 					});
 				}
-			},{
-				text:"关闭",iconCls:"icon-cancel",
-				handler:function(){ d.dialog("close");}
-			}],
+			 });
+		 }
+		</@shiro.hasPermission>
+		btns.push({
+			text:"关闭",iconCls:"icon-cancel",
+			handler:function(){ d.dialog("close");}
+		});
+		var d = $("<div/>").dialog({
+			title:title,width:800,height:600,
+			href:"<@s.url '/library/paper/structure/list/'/>" + paperId,
+			modal:true,
+			buttons:btns, 
 			onClose:function(){ $(this).dialog("destroy");}
 		});
 	};
@@ -103,7 +112,9 @@ $(function(){
 			title:"试题预览",width:800,height:600,
 			href:"<@s.url '/library/paper/preview/'/>" +paperId,
 			modal:true,
-			buttons:[{
+			buttons:[
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			{
 				text:(isAudit ? "审核":"反审核"),
 				iconCls:"icon-save",
 				handler:function(){
@@ -133,7 +144,9 @@ $(function(){
 						});
 					});
 				}
-			},{
+			},
+			</@shiro.hasPermission>
+			{
 				text:"关闭", iconCls:"icon-cancel",
 				handler:function(){ d.dialog("close");}
 			}],
@@ -198,9 +211,7 @@ $(function(){
 			handler:function(){ d.dialog("close");}
 		});
 		var d = $("<div/>").dialog({
-			title:title,
-			width:600,
-			height:430,
+			title:title,width:600,height:430,
 			href:"<@s.url '/library/paper/edit'/>?examId="+exam_id,
 			modal:true,
 			buttons:btns,

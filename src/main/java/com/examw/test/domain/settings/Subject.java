@@ -88,4 +88,12 @@ public class Subject implements Serializable{
 	public void setArea(Area area) {
 		this.area = area;
 	}
+	/*
+	 * 对象名称。
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return String.format("id=%1$s,code=%2$s,name=%3$s,area={%4$s},exam={%5$s}", this.getId(), this.getCode(), this.getName(), this.getArea(), this.getExam());
+	}
 }

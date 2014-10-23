@@ -114,7 +114,7 @@ public class RandomItemServiceImpl implements IRandomItemService {
 			throw new Exception(msg);
 		}
 		Area area = (structure.getPaper() == null || structure.getPaper().getArea() == null) ?  null : structure.getPaper().getArea();
-		List<Item> pools = this.itemDao.loadItems(subject.getId(), itemType, (area == null ? null : area.getId()));
+		List<Item> pools = this.itemDao.loadItems(subject, itemType, area);
 		if(pools == null || pools.size() == 0){
 			logger.error(msg = String.format("题库中没有满足条件［%1$s］［%2$s］［%3$s］的试题！",subject.getName(), itemType, (area == null ? "" : area.getName())));
 			throw new Exception(msg);

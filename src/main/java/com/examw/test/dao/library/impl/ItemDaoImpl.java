@@ -1,5 +1,6 @@
 package com.examw.test.dao.library.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,8 @@ import org.springframework.util.StringUtils;
 import com.examw.test.dao.impl.BaseDaoImpl;
 import com.examw.test.dao.library.IItemDao;
 import com.examw.test.domain.library.Item;
+import com.examw.test.domain.settings.Area;
+import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.library.ItemInfo;
 import com.examw.test.service.library.ItemStatus;
 import com.examw.test.service.library.ItemType;
@@ -173,18 +176,41 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 		return obj == null ? false : (long)obj > 0;
 	}
 	/*
-	 * 加载试题集合。
-	 * @see com.examw.test.dao.library.IItemDao#loadItems(java.lang.String, com.examw.test.service.library.ItemType, java.lang.String)
+	 * 加载科目题型下的试题集合。
+	 * @see com.examw.test.dao.library.IItemDao#loadItems(com.examw.test.domain.settings.Subject, com.examw.test.service.library.ItemType, com.examw.test.domain.settings.Area)
 	 */
 	@Override
-	public List<Item> loadItems(String subjectId, ItemType itemType,String areaId) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("加载试题［subjectId = %1$s］［itemType = %2$s］［areaId = %3$s］集合...", subjectId, itemType,areaId));
-		String hql = "from Item i where (i.parent is null) and (i.subject.id = :subjectId) and (i.type = :type) and ((i.area is null) or (i.area.code = 0) or (i.area.id = :areaId))";
+	public List<Item> loadItems(Subject subject, ItemType itemType,Area area) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试题［subject = %1$s］［itemType = %2$s］［area = %3$s］集合...", subject, itemType, area));
+		if(area == null) area = subject.getArea();
+		final String hql = "from Item i where (i.parent is null) and (i.subject.id = :subjectId) and (i.type = :type) and ((i.area is null) or (i.area.code = 0) or (i.area.id = :areaId))";
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("subjectId", subjectId);
+		parameters.put("subjectId", subject.getId());
 		parameters.put("type", itemType.getValue());
-		parameters.put("areaId", areaId);
+		parameters.put("areaId", area == null ? null : area.getId());
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.find(hql, parameters, null, null);
+	}
+	/*
+	 * 加载科目下的题型集合。
+	 * @see com.examw.test.dao.library.IItemDao#loadItemTypes(com.examw.test.domain.settings.Subject)
+	 */
+	@Override
+	public List<ItemType> loadItemTypes(Subject subject) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载科目［%s］下的题型集合...", subject == null ? "" : subject.getId()));
+		final String hql = "select i.type from Item i where (i.parent is null) and (i.subject.id = :subjectId) and ((i.area is null) or (i.area.code = 0) or (i.area.id = :areaId)) group by i.type order by i.type";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("subjectId", subject == null ?  null : subject.getId());
+		parameters.put("areaId", (subject == null || subject.getArea() == null) ? null : subject.getArea().getId());
+		List<?> types = this.query(hql, parameters, null, null);
+		if(types == null || types.size() == 0) return null;
+		List<ItemType> list = new ArrayList<>();
+		for(Object obj : types){
+			if(obj == null) continue;
+			if(obj instanceof Integer){
+				list.add(ItemType.convert((Integer)obj));
+			}
+		}
+		return list;
 	}
 }

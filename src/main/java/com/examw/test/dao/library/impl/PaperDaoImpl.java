@@ -33,17 +33,15 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 		if(!StringUtils.isEmpty(info.getSort())){
 			if(info.getSort().equalsIgnoreCase("examName")){
 				info.setSort("subject.exam.name");
-			}
-			if(info.getSort().equalsIgnoreCase("subjectName")){
+			}else if(info.getSort().equalsIgnoreCase("subjectName")){
 				info.setSort("subject.name");
-			}
-			if(info.getSort().equalsIgnoreCase("sourceName")){
+			}else if(info.getSort().equalsIgnoreCase("areaName")){
+				info.setSort("area.name");
+			}else if(info.getSort().equalsIgnoreCase("sourceName")){
 				info.setSort("source.name");
-			}
-			if(info.getSort().equalsIgnoreCase("typeName")){
+			}else if(info.getSort().equalsIgnoreCase("typeName")){
 				info.setSort("type");
-			}
-			if(info.getSort().equalsIgnoreCase("statusName")){
+			}else if(info.getSort().equalsIgnoreCase("statusName")){
 				info.setSort("status");
 			}
 			hql += " order by p." + info.getSort() + " " + info.getOrder();
@@ -108,7 +106,7 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 		if(logger.isDebugEnabled()) logger.debug("删除数据...");
 		if(data == null) return;
 		if(!StringUtils.isEmpty(data.getStatus()) && (data.getStatus() != PaperStatus.NONE.getValue())){
-			String msg = String.format("数据［paperId = %1$s, paperName = %2$s］已被审核或发布不允许删除！",data.getId(),data.getName());
+			String msg = String.format("数据［paperId = %1$s, paperName = %2$s］状态为［%3$s］不允许删除！",data.getId(),data.getName(),PaperStatus.convert(data.getStatus()));
 			if(logger.isDebugEnabled()) logger.debug(msg);
 			throw new RuntimeException(msg);
 		}

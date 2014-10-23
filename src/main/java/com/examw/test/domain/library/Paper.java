@@ -4,9 +4,11 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
+import java.util.UUID;
 
 import com.examw.test.domain.settings.Area;
 import com.examw.test.domain.settings.Subject;
+import com.examw.test.service.library.PaperStatus;
 
 /**
  * 试卷。
@@ -23,6 +25,14 @@ public class Paper implements Serializable {
 	private Area area;
 	private Set<Structure> structures;
 	private Date createTime,lastTime,publishTime;
+	/**
+	 * 构造函数。
+	 */
+	public Paper(){
+		this.setId(UUID.randomUUID().toString());
+		this.setStatus(PaperStatus.NONE.getValue());
+		this.setCreateTime(new Date());
+	}
 	/**
 	 * 获取试卷ID。
 	 * @return 试卷ID。

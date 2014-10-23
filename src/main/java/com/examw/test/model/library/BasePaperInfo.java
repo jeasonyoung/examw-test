@@ -344,7 +344,7 @@ public abstract class BasePaperInfo implements Serializable {
 	 * 获取发布时间。
 	 * @return 发布时间。
 	 */
-	@JsonSerialize(using=CustomDateSerializer.class)
+	@JsonSerialize(using=CustomDateSerializer.LongDate.class)
 	public Date getPublishTime() {
 		return publishTime;
 	}
