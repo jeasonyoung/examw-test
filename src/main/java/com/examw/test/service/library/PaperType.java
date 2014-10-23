@@ -28,7 +28,7 @@ public enum PaperType {
 	/**
 	 * 每日一练。
 	 */
-	Daily(0x06);
+	DAILY(0x06);
 	
 	private int value;
 	//构造函数。
@@ -59,6 +59,10 @@ public enum PaperType {
 			case 0x03: return PaperType.FORECAS;
 			//练习题
 			case 0x04: return PaperType.PRACTICE;
+			//章节练习
+			case 0x05: return PaperType.CHAPTER;
+			//每日一练
+			case 0x06: return PaperType.DAILY;
 		}
 		throw new RuntimeException("不存在［value="+value+"］！");
 	}
