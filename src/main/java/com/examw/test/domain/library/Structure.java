@@ -3,19 +3,35 @@ package com.examw.test.domain.library;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * 试卷结构。
  * @author yangyong.
  * @since 2014-08-02.
  */
-public class Structure implements Serializable {
+public class Structure implements Serializable,Comparable<Structure> {
 	private static final long serialVersionUID = 1L;
 	private String id,title,description;
 	private Integer type,total,orderNo;
 	private BigDecimal score,min;
 	private Paper paper;
 	private Set<StructureItem> items;
+	/**
+	 * 构造函数。
+	 */
+	public Structure(){
+		this.setId(UUID.randomUUID().toString());
+	}
+	/**
+	 * 构造函数。
+	 * @param paper
+	 * 所属试卷。
+	 */
+	public Structure(Paper paper){
+		this();
+		this.setPaper(paper);
+	}
 	/**
 	 * 获取结构ID。
 	 * @return 结构ID。
@@ -165,5 +181,30 @@ public class Structure implements Serializable {
 	 */
 	public void setItems(Set<StructureItem> items) {
 		this.items = items;
+	}
+	/*
+	 * 比较排序。
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(Structure o) {
+		int index = 0;
+		if(this == o) return index;
+		index = this.getOrderNo() - o.getOrderNo();
+		if(index == 0){
+			index = this.getTitle().compareToIgnoreCase(o.getTitle());
+			if(index == 0){
+				index = this.getId().compareToIgnoreCase(o.getId());
+			}
+		}
+		return index;
+	}
+	/*
+	 * 对象字符串。
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return String.format("id=%1$s,title=%2$s,type=%3$s,total=%4$s,orderNo=%5$s", this.getId(),this.getTitle(),this.getType(),this.getTotal(),this.getOrderNo());
 	}
 }

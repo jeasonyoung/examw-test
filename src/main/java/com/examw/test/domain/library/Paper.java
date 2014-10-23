@@ -303,4 +303,12 @@ public class Paper implements Serializable {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return String.format("id=%1$s,name=%2$s", this.getId(), this.getName());
+	}
 }

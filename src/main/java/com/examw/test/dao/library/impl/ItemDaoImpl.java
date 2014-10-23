@@ -87,6 +87,10 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 			hql += " and (i.source.id = :sourceId) ";
 			parameters.put("sourceId", info.getSourceId());
 		}
+		if(!StringUtils.isEmpty(info.getAreaId())){
+			hql += " and ((i.area is null) or (i.area.code = 0) or (i.area.id = :areaId)) ";
+			parameters.put("areaId", info.getAreaId());
+		}
 		if(!StringUtils.isEmpty(info.getStatus())){
 			hql += " and (i.status = :status) ";
 			parameters.put("status", info.getStatus());

@@ -86,6 +86,20 @@ public class RandomItemServiceImpl implements IRandomItemService {
 			logger.error(msg = String.format("试卷状态为［%s］，不允许导入试题！", PaperStatus.convert(structure.getPaper().getStatus())));
 			throw new Exception(msg);
 		}
+		this.addRandomItem(structure, true);
+	}
+	/*
+	 *  随机添加试题到试卷结构。
+	 * @see com.examw.test.service.library.IRandomItemService#addRandomItem(com.examw.test.domain.library.Structure, boolean)
+	 */
+	@Override
+	public int addRandomItem(Structure structure, boolean checkItemCount) throws Exception {
+		if(logger.isDebugEnabled()) logger.debug(String.format("随机添加试题到试卷结构［%s］...", structure));
+		String msg = null;
+		if(structure == null){
+			logger.error(msg = "试卷结构不存在！");
+			throw new Exception(msg);
+		}
 		Integer total = structure.getTotal();
 		if(total == null || total <= 0){
 			logger.error(msg = String.format("试卷结构未设置试题数目［%d］!", total));
@@ -141,7 +155,7 @@ public class RandomItemServiceImpl implements IRandomItemService {
 			index++;
 			pools.remove(item);//从随机池移除被选中的试题。
 		}
-		if(total_index != 0){
+		if(checkItemCount && total_index != 0){
 			logger.error(msg = String.format("随机抽取的试题尾数为［%d］，请再次随机抽取！ ", total_index));
 			throw new Exception(msg);
 		}
@@ -150,10 +164,10 @@ public class RandomItemServiceImpl implements IRandomItemService {
 		if(structure.getItems() == null) structure.setItems(new HashSet<StructureItem>());
 		for(Item item : itemsMap.values()){
 			if(item == null) continue;
-			structure.getItems().add(new StructureItem(structure, item, ++order));
+			structure.getItems().add(new StructureItem(structure, item, order + 1));
+			order += item.getCount();
 		}
-		//保存数据。
-		if(order > 0) this.structureDao.saveOrUpdate(structure);
+		return order;
 	}
 	//抽题处理。
 	private Item pushItemHandler(List<Item> sources){
@@ -188,12 +202,12 @@ public class RandomItemServiceImpl implements IRandomItemService {
 	    return sources.get(index);
 	}
 	/*
-	 *  整理试卷下试题的排序号。
+	 * 整理试卷下试题的排序号。
 	 * @see com.examw.test.service.library.IRandomItemService#updateItemOrder(java.lang.String)
 	 */
 	@Override
 	public void updateItemOrder(String paperId) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("整理试卷［paperId = %s］的排序号...", paperId));
+		if(logger.isDebugEnabled()) logger.debug(String.format("整理试卷［%s］下试题的排序号...", paperId));
 		String msg =  null;
 		if(StringUtils.isEmpty(paperId)){
 			logger.error(msg = "试卷ID为空！");
@@ -201,16 +215,30 @@ public class RandomItemServiceImpl implements IRandomItemService {
 		}
 		Paper paper = this.paperDao.load(Paper.class, paperId);
 		if(paper == null){
-			logger.error(msg = String.format("试卷［%s］不存在！", paperId));
+			logger.error(msg = String.format("试卷［paperId = %s］不存在！",paperId));
+			throw new RuntimeException(msg);
+		}
+		this.updateItemOrder(paper);
+	}
+	/*
+	 *  整理试卷下试题的排序号。
+	 * @see com.examw.test.service.library.IRandomItemService#updateItemOrder(java.lang.String)
+	 */
+	@Override
+	public void updateItemOrder(Paper paper) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("整理试卷［%s］的排序号...", paper));
+		String msg =  null;
+		if(paper == null){
+			logger.error(msg = "试卷不存在！");
 			throw new RuntimeException(msg);
 		}
 		if(paper.getStatus() != PaperStatus.NONE.getValue()){
 			logger.error(msg = String.format("试卷状态［%s］，不允许操作！", PaperStatus.convert(paper.getStatus())));
 			throw new RuntimeException(msg);
 		}
-		List<Structure> structures = this.structureDao.loadStructures(paperId);
+		List<Structure> structures = this.structureDao.loadStructures(paper.getId());
 		if(structures == null || structures.size() == 0){
-			logger.error(msg = String.format("试卷［%s］没有试卷结构！", paperId));
+			logger.error(msg = String.format("试卷［%s］没有试卷结构！", paper));
 			throw new RuntimeException(msg);
 		}
 		int index = 0;

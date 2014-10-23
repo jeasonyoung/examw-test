@@ -138,7 +138,7 @@
 		<!-- 试卷服务接口 -->
 		<property name="paperService" ref="paperService" />
 	</bean>
-	<!-- 随机选题服务 -->
+	<!-- 随机选题服务接口 -->
 	<bean id="randomItemService" class="com.examw.test.service.library.impl.RandomItemServiceImpl">
 	    <!-- 试卷数据接口 -->
 	    <property name="paperDao" ref="paperDao" />
@@ -146,6 +146,21 @@
 	    <property name="structureDao"  ref="structureDao" />
 	    <!-- 试题数据接口 -->
 	    <property name="itemDao" ref="itemDao" />
+	</bean>
+	<!-- 每日一练服务接口 -->
+	<bean id="exercisesDailyService" class="com.examw.test.service.library.impl.ExercisesDailyServiceImpl">
+	    <!-- 试题数据接口 -->
+	    <property name="itemDao" ref="itemDao" />
+	    <!-- 试卷数据接口 -->
+	    <property name="paperDao" ref="paperDao" />
+	    <!--考试科目数据接口 -->
+	    <property name="subjectDao" ref="subjectDao" />
+	    <!-- 试题服务接口 -->
+	    <property name="itemService" ref="itemService" />
+	    <!-- 随机选题服务接口 -->
+	    <property name="randomItemService" ref="randomItemService" />
+	    <!-- 每个题型的题量设置 -->
+	    <property name="avgStructureItemsCount" value="${avg_structure_items_count}" />
 	</bean>
 	<!-- 试卷预览服务 -->
 	<bean id="paperPreviewService" class="com.examw.test.service.library.impl.PaperPreviewServiceImpl">

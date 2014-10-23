@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    <!-- 线程执行器配置，用于任务注册 -->
+    <bean id="executor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="10" />
+        <property name="maxPoolSize" value="100" />
+        <property name="queueCapacity" value="500" />
+    </bean>
     <!-- 配置任务定时出发器 -->
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="taskExecutor" ref="executor" />
         <!-- 添加触发器 -->
         <property name="triggers">
             <list>
@@ -29,6 +36,18 @@
                     </property>
                     <!-- 触发时间 -->
                     <property name="cronExpression" value="0 0/10 * * * ?" />
+                </bean>
+                <!-- 自动创建每日一练任务 -->
+                <bean class="org.springframework.scheduling.quartz.CronTriggerBean">
+                    <!-- 任务明细 -->
+                    <property name="jobDetail">
+                        <bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+                            <property name="targetObject" ref="exercisesDailyService" />
+                            <property name="targetMethod" value="autoDailyPapers" />
+                        </bean>
+                    </property>
+                    <!-- 触发时间 -->
+                    <property name="cronExpression" value="0 0 22 * * ?" />
                 </bean>
             </list>
         </property>
