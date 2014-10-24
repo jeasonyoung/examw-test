@@ -18,5 +18,5 @@ public interface IExercisesDailyService {
 	/**
 	 * 自动创建科目每日一练试卷。
 	 */
-	void autoDailyPapers();
+	void addAutoDailyPapers();
 }

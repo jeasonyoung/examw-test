@@ -236,13 +236,12 @@ public class RandomItemServiceImpl implements IRandomItemService {
 			logger.error(msg = String.format("试卷状态［%s］，不允许操作！", PaperStatus.convert(paper.getStatus())));
 			throw new RuntimeException(msg);
 		}
-		List<Structure> structures = this.structureDao.loadStructures(paper.getId());
-		if(structures == null || structures.size() == 0){
+		if(paper.getStructures() == null || paper.getStructures().size() == 0){
 			logger.error(msg = String.format("试卷［%s］没有试卷结构！", paper));
 			throw new RuntimeException(msg);
 		}
 		int index = 0;
-		for(Structure structure : structures){
+		for(Structure structure : paper.getStructures()){
 			if(structure == null || structure.getItems() == null || structure.getItems().size() == 0) continue;
 			for(StructureItem item : structure.getItems()){
 				if(item == null || item.getItem() == null) continue;
