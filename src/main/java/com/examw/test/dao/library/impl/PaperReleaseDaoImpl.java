@@ -1,5 +1,6 @@
 package com.examw.test.dao.library.impl;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,7 @@ public class PaperReleaseDaoImpl extends BaseDaoImpl<PaperRelease> implements IP
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<PaperRelease> loadReleases(Integer[] paperType,String[] subjectsId, String[] areasId,Integer page,Integer rows){
+	public List<PaperRelease> loadReleases(Integer[] paperType,String[] subjectsId, String[] areasId,Date createTime,Integer page,Integer rows){
 		if(logger.isDebugEnabled()) logger.debug(String.format("按试卷类型［%1$s］科目［%2$s］地区［%3$s］加载已发布的试卷集合［page=%4$d,rows=%5$d］...", paperType, subjectsId,areasId,page,rows));
 		StringBuilder hqlBuilder = new StringBuilder();
 		hqlBuilder.append("select new PaperRelease(p.id,p.title,p.paper,p.createTime,p.total) from PaperRelease p where (1=1) ");
@@ -41,6 +42,11 @@ public class PaperReleaseDaoImpl extends BaseDaoImpl<PaperRelease> implements IP
 		if(areasId != null && areasId.length > 0){
 			hqlBuilder.append(" and  (p.paper.area.id in (:areaId)) ");
 			parameters.put("areaId", areasId);
+		}
+		if(createTime !=null)	//增加时间的条件查询
+		{
+			hqlBuilder.append(" and  (p.createTime >= :createTime) ");
+			parameters.put("createTime", createTime);
 		}
 		hqlBuilder.append(" order by p.createTime desc");
 		return this.query(hqlBuilder.toString(), parameters, page, rows);
