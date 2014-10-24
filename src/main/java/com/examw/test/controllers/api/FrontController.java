@@ -221,4 +221,22 @@ public class FrontController {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载知识点［knowledgeId = %s］信息...", knowledgeId));
 		return this.knowledgeService.conversion(this.knowledgeService.loadKnowledge(knowledgeId));
 	}
+	/**
+	 * 加载每日一练试卷ID。
+	 * @param subjectId
+	 * 所属科目。
+	 * @param areaId
+	 * 所属地区。
+	 * @param page
+	 * 当前页码。
+	 * @param rows
+	 * 每页数据。
+	 * @return
+	 */
+	@RequestMapping(value = {"/daily/papers/{subjectId}/{areaId}"}, method = { RequestMethod.GET })
+	@ResponseBody
+	public List<FrontPaperInfo> loadDailyloadDailyPapers(@PathVariable String subjectId,@PathVariable String areaId,Integer page,Integer rows){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载每日一练试卷集合［subjectId = %1$s］［areaId = %2$s］［page = %3$d  rows = %4$d］...", subjectId,areaId,page,rows));
+		return this.frontPaperService.loadDailyPapers(subjectId, areaId, page, rows);
+	}
 }

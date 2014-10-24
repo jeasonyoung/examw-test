@@ -2,6 +2,7 @@ package com.examw.test.domain.library;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * 试卷发布。
@@ -15,6 +16,34 @@ public class PaperRelease implements Serializable {
 	private Paper paper;
 	private Date createTime;
 	private Integer total;
+	/**
+	 * 构造函数。
+	 */
+	public PaperRelease(){
+		this.setId(UUID.randomUUID().toString());
+		this.setCreateTime(new Date());
+	}
+	/**
+	 * 构造函数。
+	 * @param id
+	 * 试卷发布ID。
+	 * @param title
+	 * 试卷发布标题。
+	 * @param paper
+	 * 所属试卷。
+	 * @param createTime
+	 * 发布时间。
+	 * @param  total
+	 * 试卷试题数。
+	 */
+	public PaperRelease(String id,String title,Paper paper, Date createTime,Integer total){
+		this();
+		this.setId(id);
+		this.setTitle(title);
+		this.setPaper(paper);
+		this.setCreateTime(createTime);
+		this.setTotal(total);
+	}
 	/**
 	 * 获取试卷发布ID。
 	 * @return 试卷发布ID。
@@ -46,21 +75,6 @@ public class PaperRelease implements Serializable {
 		this.title = title;
 	}
 	/**
-	 * 获取试卷试题数。
-	 * @return 试卷试题数。
-	 */
-	public Integer getTotal() {
-		return total;
-	}
-	/**
-	 * 设置试卷试题数。
-	 * @param total 
-	 *	  试卷试题数。
-	 */
-	public void setTotal(Integer total) {
-		this.total = total;
-	}
-	/**
 	 * 获取试卷内容（PaperPreview 对象的JSON格式）。
 	 * @return 试卷内容（PaperPreview 对象的JSON格式）。
 	 */
@@ -74,6 +88,21 @@ public class PaperRelease implements Serializable {
 	 */
 	public void setContent(String content) {
 		this.content = content;
+	}
+	/**
+	 * 获取试卷试题数。
+	 * @return 试卷试题数。
+	 */
+	public Integer getTotal() {
+		return total;
+	}
+	/**
+	 * 设置试卷试题数。
+	 * @param total 
+	 *	  试卷试题数。
+	 */
+	public void setTotal(Integer total) {
+		this.total = total;
 	}
 	/**
 	 * 获取所属试卷。

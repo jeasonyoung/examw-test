@@ -20,26 +20,30 @@ import com.examw.test.service.library.PaperType;
 public class PaperReleaseDaoImpl extends BaseDaoImpl<PaperRelease> implements IPaperReleaseDao {
 	private static final Logger logger = Logger.getLogger(PaperReleaseDaoImpl.class);
 	/*
-	 * 按科目或地区加载已发布的试卷集合。
-	 * @see com.examw.test.dao.library.IPaperReleaseDao#loadReleases(java.lang.String[], java.lang.String[])
+	 * 按试卷类型科目地区加载已发布的试卷集合。
+	 * @see com.examw.test.dao.library.IPaperReleaseDao#loadReleases(java.lang.Integer[], java.lang.String[], java.lang.String[], java.lang.Integer, java.lang.Integer)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<PaperRelease> loadReleases(String[] subjectsId, String[] areasId){
-		if(logger.isDebugEnabled()) logger.debug("查询已发布的试卷数据...");
+	public List<PaperRelease> loadReleases(Integer[] paperType,String[] subjectsId, String[] areasId,Integer page,Integer rows){
+		if(logger.isDebugEnabled()) logger.debug(String.format("按试卷类型［%1$s］科目［%2$s］地区［%3$s］加载已发布的试卷集合［page=%4$d,rows=%5$d］...", paperType, subjectsId,areasId,page,rows));
 		StringBuilder hqlBuilder = new StringBuilder();
-		hqlBuilder.append("from PaperRelease p ");
+		hqlBuilder.append("select new PaperRelease(p.id,p.title,p.paper,p.createTime,p.total) from PaperRelease p where (1=1) ");
 		Map<String, Object> parameters = new HashMap<>();
+		if(paperType != null && paperType.length > 0){
+			hqlBuilder.append(" and (p.paper.type in (:paperType)) ");
+			parameters.put("paperType", paperType);
+		}
 		if(subjectsId != null && subjectsId.length > 0){
-			hqlBuilder.append(" where (p.paper.subject.id in (:subjectId)) ");
+			hqlBuilder.append(" and (p.paper.subject.id in (:subjectId)) ");
 			parameters.put("subjectId", subjectsId);
 		}
 		if(areasId != null && areasId.length > 0){
-			hqlBuilder.append((subjectsId == null || subjectsId.length == 0) ? " where " : " and ");
-			hqlBuilder.append(" (p.paper.area.id in (:areaId)) ");
+			hqlBuilder.append(" and  (p.paper.area.id in (:areaId)) ");
 			parameters.put("areaId", areasId);
 		}
 		hqlBuilder.append(" order by p.createTime desc");
-		return this.find(hqlBuilder.toString(), parameters, null, null);
+		return this.query(hqlBuilder.toString(), parameters, page, rows);
 	}
 	/*
 	 * 试卷是否已发布。
@@ -77,30 +81,44 @@ public class PaperReleaseDaoImpl extends BaseDaoImpl<PaperRelease> implements IP
 	}
 	/*
 	 * 加载科目下的试卷数量。
-	 * @see com.examw.test.dao.library.IPaperReleaseDao#loadPapersCount(java.lang.String[])
+	 * @see com.examw.test.dao.library.IPaperReleaseDao#loadPapersCount(java.lang.Integer[], java.lang.String[])
 	 */
 	@Override
-	public Integer loadPapersCount(String[] subjectsId) {
-		if(logger.isDebugEnabled()) logger.debug("加载科目[" + subjectsId + "]下的试卷数量...");
-		if(subjectsId == null || subjectsId.length == 0) return 0;
-		final String hql = "select count(*) from PaperRelease p where p.paper.subject.id in (:subjectsId)";
+	public Integer loadPapersCount(Integer[] paperType, String[] subjectsId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷类型［%1$s］科目［%2$s］下的试卷数量...", paperType, subjectsId));
+		StringBuilder hqlBuilder = new StringBuilder();
+		hqlBuilder.append("select count(*) from PaperRelease p where (1=1) ");
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("subjectsId", subjectsId);
-		Object obj = this.uniqueResult(hql, parameters);
+		if(paperType != null && paperType.length > 0){
+			hqlBuilder.append(" and (p.paper.type in (:paperType)) ");
+			parameters.put("paperType", paperType);
+		}
+		if(subjectsId != null && subjectsId.length > 0){
+			hqlBuilder.append("  and (p.paper.subject.id in (:subjectsId)) ");
+			parameters.put("subjectsId", subjectsId);
+		}
+		Object obj = this.uniqueResult(hqlBuilder.toString(), parameters);
 		return obj == null ? 0 : (int)((long)obj);
 	}
 	/*
 	 * 加载科目下的试题数量。
-	 * @see com.examw.test.dao.library.IPaperReleaseDao#loadItemsCount(java.lang.String[])
+	 * @see com.examw.test.dao.library.IPaperReleaseDao#loadItemsCount(java.lang.Integer[], java.lang.String[])
 	 */
 	@Override
-	public Integer loadItemsCount(String[] subjectsId) {
-		if(logger.isDebugEnabled()) logger.debug("加载科目[" + subjectsId + "]下的试题数量...");
-		if(subjectsId == null || subjectsId.length == 0) return 0;
-		final String hql = "select sum(p.total) from PaperRelease p where p.paper.subject.id in (:subjectsId)";
+	public Integer loadItemsCount(Integer[] paperType, String[] subjectsId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［%1$s］科目［%2$s］下的试题数量...",paperType,subjectsId));
+		StringBuilder hqlBuilder = new StringBuilder();
+		hqlBuilder.append("select sum(p.total) from PaperRelease p where (1=1) ");
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("subjectsId", subjectsId);
-		Object obj = this.uniqueResult(hql, parameters);
+		if(paperType != null && paperType.length > 0){
+			hqlBuilder.append(" and (p.paper.type in (:paperType)) ");
+			parameters.put("paperType", paperType);
+		}
+		if(subjectsId != null && subjectsId.length > 0){
+			hqlBuilder.append(" and (p.paper.subject.id in (:subjectsId)) ");
+			parameters.put("subjectsId", subjectsId);
+		}
+		Object obj = this.uniqueResult(hqlBuilder.toString(), parameters);
 		return obj == null ? 0 : (int)((long)obj);
 	}
 	/*
@@ -117,5 +135,16 @@ public class PaperReleaseDaoImpl extends BaseDaoImpl<PaperRelease> implements IP
 		parameters.put("subjectsId", subjectsId);
 		Object obj = this.uniqueResult(hql, parameters);
 		return obj == null ? false : (long)obj > 0;
+	}
+	/*
+	 * 清理数据。
+	 * @see com.examw.test.dao.library.IPaperReleaseDao#clearPelease()
+	 */
+	@Override
+	public void clearRelease() {
+		if(logger.isDebugEnabled()) logger.debug("清理发布数据...");
+		final String hql = "delete from PaperRelease p where (p.paper is null)";
+		int total = this.execuateUpdate(hql, null);
+		logger.debug(String.format("清理试卷已被删除的发布［%d］条记录", total));
 	}
 }

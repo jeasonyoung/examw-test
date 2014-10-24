@@ -31,6 +31,11 @@
 		    <key column="paper_id" />
 		    <one-to-many class="Structure" />
 		</set>
+		<!-- 关联发布集合 -->
+		<set name="releases" inverse="true" cascade="save-update" order-by="createTime desc">
+		    <key column="paper_id" />
+		    <one-to-many class="PaperRelease" />
+		</set>
 		<!-- 价格（考试币） -->
 		<property name="price" type="integer" />
 		<!-- 总分 -->

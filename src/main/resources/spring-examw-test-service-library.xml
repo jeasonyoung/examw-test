@@ -25,9 +25,9 @@
 		<!-- 试卷类型 -->
 		<property name="typeMap">
 		    <map>
-		        <entry key="1" value="真题" />
-				<entry key="2" value="模拟题" />
-				<entry key="3" value="预测题" />
+		        <entry key="1" value="历年真题" />
+				<entry key="2" value="模拟试题" />
+				<entry key="3" value="预测试题" />
 				<entry key="4" value="练习题" />
 				<entry key="5" value="章节练习" />
 				<entry key="6" value="每日一练" />

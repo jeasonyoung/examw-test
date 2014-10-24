@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.examw.test.model.library.FrontPaperInfo;
 import com.examw.test.model.library.PaperPreview;
-
 /**
  * 前端试卷服务接口。
  * 
@@ -44,6 +43,18 @@ public interface IFrontPaperService {
 	 * 试卷集合。
 	 */
 	List<FrontPaperInfo> loadProductPapers(String productId);
+	/**
+	 * 加载每日一练试卷集合。
+	 * @param subjectId
+	 * 所属科目。
+	 * @param areaId
+	 * 所属地区。
+	 * @param page
+	 * 当前页码。
+	 * @param rows
+	 * @return
+	 */
+	List<FrontPaperInfo> loadDailyPapers(String subjectId,String areaId,Integer page,Integer rows);
 	/**
 	 * 加载试卷内容。
 	 * @param paperId

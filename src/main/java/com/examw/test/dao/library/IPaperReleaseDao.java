@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.examw.test.dao.IBaseDao;
 import com.examw.test.domain.library.PaperRelease;
-
 /**
  * 试卷发布数据接口。
  * 
@@ -13,14 +12,20 @@ import com.examw.test.domain.library.PaperRelease;
  */
 public interface IPaperReleaseDao extends IBaseDao<PaperRelease> {
 	/**
-	 * 按科目或地区加载已发布的试卷集合。
+	 * 按试卷类型科目地区加载已发布的试卷集合。
+	 * @param paperTypes
+	 * 试卷类型。
 	 * @param subjectsId
 	 * 科目ID集合。
 	 * @param areasId
 	 * 地区ID集合
+	 * @param page
+	 * 页码。
+	 * @param rows
+	 * 行数。
 	 * @return
 	 */
-	List<PaperRelease> loadReleases(String[] subjectsId, String[] areasId);
+	List<PaperRelease> loadReleases(Integer[] paperTypes,String[] subjectsId, String[] areasId,Integer page,Integer rows);
 	/**
 	 * 试卷是否已发布。
 	 * @param paperId
@@ -35,21 +40,29 @@ public interface IPaperReleaseDao extends IBaseDao<PaperRelease> {
 	 */
 	void deleteRelease(String paperId);
 	/**
+	 * 清理发布。
+	 */
+	void clearRelease();
+	/**
 	 * 加载科目下的试卷数量。
+	 * @param paperType
+	 * 试卷类型。
 	 * @param subjetsId
 	 * 科目ID集合。
 	 * @return
 	 * 试卷数量。
 	 */
-	Integer loadPapersCount(String[] subjetsId);
+	Integer loadPapersCount(Integer[] paperType,String[] subjetsId);
 	/**
 	 * 加载科目下试题数量。
+	 * @param paperType
+	 * 试卷类型。
 	 * @param subjectsId
 	 * 科目ID集合。
 	 * @return
 	 * 试题数量。
 	 */
-	Integer loadItemsCount(String[] subjectsId);
+	Integer loadItemsCount(Integer[] paperType,String[] subjectsId);
 	/**
 	 * 是否包含真题试卷。
 	 * @param subjectsId

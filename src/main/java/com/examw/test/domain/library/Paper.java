@@ -24,6 +24,7 @@ public class Paper implements Serializable {
 	private Source source;
 	private Area area;
 	private Set<Structure> structures;
+	private Set<PaperRelease> releases;
 	private Date createTime,lastTime,publishTime;
 	/**
 	 * 构造函数。
@@ -227,6 +228,21 @@ public class Paper implements Serializable {
 	 */
 	public void setStructures(Set<Structure> structures) {
 		this.structures = structures;
+	}
+	/**
+	 * 获取关联发布试卷集合。
+	 * @return 关联发布试卷集合。
+	 */
+	public Set<PaperRelease> getReleases() {
+		return releases;
+	}
+	/**
+	 * 设置关联发布试卷集合。
+	 * @param releases 
+	 *	  关联发布试卷集合。
+	 */
+	public void setReleases(Set<PaperRelease> releases) {
+		this.releases = releases;
 	}
 	/**
 	 * 获取创建时间。

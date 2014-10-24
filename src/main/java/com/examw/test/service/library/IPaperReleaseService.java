@@ -10,6 +10,7 @@ public interface IPaperReleaseService {
 	 * 检查发布。
 	 * 1.将已发布状态的未找到发布试卷的重新发布；
 	 * 2.将反审核状态的已发布的试卷删除；
+	 * 3.试卷已被删除的发布；
 	 * @throws Exception
 	 */
 	void updateCheckRelease();

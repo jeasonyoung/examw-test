@@ -168,6 +168,8 @@ public class PaperReleaseServiceImpl implements IPaperReleaseService {
 			if(logger.isDebugEnabled()) logger.debug("检查试卷发布...");
 			this.updateCheckPublishedRelease();
 			this.updateCheckNonAuditRelease();
+			//清除已删除的试卷发布。
+			this.paperReleaseDao.clearRelease();
 		}catch(Exception e){
 			logger.debug(String.format("检查试卷发布时发生异常：%s", e.getMessage()), e);
 			e.printStackTrace();

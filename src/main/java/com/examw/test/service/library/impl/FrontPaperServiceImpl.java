@@ -22,6 +22,7 @@ import com.examw.test.model.library.FrontPaperInfo;
 import com.examw.test.model.library.PaperPreview;
 import com.examw.test.service.library.IFrontPaperService;
 import com.examw.test.service.library.IPaperService;
+import com.examw.test.service.library.PaperType;
 import com.examw.test.service.records.IUserPaperRecordService;
 import com.examw.test.support.PaperItemUtils;
 
@@ -33,6 +34,10 @@ import com.examw.test.support.PaperItemUtils;
  */
 public class FrontPaperServiceImpl implements IFrontPaperService  {
 	private static final Logger logger = Logger.getLogger(FrontPaperServiceImpl.class);
+	private static final Integer[] default_paper_types = {PaperType.REAL.getValue(), 
+																				 		PaperType.SIMU.getValue(), 
+																				 		PaperType.FORECAS.getValue(), 
+																				 		PaperType.PRACTICE.getValue()};
 	private IPaperReleaseDao paperReleaseDao;
 	private IProductDao productDao;
 	private IPaperService paperService;
@@ -81,7 +86,7 @@ public class FrontPaperServiceImpl implements IFrontPaperService  {
 	@Override
 	public Integer loadPapersCount(String[] subjetsId) {
 		if(logger.isDebugEnabled()) logger.debug("科目下的试卷数量...");
-		return this.paperReleaseDao.loadPapersCount(subjetsId);
+		return this.paperReleaseDao.loadPapersCount(default_paper_types,subjetsId);
 	}
 	/*
 	 * 加载科目下试题数量。
@@ -90,7 +95,7 @@ public class FrontPaperServiceImpl implements IFrontPaperService  {
 	@Override
 	public Integer loadItemsCount(String[] subjectsId) {
 		if(logger.isDebugEnabled()) logger.debug("加载科目下试题数量...");
-		return this.paperReleaseDao.loadItemsCount(subjectsId);
+		return this.paperReleaseDao.loadItemsCount(default_paper_types,subjectsId);
 	}
 	/*
 	 * 加载科目下是否有真题。
@@ -110,7 +115,9 @@ public class FrontPaperServiceImpl implements IFrontPaperService  {
 		 if(logger.isDebugEnabled()) logger.debug(String.format("加载产品［productId = %s］下的试卷集合...", productId));
 		 Product product = this.productDao.load(Product.class, productId);
 		 if(product == null) throw new RuntimeException(String.format("产品［productId = %s］不存在！", productId));
-		 return this.changeModel(this.paperReleaseDao.loadReleases(this.buildProductSubjectIds(product.getSubjects()), product.getArea()==null?null:new String[]{ product.getArea().getId() }));
+		 return this.changeModel(this.paperReleaseDao.loadReleases(default_paper_types, 
+				 																							  this.buildProductSubjectIds(product.getSubjects()), product.getArea()==null?null:new String[]{ product.getArea().getId() },
+				 																							  null,null));
 	}
 	//构建产品科目ID数组。
 	private String[] buildProductSubjectIds(Set<Subject> subjects){
@@ -128,28 +135,18 @@ public class FrontPaperServiceImpl implements IFrontPaperService  {
 		List<FrontPaperInfo> list = new ArrayList<>();
 		if(paperReleases != null && paperReleases.size() > 0){
 			for(PaperRelease paperRelease : paperReleases){
-				FrontPaperInfo info = this.changeModel(paperRelease);
-				if(info != null) list.add(info);
+				 if(paperRelease == null || paperRelease.getPaper() == null) continue;
+				 FrontPaperInfo frontPaperInfo = new FrontPaperInfo();
+				 BeanUtils.copyProperties((BasePaperInfo)this.paperService.conversion(paperRelease.getPaper()), frontPaperInfo);
+				 frontPaperInfo.setId(paperRelease.getId());//重置试卷ID。
+				 frontPaperInfo.setTotal(paperRelease.getTotal());
+				 //增加属性 [Add by FW 2014.10.12]
+				 frontPaperInfo.setUserTotal(this.userPaperRecordService.findUsersTotal(paperRelease.getId()));
+				 frontPaperInfo.setMaxScore(this.userPaperRecordService.findMaxScore(paperRelease.getId())); 
+				 list.add(frontPaperInfo);
 			}
 		}
 		return list;
-	}
-	//数据模型转换.
-	private FrontPaperInfo changeModel(PaperRelease paperRelease){
-		if(logger.isDebugEnabled()) logger.debug("数据模型转换 PaperRelease => FrontPaperInfo ...");
-		if(paperRelease == null || paperRelease.getPaper() == null) return null;
-		//FrontPaperInfo frontPaperInfo = (FrontPaperInfo)((BasePaperInfo)this.paperService.conversion(paperRelease.getPaper()));
-		//转型错误
-		FrontPaperInfo frontPaperInfo = new FrontPaperInfo();
-		BeanUtils.copyProperties((BasePaperInfo)this.paperService.conversion(paperRelease.getPaper()), frontPaperInfo);
-		if(frontPaperInfo != null){
-			frontPaperInfo.setId(paperRelease.getId());//重置试卷ID。
-			frontPaperInfo.setTotal(paperRelease.getTotal());
-			//增加属性 [Add by FW 2014.10.12]
-			frontPaperInfo.setUserTotal(this.userPaperRecordService.findUsersTotal(paperRelease.getId()));
-			frontPaperInfo.setMaxScore(this.userPaperRecordService.findMaxScore(paperRelease.getId())); 
-		}
-		return frontPaperInfo;
 	}
 	/*
 	 * 加载试卷内容。
@@ -177,5 +174,17 @@ public class FrontPaperServiceImpl implements IFrontPaperService  {
 	public Map<String, String> loadPaperType() {
 		if(logger.isDebugEnabled()) logger.debug("加载试卷类型映射");
 		return PaperItemUtils.loadPaperTypeValueMap(this.paperService);
+	}
+	/*
+	 * 加载每日一练试卷集合。
+	 * @see com.examw.test.service.library.IFrontPaperService#loadDailyPapers(java.lang.String, java.lang.String, java.lang.Integer, java.lang.Integer)
+	 */
+	@Override
+	public List<FrontPaperInfo> loadDailyPapers(String subjectId,String areaId, Integer page, Integer rows) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载每日一练试卷集合［subjectId = %1$s］［areaId = %2$s］［page = %3$d  rows = %4$d］...", subjectId,areaId,page,rows));
+		return this.changeModel(this.paperReleaseDao.loadReleases(new Integer[]{ PaperType.DAILY.getValue() }, 
+																											  new String[]{ subjectId},
+																											  new String[] {areaId},
+																											  page, rows));
 	}
 }

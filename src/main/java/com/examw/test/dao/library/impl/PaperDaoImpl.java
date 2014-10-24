@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 import com.examw.test.dao.impl.BaseDaoImpl;
 import com.examw.test.dao.library.IPaperDao;
 import com.examw.test.domain.library.Paper;
+import com.examw.test.domain.library.PaperRelease;
 import com.examw.test.model.library.PaperInfo;
 import com.examw.test.service.library.PaperStatus;
 
@@ -105,16 +106,23 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 	public void delete(Paper data) {
 		if(logger.isDebugEnabled()) logger.debug("删除数据...");
 		if(data == null) return;
+		String msg = null;
 		if(!StringUtils.isEmpty(data.getStatus()) && (data.getStatus() != PaperStatus.NONE.getValue())){
-			String msg = String.format("数据［paperId = %1$s, paperName = %2$s］状态为［%3$s］不允许删除！",data.getId(),data.getName(),PaperStatus.convert(data.getStatus()));
+			msg = String.format("数据［paperId = %1$s, paperName = %2$s］状态为［%3$s］不允许删除！",data.getId(),data.getName(),PaperStatus.convert(data.getStatus()));
 			if(logger.isDebugEnabled()) logger.debug(msg);
 			throw new RuntimeException(msg);
 		}
 		int count = 0;
 		if(data.getStructures() != null && (count = data.getStructures().size()) > 0){
-			String msg = String.format("试卷［%1$s］下存在［%2$d］试卷结构，暂不能删除！", data.getName(), count);
+			msg = String.format("试卷［%1$s］下存在［%2$d］试卷结构，暂不能删除！", data.getName(), count);
 			if(logger.isDebugEnabled()) logger.debug(msg);
 			throw new RuntimeException(msg);
+		}
+		if(data.getReleases() != null && data.getReleases().size() > 0){
+			 for(PaperRelease release : data.getReleases()){
+				 if(release == null) continue;
+				 release.setPaper(null);
+			 }
 		}
 		super.delete(data);
 	}
