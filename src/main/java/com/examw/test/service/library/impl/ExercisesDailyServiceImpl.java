@@ -153,12 +153,14 @@ public class ExercisesDailyServiceImpl implements IExercisesDailyService {
 	 * @see com.examw.test.service.library.IExercisesDailyService#autoDailyPapers()
 	 */
 	@Override
-	public void autoDailyPapers() {
+	public void addAutoDailyPapers() {
 		if(logger.isDebugEnabled()) logger.debug("自动创建每日一练...");
 		List<Subject> subjects = this.subjectDao.findSubjects(new SubjectInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public String getSort() { return "code";}
+			@Override
+			public String getOrder() { return "desc";}
 		});
 		if(subjects == null || subjects.size() == 0) return;
 		for(final Subject subject : subjects){
