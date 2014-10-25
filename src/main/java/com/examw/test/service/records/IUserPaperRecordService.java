@@ -37,6 +37,7 @@ public interface IUserPaperRecordService extends IDataService<UserPaperRecordInf
 	 * 试卷记录。
 	 */
 	UserPaperRecordInfo load(String userId,String paperId);
+	UserPaperRecordInfo load(String recordId);
 	/**
 	 * 加载某产品下最新的试卷考试记录	[Add by FW 2014.10.12]
 	 * @param userId

@@ -226,6 +226,23 @@ public class FrontDataController {
 		}
 		return result;
 	}
+	@RequestMapping(value = {"/{userId}/paper/record/{recordId}"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public Json loadUserPaperRecordById(@PathVariable String userId,@PathVariable String recordId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId = %1$s］试卷记录［record = %2$s］记录数据...", userId,recordId));
+		Json result = new Json();
+		try {
+			UserPaperRecordInfo info = this.userPaperRecordService.load(recordId);
+			if(info != null)
+				result.setData(this.mapper.writeValueAsString(info));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("加载用户试卷记录数据发生异常：" + e.getMessage(), e);
+		}
+		return result;
+	}
 	/**
 	 * 加载用户试卷最新试题记录数据。
 	 * @param userId

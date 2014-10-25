@@ -135,6 +135,15 @@ public class UserPaperRecordServiceImpl extends BaseDataServiceImpl<UserPaperRec
 		return this.changeModel(this.userPaperRecordDao.load(userId, paperId),true);
 	}
 	/*
+	 * 根据ID加载考试记录
+	 * @see com.examw.test.service.records.IUserPaperRecordService#load(java.lang.String)
+	 */
+	@Override
+	public UserPaperRecordInfo load(String id) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试记录［id = %1$s］de 记录...", id));
+		return this.changeModel(this.userPaperRecordDao.load(UserPaperRecord.class, id),true);
+	}
+	/*
 	 * 加载某产品下最新的试卷考试记录	[Add by FW 2014.10.12]
 	 * @see com.examw.test.service.records.IUserPaperRecordService#findLastedPaperRecordsOfProduct(java.lang.String, java.lang.String)
 	 */
