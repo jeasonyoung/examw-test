@@ -233,10 +233,10 @@ public class FrontController {
 	 * 每页数据。
 	 * @return
 	 */
-	@RequestMapping(value = {"/daily/papers/{subjectId}/{areaId}"}, method = { RequestMethod.GET })
+	@RequestMapping(value = {"/daily/papers/{productId}"}, method = { RequestMethod.GET })
 	@ResponseBody
-	public List<FrontPaperInfo> loadDailyloadDailyPapers(@PathVariable String subjectId,@PathVariable String areaId,Integer page,Integer rows){
-		if(logger.isDebugEnabled()) logger.debug(String.format("加载每日一练试卷集合［subjectId = %1$s］［areaId = %2$s］［page = %3$d  rows = %4$d］...", subjectId,areaId,page,rows));
-		return this.frontPaperService.loadDailyPapers(subjectId, areaId, page, rows);
+	public List<FrontPaperInfo> loadDailyloadDailyPapers(@PathVariable String productId,Integer page,Integer rows){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载产品下的每日一练试卷数据集合...", productId));
+		return this.frontPaperService.loadDailyPapers(productId, page, rows);
 	}
 }

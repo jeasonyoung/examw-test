@@ -54,7 +54,7 @@ public interface IFrontPaperService {
 	 * @param rows
 	 * @return
 	 */
-	List<FrontPaperInfo> loadDailyPapers(String subjectId,String areaId,Integer page,Integer rows);
+	List<FrontPaperInfo> loadDailyPapers(String productId,Integer page,Integer rows);
 	/**
 	 * 加载试卷内容。
 	 * @param paperId

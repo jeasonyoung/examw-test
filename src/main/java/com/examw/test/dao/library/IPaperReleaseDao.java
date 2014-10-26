@@ -1,5 +1,6 @@
 package com.examw.test.dao.library;
 
+import java.util.Date;
 import java.util.List;
 
 import com.examw.test.dao.IBaseDao;
@@ -19,13 +20,15 @@ public interface IPaperReleaseDao extends IBaseDao<PaperRelease> {
 	 * 科目ID集合。
 	 * @param areasId
 	 * 地区ID集合
+	 * @param createTime
+	 * 生成时间 [时间范围查询]
 	 * @param page
 	 * 页码。
 	 * @param rows
 	 * 行数。
 	 * @return
 	 */
-	List<PaperRelease> loadReleases(Integer[] paperTypes,String[] subjectsId, String[] areasId,Integer page,Integer rows);
+	List<PaperRelease> loadReleases(Integer[] paperTypes,String[] subjectsId, String[] areasId,Date createTime,Integer page,Integer rows);
 	/**
 	 * 试卷是否已发布。
 	 * @param paperId

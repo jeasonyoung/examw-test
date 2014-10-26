@@ -1,5 +1,6 @@
 package com.examw.test.service.library.impl;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -140,6 +141,7 @@ public class ExercisesDailyServiceImpl implements IExercisesDailyService {
 			structure.setType(itemTypes[i].getValue());
 			structure.setTotal((this.avgStructureItemsCount == null  || this.avgStructureItemsCount <= 0 )? avg_structure_items_count : this.avgStructureItemsCount);
 			structure.setOrderNo(i+1); 
+			structure.setScore(BigDecimal.ONE);//每题一分 用来计数
 			//随机选题。
 			int total = this.randomItemService.addRandomItem(structure, false);
 			if(total <= 0){

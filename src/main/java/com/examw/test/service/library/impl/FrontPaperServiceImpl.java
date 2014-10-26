@@ -2,6 +2,7 @@ package com.examw.test.service.library.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -115,9 +116,8 @@ public class FrontPaperServiceImpl implements IFrontPaperService  {
 		 if(logger.isDebugEnabled()) logger.debug(String.format("加载产品［productId = %s］下的试卷集合...", productId));
 		 Product product = this.productDao.load(Product.class, productId);
 		 if(product == null) throw new RuntimeException(String.format("产品［productId = %s］不存在！", productId));
-		 return this.changeModel(this.paperReleaseDao.loadReleases(default_paper_types, 
-				 																							  this.buildProductSubjectIds(product.getSubjects()), product.getArea()==null?null:new String[]{ product.getArea().getId() },
-				 																							  null,null));
+		 return this.changeModel(this.paperReleaseDao.loadReleases(default_paper_types, this.buildProductSubjectIds(product.getSubjects()), product.getArea()==null?null:new String[]{ product.getArea().getId() },
+				 																							  null,null,null));
 	}
 	//构建产品科目ID数组。
 	private String[] buildProductSubjectIds(Set<Subject> subjects){
@@ -180,11 +180,15 @@ public class FrontPaperServiceImpl implements IFrontPaperService  {
 	 * @see com.examw.test.service.library.IFrontPaperService#loadDailyPapers(java.lang.String, java.lang.String, java.lang.Integer, java.lang.Integer)
 	 */
 	@Override
-	public List<FrontPaperInfo> loadDailyPapers(String subjectId,String areaId, Integer page, Integer rows) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("加载每日一练试卷集合［subjectId = %1$s］［areaId = %2$s］［page = %3$d  rows = %4$d］...", subjectId,areaId,page,rows));
-		return this.changeModel(this.paperReleaseDao.loadReleases(new Integer[]{ PaperType.DAILY.getValue() }, 
-																											  new String[]{ subjectId},
-																											  new String[] {areaId},
-																											  page, rows));
+	public List<FrontPaperInfo> loadDailyPapers(String productId,Integer page, Integer rows) {
+		//if(logger.isDebugEnabled()) logger.debug(String.format("加载每日一练试卷集合［subjectId = %1$s］［areaId = %2$s］［page = %3$d  rows = %4$d］...", subjectId,areaId,page,rows));
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载产品［productId = %s］下的每日一练试卷集合...", productId));
+		Product product = this.productDao.load(Product.class, productId);
+		if(product == null) throw new RuntimeException(String.format("产品［productId = %s］不存在！", productId));
+		//构造时间 查询一个星期的每日一练
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)-7, 0, 0, 0);
+		return this.changeModel(this.paperReleaseDao.loadReleases(new Integer[]{ PaperType.DAILY.getValue() },this.buildProductSubjectIds(product.getSubjects()), product.getArea()==null?null:new String[]{ product.getArea().getId() },
+				  														calendar.getTime(),page, rows));
 	}
 }
