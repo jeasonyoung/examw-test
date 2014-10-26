@@ -30,6 +30,15 @@ public class AreaServiceImpl extends BaseDataServiceImpl<Area, AreaInfo> impleme
 		this.areaDao = areaDao;
 	}
 	/*
+	 *  加载全部地区数据。
+	 * @see com.examw.test.service.settings.IAreaService#loadAllAreas()
+	 */
+	@Override
+	public List<AreaInfo> loadAllAreas() {
+		if(logger.isDebugEnabled()) logger.debug(" 加载全部地区数据...");
+		return this.changeModel(this.areaDao.loadAreas());
+	}
+	/*
 	 * 根据条件查找地区集合。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#find(java.lang.Object)
 	 */

@@ -33,6 +33,9 @@ public class ExamDaoImpl extends BaseDaoImpl<Exam> implements IExamDao {
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
+			if(info.getSort().equalsIgnoreCase("categoryName")){
+				info.setSort("category.name");
+			}
 			hql += " order by e." + info.getSort() + " " + info.getOrder();
 		}
 		if(logger.isDebugEnabled()) logger.debug(hql);
@@ -75,5 +78,18 @@ public class ExamDaoImpl extends BaseDaoImpl<Exam> implements IExamDao {
 		final String hql = "select max(e.code) from Exam e order by e.code desc ";
 		Object obj = this.uniqueResult(hql, null);
 		return obj == null ? null : (int)obj;
+	}
+	/*
+	 * 删除数据。
+	 * @see com.examw.test.dao.impl.BaseDaoImpl#delete(java.lang.Object)
+	 */
+	@Override
+	public void delete(Exam data) {
+		if(data == null) return;
+		int count = 0;
+		if(data.getSubjects() != null && (count = data.getSubjects().size()) > 0){
+			throw new RuntimeException(String.format("考试［%1$s］关联有［%2$d］科目，暂不能删除！", data.getName(), count));
+		}
+		super.delete(data);
 	}
 }

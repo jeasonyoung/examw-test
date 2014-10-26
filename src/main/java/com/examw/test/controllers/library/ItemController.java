@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -109,7 +108,7 @@ public class ItemController implements IUserAware {
 	 */
 	@RequiresPermissions({ModuleConstant.LIBRARY_ITEM + ":" + Right.UPDATE})
 	@RequestMapping(value = "/edit/{type}", method = RequestMethod.GET)
-	public String edit(@PathVariable Integer type,String examId, Boolean child,Model model){
+	public String edit(@PathVariable Integer type,String examId,String subjectId, Boolean child,Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
 		
 		model.addAttribute("PER_UPDATE", ModuleConstant.LIBRARY_ITEM + ":" + Right.UPDATE);
@@ -122,12 +121,15 @@ public class ItemController implements IUserAware {
 		child = (child == null) ? false : child;
 		model.addAttribute("current_item_child",child);
 		if(!child){
-			model.addAttribute("current_exam_id", StringUtils.isEmpty(examId) ? "" : examId);
+			model.addAttribute("current_exam_id", examId);
+			model.addAttribute("current_subject_id", subjectId);
 			model.addAttribute("current_year",new SimpleDateFormat("yyyy").format(new Date()));
 			//添加试卷类型。
 			PaperItemUtils.addPaperType(this.paperService, model);
 		}
-		if(itemType == ItemType.SHARE_TITLE){
+		if(itemType == ItemType.JUDGE){
+			PaperItemUtils.addItemJudgeAnswers(this.itemService, model);//添加判断题型答案。
+		}else if(itemType == ItemType.SHARE_TITLE){
 			PaperItemUtils.addNormalItemType(this.itemService, model);//添加普通题型。
 			PaperItemUtils.addItemJudgeAnswers(this.itemService, model);//添加判断题型答案。
 		}else if(itemType == ItemType.SHARE_ANSWER){

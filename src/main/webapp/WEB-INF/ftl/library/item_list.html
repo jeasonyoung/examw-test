@@ -5,77 +5,15 @@
 <script type="text/javascript">
 <!--
 $(function(){
-	var current_exam_id = current_subject_id = "";
-	//subject tree
-	var subject_tree = $("#${module}_subject_tree").tree({
-		url:"<@s.url '/settings/category/subject-tree'/>",
-		lines:true,
-		onLoadError:function(e){ <@error_dialog "e"/> },
-		onBeforeLoad:function(){
-			current_exam_id = current_subject_id = "";
-		},
-		onClick:function(node){
-			current_exam_id = current_subject_id = "";
-			if(node.attributes.type =="subject"){
-				current_subject_id = node.id;
-				var parent = subject_tree.tree("getParent",node.target);
-				if(parent) current_exam_id = parent.id;
-			}else{
-				current_exam_id = node.id;
-			}
-			${dg}_search();
-		}
-	});
-	//dg
-	var dg = $("#${dg}").datagrid({
-		url:"<@s.url '/library/item/datagrid'/>",
-		fit:true,fitColumns:true,rownumbers:true,
-		pagination:true,pagePosition:"bottom",pageSize:20,pageList:[20,30,40],
-		border:true,striped:true,
-		idField:"id",sortName:"createTime",sortOrder:"desc",
-		columns:[[{
-			field:"id",checkbox:true
-		},{
-			title:"所属科目",field:"subjectName",width:28,align:"left",sortable:true
-		},{
-			title:"题型",field:"typeName",width:13,align:"center",sortable:true
-		},{
-			title:"试题",field:"content",width:50,align:"left",sortable:false,
-			formatter:function(value,row,index){
-				return value.replace(/<[^>]*>/g,"");
-			}
-		},{
-			title:"类型",field:"optName",width:10,align:"center",sortable:true
-		},{
-			title:"试题数",field:"count",width:10,align:"right",sortable:true
-		},{
-			title:"创建时间",field:"createTime",width:13,align:"center",sortable:true,
-			formatter: function(value,row,index){
-				var v = row["createTime"];
-				return "<span title=' "+ v +"'>"+v+"</span>";
-			}
-		},{
-			title:"状态",field:"statusName",width:10,align:"center",sortable:true
-		},{
-			title:"预览",field:"opt",width:10,align:"center",
-			formatter:function(value,row,index){
-				return "<a href=\"javascript:${dg}_preview('"+row["id"] +"'," +row["status"]+ ");\">预览</a>";
-			}
-		}]],
-		toolbar:"#${dg}_toobar",
-		onLoadError:function(e){ <@error_dialog "e"/> },
-		onDblClickRow:function(rowIndex,rowData){
-			edit_window("编辑试题［"+rowData.typeName+"］",rowIndex,rowData);
-		}
-	});
 	//preview
 	${dg}_preview = function(itemId,status){
 		var isAudit = (status == ${item_status_none_value});
 		var d = $("<div/>").dialog({
-			title:"试题预览",width:800,height:600,
+			title:"试题预览",width:800,height:600,modal:true,
 			href:"<@s.url '/library/item/preview/'/>" +itemId,
-			modal:true,
-			buttons:[{
+			buttons:[
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			{
 				text:(isAudit ? "审核":"反审核"),
 				iconCls:"icon-save",
 				handler:function(){
@@ -92,54 +30,69 @@ $(function(){
 							success:function(data,textStatus){
 								$.messager.progress("close");
 								if(data.success){
-									dg.datagrid("load");
-									dg.datagrid("unselectAll");
+									$("#${dg}").datagrid("load");$("#${dg}").datagrid("unselectAll");
 									d.dialog("close");
 								}else{
-									$.messager.show({
-										title:"提示",
-										msg:data.msg
-									});
+									$.messager.show({title:"提示",msg:data.msg});
 								}
 							}
 						});
 					});
 				}
-			},{
-				text:"关闭",
-				iconCls:"icon-cancel",
-				handler:function(){
-					d.dialog("close");
-				}
+			},
+			</@shiro.hasPermission>
+			{
+				text:"关闭",iconCls:"icon-cancel",
+				handler:function(){ d.dialog("close");}
 			}],
-			onClose:function(){
-				$(this).dialog("destroy");
-			}
+			onClose:function(){$(this).dialog("destroy");}
 		});
 	};
 	//search
 	${dg}_search = function(){
-		dg.datagrid("load",{
-			"examId":current_exam_id,
-			"subjectId":current_subject_id,
+		var exam_id = "",subject_id = "";
+		var node = $("#${module}_tree").tree("getSelected");
+		if(node){
+			if(node.attributes.type =="subject"){
+				subject_id = node["id"];
+				var parent = $("#${module}_tree").tree("getParent",node.target);
+				if(parent) exam_id = parent["id"];
+			}else{
+				exam_id = node["id"];
+			}
+		}
+		$("#${dg}").datagrid("load",{
+			"examId":exam_id,
+			"subjectId":subject_id,
 			"content":$("#${dg}_toobar input[name='content']").val()
 		});
 	};
 	<@shiro.hasPermission name="${PER_UPDATE}">
 	//add
-	${dg}_add = function(item){ edit_window("新增试题［"+$(item).text()+"］",0,null,$(item).attr("value")); };
+	${dg}_add = function(item){ ${module}_edit_window("新增试题［"+$(item).text()+"］",0,null,$(item).attr("value")); };
 	</@shiro.hasPermission>
 	//edit_window
-	function edit_window(title,index,row,type){
-		var examId = current_exam_id;
+	${module}_edit_window = function(title,index,row,type){
+		var exam_id = "",subject_id = "";
 		if(row){
-			if(row.examId)examId = row.examId;
+			if(row.examId)exam_id = row.examId;
+			if(row.subjectId)subject_id = row.subjectId;
 			if(row.type)type = row.type;
+		}else{
+			var node = $("#${module}_tree").tree("getSelected");
+			if(node){
+				if(node.attributes.type =="subject"){
+					subject_id = node["id"];
+					var parent = $("#${module}_tree").tree("getParent",node.target);
+					if(parent) exam_id = parent["id"];
+				}else{
+					exam_id = node["id"];
+				}
+			}
 		}
 		var d = $("<div/>").dialog({
-			title:title,width:800,height:600,
-			href:"<@s.url '/library/item/edit/'/>" + type + "?examId=" + examId,
-			modal:true,
+			title:title,width:800,height:600,modal:true,
+			href:"<@s.url '/library/item/edit/'/>" + type + "?examId=" + exam_id + "&subjectId=" + subject_id,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
 			{
@@ -159,9 +112,8 @@ $(function(){
 					}
 					$.ajax({
 						url:"<@s.url '/library/item/update'/>",
-						type:"POST",
+						type:"POST",dataType:"json",
 						data:JSON.stringify(post),
-						dataType:"json",
 						contentType:"application/json;charset=UTF-8",
 						error:function(e){
 							$.messager.progress("close");
@@ -170,16 +122,10 @@ $(function(){
 						success:function(data,textStatus){
 							$.messager.progress("close");
 							if(data.success){
-								dg.datagrid(row ? "updateRow" : "insertRow",{
-									index:index,
-									row:data.data
-								});
+								$("#${dg}").datagrid(row ? "updateRow" : "insertRow",{index:index,row:data.data });
 								d.dialog("close");
 							}else{
-								$.messager.show({
-									title:"提示",
-									msg:data.msg
-								});
+								$.messager.show({title:"提示",msg:data.msg});
 							}
 						}
 					});
@@ -188,13 +134,11 @@ $(function(){
 			</@shiro.hasPermission>
 			{
 				text:"关闭",iconCls:"icon-cancel",
-				handler:function(){
-					d.dialog("close");
-				}
+				handler:function(){ d.dialog("close");}
 			}],
 			onClose:function(){ $(this).dialog("destroy"); },
 			onLoad:function(){
-				var data = (row ? row : {"examId":current_exam_id,"subjectId":current_subject_id});
+				var data = (row ? row : {"examId":exam_id,"subjectId":subject_id});
 				eval("${module}_"+type+"_load(data)");
 			}
 		});
@@ -202,7 +146,7 @@ $(function(){
 	<@shiro.hasPermission name="${PER_DELETE}">
 	//delete
 	${dg}_delete = function(){
-		var rows = dg.datagrid("getChecked");
+		var rows = $("#${dg}").datagrid("getChecked");
 		if(rows && rows.length > 0){
 			$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
 				if(!r)return;
@@ -213,11 +157,8 @@ $(function(){
 				}
 				$.ajax({
 					url:"<@s.url '/library/item/delete'/>",
-					type:"POST",
-					data:{
-						id:ids.join("|")
-					},
-					dataType:"json",
+					type:"POST",dataType:"json",
+					data:{ id:ids.join("|")},
 					error:function(e){
 						$.messager.progress("close");
 						<@error_dialog "e"/>
@@ -225,13 +166,10 @@ $(function(){
 					success:function(data,textStatus){
 						$.messager.progress("close");
 						if(data.success){
-							dg.datagrid("load");
-							dg.datagrid("unselectAll");
+							$("#${dg}").datagrid("load");
+							$("#${dg}").datagrid("unselectAll");
 						}else{
-							$.messager.show({
-								title:"提示",
-								msg:data.msg
-							});
+							$.messager.show({ title:"提示", msg:data.msg});
 						}
 					}
 				});
@@ -245,17 +183,29 @@ $(function(){
 //-->
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
-	<div data-options="region:'west' ,title:'所属考试科目',split:true,tools:[{
-			iconCls:'icon-reload',
-		 	handler:function(){
-		 		$('#${module}_subject_tree').tree('reload');
-		 		${dg}_search();
-		 	}
-		}]" style="width:220px;">
-		<ul id="${module}_subject_tree"></ul>
+	<div data-options="region:'west' ,title:'所属考试科目',split:true,tools:[{iconCls:'icon-reload',handler:function(){$('#${module}_tree').tree('reload');${dg}_search();}}]" style="width:220px;">
+		<ul id="${module}_tree" class="easyui-tree" data-options="url:'<@s.url '/settings/category/exams/subject/tree'/>',lines:true,onLoadError:function(e){ <@error_dialog 'e'/> },
+			onClick:function(node){${dg}_search();}"></ul>
 	</div>
 	<div data-options="region:'center',border:false" >
-		<table id="${dg}"></table>
+		<table id="${dg}" class="easyui-datagrid" data-options="url:'<@s.url '/library/item/datagrid'/>',border:true,striped:true,fit:true,fitColumns:true,rownumbers:true,
+			pagination:true,pagePosition:'bottom',pageSize:20,pageList:[20,30,40],idField:'id',sortName:'createTime',sortOrder:'desc',toolbar:'#${dg}_toobar',
+			onLoadError:function(e){ <@error_dialog 'e'/> },
+			onDblClickRow:function(rowIndex,rowData){ ${module}_edit_window('编辑试题［'+rowData.typeName+'］',rowIndex,rowData);}">
+			<thead>
+				<tr>
+					<th data-options="field:'id',checkbox:true"></th>
+					<th data-options="field:'subjectName',width:28,align:'left',sortable:true">所属科目</th>
+					<th data-options="field:'typeName',width:13,align:'center',sortable:true">题型</th>
+					<th data-options="field:'content',width:50,align:'left',sortable:false,formatter:function(value,row,index){ return value.replace(/<[^>]*>/g,''); }">试题</th>
+					<th data-options="field:'optName',width:10,align:'center',sortable:true">类型</th>
+					<th data-options="field:'count',width:10,align:'right',sortable:true">试题数</th>
+					<th data-options="field:'createTime',width:13,align:'center',sortable:true,formatter: function(value,row,index){var v = row['createTime'];return '<span title=\''+ v +'\'>'+v+'</span>';}">创建时间</th>
+					<th data-options="field:'statusName',width:10,align:'center',sortable:true">状态</th>
+					<th data-options="field:'opt',width:10,align:'center',formatter:function(value,row,index){return '<a href=\'javascript:${dg}_preview(\''+row['id'] +'\',\'' +row['status']+'\');\'>预览</a>';}">预览</th>
+				</tr>
+			</thead>	
+		</table>
 		<div id="${dg}_toobar">
 			<@shiro.hasPermission name="${PER_UPDATE}">
 			<a href="#" class="easyui-menubutton" data-options="iconCls:'icon-add',menu:'#${dg}_toobar_menu',plain:true" style="float:left;">新增</a>

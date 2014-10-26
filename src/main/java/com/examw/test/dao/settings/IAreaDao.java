@@ -13,6 +13,11 @@ import com.examw.test.model.settings.AreaInfo;
  */
 public interface IAreaDao extends IBaseDao<Area>{
 	/**
+	 * 加载全部地区数据。
+	 * @return
+	 */
+	List<Area> loadAreas();
+	/**
 	 * 查询地区数据
 	 * @param info
 	 * 查询条件。

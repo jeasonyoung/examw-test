@@ -14,6 +14,14 @@ import com.examw.test.service.IBaseDataService;
  */
 public interface IExamService  extends IBaseDataService<ExamInfo>{
 	/**
+	 * 加载状态名称。
+	 * @param status
+	 * 状态值。
+	 * @return
+	 * 状态名称。
+	 */
+	String loadStatusName(Integer status);
+	/**
 	 * 加载最大代码值
 	 * @return
 	 */

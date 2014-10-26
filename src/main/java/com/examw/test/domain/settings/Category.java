@@ -121,7 +121,7 @@ public class Category implements Serializable {
 		this.exams = exams;
 	}
 	/*
-	 * (non-Javadoc)
+	 * 对象字符串。
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

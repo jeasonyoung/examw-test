@@ -1,18 +1,19 @@
 package com.examw.test.domain.settings;
 
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * 考试科目。
  * @author yangyong.
  * @since 2014-08-02.
  */
-public class Subject implements Serializable{
+public class Subject implements Serializable,Comparable<Subject>{
 	private static final long serialVersionUID = 1L;
 	private String id,name;
-	private Exam exam;
-	private Area area;
 	private Integer code;
+	private Exam exam;
+	private Set<Area> areas;
 	/**
 	 * 获取科目ID。
 	 * @return 科目ID。
@@ -74,26 +75,43 @@ public class Subject implements Serializable{
 		this.exam = exam;
 	}
 	/**
-	 * 获取所属地区。
-	 * @return 所属地区。
+	 * 获取所属地区集合。
+	 * @return 所属地区集合。
 	 */
-	public Area getArea() {
-		return area;
+	public Set<Area> getAreas() {
+		return areas;
 	}
 	/**
 	 * 设置所属地区。
 	 * @param area
 	 * 所属地区。
 	 */
-	public void setArea(Area area) {
-		this.area = area;
+	public void setAreas(Set<Area> areas) {
+		this.areas = areas;
 	}
 	/*
-	 * 对象名称。
+	 * 对象字符串。
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return String.format("id=%1$s,code=%2$s,name=%3$s,area={%4$s},exam={%5$s}", this.getId(), this.getCode(), this.getName(), this.getArea(), this.getExam());
+		return String.format("id=%1$s,code=%2$s,name=%3$s", this.getId(), this.getCode(), this.getName());
+	}
+	/*
+	 * 排序比较。
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(Subject o) {
+		int index = 0;
+		if(this == o) return index; 
+		index = this.getCode() - o.getCode();
+		if(index == 0){
+			index = this.getName().compareToIgnoreCase(o.getName());
+			if(index == 0){
+				index = this.getId().compareToIgnoreCase(o.getId());
+			}
+		}
+		return index;
 	}
 }

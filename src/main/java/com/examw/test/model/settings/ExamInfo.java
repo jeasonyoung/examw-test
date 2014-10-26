@@ -12,10 +12,9 @@ import com.examw.model.Paging;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class ExamInfo extends Paging{
 	private static final long serialVersionUID = 1L;
-	private String id,name,abbr;
-	private String categoryId,categoryName;
+	private String id,name,abbr,categoryId,categoryName,statusName;
 	private String[] areaId,areaName;
-	private Integer code;
+	private Integer code,status;
 	/**
 	 * 获取考试ID。
 	 * @return 考试ID。
@@ -77,33 +76,63 @@ public class ExamInfo extends Paging{
 		this.abbr = abbr;
 	}
 	/**
-	 * 获取 分类ID
+	 * 获取考试状态。
+	 * @return 考试状态。
+	 */
+	public Integer getStatus() {
+		return status;
+	}
+	/**
+	 * 设置考试状态。
+	 * @param status 
+	 *	  考试状态。
+	 */
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	/**
+	 * 获取考试状态名称。
+	 * @return 考试状态名称。
+	 */
+	public String getStatusName() {
+		return statusName;
+	}
+	/**
+	 * 设置考试状态名称。
+	 * @param statusName 
+	 *	  考试状态名称。
+	 */
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
+	}
+	/**
+	 * 获取考试类别ID。
 	 * @return categoryId
-	 * 分类ID
+	 * 考试类别ID。
 	 */
 	public String getCategoryId() {
 		return categoryId;
 	}
 	/**
-	 * 设置 分类ID
+	 * 设置考试类别ID。
 	 * @param categoryId
-	 * 分类ID
+	 * 考试类别ID。
 	 */
 	public void setCategoryId(String categoryId) {
 		this.categoryId = categoryId;
 	}
 	/**
-	 * 获取 分类名称
+	 * 获取考试类别名称。
 	 * @return categoryName
-	 * 分类名称
+	 * 考试类别名称。
 	 */
 	public String getCategoryName() {
 		return categoryName;
 	}
 	/**
-	 * 设置 分类名称
+	 * 设置考试类别名称。
 	 * @param categoryName
-	 * 分类名称
+	 * 考试类别名称。
 	 */
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;

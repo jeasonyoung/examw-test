@@ -8,7 +8,7 @@ $(function(){
 	var current_exam_id = current_subject_id = "";
 	//exam tree
 	var exam_tree = $("#${module}_exam_tree").tree({
-		url:"<@s.url '/settings/category/subject-tree'/>",
+		url:"<@s.url '/settings/category/exams/subject/tree'/>",
 		lines:true,
 		onLoadError:function(e){ <@error_dialog "e"/> },
 		onBeforeLoad:function(){

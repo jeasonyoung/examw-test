@@ -19,7 +19,7 @@ import com.examw.test.model.settings.CategoryInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.settings.ICategoryService;
 /**
- * 考试分类服务接口实现类
+ * 考试类别服务接口实现类
  * @author fengwei.
  * @since 2014年8月6日 下午3:36:37.
  */
@@ -27,11 +27,12 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 	private static final Logger logger = Logger.getLogger(CategoryServiceImpl.class);
 	private ICategoryDao categoryDao;
 	/**
-	 * 设置 考试分类数据接口
+	 * 设置考试分类数据接口。
 	 * @param categoryDao
-	 * 
+	 * 考试分类数据接口。
 	 */
 	public void setCategoryDao(ICategoryDao categoryDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入考试分类数据接口...");
 		this.categoryDao = categoryDao;
 	}
 	/*
@@ -40,7 +41,7 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 	 */
 	@Override
 	protected List<Category> find(CategoryInfo info) {
-		if (logger.isDebugEnabled())logger.debug("查询[考试分类]数据...");
+		if (logger.isDebugEnabled())logger.debug("查询数据...");
 		return categoryDao.findCategorys(info);
 	}
 	/*
@@ -49,7 +50,7 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 	 */
 	@Override
 	protected CategoryInfo changeModel(Category data) {
-		if (logger.isDebugEnabled())logger.debug("[考试分类]数据模型转换...");
+		if (logger.isDebugEnabled())logger.debug("数据模型转换［Category => CategoryInfo ］...");
 		if(data == null) return null;
 		CategoryInfo info = new CategoryInfo();
 		BeanUtils.copyProperties(data, info);
@@ -68,16 +69,16 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		return builder.toString();
 	}
 	/*
-	 * 查询数据总数
+	 * 查询数据统计。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#total(java.lang.Object)
 	 */
 	@Override
 	protected Long total(CategoryInfo info) {
-		if (logger.isDebugEnabled())	logger.debug("查询[考试分类]数据总数...");
+		if (logger.isDebugEnabled())logger.debug("查询数据统计...");
 		return this.categoryDao.total(info);
 	}
 	/*
-	 * 更新或插入数据
+	 * 更新数据。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#update(java.lang.Object)
 	 */
 	@Override
@@ -96,13 +97,15 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		if(!StringUtils.isEmpty(info.getPid()) && (data.getParent() == null || !data.getParent().getId().equalsIgnoreCase(info.getPid()))){
 			Category parent = this.categoryDao.load(Category.class, info.getPid());
 			//自己不能是自己的父类
-			if(parent != null && !parent.getId().equalsIgnoreCase(data.getId()))	data.setParent(parent);
+			if(parent != null && !parent.getId().equalsIgnoreCase(data.getId())){
+				data.setParent(parent);
+			}
 		}
 		if(StringUtils.isEmpty(info.getPid())){
 			data.setParent(null);
 		}
 		if(isAdded) this.categoryDao.save(data);
-		return info;
+		return this.changeModel(data);
 	}
 	/*
 	 * 删除数据
@@ -114,11 +117,9 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		if(ids == null || ids.length == 0) return;
 		for(int i = 0; i < ids.length; i++){
 			Category data = this.categoryDao.load(Category.class, ids[i]);
-			if(data != null && (data.getChildren() == null || data.getChildren().size() == 0)){
-				this.categoryDao.delete(data); 
-				if(logger.isDebugEnabled()) logger.debug("删除数据:" + data.getName());
-			}else{
-				throw new RuntimeException("数据不存在或者请先删除子类");
+			if(data != null){
+				if(logger.isDebugEnabled()) logger.debug(String.format("［%1$d］删除数据［%2$s］...", i+1, data.getId()));
+				this.categoryDao.delete(data);
 			}
 		}
 	}
@@ -132,129 +133,107 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		return this.categoryDao.loadMaxCode(parentCatalogId);
 	}
 	/*
-	 * 查询所有的考试分类
+	 * 加载全部考试类别。
 	 * @see com.examw.test.service.settings.ICategoryService#loadAllCategorys()
 	 */
 	@Override
 	public List<TreeNode> loadAllCategorys(String ignoreCategoryId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载全部考试类别［ignore = %s］", ignoreCategoryId));
 		List<TreeNode> result = new ArrayList<>();
 		List<Category> topCategories = this.categoryDao.loadTopCategories();
-		if(topCategories != null){
+		if(topCategories != null && topCategories.size() > 0){
 			for(Category data : topCategories){
 				if(data == null) continue;
-				TreeNode node = this.createTreeNode(data,ignoreCategoryId,null,false,false);
-				if(node != null){
-					result.add(node);
-				}
+				TreeNode e = this.createTreeNode(data,ignoreCategoryId,false,false);
+				if(e != null)result.add(e);
 			}
 		}
 		return result;
 	}
-	/**
-	 * 根据条件创建树节点
-	 * @param data		考试分类
-	 * @param attributes	分类节点带的属性
-	 * @param withExam	是否加载所包含考试
-	 * @param withSubject	是否加载所包含科目
-	 * @return
-	 */
-	private TreeNode createTreeNode(Category data,String ignoreCategoryId,Map<String, Object> attributes,boolean withExam,boolean withSubject){
+	//创建考试类别树。
+	private TreeNode createTreeNode(Category data,String ignoreCategoryId,boolean withExam,boolean withSubject){
 		if(data == null || data.getId().equalsIgnoreCase(ignoreCategoryId)) return null;
 		TreeNode node = new TreeNode();
 		node.setId(data.getId());
 		node.setText(data.getName());
-		//只在加载类别树的时候添加一些属性
-		boolean withAttr = (attributes == null);
-		if(withAttr){
-			attributes = new HashMap<>();
-			attributes.put("abbr", data.getAbbr());
-			attributes.put("code", data.getCode());
-		}
+		Map<String, Object> attributes = new HashMap<>();
+		attributes.put("type", "category");
 		node.setAttributes(attributes);
-		if(data.getChildren() != null && data.getChildren().size() > 0){
-			List<TreeNode> list = new ArrayList<>();
-			for(Category c : data.getChildren()){
-				if(withAttr) attributes = null;
-				TreeNode t = this.createTreeNode(c,ignoreCategoryId,attributes,withExam,withSubject);
-				 if(t != null){
-					 list.add(t);
-				 }
-			}
-			node.setChildren(list);
-		}
-		if(withExam){
-			List<TreeNode> list_exams = new ArrayList<>();
-			for(final Exam e : data.getExams()){
-				if(e == null) continue;
-				TreeNode tv_exam = new TreeNode();
-				tv_exam.setId(e.getId());
-				tv_exam.setText(e.getName());
-				attributes = new HashMap<>();
-				attributes.put("type", "exam");
-				tv_exam.setAttributes(attributes);
-				if(withSubject){
-					if(e.getSubjects() != null && e.getSubjects().size() > 0){
-						List<TreeNode> list_subjects = new ArrayList<>();
-						for(Subject s : e.getSubjects()){
-							TreeNode tv_subject = new TreeNode();
-							tv_subject.setId(s.getId());
-							if(s.getArea()==null)
-								tv_subject.setText(s.getName());
-							else
-								tv_subject.setText(s.getName()+"["+s.getArea().getName()+"]");
-							attributes = new HashMap<>();
-							attributes.put("type", "subject");
-							tv_subject.setAttributes(attributes);
-							list_subjects.add(tv_subject);
-						}
-						tv_exam.setChildren(list_subjects);
+		//考试
+		if(withExam && data.getExams() != null && data.getExams().size() > 0){
+			List<TreeNode> examTreeNodes = new ArrayList<>();
+			for(final Exam exam : data.getExams()){
+				if(exam == null) continue;
+				TreeNode tn_exam = new TreeNode();
+				tn_exam.setId(exam.getId());
+				tn_exam.setText(exam.getName());
+				Map<String, Object> exam_attributes = new HashMap<>();
+				exam_attributes.put("type", "exam");
+				tn_exam.setAttributes(exam_attributes);
+				//科目
+				if(withSubject && exam.getSubjects() != null && exam.getSubjects().size() > 0){
+					List<TreeNode> subjectNodes = new ArrayList<>();
+					for(final Subject subject : exam.getSubjects()){
+						if(subject == null) continue;
+						TreeNode tn_subject = new TreeNode();
+						tn_subject.setId(subject.getId());
+						tn_subject.setText(subject.getName());
+						Map<String, Object> subject_attributes = new HashMap<>();
+						subject_attributes.put("type", "subject");
+						tn_subject.setAttributes(subject_attributes);
+						subjectNodes.add(tn_subject);
 					}
-					list_exams.add(tv_exam);
-				}else{
-					list_exams.add(tv_exam);
+					if(subjectNodes.size() > 0){
+						tn_exam.setChildren(subjectNodes);
+					}
 				}
+				examTreeNodes.add(tn_exam);
 			}
-			if(node.getChildren()==null)
-				node.setChildren(list_exams);
-			else{
-				list_exams.addAll(node.getChildren());
-				node.setChildren(list_exams);
+			if(examTreeNodes.size() > 0) node.setChildren(examTreeNodes);
+		}
+		if(data.getChildren() != null && data.getChildren().size() > 0){
+			List<TreeNode> children = new ArrayList<>();
+			for(Category child : data.getChildren()){
+				if(child == null) continue;
+				TreeNode e = this.createTreeNode(child, ignoreCategoryId, withExam, withSubject);
+				if(e != null) children.add(e);
 			}
+			if(children.size() > 0) node.setChildren(children); 
 		}
 		return node;
 	}
 	/*
-	 * 加载所有的考试分类-考试树
+	 * 加载全部考试类别/考试树。
 	 * @see com.examw.test.service.settings.ICategoryService#loadAllCategoryExams()
 	 */
 	@Override
 	public List<TreeNode> loadAllCategoryExams() {
+		if(logger.isDebugEnabled()) logger.debug("加载全部考试类别/考试树...");
 		List<TreeNode> treeNodes = new ArrayList<>();
 		List<Category> list =  this.categoryDao.loadTopCategories();
 		if(list != null && list.size() > 0){
 			for(final Category data : list){
 				if(data == null) continue;
-				Map<String,Object> attributes = new HashMap<>();
-				attributes.put("type", "category");
-				treeNodes.add(createTreeNode(data,null,attributes,true,false));
+				TreeNode e = this.createTreeNode(data,null,true,false);
+				if(e != null)treeNodes.add(e);
 			}
 		}
 		return treeNodes;
 	}
 	/*
-	 * 加载考试分类-考试-科目树
+	 * 加载全部考试类别/考试/科目树。
 	 * @see com.examw.test.service.settings.ICategoryService#loadAllCategoryExamSubjects()
 	 */
 	@Override
 	public List<TreeNode> loadAllCategoryExamSubjects() {
+		if(logger.isDebugEnabled()) logger.debug("加载全部考试类别/考试/科目树...");
 		List<TreeNode> treeNodes = new ArrayList<>();
 		List<Category> list = this.categoryDao.loadTopCategories();
 		if(list != null && list.size() > 0){
 			for(final Category data : list){
 				if(data == null) continue;
-				Map<String,Object> attributes = new HashMap<>();
-				attributes.put("type", "category");
-				treeNodes.add(createTreeNode(data,null,attributes,true,true));
+				TreeNode e = this.createTreeNode(data,null,true,true);
+				if(e != null)treeNodes.add(e);
 			}
 		}
 		return treeNodes;

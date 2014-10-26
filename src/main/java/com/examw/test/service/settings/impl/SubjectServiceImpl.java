@@ -1,7 +1,9 @@
 package com.examw.test.service.settings.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -14,8 +16,10 @@ import com.examw.test.dao.settings.ISubjectDao;
 import com.examw.test.domain.settings.Area;
 import com.examw.test.domain.settings.Exam;
 import com.examw.test.domain.settings.Subject;
+import com.examw.test.model.settings.AreaInfo;
 import com.examw.test.model.settings.SubjectInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
+import com.examw.test.service.settings.IAreaService;
 import com.examw.test.service.settings.ISubjectService;
 
 /**
@@ -26,31 +30,44 @@ import com.examw.test.service.settings.ISubjectService;
 public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo> implements ISubjectService {
 	private static final Logger logger = Logger.getLogger(SubjectServiceImpl.class);
 	private IExamDao examDao;
-	private IAreaDao areaDao;
 	private ISubjectDao subjectDao;
+	private IAreaDao areaDao;
+	private IAreaService areaService;
 	/**
-	 * 设置 考试数据接口
+	 * 设置考试数据接口。
 	 * @param examDao
-	 * 
+	 * 考试数据接口。
 	 */
 	public void setExamDao(IExamDao examDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入考试数据接口...");
 		this.examDao = examDao;
 	}
 	/**
-	 * 设置 地区数据接口
+	 * 设置科目数据接口。
+	 * @param subjectDao
+	 * 科目数据接口。
+	 */
+	public void setSubjectDao(ISubjectDao subjectDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入科目数据接口...");
+		this.subjectDao = subjectDao;
+	}
+	/**
+	 * 设置地区数据接口。
 	 * @param areaDao
-	 * 
+	 * 地区数据接口。
 	 */
 	public void setAreaDao(IAreaDao areaDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入地区数据接口...");
 		this.areaDao = areaDao;
 	}
 	/**
-	 * 设置 科目数据接口
-	 * @param subjectDao
-	 * 
+	 * 设置地区服务接口。
+	 * @param areaService 
+	 *	  地区服务接口。
 	 */
-	public void setSubjectDao(ISubjectDao subjectDao) {
-		this.subjectDao = subjectDao;
+	public void setAreaService(IAreaService areaService) {
+		if(logger.isDebugEnabled()) logger.debug("注入地区服务接口...");
+		this.areaService = areaService;
 	}
 	/*
 	 * 加载最大代码。
@@ -75,14 +92,30 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 				if(subject == null) continue;
 				SubjectInfo info = this.changeModel(subject);
 				if(info != null){
-					if(!StringUtils.isEmpty(info.getAreaName())){
-						info.setName(String.format("%1$s[%2$s]", info.getName(), info.getAreaName()));
-					}
 					results.add(info);
 				}
 			}
 		}
 		return results;
+	}
+	/*
+	 * 加载科目下所有地区集合。
+	 * @see com.examw.test.service.settings.ISubjectService#loadSubjectAreas(java.lang.String)
+	 */
+	@Override
+	public List<AreaInfo> loadSubjectAreas(String subjectId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载科目［subjectId = %s］下所有地区集合...", subjectId));
+		List<AreaInfo> list = new ArrayList<>();
+		if(!StringUtils.isEmpty(subjectId)){
+			Subject subject = this.subjectDao.load(Subject.class, subjectId);
+			if(subject != null && subject.getAreas() != null && subject.getAreas().size() > 0){
+				for(Area area : subject.getAreas()){
+					if(area == null) continue;
+					list.add(this.areaService.conversion(area));
+				}
+			}
+		}
+		return list;
 	}
 	/*
 	 * 查询数据。
@@ -111,9 +144,15 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 				info.setCategoryName(data.getExam().getCategory().getName());
 			}
 		}
-		if(data.getArea() != null){
-			info.setAreaId(data.getArea().getId());
-			info.setAreaName(data.getArea().getName());
+		if(data.getAreas() != null && data.getAreas().size() > 0){
+			List<String> list_ids = new ArrayList<>(), list_names = new ArrayList<>();
+			for(Area area : data.getAreas()){
+				if(area == null) continue;
+				list_ids.add(area.getId());
+				list_names.add(area.getName());
+			}
+			info.setAreaId(list_ids.toArray(new String[0]));
+			info.setAreaName(list_names.toArray(new String[0]));
 		}
 		return info;
 	}
@@ -158,11 +197,18 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 			if(exam != null) data.setExam(exam);
 		}
 		//地区
-		Area area = null;
-		if(!StringUtils.isEmpty(info.getAreaId()) && (data.getArea() == null || !data.getArea().getId().equalsIgnoreCase(info.getAreaId()))){
-			area = this.areaDao.load(Area.class, info.getAreaId());
+		Set<Area> areas = null;
+		if(info.getAreaId() != null && info.getAreaId().length > 0){
+			areas = new HashSet<>();
+			for(String areaId : info.getAreaId()){
+				if(StringUtils.isEmpty(areaId)) continue;
+				Area area = this.areaDao.load(Area.class, areaId);
+				if(area != null){
+					areas.add(area);
+				}
+			}
 		}
-		data.setArea(area);
+		data.setAreas(areas);
 		if(isAdded)this.subjectDao.save(data);
 		return this.changeModel(data);
 	}
@@ -177,7 +223,10 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 		for(int i = 0; i < ids.length;i++){
 			if(StringUtils.isEmpty(ids[i])) continue;
 			Subject data = this.subjectDao.load(Subject.class, ids[i]);
-			if(data != null) this.subjectDao.delete(data);
+			if(data != null){
+				if(logger.isDebugEnabled()) logger.debug(String.format("［%1$d］.删除数据［%2$s］...", i+1, data));
+				this.subjectDao.delete(data);
+			}
 		}
 	}
 }

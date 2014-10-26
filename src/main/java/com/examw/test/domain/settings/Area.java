@@ -1,6 +1,7 @@
 package com.examw.test.domain.settings;
 
 import java.io.Serializable;
+import java.util.Set;
 /**
  * 行政地区。
  * @author yangyong.
@@ -10,6 +11,8 @@ public class Area implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String id,name,abbr;
 	private Integer code;
+	private Set<Exam> exams;
+	private Set<Subject> subjects;
 	/**
 	 * 获取地区ID。
 	 * @return 地区ID。
@@ -69,6 +72,36 @@ public class Area implements Serializable {
 	 */
 	public void setAbbr(String abbr) {
 		this.abbr = abbr;
+	}
+	/**
+	 * 获取关联的考试集合。
+	 * @return 关联的考试集合。
+	 */
+	public Set<Exam> getExams() {
+		return exams;
+	}
+	/**
+	 * 设置关联的考试集合。
+	 * @param exams 
+	 *	  关联的考试集合。
+	 */
+	public void setExams(Set<Exam> exams) {
+		this.exams = exams;
+	}
+	/**
+	 * 获取关联的考试科目集合。
+	 * @return 关联的考试科目集合。
+	 */
+	public Set<Subject> getSubjects() {
+		return subjects;
+	}
+	/**
+	 * 设置关联的考试科目集合。
+	 * @param subjects 
+	 *	  关联的考试科目集合。
+	 */
+	public void setSubjects(Set<Subject> subjects) {
+		this.subjects = subjects;
 	}
 	/*
 	 * 对象字符串表示。

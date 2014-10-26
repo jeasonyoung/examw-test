@@ -53,7 +53,7 @@ $(function(){
 	//分类树
 	//category__exam_tree
 	var c_t = $("#${module}_edit_form input[name='examId']").combotree({
-		url:"<@s.url '/settings/category/exams-tree'/>",
+		url:"<@s.url '/settings/category/exams/tree'/>",
 		required:true,
 		valueField:"id",
 		textField:"name",
@@ -77,7 +77,7 @@ $(function(){
 	//产品下拉
 	//product_tree
 	var p_t = $("#${module}_edit_form input[name='productId']").combobox({
-		url:"<@s.url '/products/product/combo'/>?examId=${CURRENT_EXAM_ID}",
+		url:"<@s.url '/products/product/all'/>?examId=${CURRENT_EXAM_ID}",
 		required:true,
 		valueField:"id",
 		textField:"name",

@@ -3,6 +3,7 @@ package com.examw.test.service.settings;
 import java.util.List;
 
 import com.examw.test.domain.settings.Subject;
+import com.examw.test.model.settings.AreaInfo;
 import com.examw.test.model.settings.SubjectInfo;
 import com.examw.test.service.IBaseDataService;
 
@@ -25,6 +26,12 @@ public interface ISubjectService extends IBaseDataService<SubjectInfo>{
 	 * 科目集合。
 	 */
 	List<SubjectInfo> loadAllSubjects(String examId);
+	/**
+	 * 加载考试科目所在地区集合。
+	 * @param examId
+	 * @return
+	 */
+	List<AreaInfo> loadSubjectAreas(String subjectId);
 	/**
 	 * 模型类型转换。
 	 * @param subject

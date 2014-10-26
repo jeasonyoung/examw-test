@@ -10,34 +10,28 @@
 <body >
  	<div id="${module}_dialog" class="easyui-dialog" data-options="title:'${systemName}-用户登录',width:300,height:260,resizable:false,closable:false,modal:true,onClose:function(){$(this).dialog('destroy');}">
 		 	<form id="${module}_form" method="POST"  class="easyui-form"  data-options="url:'<@s.url '/login'/>',onSubmit:function(){var isValid = $(this).form('validate');if (!isValid){$.messager.progress('close');}return isValid;},onLoadError:function(e){<@error_dialog 'e'/>},success: function(data){$.messager.progress('close');var o = $.parseJSON(data);if(o.success){window.location.href='<@s.url '/index'/>?_' + Math.random();}else{$.messager.alert('登录失败',o.msg);}}" style="padding:5px;">
-		 		<div style="float:left;margin-top:12px;width:100%">
-		 			<center>
-			 			<input name="account" class="easyui-textbox" data-options="required:true,iconCls:'icon-man',prompt:'用户账号',missingMessage:'请输入用户账号',icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}}],width:198,height:36"/>
-			 		</center>
+		 		<div style="float:left;margin-top:12px;margin-left:5px;width:100%;">
+			 			<input name="account" class="easyui-textbox" data-options="required:true,iconCls:'icon-man',prompt:'用户账号',missingMessage:'请输入用户账号',icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}}],width:250,height:36"/>
 			 	</div>
-			 	<div style="float:left;margin-top:8px;width:100%">
-			 		<center>
-			 			<input name="password" class="easyui-textbox" data-options="type:'password',required:true,iconCls:'icon-lock',prompt:'用户密码',missingMessage:'请输入用户密码',icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}}],width:198,height:36"/>
-		 			</center>
+			 	<div style="float:left;margin-top:8px;margin-left:5px;width:100%"> 
+			 			<input name="password" class="easyui-textbox" data-options="type:'password',required:true,iconCls:'icon-lock',prompt:'用户密码',missingMessage:'请输入用户密码',icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}}],width:250,height:36"/>
 		 		</div>
-		 		<div style="float:left;margin-top:8px;width:100%">
-		 			<center>
-		 				<input name="verifycode" class="easyui-textbox VerifyCode-textbox" data-options="required:true,prompt:'验证码',missingMessage:'请输入验证码',icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}}],width:198,height:36"/>
-		 			</center>
+		 		<div style="float:left;margin-top:8px;margin-left:5px;width:100%"> 
+		 				<div style="float:left;">
+		 					<input name="verifycode" class="easyui-textbox" data-options="required:true,prompt:'验证码',missingMessage:'请输入验证码',tipPosition:'left',icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}}],width:120,height:36"/>
+		 				</div>
+		 				<a class="textbox-icon" href="javascript:void(0);" title="看不清？换一张" style="float:left;width:130px;height:34px;border:solid 1px #ccc;">
+		 					<img height="32" width="128" src="<@s.url '/verifyCodeImage'/>?_"   alt="验证码"  onclick="$(this).attr('src','<@s.url '/verifyCodeImage? _='/>'+ Math.random());"/>
+		 				</a>
 		 		</div>
-		 		<div style="float:left;margin-top:8px;width:100%">
+		 		<div style="float:left;margin-top:8px;width:100%"> 
 		 			<center>
 		 				<a class="easyui-linkbutton" data-options="iconCls:'icon-lock',plain:false,onClick:function(){$.messager.progress();$('#${module}_form').form('submit');},width:198,height:36" >登录</a>
 		 			</center>
 		 		</div>
 		 		<script type="text/javascript">
 				<!--
-				$(function($){
-					/*render*/
-					$.parser.parse("#${module}_dialog");
-		 			/*add verify_code*/
-		 			var p = $("#${module}_form input[name=verifycode]").parent().find("span:first");if(p){var html = "<a class='textbox-icon' icon-index='1' href='javascript:void(0)' title='看不清？换一张' style='width:92px;height:34px;border:solid 1px #ccc;'><img name='code' height='30' width='90' src='<@s.url '/verifyCodeImage'/>?_" +Math.random() +"'  alt='验证码'/></a>";p.append(html);p.find("img[name=code]").bind("click",function(){$(this).attr("src","<@s.url '/verifyCodeImage? _='/>"+ Math.random());});};
-				});
+				$(function($){ $.parser.parse("#${module}_dialog");});
 				//-->
 				</script>
 		 	</form>

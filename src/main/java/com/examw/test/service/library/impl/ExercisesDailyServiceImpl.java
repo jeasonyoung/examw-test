@@ -1,6 +1,7 @@
 package com.examw.test.service.library.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -13,6 +14,7 @@ import com.examw.test.dao.library.IPaperDao;
 import com.examw.test.dao.settings.ISubjectDao;
 import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.library.Structure;
+import com.examw.test.domain.settings.Area;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.library.ItemInfo;
 import com.examw.test.model.settings.SubjectInfo;
@@ -110,10 +112,27 @@ public class ExercisesDailyServiceImpl implements IExercisesDailyService {
 			@Override
 			public int compare(ItemType o1, ItemType o2) { return o1.getValue() - o2.getValue(); }
         });
-		Paper paper = this.buildPaper(subject);
-		if(paper.getStructures() == null){
-			paper.setStructures(new TreeSet<Structure>());
+		Paper[] papers = this.buildPaper(subject);
+		if(papers == null || papers.length == 0){
+			logger.error(msg = String.format("科目［%s］下生成试卷对象失败！", subject));
+			throw new Exception(msg);
 		}
+		for(int i = 0; i < papers.length; i++){
+			if(papers[i] == null) continue;
+			try{
+				if(logger.isDebugEnabled()) logger.debug(String.format("［%1$d］开始生成试卷［%2$s］内容....",  (i+1), papers[i]));
+				this.addDailyPapers(papers[i], itemTypes);
+			}catch(Exception e){
+				logger.error(msg = String.format("生成试卷［%s］内容失败！", papers[i]));
+				e.printStackTrace();
+			}
+		} 
+//		
+	}
+	//添加每日一练试卷内容
+	private void addDailyPapers(Paper paper, ItemType[] itemTypes) throws Exception{
+		if(paper == null || itemTypes == null || itemTypes.length == 0) return;
+		String msg = null;
 		for(int i = 0; i < itemTypes.length; i++){
 			//构建试卷结构。
 			Structure structure = new Structure(paper);
@@ -136,16 +155,30 @@ public class ExercisesDailyServiceImpl implements IExercisesDailyService {
 		this.paperDao.save(paper);
 	}
 	//构建试卷对象。
-	private Paper buildPaper(Subject subject){
+	private Paper[] buildPaper(Subject subject){
 		if(logger.isDebugEnabled()) logger.debug("构建试卷对象...");
+		if(subject == null) return null;
+		if(subject.getAreas() == null || subject.getAreas().size() == 0){
+			return new Paper[]{ this.buildPaper(subject, null) };
+		}
+		List<Paper> papers = new ArrayList<>();
+		for(Area area : subject.getAreas()){
+			if(area == null) continue;
+			papers.add(this.buildPaper(subject, area));
+		}
+		return papers.toArray(new Paper[0]);
+	}
+	//构建试卷对象。
+	private Paper buildPaper(Subject subject, Area area){
 		Paper paper = new Paper();
 		paper.setName(String.format("%1$s-%2$s[%3$s][%4$s]", subject.getExam().getName(), subject.getName(),
-																						  (subject.getArea() == null ? "全国" : subject.getArea().getName()),
+																						  (area == null ? "" : area.getName()),
 																						  new SimpleDateFormat("yyyy-MM-dd").format(paper.getCreateTime())));
 		paper.setSubject(subject);
 		paper.setType(PaperType.DAILY.getValue());
 		paper.setYear(Integer.parseInt(new SimpleDateFormat("yyyy").format(paper.getCreateTime())));
-		paper.setArea(subject.getArea());
+		paper.setArea(area);
+		paper.setStructures(new TreeSet<Structure>());
 		return paper;
 	}
 	/*
@@ -172,7 +205,17 @@ public class ExercisesDailyServiceImpl implements IExercisesDailyService {
 					@Override
 					public String getSubjectId() {return subject.getId();}
 					@Override
-					public String getAreaId() {return (subject.getArea() == null ? null : subject.getArea().getId()); }
+					public String getAreaId() {
+						 if(subject.getAreas() != null && subject.getAreas().size() > 0){
+							 StringBuilder builder = new StringBuilder();
+							 for(Area area : subject.getAreas()){
+								 if(area == null) continue;
+								 builder.append(",").append(area.getId());
+							 }
+							 if(builder.length() > 0) return builder.substring(1);
+						 }
+						return null;
+					}
 				});
 				if(total < ((this.avgStructureItemsCount == null || this.avgStructureItemsCount < 0) ? avg_structure_items_count : this.avgStructureItemsCount)){
 					if(logger.isDebugEnabled()) logger.debug(String.format("科目［%1$s,%2$s］下试题量［%3$d］太小！", subject.getId(),subject.getName(), total));
@@ -181,6 +224,7 @@ public class ExercisesDailyServiceImpl implements IExercisesDailyService {
 				this.addPaper(subject);
 			}catch(Exception e){
 				logger.error(String.format("创建科目［%1$s,%2$s］每日一练时，发生异常：%3$s", subject.getId(), subject.getName(), e.getMessage()), e);
+				e.printStackTrace();
 			}
 		}
 	}

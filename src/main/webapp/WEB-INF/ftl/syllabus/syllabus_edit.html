@@ -7,7 +7,7 @@
 $(function(){
 	//exam-tree
 	var exam_tree = $("#${form} input[name='examId']").combotree({
-		url:"<@s.url '/settings/category/exams-tree'/>",
+		url:"<@s.url '/settings/category/exams/tree'/>",
 		required:true,
 		onLoadError:function(e){ <@error_dialog "e"/> },
 		onSelect:function(record){

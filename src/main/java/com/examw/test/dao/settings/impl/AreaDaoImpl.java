@@ -20,6 +20,16 @@ import com.examw.test.model.settings.AreaInfo;
 public class AreaDaoImpl extends BaseDaoImpl<Area> implements IAreaDao {
 	private static final Logger logger = Logger.getLogger(AreaDaoImpl.class);
 	/*
+	 * 加载全部地区数据。
+	 * @see com.examw.test.dao.settings.IAreaDao#loadAreas()
+	 */
+	@Override
+	public List<Area> loadAreas() {
+		if(logger.isDebugEnabled()) logger.debug("加载全部地区数据...");
+		final String hql = "from Area a order by a.code";
+		return this.find(hql, null, null, null);
+	}
+	/*
 	 * 查询数据
 	 * @see com.examw.test.dao.settings.IAreaDao#findAreas(com.examw.test.model.settings.AreaInfo)
 	 */
@@ -51,7 +61,7 @@ public class AreaDaoImpl extends BaseDaoImpl<Area> implements IAreaDao {
 	// 添加查询条件到HQL。
 	private String addWhere(AreaInfo info, String hql,Map<String, Object> parameters) {
 		if (!StringUtils.isEmpty(info.getName())) {
-			hql += " and (a.name like :name)";
+			hql += " and ((a.name like :name) or (a.code like :name))";
 			parameters.put("name", "%" + info.getName() + "%");
 		}
 		return hql;
@@ -65,5 +75,21 @@ public class AreaDaoImpl extends BaseDaoImpl<Area> implements IAreaDao {
 		final String hql = "select max(a.code) from Area a ";
 		Object obj = this.uniqueResult(hql, null);
 		return obj == null ? null : (int)obj;
+	}
+	/*
+	 * 删除数据。
+	 * @see com.examw.test.dao.impl.BaseDaoImpl#delete(java.lang.Object)
+	 */
+	@Override
+	public void delete(Area data) {
+		if(data == null) return;
+		int count = 0;
+		if(data.getExams() != null && (count = data.getExams().size()) > 0){
+			throw new RuntimeException(String.format("地区［%1$s］关联［%2$d］考试，暂不能删除！", data.getName(), count));
+		}
+		if(data.getSubjects() != null && (count = data.getSubjects().size()) > 0){
+			throw new RuntimeException(String.format("地区［%1$s］关联［%2$d］考试科目，暂不能删除！", data.getName(), count));
+		}
+		super.delete(data);
 	}
 }

@@ -20,7 +20,7 @@ import com.examw.test.model.settings.CategoryInfo;
 import com.examw.test.service.settings.ICategoryService;
 
 /**
- * 考试分类控制器
+ * 考试类别控制器
  * @author fengwei.
  * @since 2014年8月6日 下午3:48:01.
  */
@@ -28,66 +28,71 @@ import com.examw.test.service.settings.ICategoryService;
 @RequestMapping(value = "/settings/category")
 public class CategoryController {
 	private static final Logger logger = Logger.getLogger(CategoryController.class);
-	//考试分类服务接口。
+	//注入考试类别服务接口。
 	@Resource
 	private ICategoryService categroyService;
-	
 	/**
-	 * 考试类别列表页面。
+	 * 加载列表页面。
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.SETTINGS_CATEGORY + ":" + Right.VIEW})
 	@RequestMapping(value={"","/list"}, method = RequestMethod.GET)
 	public String list(Model model){
+		if(logger.isDebugEnabled()) logger.debug("加载列表页面...");
 		model.addAttribute("PER_UPDATE", ModuleConstant.SETTINGS_CATEGORY + ":" + Right.UPDATE);
 		model.addAttribute("PER_DELETE", ModuleConstant.SETTINGS_CATEGORY + ":" + Right.DELETE);
 		return "settings/category_list";
 	}
 	/**
-	 * 考试类别编辑页面。
+	 *加载编辑页面。
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.SETTINGS_CATEGORY + ":" + Right.UPDATE})
 	@RequestMapping(value="/edit", method = RequestMethod.GET)
 	public String edit(String id,Model model){
-		model.addAttribute("CURRENT_CATEGORY_ID", id);
+		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
+		model.addAttribute("current_category_id", id);
 		return "settings/category_edit";
 	}
 	/**
-	 * 查询数据。
+	 * 加载列表数据。
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.SETTINGS_CATEGORY + ":" + Right.VIEW})
 	@RequestMapping(value="/datagrid", method = RequestMethod.POST)
 	@ResponseBody
 	public DataGrid<CategoryInfo> datagrid(CategoryInfo info){
+		if(logger.isDebugEnabled()) logger.debug("加载列表数据...");
 		return this.categroyService.datagrid(info);
 	}
 	/**
-	 * 考试类别树结构数据。
+	 * 加载考试类别树。
 	 * @return
 	 */
 	@RequestMapping(value = "/tree", method = {RequestMethod.GET,RequestMethod.POST})
 	@ResponseBody
 	public List<TreeNode> tree(String ignoreCategoryId){
+		if(logger.isDebugEnabled()) logger.debug("加载考试类别树...");
 		return this.categroyService.loadAllCategorys(ignoreCategoryId);
 	}
 	/**
-	 * 考试类别-考试树。
+	 * 加载考试类别/考试树。
 	 * @return
 	 */
-	@RequestMapping(value = "/exams-tree", method = {RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value = "/exams/tree", method = {RequestMethod.GET,RequestMethod.POST})
 	@ResponseBody
-	public List<TreeNode> allCatalogExams(){
+	public List<TreeNode> loadCategoryExams(){
+		if(logger.isDebugEnabled()) logger.debug("加载考试类别/考试树...");
 		return this.categroyService.loadAllCategoryExams();
 	}
 	/**
-	 * 考试类别-考试-科目树。
+	 * 加载考试类别/考试/科目树。
 	 * @return
 	 */
-	@RequestMapping(value = "/subject-tree", method = { RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value = "/exams/subject/tree", method = { RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
 	public List<TreeNode> allCatalogExamSubjects(){
+		if(logger.isDebugEnabled()) logger.debug("加载考试类别/考试/科目树...");
 		return this.categroyService.loadAllCategoryExamSubjects();
 	}
 	/**
@@ -101,6 +106,7 @@ public class CategoryController {
 	@RequestMapping(value="/update", method = RequestMethod.POST)
 	@ResponseBody
 	public Json update(CategoryInfo info){
+		if(logger.isDebugEnabled()) logger.debug("更新数据...");
 		Json result = new Json();
 		try {
 			result.setData(this.categroyService.update(info));
@@ -121,6 +127,7 @@ public class CategoryController {
 	@RequestMapping(value="/delete", method = RequestMethod.POST)
 	@ResponseBody
 	public Json delete(String id){
+		if(logger.isDebugEnabled()) logger.debug(String.format("删除数据［%s］...",id));
 		Json result = new Json();
 		try {
 			this.categroyService.delete(id.split("\\|"));
@@ -133,13 +140,14 @@ public class CategoryController {
 		return result;
 	}
 	/**
-	 * 加载来源代码值。
+	 * 加载考试类别最大代码。
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.SETTINGS_AREA + ":" + Right.VIEW})
 	@RequestMapping(value="/code", method = RequestMethod.GET)
 	@ResponseBody
 	public Integer code(String pid){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试类别最大代码［%s］...", pid));
 		Integer max = this.categroyService.loadMaxCode(pid);
 		if(max == null) max = 0;
 		return max+1; 

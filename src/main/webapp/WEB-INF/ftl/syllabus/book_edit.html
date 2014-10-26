@@ -5,30 +5,22 @@
 <form id="${form}" method="POST" style="padding:10px;">
 	<div style="float:left;margin-top:2px;width:100%;">
 		<label style="width:75px;">所属出版社：</label>
-		<input type="text" name="pressId" class="easyui-combobox" data-options="
-			url:'<@s.url '/syllabus/press/all'/>',
-			valueField:'id',textField:'name',multiple:false,required:true,
-			onLoadError:function(e){ <@error_dialog 'e'/> }
-		" style="width:464px;">
+		<input type="text" name="pressId" class="easyui-combobox" data-options="url:'<@s.url '/syllabus/press/all'/>',required:true,multiple:false,
+			valueField:'id',textField:'name',onLoadError:function(e){ <@error_dialog 'e'/> }" style="width:464px;">
 	</div>
 	<div style="float:left;margin-top:8px;width:100%;">
 		<label style="width:75px;">所属科目：</label>
-		<input id="${form}_examId" type="text" name="examId" class="easyui-combotree" data-options="
-				url:'<@s.url '/settings/category/exams-tree'/>',
-				required:true,
-				onLoadError:function(e){ <@error_dialog 'e'/> },
-				onSelect:function(record){
-					var s_cbb = $('#${form}_subjectId');
-					if(s_cbb){ s_cbb.combobox('clear');s_cbb.combobox('reload','<@s.url '/settings/subject/all'/>?examId=' + record.id);}
-					var area_cbb = $('#${form}_areaId');
-					if(area_cbb){ area_cbb.combobox('clear'); area_cbb.combobox('reload','<@s.url '/settings/exam/areas'/>?examId=' + record.id);}
+		<input id="${form}_examId" type="text" name="examId" class="easyui-combotree" data-options="url:'<@s.url '/settings/category/exams/tree'/>',required:true,
+				onLoadError:function(e){ <@error_dialog 'e'/> },onSelect:function(record){
+					$('#${form}_subjectId').combobox('clear');$('#${form}_subjectId').combobox('reload','<@s.url '/settings/subject/all'/>?examId=' + record.id);
+					$('#${form}_areaId').combobox('clear');
 				}
 			" style="width:280px;"/>
-		<input id="${form}_subjectId" type="text" name="subjectId" class="easyui-combobox" data-options="
-				url:'<@s.url '/settings/subject/all'/>?examId=${current_exam_id}',
-				required:true,valueField:'id',textField:'name',
-				onLoadError:function(e){ <@error_dialog 'e'/> }
-			" style="width:180px;"/>
+		<input id="${form}_subjectId" type="text" name="subjectId" class="easyui-combobox" data-options="url:'<@s.url '/settings/subject/all'/>?examId=${current_exam_id}',
+				required:true,valueField:'id',textField:'name',onLoadError:function(e){ <@error_dialog 'e'/> },
+				onSelect:function(record){
+					$('#${form}_areaId').combobox('clear'); $('#${form}_areaId').combobox('reload','<@s.url '/settings/subject/areas'/>?subjectId=' + record.id);
+				}" style="width:180px;"/>
 		<input type="hidden" name="id">
 	</div> 
 	<div style="float:left; margin-top:8px; width:100%;">
@@ -37,28 +29,16 @@
 	</div>
 	<div style="float:left; margin-top:8px; width:100%;">
 		<label style="width:75px;">所属地区：</label>
-		<input id="${form}_areaId" name="areaId" class="easyui-combobox" data-options="
-				url:'<@s.url '/settings/exam/areas'/>?examId=${current_exam_id}',
-				valueField:'id',textField:'name',multiple:true,
-				onLoadError:function(e){ <@error_dialog 'e'/> },
+		<input id="${form}_areaId" name="areaId" class="easyui-combobox" data-options="url:'<@s.url '/settings/subject/areas'/>?subjectId=${current_subject_id}',multiple:true,
+				valueField:'id',textField:'name',onLoadError:function(e){ <@error_dialog 'e'/> },
 				icons:[{
 							iconCls:'icon-sum',
 							handler:function(e){
-								var opts = [];
-								var rows = $(e.data.target).combobox('getData');
-								if(rows && $.isArray(rows)){
-									$.each(rows,function(i,n){
-										opts.push(n['id']);
-									});
-								}
+								var opts = [];var rows = $(e.data.target).combobox('getData');
+								if(rows && $.isArray(rows)){$.each(rows,function(i,n){opts.push(n['id']); });}
 								$(e.data.target).combobox('setValues', opts);
 						}
-					},{
-					iconCls:'icon-clear',
-					handler:function(e){
-						$(e.data.target).combobox('clear');
-					}
-			}]" style="width:464px;"/>
+					},{iconCls:'icon-clear',handler:function(e){ $(e.data.target).combobox('clear');}}]" style="width:464px;"/>
 	</div>
 	<div style="float:left; margin-top:5px; width:100%;">
 		<textarea name="description" class="easyui-ueditor" data-options="width:550,height:100"></textarea>
@@ -82,8 +62,7 @@
 			<label style="padding-top:0px;<#if (key_index > 0)>margin-left:2px;</#if> ">
 				<input type="radio" name="status" value="${key}" <#if (key_index == 0)> checked="checked" </#if> />${BookStatusMaps[key]}
 			</label>
-		</#list>
+			</#list>
 		</div>
-		
 	</div>
 </form>

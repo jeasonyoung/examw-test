@@ -22,3 +22,9 @@ show create table tbl_Examw_Test_Settings_Exams;
 2.alter table tbl_Examw_Test_Products_Products drop column createTime;
 #删除产品最后修改时间lastTime字段。
 3.alter table tbl_Examw_Test_Products_Products drop column lastTime;
+
+#update mysql 2014-10-24
+#删除考试科目中的area_id字段
+1.show create table tbl_Examw_Test_Settings_Subjects;
+2.alter table tbl_Examw_Test_Settings_Subjects drop foreign key FK_941rywm7yc06dxpstyj2fm3vc; (删除外键)
+3.alter table tbl_Examw_Test_Settings_Subjects drop column area_id;

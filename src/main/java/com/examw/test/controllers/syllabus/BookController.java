@@ -79,9 +79,10 @@ public class BookController {
 	 */
 	@RequiresPermissions({ModuleConstant.SYLLABUS_BOOK+ ":" + Right.VIEW})
 	@RequestMapping(value="/edit", method = RequestMethod.GET)
-	public String edit(String examId,Model model){
+	public String edit(String examId,String subjectId, Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
 		model.addAttribute("current_exam_id", examId);
+		model.addAttribute("current_subject_id", subjectId);
 		
 		Map<String, String> bookStatusMap = PaperItemUtils.createTreeMap();
 		for(BookStatus status : BookStatus.values()){

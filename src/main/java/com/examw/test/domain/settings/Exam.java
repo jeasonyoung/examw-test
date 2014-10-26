@@ -8,13 +8,13 @@ import java.util.Set;
  * @author yangyong.
  * @since 2014-08-01
  */
-public class Exam implements Serializable {
+public class Exam implements Serializable,Comparable<Exam> {
 	private static final long serialVersionUID = 1L;
 	private String id,name,abbr;
+	private Integer code,status;
 	private Category category;
 	private Set<Area> areas;
 	private Set<Subject> subjects;
-	private Integer code;
 	/**
 	 * 获取考试ID。
 	 * @return 考试ID。
@@ -76,6 +76,21 @@ public class Exam implements Serializable {
 		this.abbr = abbr;
 	}
 	/**
+	 * 获取考试状态。
+	 * @return 考试状态。
+	 */
+	public Integer getStatus() {
+		return status;
+	}
+	/**
+	 * 设置考试状态。
+	 * @param status 
+	 *	  考试状态。
+	 */
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	/**
 	 * 获取所属类别。
 	 * @return 所属类别。
 	 */
@@ -121,11 +136,28 @@ public class Exam implements Serializable {
 		this.subjects = subjects;
 	}
 	/*
-	 * (non-Javadoc)
+	 * 对象字符串。
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		return String.format("id=%1$s,code=%2$s,name=%3$s,abbr=%2$s", this.getId(), this.getCode(), this.getName(), this.getAbbr());
+	}
+	/*
+	 * 排序比较。
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(Exam o) {
+		int index = 0;
+		if(this == o) return index;
+		index = this.getCode() - o.getCode();
+		if(index == 0){
+			index = this.getName().compareToIgnoreCase(o.getName());
+			if(index == 0){
+				index = this.getId().compareToIgnoreCase(o.getId());
+			}
+		}
+		return index;
 	}
 }

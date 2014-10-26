@@ -8,7 +8,7 @@ $(function(){
 	var current_category_id = "",current_exam_id = "";
 	//category-exam-tree
 	var t = $("#${module}_list_category_exam_tree").tree({
-		url:"<@s.url '/settings/category/exams-tree'/>",
+		url:"<@s.url '/settings/category/exams/tree'/>",
 		onLoadError:function(e){
 			<@error_dialog "e"/>
 		},

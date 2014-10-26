@@ -8,7 +8,7 @@ $(function(){
 	var current_exam_id = current_subject_id = "";
 	//exam tree
 	var exam_tree = $("#${module}_exam_tree").tree({
-		url:"<@s.url '/settings/category/subject-tree'/>",
+		url:"<@s.url '/settings/category/exams/subject/tree'/>",
 		lines:true,
 		onLoadError:function(e){<@error_dialog "e"/>},
 		onBeforeLoad:function(){current_exam_id = current_subject_id = "";},
@@ -161,8 +161,8 @@ $(function(){
 	function edit_window(title,index,row){
 		var exam_id = current_exam_id,subject_id = current_subject_id;
 		if(row){
-			exam_id = (row.examId ? row.examId : "");
-			subject_id = (row.subjectId ? row.subjectId : "");
+			if(row.examId) exam_id = row.examId;
+			if(row.subjectId) subject_id = row.subjectId;
 		}
 		var btns = [];
 		<@shiro.hasPermission name="${PER_UPDATE}">
@@ -212,12 +212,12 @@ $(function(){
 		});
 		var d = $("<div/>").dialog({
 			title:title,width:600,height:430,
-			href:"<@s.url '/library/paper/edit'/>?examId="+exam_id,
+			href:"<@s.url '/library/paper/edit'/>?examId="+exam_id + "&subjectId=" + subject_id,
 			modal:true,
 			buttons:btns,
 			onClose:function(){ $(this).dialog("destroy");},
 			onLoad:function(){
-				$("#${module}_edit_form").form("load",(row ? row : {"examId":current_exam_id,"subjectId":current_subject_id}));
+				$("#${module}_edit_form").form("load",(row ? row : {"examId":exam_id,"subjectId":subject_id}));
 			}
 		});
 	};

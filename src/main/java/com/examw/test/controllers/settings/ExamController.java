@@ -1,6 +1,7 @@
 package com.examw.test.controllers.settings;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -17,7 +18,9 @@ import com.examw.model.Json;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.settings.AreaInfo;
 import com.examw.test.model.settings.ExamInfo;
+import com.examw.test.service.settings.ExamStatus;
 import com.examw.test.service.settings.IExamService;
+import com.examw.test.support.PaperItemUtils;
 
 /**
  * 考试控制器。
@@ -32,61 +35,63 @@ public class ExamController {
 	@Resource
 	private IExamService examService;
 	/**
-	 * 考试列表页面。
+	 * 加载列表页面。
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.SETTINGS_EXAM + ":" + Right.VIEW})
 	@RequestMapping(value={"","/list"}, method = RequestMethod.GET)
 	public String list(Model model){
+		if(logger.isDebugEnabled()) logger.debug("加载列表页面...");
 		model.addAttribute("PER_UPDATE", ModuleConstant.SETTINGS_EXAM + ":" + Right.UPDATE);
 		model.addAttribute("PER_DELETE", ModuleConstant.SETTINGS_EXAM + ":" + Right.DELETE);
 		return "settings/exam_list";
 	}
 	/**
-	 * 考试编辑页面。
+	 * 加载编辑页面。
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.SETTINGS_EXAM + ":" + Right.UPDATE})
 	@RequestMapping(value="/edit", method = RequestMethod.GET)
 	public String edit(Model model){
+		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
+		Map<String, String> examStatusMaps = PaperItemUtils.createTreeMap();
+		for(ExamStatus status : ExamStatus.values()){
+			examStatusMaps.put(String.format("%d", status.getValue()), this.examService.loadStatusName(status.getValue()));
+		}
+		model.addAttribute("ExamStatusMaps", examStatusMaps);
 		return "settings/exam_edit";
 	}
 	/**
-	 * 查询数据。
+	 * 加载列表数据。
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.SETTINGS_EXAM + ":" + Right.VIEW})
 	@RequestMapping(value="/datagrid", method = RequestMethod.POST)
 	@ResponseBody
 	public DataGrid<ExamInfo> datagrid(ExamInfo info){
+		if(logger.isDebugEnabled()) logger.debug("加载列表数据...");
 		return this.examService.datagrid(info);
 	}
 	/**
-	 * 返回考试类别下的所有考试
+	 * 加载考试类别下的考试集合。
 	 * @return
 	 */
 	@RequestMapping(value={"/all"}, method = {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
-	public List<ExamInfo> all(final String categoryId){
-		 return this.examService.datagrid(new ExamInfo(){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public String getSort(){return "code";}
-			@Override
-			public String getOrder(){return "asc";}
-			@Override
-			public String getCategoryId(){return categoryId;}
-		 }).getRows();
+	public List<ExamInfo> all(String categoryId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试类别［categoryId = %s］下的考试集合...", categoryId));
+		return this.examService.loadExams(categoryId);
 	}
 	/**
-	 * 加载考试所属地区。
+	 * 加载考试所属地区集合。
 	 * @param examId
 	 * 所属考试ID。
 	 * @return
 	 */
 	@RequestMapping(value = {"/areas"}, method = {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
-	public List<AreaInfo> loadArea(String examId){ 
+	public List<AreaInfo> loadArea(String examId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试［examId = %s］所属地区集合...", examId));
 		return this.examService.loadExamAreas(examId);
 	}
 	/**
@@ -100,6 +105,7 @@ public class ExamController {
 	@RequestMapping(value="/update", method = RequestMethod.POST)
 	@ResponseBody
 	public Json update(ExamInfo info){
+		if(logger.isDebugEnabled()) logger.debug("更新数据...");
 		Json result = new Json();
 		try {
 			result.setData(this.examService.update(info));
@@ -120,6 +126,7 @@ public class ExamController {
 	@RequestMapping(value="/delete", method = RequestMethod.POST)
 	@ResponseBody
 	public Json delete(String id){
+		if(logger.isDebugEnabled()) logger.debug(String.format("删除数据［%s］...", id));
 		Json result = new Json();
 		try {
 			this.examService.delete(id.split("\\|"));
@@ -132,13 +139,14 @@ public class ExamController {
 		return result;
 	}
 	/**
-	 * 加载来源代码值。
+	 * 加载最大考试代码。
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.SETTINGS_AREA + ":" + Right.VIEW})
 	@RequestMapping(value="/code", method = RequestMethod.GET)
 	@ResponseBody
 	public Integer code(){
+		if(logger.isDebugEnabled()) logger.debug("加载最大考试代码...");
 		Integer max = this.examService.loadMaxCode();
 		if(max == null) max = 0;
 		return max+1;

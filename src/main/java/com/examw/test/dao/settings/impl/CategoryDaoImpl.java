@@ -26,7 +26,7 @@ public class CategoryDaoImpl extends BaseDaoImpl<Category> implements ICategoryD
 	@Override
 	public List<Category> findCategorys(CategoryInfo info) {
 		if(logger.isDebugEnabled()) logger.debug("查询[考试分类]数据...");
-		String hql = "from Category c where 1 = 1 ";
+		String hql = "from Category c where (1=1) ";
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
@@ -41,7 +41,7 @@ public class CategoryDaoImpl extends BaseDaoImpl<Category> implements ICategoryD
 	@Override
 	public Long total(CategoryInfo info) {
 		if(logger.isDebugEnabled()) logger.debug("查询[考试分类]数据统计...");
-		String hql = "select count(*) from Category c where 1 = 1 ";
+		String hql = "select count(*) from Category c where (1=1) ";
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		return this.count(hql, parameters);
@@ -75,21 +75,35 @@ public class CategoryDaoImpl extends BaseDaoImpl<Category> implements ICategoryD
 	@Override
 	public Integer loadMaxCode(String parentCatalogId) {
 		if(logger.isDebugEnabled()) logger.debug("加载最大类别代码...");
-		final String hql_top = "select max(c.code) from Category c where (c.parent is null)",
-				          hql_other = "select max(c.code) from Category c where (c.parent.id = :pid) ";
-		if(StringUtils.isEmpty(parentCatalogId)){
-			Object obj = this.uniqueResult(hql_top, null);
-			return obj == null ? null :  (int)obj;
-		}else {
-			Map<String, Object> parameters = new HashMap<>();
-			parameters.put("pid", parentCatalogId);
-			Object obj = this.uniqueResult(hql_other, parameters);
-			if(obj == null){
-				Category data = this.load(Category.class, parentCatalogId);
-				if(data == null) return null;
-				return new Integer(String.format("%d0", data.getCode()));
-			}
-			return (int)obj;
+		StringBuilder hqlBuilder = new StringBuilder();
+		hqlBuilder.append("select max(c.code) from Category c where ")
+		                .append(StringUtils.isEmpty(parentCatalogId) ?  " (c.parent is null) " : " (c.parent.id = :pid) ");
+		Map<String, Object> parameters = new HashMap<>();
+		if(!StringUtils.isEmpty(parentCatalogId)){
+			parameters.put("pid",  parentCatalogId);
 		}
+		Object obj = this.uniqueResult(hqlBuilder.toString(), parameters);
+		if(obj == null && !StringUtils.isEmpty(parentCatalogId)){
+			Category data = this.load(Category.class, parentCatalogId);
+			if(data == null) return null;
+			return new Integer(String.format("%d0", data.getCode()));
+		}
+		return obj == null ? null :  (int)obj;
+	}
+	/*
+	 * 删除数据。
+	 * @see com.examw.test.dao.impl.BaseDaoImpl#delete(java.lang.Object)
+	 */
+	@Override
+	public void delete(Category data) {
+		if(data == null) return;
+		int count = 0;
+		if(data.getExams() != null && (count = data.getExams().size()) > 0){
+			throw new RuntimeException(String.format("考试类别［%1$s］下有［%2$d］考试，暂不能删除！", data.getName(), count));
+		}
+		if(data.getChildren() != null && (count = data.getChildren().size()) > 0){
+			throw new RuntimeException(String.format("考试类别［%1$s］下有［%2$d］子类别，暂不能删除！", data.getName(), count));
+		}
+		super.delete(data);
 	}
 }

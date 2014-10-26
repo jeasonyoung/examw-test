@@ -12,11 +12,9 @@ import com.examw.model.Paging;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class SubjectInfo extends Paging implements Comparable<SubjectInfo>{
 	private static final long serialVersionUID = 1L;
-	private String id,name;
-	private String examId,examName;
-	private String areaId,areaName;
-	private String categoryId,categoryName;
+	private String id,name,examId,examName,categoryId,categoryName;
 	private Integer code;
+	private String[] areaId,areaName;
 	/**
 	 * 获取科目ID。
 	 * @return 科目ID。
@@ -95,11 +93,11 @@ public class SubjectInfo extends Paging implements Comparable<SubjectInfo>{
 		this.examName = examName;
 	}
 	/**
-	 * 获取 地区ID
+	 * 获取地区ID
 	 * @return areaId
 	 * 地区ID
 	 */
-	public String getAreaId() {
+	public String[] getAreaId() {
 		return areaId;
 	}
 	/**
@@ -107,7 +105,7 @@ public class SubjectInfo extends Paging implements Comparable<SubjectInfo>{
 	 * @param areaId
 	 * 地区ID
 	 */
-	public void setAreaId(String areaId) {
+	public void setAreaId(String[] areaId) {
 		this.areaId = areaId;
 	}
 	/**
@@ -115,7 +113,7 @@ public class SubjectInfo extends Paging implements Comparable<SubjectInfo>{
 	 * @return areaName
 	 * 地区名称
 	 */
-	public String getAreaName() {
+	public String[] getAreaName() {
 		return areaName;
 	}
 	/**
@@ -123,7 +121,7 @@ public class SubjectInfo extends Paging implements Comparable<SubjectInfo>{
 	 * @param areaName
 	 * 地区名称
 	 */
-	public void setAreaName(String areaName) {
+	public void setAreaName(String[] areaName) {
 		this.areaName = areaName;
 	}
 	/**

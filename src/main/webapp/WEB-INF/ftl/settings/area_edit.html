@@ -3,15 +3,15 @@
 <form id="${module}_edit_form" method="POST" style="padding:10px;">
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">地区代码：</label>
-		<input type="text" name="code" class="easyui-numberbox" data-options="required:true" style="width:80px;" />
+		<input type="text" name="code" class="easyui-textbox" data-options="required:true" style="width:80px;" />
 		<input type="hidden" name="id"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">地区名称：</label>
-		<input type="text" name="name" class="easyui-validatebox" style="width:268px;" data-options="required:true,validType:['length[1,15]']"/>
+		<input type="text" name="name" class="easyui-textbox" style="width:268px;" data-options="required:true,validType:['length[1,15]']"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">英文简称：</label>
-		<input type="text" name="abbr" class="easyui-validatebox" data-options="required:true,validType:['english','length[0,15]']" style="width:268px;"/>
+		<input type="text" name="abbr" class="easyui-textbox" data-options="required:true,validType:['english','length[0,15]']" style="width:268px;"/>
 	</div>
 </form>

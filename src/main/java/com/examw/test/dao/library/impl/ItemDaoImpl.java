@@ -186,8 +186,7 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 	@Override
 	public List<Item> loadItems(Subject subject, ItemType itemType,Area area) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载试题［subject = %1$s］［itemType = %2$s］［area = %3$s］集合...", subject, itemType, area));
-		if(area == null) area = subject.getArea();
-		final String hql = "from Item i where (i.parent is null) and (i.subject.id = :subjectId) and (i.type = :type) and ((i.area is null) or (i.area.code = 0) or (i.area.id = :areaId))";
+		final String hql = "from Item i where (i.parent is null) and (i.subject.id = :subjectId) and (i.type = :type) and ((i.area is null) or (i.area.code = 1) or (i.area.id = :areaId))";
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("subjectId", subject.getId());
 		parameters.put("type", itemType.getValue());
@@ -202,10 +201,19 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 	@Override
 	public List<ItemType> loadItemTypes(Subject subject) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载科目［%s］下的题型集合...", subject == null ? "" : subject.getId()));
-		final String hql = "select i.type from Item i where (i.parent is null) and (i.subject.id = :subjectId) and ((i.area is null) or (i.area.code = 0) or (i.area.id = :areaId)) group by i.type order by i.type";
+		final String hql = "select i.type from Item i where (i.parent is null) and (i.subject.id = :subjectId) and ((i.area is null) or (i.area.code = 1) or (i.area.id in (:areaId))) group by i.type order by i.type";
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("subjectId", subject == null ?  null : subject.getId());
-		parameters.put("areaId", (subject == null || subject.getArea() == null) ? null : subject.getArea().getId());
+		String[] areaIds = null;
+		if(subject.getAreas() != null && subject.getAreas().size() > 0){
+			List<String> list = new ArrayList<>();
+			for(Area area : subject.getAreas()){
+				if(area == null) continue;
+				list.add(area.getId());
+			}
+			if(list.size() > 0) areaIds = list.toArray(new String[0]);
+		}
+		parameters.put("areaId", areaIds);
 		List<?> types = this.query(hql, parameters, null, null);
 		if(types == null || types.size() == 0) return null;
 		List<ItemType> list = new ArrayList<>();

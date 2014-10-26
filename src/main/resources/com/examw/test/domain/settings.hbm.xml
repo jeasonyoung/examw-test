@@ -12,6 +12,20 @@
 		<property name="name" type="string" length="32" not-null="true" />
 		<!-- EN简称 -->
 		<property name="abbr" type="string" length="10" unique="true" not-null="true" />
+		<!-- 关联的考试集合 -->
+		<set name="exams" inverse="true" cascade="save-update"  table="tbl_Examw_Test_Settings_ExamAreas">
+		    <!-- 地区ID -->
+		    <key column="area_id" />
+		    <!-- 考试ID -->
+		    <many-to-many class="Exam" column="exam_id" />
+		</set>
+		<!-- 关联的考试科目集合 -->
+		<set name="subjects" inverse="true" cascade="save-update"  table="tbl_Examw_Test_Settings_SubjectAreas">
+		    <!-- 地区ID -->
+		    <key column="area_id" />
+		    <!-- 科目ID -->
+		    <many-to-many class="Subject" column="subject_id" />
+		</set>
 	</class>
 	<!-- 考试类别 -->
 	<class name="Category" table="tbl_Examw_Test_Settings_Categories">
@@ -32,7 +46,7 @@
 			<one-to-many class="Category"/>
 		</set>
 		<!-- 考试集合 -->
-		<set name="exams" inverse="true" lazy="true" order-by="code asc">
+		<set name="exams" inverse="true" cascade="save-update" order-by="code asc">
 			<key column="category_id" />
 			<one-to-many class="Exam"/>
 		</set>
@@ -48,6 +62,8 @@
 		<property name="name" type="string" length="32" not-null="true" />
 		<!-- 考试EN简称 -->
 		<property name="abbr" type="string" length="10" unique="true" not-null="true" />
+		<!-- 考试状态 -->
+		<property name="status" type="integer" />
 		<!-- 所属类别 -->
 		<many-to-one name="category" column="category_id" class="Category" not-null="true"/>
 		<!-- 所属地区集合 -->
@@ -59,6 +75,7 @@
 		</set>
 		<!-- 考试科目集合 -->
 		<set name="subjects" inverse="true" lazy="true" order-by="code asc">
+		    <!-- 考试ID -->
 			<key column="exam_id" />
 			<one-to-many class="Subject"/>
 		</set>
@@ -74,7 +91,12 @@
 		<property name="name" type="string" length="32" not-null="true" />
 		<!-- 所属考试 -->
 		<many-to-one name="exam" column="exam_id" class="Exam" not-null="true" />
-		<!-- 所属地区 -->
-		<many-to-one name="area" column="area_id" class="Area" />
+		<!-- 所属地区集合 -->
+		<set name="areas" inverse="false" cascade="save-update"  table="tbl_Examw_Test_Settings_SubjectAreas">
+		    <!-- 科目ID -->
+			<key column="subject_id" />
+			<!-- 所属地区ID -->
+			<many-to-many class="Area"  column="area_id" />
+		</set>
 	</class>
 </hibernate-mapping>

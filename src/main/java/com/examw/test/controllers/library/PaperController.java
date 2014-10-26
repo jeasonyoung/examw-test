@@ -1,8 +1,8 @@
 package com.examw.test.controllers.library;
 
-import java.text.SimpleDateFormat; 
-import java.util.Date; 
-import java.util.List; 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -10,19 +10,18 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable; 
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.aware.IUserAware;
 import com.examw.model.DataGrid;
-import com.examw.model.Json; 
+import com.examw.model.Json;
 import com.examw.test.domain.security.Right;
-import com.examw.test.model.library.PaperInfo; 
+import com.examw.test.model.library.PaperInfo;
 import com.examw.test.service.library.IItemService;
-import com.examw.test.service.library.IPaperService; 
+import com.examw.test.service.library.IPaperService;
 import com.examw.test.service.library.PaperStatus;
 import com.examw.test.support.PaperItemUtils;
 /**
@@ -122,10 +121,11 @@ public class PaperController implements IUserAware {
 	 */
 	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE})
 	@RequestMapping(value="/edit", method = RequestMethod.GET)
-	public String edit(String examId,Model model){
+	public String edit(String examId,String subjectId,Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
 		
-		model.addAttribute("current_exam_id", StringUtils.isEmpty(examId) ? "" : examId.trim());
+		model.addAttribute("current_exam_id", examId);
+		model.addAttribute("current_subject_id", subjectId);
 		model.addAttribute("current_year", new SimpleDateFormat("yyyy").format(new Date()));
 		
 		PaperItemUtils.addPaperType(this.paperService, model);

@@ -28,7 +28,7 @@ import com.examw.test.service.settings.IAreaService;
 @RequestMapping(value = "/settings/area")
 public class AreaController {
 	private static final Logger logger = Logger.getLogger(AreaController.class);
-	//地区服务接口。
+	//注入地区服务接口。
 	@Resource
 	private IAreaService areaService;
 	/**
@@ -115,25 +115,21 @@ public class AreaController {
 	 * 加载全部地区数据。
 	 * @return
 	 */
-	@RequestMapping(value = {"/combo","/all"}, method = {RequestMethod.POST, RequestMethod.GET})
+	@RequestMapping(value = {"/all"}, method = {RequestMethod.POST, RequestMethod.GET})
 	@ResponseBody
 	public List<AreaInfo> all(){
-		return this.areaService.datagrid(new AreaInfo(){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public String getSort() { return "code"; }
-			@Override
-			public String getOrder() { return "asc"; }
-		}).getRows();
+		if(logger.isDebugEnabled()) logger.debug("加载全部地区数据...");
+		return this.areaService.loadAllAreas();
 	}
 	/**
-	 * 加载来源代码值。
+	 * 加载地区最大代码值。
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.SETTINGS_AREA + ":" + Right.VIEW})
 	@RequestMapping(value="/code", method = RequestMethod.GET)
 	@ResponseBody
 	public Integer code(){
+		if(logger.isDebugEnabled()) logger.debug("加载地区最大代码值...");
 		Integer max = this.areaService.loadMaxCode();
 		if(max == null) max = 0;
 		return max+1;

@@ -1,73 +1,23 @@
 <#--科目设置编辑-->
 <#include "comm.ftl"/>
 <#assign module="settings_subject"/>
-<script type="text/javascript">
-<!--
-$(function(){
-	//考试类别。
-	var catalog_cbt = $("#${module}_edit_form input[name='categoryId']").combotree({
-		url:"<@s.url '/settings/category/tree'/>",
-		required:true,
-		valueField:"id",
-		textField:"name",
-		onLoadError:function(e){
-			<@error_dialog "e"/>
-		},
-		onChange:function(n,o){
-			if(area_cbb){
-				area_cbb.combobox("clear");
-				area_cbb.combobox("reload","<@s.url '/settings/exam/areas'/>?examId=");
-			}
-			if(exam_cbb){
-				exam_cbb.combobox("clear");
-				exam_cbb.combobox("reload","<@s.url '/settings/exam/all'/>?categoryId=" + n);
-			}
-		}
-	});
-	//类别下的考试。
-	var exam_cbb = $("#${module}_edit_form input[name='examId']").combobox({
-		url:"<@s.url '/settings/exam/all'/>?categoryId=${CURRENT_CATEGORY_ID}",
-		required:true,
-		valueField:"id",
-		textField:"name",
-		onLoadError:function(e){
-			<@error_dialog "e"/>
-		},
-		onChange:function(n,o){
-			if(area_cbb){
-				area_cbb.combobox("clear");
-				area_cbb.combobox("reload","<@s.url '/settings/exam/areas'/>?examId=" + n);
-			}
-		}
-	});
-	//所在地区。
-	var area_cbb = $("#${module}_edit_form input[name='areaId']").combobox({
-		url:"<@s.url '/settings/exam/areas'/>?examId=${CURRENT_EXAM_ID}",
-		valueField:"id",
-		textField:"name",
-		onLoadError:function(e){
-			<@error_dialog "e"/>
-		},
-		icons:[{
-			iconCls:"icon-clear",
-			handler:function(e){
-				$(e.data.target).combobox("clear");
-			}
-		}]
-	});
-});
-//-->
-</script>
-
-<form id="${module}_edit_form" method="POST" style="padding:10px;">
+<#assign form="${module}_edit_form"/>
+<form id="${form}" method="POST" style="padding:10px;">
 	<div style="float:left;margin-top:2px;width:100%;">
 		<label style="width:75px;">所属考试：</label>
-		<input type="text" name="categoryId" style="width:198px;"/>
-		<input type="text" name="examId" style="width:168px;"/>
+		<input name="categoryId" class="easyui-combotree" data-options="url:'<@s.url '/settings/category/tree'/>',required:true,valueField:'id', textField:'name',
+			onLoadError:function(e){ <@error_dialog 'e'/> },onChange:function(n,o){
+				$('#${form}_examId').combobox('clear');$('#${form}_examId').combobox('reload','<@s.url '/settings/exam/all?categoryId='/>'+n);
+				$('#${form}_areaId').combobox('clear');
+			}" style="width:198px;"/>
+		<input id="${form}_examId" name="examId" class="easyui-combobox" data-options="url:'<@s.url '/settings/exam/all'/>?categoryId=${current_categogy_id}',
+			required:true,valueField:'id',textField:'name',onLoadError:function(e){ <@error_dialog 'e'/> },onChange:function(n,o){
+				$('#${form}_areaId').combobox('clear');$('#${form}_areaId').combobox('reload','<@s.url '/settings/exam/areas?examId='/>'+n);
+			}" style="width:168px;"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">科目代码：</label>
-		<input type="text" name="code" class="easyui-numberbox" style="width:198px;" data-options="required:true"/>
+		<input type="text" name="code" class="easyui-numberbox" style="width:90px;" data-options="required:true"/>
 		<input type="hidden" name="id"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
@@ -76,6 +26,9 @@ $(function(){
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">地区：</label>
-		<input name="areaId" style="width:372px;"/>
+		<input id="${form}_areaId" name="areaId" class="easyui-combobox" data-options="url:'<@s.url '/settings/exam/areas?examId=${current_exam_id}'/>',
+			multiple:true,valueField:'id',textField:'name',onLoadError:function(e){<@error_dialog 'e'/> },icons:[{iconCls:'icon-sum', 
+				handler:function(e){var rows = $(e.data.target).combobox('getData');if(rows && $.isArray(rows)){ var opts = [];$.each(rows,function(i,n){ opts.push(n['id']); });$(e.data.target).combobox('setValues', opts);
+			}}},{ iconCls:'icon-clear', handler:function(e){ $(e.data.target).combobox('clear'); }}]" style="width:372px;"/>
 	</div>
 </form>

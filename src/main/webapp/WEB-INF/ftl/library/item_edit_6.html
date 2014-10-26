@@ -1,5 +1,6 @@
 <#--试题（共享题干题）编辑页面-->
 <#include "comm.ftl" />
+<#include "library/item_edit_common.ftl"/>
 <#assign base="library_item"/>
 <#assign module="${base}_${current_item_type_value}" />
 <#assign form="${module}_edit_form" />
@@ -7,43 +8,23 @@
 <script type="text/javascript">
 <!--
 $(function(){
-	//children items
-	var dg = $("#${dg}").datagrid({
-		fit:true,fitColumns:true,rownumbers:true,border:true,striped:true,idField:"id",
-		columns:[[{
-			field:"id",checkbox:true
-		},{
-			title:"子题类型",field:"typeName",width:15,align:"center"
-		},{
-			title:"子题内容",field:"content",width:100,align:"left",
-			formatter: function(value,row,index){
-				return value.replace(/<[^>]*>/g,"");
-			}
-		}]],
-		toolbar:"#${dg}_toobar",
-		onLoadError:function(e){<@error_dialog "e"/> },
-		onDblClickRow:function(rowIndex,rowData){
-			edit_window("编辑共享题干子试题［"+rowData.typeName+"］",rowIndex,rowData,rowData.type);
-		}
-	});
 	<@shiro.hasPermission name="${PER_UPDATE}">
 	//add children item
 	var open = false;
 	${dg}_add = function(item){
 		if(open)return;
 		pop = true;
-		$.getJSON("<@s.url '/library/item/uuid'/>",function(data){
+		$.getJSON("<@s.url '/library/item/uuid?_'/>" + Math.random(),function(data){
 			pop = false;
-			edit_window("新增共享题干子试题［"+$(item).text()+"］",0,{"id":data[0]},$(item).attr("value"));
+			${module}_edit_window("新增共享题干子试题［"+$(item).text()+"］",0,{"id":data[0]},$(item).attr("value"));
 		});
 	};
 	</@shiro.hasPermission>
 	//child item edit window
-	function edit_window(title,index,row,type){
+	${module}_edit_window = function(title,index,row,type){
 		var d = $("<div/>").dialog({
-			title:title,width:800,height:600,
+			title:title,width:800,height:600,modal:true,
 			href:"<@s.url '/library/item/edit/'/>" + type + "?child=true",
-			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
 			{
@@ -57,11 +38,11 @@ $(function(){
 						$.messager.alert("警告","未能获取子题ID！");
 						return;
 					}
-					var index = dg.datagrid("getRowIndex",post["id"]);
+					var index = $("#${dg}").datagrid("getRowIndex",post["id"]);
 					if(index > -1) {
-						dg.datagrid("updateRow",{index:index, row : post});
+						$("#${dg}").datagrid("updateRow",{index:index, row : post});
 					}else{
-						dg.datagrid("appendRow",post);
+						$("#${dg}").datagrid("appendRow",post);
 					}
 					d.dialog("close");
 				}
@@ -78,14 +59,14 @@ $(function(){
 	<@shiro.hasPermission name="${PER_DELETE}">
 	//delete child item
 	${dg}_delete = function(){
-		var rows = dg.datagrid("getChecked");
+		var rows = $("#${dg}").datagrid("getChecked");
 		if(rows && rows.length > 0){
 			$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
 				if(!r)return;
 				for(var i = 0; i < rows.length; i++){
-					var index = dg.datagrid("getRowIndex",rows[i]["id"]);
+					var index = $("#${dg}").datagrid("getRowIndex",rows[i]["id"]);
 					if(index > -1){
-						dg.datagrid("deleteRow",index);
+						$("#${dg}").datagrid("deleteRow",index);
 					}
 				}
 			});
@@ -101,7 +82,7 @@ $(function(){
 			$("#${form}").form("load",row);
 			if(row.children && $.isArray(row.children)){
 				$.each(row.children,function(i,n){
-					dg.datagrid("appendRow",n);
+					$("#${dg}").datagrid("appendRow",n);
 				});
 			}
 		};
@@ -126,7 +107,7 @@ $(function(){
 				$.messager.alert("警告","请输入试题内容！");
 				return false;
 			}
-			var rows = dg.datagrid("getRows");
+			var rows = $("#${dg}").datagrid("getRows");
 			if(rows == null || rows.length == 0){
 				$.messager.alert("警告","请添加子题！");
 				return false;
@@ -136,7 +117,7 @@ $(function(){
 		//update
 		${module}_update = function(){
 			post["children"] = [];
-			var rows = dg.datagrid("getRows");
+			var rows = $("#${dg}").datagrid("getRows");
 			if(rows){
 				$.each(rows,function(i,n){
 					n["orderNo"] = i + 1;
@@ -157,62 +138,23 @@ $(function(){
 			<input name="typeName" type="hidden" value="${current_item_type_name}" />
 		</div>
 		<#if !current_item_child>
-		<div style="float:left;margin-top:5px;width:100%;">
-			<label style="width:75px;">所属科目：</label>
-			<input name="examId" class="easyui-combotree" data-options="
-					url:'<@s.url '/settings/category/exams-tree'/>',
-					required:true,lines:true,
-					onLoadError:function(e){<@error_dialog 'e'/>},
-					onChange:function(n,o){
-						$('#${form}_cbb_subjectId').combobox('clear');$('#${form}_cbb_subjectId').combobox('reload','<@s.url '/settings/subject/all'/>?examId=' + n);
-						$('#${form}_cbb_areaId').combobox('clear');$('#${form}_cbb_areaId').combobox('reload','<@s.url '/settings/exam/areas'/>?examId=' + n);
-					}" style="width:368px;"/>
-			<input id="${form}_cbb_subjectId" name="subjectId" class="easyui-combobox" data-options="
-					url:'<@s.url '/settings/subject/all'/>?examId=${current_exam_id}',
-					required:true,
-					valueField:'id',textField:'name',
-					onLoadError:function(e){<@error_dialog 'e'/>}
-			" style="width:298px;"/>
-		</div>
-		<div style="float:left;margin-top:2px;width:100%;">
-			<label style="margin-top:5px;width:75px;">所属类型：</label>
-			<#list PaperTypeMaps?keys as key>
-				<label style="padding-top:0px;<#if (key_index > 0)>margin-left:15px;</#if>">
-					<input type="radio" name="opt" value="${key}" <#if (key_index == 0)> checked="checked" </#if> />${PaperTypeMaps[key]}
-				</label>
-			</#list>
-		</div>
-		<div style="float:left;margin-top:2px;width:100%;">
-			<div style="float:left;">
-				<label style="width:75px;">试题来源：</label>
-				<input name="sourceId" class="easyui-combobox" data-options="
-						url:'<@s.url '/library/source/all'/>',
-						valueField:'id',textField:'name',
-						onLoadError:function(e){ <@error_dialog 'e'/> },
-						icons:[{iconCls:'icon-clear',handler:function(e){ $(e.data.target).combobox('clear'); } }]
-					" style="width:198px;" />
-			</div>
-			<div style="float:left;">
-				<label style="width:75px;">所属地区：</label>
-				<input id="${form}_cbb_areaId" name="areaId" class="easyui-combobox" data-options="
-					url:'<@s.url '/settings/exam/areas'/>?examId=${current_exam_id}',
-					valueField:'id',textField:'name',
-					onLoadError:function(e){<@error_dialog 'e'/> },
-					icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).combobox('clear');}}]
-				" style="width:198px"/>
-			</div>
-			<div style="float:left;">
-				<label style="width:70px;">使用年份：</label>
-				<input name="year" type="text" class="easyui-numberbox" data-options="min:0,value:${current_year}" style="width:70px;"/>
-			</div>
-		</div>
+			<@item_base_share/>
 		</#if>
 		<div style="float:left;margin-left:6px;margin-top:2px;">
 			<textarea style="float:left" name="content" class="easyui-ueditor"  data-options="required:true,width:762,height:95" rows="5" cols="20" />
 		</div>
 	</div>
 	<div data-options="region:'center',title:'子题集合',border:false">
-		<table id="${dg}"></table>
+		<table id="${dg}" class="easyui-datagrid" data-options="fit:true,fitColumns:true,rownumbers:true,border:true,striped:true,idField:'id',toolbar:'#${dg}_toobar',
+			onLoadError:function(e){<@error_dialog 'e'/> },onDblClickRow:function(rowIndex,rowData){${module}_edit_window('编辑共享题干子试题［'+rowData.typeName+'］',rowIndex,rowData,rowData.type);}">
+			<thead>
+				<tr>
+					<th data-options="field:'id',checkbox:true"></th>
+					<th data-options="field:'typeName',width:15,align:'center'">子题类型</th>
+					<th data-options="field:'content',width:100,align:'left',formatter:function(value,row,index){return value.replace(/<[^>]*>/g,'');}">子题内容</th>
+				</tr>
+			</thead>
+		</table>
 		<div id="${dg}_toobar">
 			<@shiro.hasPermission name="${PER_UPDATE}">
 			<a href="#" class="easyui-menubutton" data-options="iconCls:'icon-add',menu:'#${dg}_toobar_menu',plain:true" style="float:left;">新增</a>
