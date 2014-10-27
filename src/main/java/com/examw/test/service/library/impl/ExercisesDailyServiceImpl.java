@@ -105,7 +105,7 @@ public class ExercisesDailyServiceImpl implements IExercisesDailyService {
 		String msg = null;
 		List<ItemType> listItemTypes =  this.itemDao.loadItemTypes(subject);
 		if(listItemTypes == null || listItemTypes.size() == 0){
-			logger.error(msg = String.format("科目［%s］在题库中没有满足条件的试题！", subject));
+			logger.error(msg = String.format("科目［%s］在题库中没有满足条件的试题类型！", subject));
 			throw new Exception(msg);
 		}
 		ItemType[] itemTypes = listItemTypes.toArray(new ItemType[0]);
@@ -128,7 +128,6 @@ public class ExercisesDailyServiceImpl implements IExercisesDailyService {
 				e.printStackTrace();
 			}
 		} 
-//		
 	}
 	//添加每日一练试卷内容
 	private void addDailyPapers(Paper paper, ItemType[] itemTypes) throws Exception{
