@@ -191,4 +191,22 @@ public class FrontPaperServiceImpl implements IFrontPaperService  {
 		return this.changeModel(this.paperReleaseDao.loadReleases(new Integer[]{ PaperType.DAILY.getValue() },this.buildProductSubjectIds(product.getSubjects()), product.getArea()==null?null:new String[]{ product.getArea().getId() },
 				  														calendar.getTime(),page, rows));
 	}
+	/*
+	 * 加载今日一练剩余的个数
+	 * @see com.examw.test.service.library.IFrontPaperService#loadResidueUserDailyPaperNumber(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Long loadResidueUserDailyPaperNumber(String userId, String productId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载产品［productId = %s］下的每日一练试卷集合...", productId));
+		Product product = this.productDao.load(Product.class, productId);
+		if(product == null) throw new RuntimeException(String.format("产品［productId = %s］不存在！", productId));
+		//构造时间 查询一个星期的每日一练
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+		List<PaperRelease> list =(this.paperReleaseDao.loadReleases(new Integer[]{ PaperType.DAILY.getValue() },this.buildProductSubjectIds(product.getSubjects()), product.getArea()==null?null:new String[]{ product.getArea().getId() },
+				  														calendar.getTime(),null, null));
+		if(list == null || list.size() ==0) return 0L;
+		Long practiced = this.userPaperRecordService.totalUserDailyPaperRecords(userId, productId);
+		return list.size() - (practiced == null?0L:practiced);
+	}
 }

@@ -1,17 +1,20 @@
 package com.examw.test.dao.records.impl;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
 import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.impl.BaseDaoImpl;
 import com.examw.test.dao.records.IUserPaperRecordDao;
 import com.examw.test.domain.records.UserPaperRecord;
 import com.examw.test.model.records.UserPaperRecordInfo;
+import com.examw.test.service.library.PaperType;
 
 /**
  * 用户试卷记录数据接口实现类。
@@ -59,6 +62,11 @@ public class UserPaperRecordDaoImpl extends BaseDaoImpl<UserPaperRecord> impleme
 		if(!StringUtils.isEmpty(info.getPaperId())){
 			hql += " and (u.paper.id = :paperId) ";
 			parameters.put("paperId", info.getPaperId());
+		}
+		//[Add by FW 2014.10.27 增加按类型查找记录的条件]
+		if(info.getPaperType()!=null){
+			hql += " and (u.paper.type = :type) ";
+			parameters.put("type", info.getPaperType());
 		}
 		if(!StringUtils.isEmpty(info.getUserId())){
 			hql += " and (u.user.id = :userId) ";
@@ -127,5 +135,29 @@ public class UserPaperRecordDaoImpl extends BaseDaoImpl<UserPaperRecord> impleme
 		parameters.put("userId", userId);
 		parameters.put("productId", productId);
 		return this.find(hql, parameters, null, null);
+	}
+	
+	/*
+	 * 查询某产品下用户当天不同每日一练记录的总数
+	 * @see com.examw.test.dao.records.IUserPaperRecordDao#findTotalUserDailyPaperRecords(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Long findTotalUserDailyPaperRecords(String userId, String productId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId ＝ %1$s］产品［ productId= %2$s］当天不同每日一练记录的总数...",userId,productId));
+		final String hql = "select count(distinct u.id) from UserPaperRecord u where (u.user.id = :userId) and (u.product.id = :productId) and (u.paper.type = :type) and (u.createTime >= :createTime)";
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("userId", userId);
+		parameters.put("productId", productId);
+		parameters.put("type", PaperType.DAILY.getValue());
+		parameters.put("createTime", calendar.getTime());
+		Query query = this.getCurrentSession().createQuery(hql);
+		if(query != null){
+			this.addParameters(query, parameters);
+			Object obj = query.uniqueResult();
+			return obj == null ? null : (long)obj;
+		}
+		return null;
 	}
 }

@@ -47,5 +47,12 @@ public interface IUserPaperRecordService extends IDataService<UserPaperRecordInf
 	 * @return
 	 */
 	List<UserPaperRecordInfo> findLastedPaperRecordsOfProduct(String userId,String productId);
+	/**
+	 * 查询用户当天剩余未做的每日一练的记录
+	 * @param userId
+	 * @param productId
+	 * @return
+	 */
+	Long totalUserDailyPaperRecords(String userId,String productId);
 	
 }

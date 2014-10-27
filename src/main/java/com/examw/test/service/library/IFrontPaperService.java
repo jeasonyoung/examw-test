@@ -67,4 +67,11 @@ public interface IFrontPaperService {
 	 * @return
 	 */
 	Map<String,String> loadPaperType();
+	/**
+	 * 加载今日一练剩余的记录
+	 * @param userId
+	 * @param productId
+	 * @return
+	 */
+	Long loadResidueUserDailyPaperNumber(String userId,String productId);
 }

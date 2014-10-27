@@ -281,4 +281,10 @@ public class UserPaperRecordServiceImpl extends BaseDataServiceImpl<UserPaperRec
 			}
 		}
 	}
+	
+	@Override
+	public Long totalUserDailyPaperRecords(String userId, String productId) {
+		if(logger.isDebugEnabled()) logger.debug("查询今日一练的记录...");
+		return this.userPaperRecordDao.findTotalUserDailyPaperRecords(userId, productId);
+	}
 }

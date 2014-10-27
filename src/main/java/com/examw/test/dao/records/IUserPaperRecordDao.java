@@ -62,4 +62,11 @@ public interface IUserPaperRecordDao extends IBaseDao<UserPaperRecord> {
 	 * @return
 	 */
 	List<UserPaperRecord> findLastedPaperRecordsOfProduct(String userId,String productId);
+	/**
+	 * 查询某产品下用户当天不同每日一练记录的总数
+	 * @param userId
+	 * @param productId
+	 * @return
+	 */
+	Long findTotalUserDailyPaperRecords(String userId,String productId);
 }

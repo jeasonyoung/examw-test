@@ -20,6 +20,7 @@ import com.examw.test.model.records.UserItemFavoriteInfo;
 import com.examw.test.model.records.UserItemRecordInfo;
 import com.examw.test.model.records.UserPaperRecordInfo;
 import com.examw.test.model.settings.FrontSubjectInfo;
+import com.examw.test.service.library.IFrontPaperService;
 import com.examw.test.service.products.IProductUserService;
 import com.examw.test.service.records.IUserItemFavoriteService;
 import com.examw.test.service.records.IUserItemRecordService;
@@ -46,7 +47,8 @@ public class FrontDataController {
 	//产品用户服务。
 	@Resource
 	private IProductUserService productUserService;
-	
+	@Resource
+	private IFrontPaperService frontPaperService;
 	private ObjectMapper mapper;
 	/**
 	 * 构造函数。
@@ -218,6 +220,27 @@ public class FrontDataController {
 		Json result = new Json();
 		try {
 			result.setData(this.mapper.writeValueAsString(this.userPaperRecordService.load(userId, paperId)));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("加载用户试卷记录数据发生异常：" + e.getMessage(), e);
+		}
+		return result;
+	}
+	/**
+	 * 加载用户当天剩余没有练习的每日一练个数
+	 * @param userId
+	 * @param productId
+	 * @return
+	 */
+	@RequestMapping(value = {"/{userId}/paper/{productId}/dailyrest"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public Json loadLeftNumUserDailyPaper(@PathVariable String userId,@PathVariable String productId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId = %1$s］产品［productId = %2$s］今日一练未练个数数据...", userId,productId));
+		Json result = new Json();
+		try {
+			result.setData((this.frontPaperService.loadResidueUserDailyPaperNumber(userId, productId)));
 			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);
@@ -431,4 +454,6 @@ public class FrontDataController {
 		}
 		return result;
 	}
+	
+	
 }
