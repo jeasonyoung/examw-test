@@ -23,7 +23,7 @@ public class UserPaperRecord implements Serializable {
 	private Product product;
 	private SoftwareType terminal;
 	private Date createTime,lastTime;
-	private Integer status;
+	private Integer status,rightNum;
 	private Long usedTime;
 	private BigDecimal score;
 	private Set<UserItemRecord> items;
@@ -192,4 +192,21 @@ public class UserPaperRecord implements Serializable {
 	public void setItems(Set<UserItemRecord> items) {
 		this.items = items;
 	}
+	/**
+	 * 获取 做对的题目个数
+	 * @return rightNum
+	 * 做对的题目个数
+	 */
+	public Integer getRightNum() {
+		return rightNum;
+	}
+	/**
+	 * 设置 做对的题目个数
+	 * @param rightNum
+	 * 做对的题目个数
+	 */
+	public void setRightNum(Integer rightNum) {
+		this.rightNum = rightNum;
+	}
+	
 }
