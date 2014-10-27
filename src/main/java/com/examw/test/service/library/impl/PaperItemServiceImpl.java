@@ -117,7 +117,9 @@ public class PaperItemServiceImpl extends BaseDataServiceImpl<StructureItem,Stru
 			throw new RuntimeException(msg);
 		}
 		if (StringUtils.isEmpty(info.getId()) && structure.getTotal() > 0) {
-			Long count = this.structureDao.totalStructureItems(info.getStructureId()) + this.itemService.calculationCount(info);
+			Long has_count = this.structureDao.totalStructureItems(info.getStructureId());
+			Integer item_count = this.itemService.calculationCount(info);
+			Long count =  (has_count == null ? 0 : has_count)  + (item_count == null ?  0 : item_count);
 			if (count != null && count > structure.getTotal()) {
 				msg = String.format("试卷［%1$s］结构下［structureId = %2$s］题目数量已满［total = %3$d］［count = %4$d］！",
 						structure.getPaper().getName(), info.getStructureId(), structure.getTotal(), count);

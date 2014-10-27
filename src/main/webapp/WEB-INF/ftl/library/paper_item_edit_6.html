@@ -7,25 +7,6 @@
 <script type="text/javascript">
 <!--
 $(function(){
-	//children items
-	var dg = $("#${dg}").datagrid({
-		fit:true,fitColumns:true,rownumbers:true,border:true,striped:true,idField:"id",
-		columns:[[{
-			field:"id",checkbox:true
-		},{
-			title:"子题类型",field:"typeName",width:15,align:"center"
-		},{
-			title:"子题内容",field:"content",width:100,align:"left",
-			formatter: function(value,row,index){
-				return value.replace(/<[^>]*>/g,"");
-			}
-		}]],
-		toolbar:"#${dg}_toobar",
-		onLoadError:function(e){<@error_dialog "e"/> },
-		onDblClickRow:function(rowIndex,rowData){
-			edit_window("编辑共享题干子试题［"+rowData.typeName+"］",rowIndex,rowData,rowData.type);
-		}
-	});
 	<@shiro.hasPermission name="${PER_UPDATE}">
 	//add children item
 	var open = false;
@@ -34,16 +15,15 @@ $(function(){
 		pop = true;
 		$.getJSON("<@s.url '/library/item/uuid'/>",function(data){
 			pop = false;
-			edit_window("新增共享题干子试题［"+$(item).text()+"］",0,{"id":data[0]},$(item).attr("value"));
+			${module}_edit_window("新增共享题干子试题［"+$(item).text()+"］",0,{"id":data[0]},$(item).attr("value"));
 		});
 	};
 	</@shiro.hasPermission>
 	//child item edit window
-	function edit_window(title,index,row,type){
+	${module}_edit_window = function(title,index,row,type){
 		var d = $("<div/>").dialog({
-			title:title,width:800,height:600,
+			title:title,width:800,height:600,modal:true,
 			href:"<@s.url '/library/paper/items/edit/'/>" + type + "?child=true",
-			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
 			{
@@ -57,11 +37,11 @@ $(function(){
 						$.messager.alert("警告","未能获取子题ID！");
 						return;
 					}
-					var index = dg.datagrid("getRowIndex",post["id"]);
+					var index = $("#${dg}").datagrid("getRowIndex",post["id"]);
 					if(index > -1) {
-						dg.datagrid("updateRow",{index:index, row : post});
+						$("#${dg}").datagrid("updateRow",{index:index, row : post});
 					}else{
-						dg.datagrid("appendRow",post);
+						$("#${dg}").datagrid("insertRow",{index:0,row:post});
 					}
 					d.dialog("close");
 				}
@@ -78,14 +58,14 @@ $(function(){
 	<@shiro.hasPermission name="${PER_DELETE}">
 	//delete child item
 	${dg}_delete = function(){
-		var rows = dg.datagrid("getChecked");
+		var rows = $("#${dg}").datagrid("getChecked");
 		if(rows && rows.length > 0){
 			$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
 				if(!r)return;
 				for(var i = 0; i < rows.length; i++){
-					var index = dg.datagrid("getRowIndex",rows[i]["id"]);
+					var index = $("#${dg}").datagrid("getRowIndex",rows[i]["id"]);
 					if(index > -1){
-						dg.datagrid("deleteRow",index);
+						$("#${dg}").datagrid("deleteRow",index);
 					}
 				}
 			});
@@ -101,7 +81,7 @@ $(function(){
 			$("#${form}").form("load",row);
 			if(row.children && $.isArray(row.children)){
 				$.each(row.children,function(i,n){
-					dg.datagrid("appendRow",n);
+					$("#${dg}").datagrid("appendRow",n);
 				});
 			}
 		};
@@ -121,7 +101,7 @@ $(function(){
 				$.messager.alert("警告","请输入试题内容！");
 				return false;
 			}
-			var rows = dg.datagrid("getRows");
+			var rows = $("#${dg}").datagrid("getRows");
 			if(rows == null || rows.length == 0){
 				$.messager.alert("警告","请添加子题！");
 				return false;
@@ -131,7 +111,7 @@ $(function(){
 		//update
 		${module}_update = function(){
 			post["children"] = [];
-			var rows = dg.datagrid("getRows");
+			var rows = $("#${dg}").datagrid("getRows");
 			if(rows){
 				$.each(rows,function(i,n){
 					n["orderNo"] = i + 1;
@@ -162,7 +142,16 @@ $(function(){
 		</div>
 	</div>
 	<div data-options="region:'center',title:'子题集合',border:false">
-		<table id="${dg}"></table>
+		<table id="${dg}" class="easyui-datagrid" data-options="fit:true,fitColumns:true,rownumbers:true,border:true,striped:true,idField:'id',toolbar:'#${dg}_toobar',
+			onLoadError:function(e){<@error_dialog 'e'/> },onDblClickRow:function(rowIndex,rowData){${module}_edit_window('编辑共享题干子试题［'+rowData.typeName+'］',rowIndex,rowData,rowData.type); }">
+			<thead>
+				<tr>
+					<th data-options="field:'id',checkbox:true"></th>
+					<th data-options="field:'typeName',width:15,align:'center'">子题类型</th>
+					<th data-options="field:'content',width:100,align:'left',formatter: function(value,row,index){return value.replace(/<[^>]*>/g,''); }">子题内容</th>
+				</tr>
+			</thead>
+		</table>
 		<div id="${dg}_toobar">
 			<@shiro.hasPermission name="${PER_UPDATE}">
 			<a href="#" class="easyui-menubutton" data-options="iconCls:'icon-add',menu:'#${dg}_toobar_menu',plain:true" style="float:left;">新增</a>

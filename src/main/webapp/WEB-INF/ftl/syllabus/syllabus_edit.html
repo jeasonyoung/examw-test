@@ -2,40 +2,18 @@
 <#include "comm.ftl"/>
 <#assign module="syllabus_syllabus"/>
 <#assign form="${module}_edit_form"/>
-<script type="text/javascript">
-<!--
-$(function(){
-	//exam-tree
-	var exam_tree = $("#${form} input[name='examId']").combotree({
-		url:"<@s.url '/settings/category/exams/tree'/>",
-		required:true,
-		onLoadError:function(e){ <@error_dialog "e"/> },
-		onSelect:function(record){
-			if(subject_cbb){
-				subject_cbb.combobox("clear");
-				subject_cbb.combobox("reload","<@s.url '/settings/subject/all'/>?examId=" + record.id);
-			}
-		}
-	});
-	//subject-tree
-	var subject_cbb = $("#${form} input[name='subjectId']").combobox({
-		url:"<@s.url '/settings/subject/all'/>?examId=${current_exam_id}",
-		required:true,valueField:"id",textField:"name",
-		onLoadError:function(e){ <@error_dialog 'e'/> }
-	});
-});
-//-->
-</script>
 <form id="${form}" method="POST" style="padding:10px;">
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">所属科目：</label>
-		<input name="examId" type="text"  style="width:250px;"/>
-		<input name="subjectId" type="text"  style="width:150px;"/>
+		<input name="examId" class="easyui-combotree" data-options="url:'<@s.url '/settings/category/exams/tree'/>',required:true,onLoadError:function(e){ <@error_dialog 'e'/> },
+			onSelect:function(record){ $('#${form}_subjectId').combobox('clear');$('#${form}_subjectId').combobox('reload','<@s.url '/settings/subject/all?examId='/>' + record.id); }" style="width:250px;"/>
+		<input id="${form}_subjectId" name="subjectId" class="easyui-combobox" data-options="url:'<@s.url '/settings/subject/all?examId=${current_exam_id}'/>',required:true,
+			valueField:'id',textField:'name',onLoadError:function(e){ <@error_dialog 'e'/> }" style="width:150px;"/>
 		<input type="hidden" name="id">
 	</div>
 	<div style="float:left; margin-top:12px; width:100%;">
 		<label style="width:75px;">大纲名称：</label>
-		<input type="text" name="title" class="easyui-validatebox"  data-options="required:true" style="width:400px;"/>
+		<input type="text" name="title" class="easyui-textbox"  data-options="required:true" style="width:402px;"/>
 	</div>
 	<div style="float:left; margin-top:12px; width:100%;">
 		<label style="width:75px;margin-top:2px;">状态：</label>

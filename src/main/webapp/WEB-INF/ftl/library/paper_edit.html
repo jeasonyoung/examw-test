@@ -17,13 +17,13 @@
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">试卷名称：</label>
-		<input name="name" type="text" class="easyui-validatebox" data-options="required:true" style="width:468px;"/>
+		<input name="name" type="text" class="easyui-textbox" data-options="required:true" style="width:468px;"/>
 		<input name="id" type="hidden" />
 	</div>
 	<div style="float:left;margin-top:5px;width:100%;">
 		<label style="margin-top:5px;width:75px;">试卷类型：</label>
 		<#list PaperTypeMaps?keys as key>
-			<label style="padding-top:0px;<#if (key_index > 0)>margin-left:15px;</#if> ">
+			<label style="padding-top:0px;<#if (key_index > 0)>margin-left:2px;</#if> ">
 				<input type="radio" name="type" value="${key}"  <#if (key_index == 0)> checked="checked" </#if> />${PaperTypeMaps[key]}
 			</label>
 		</#list>

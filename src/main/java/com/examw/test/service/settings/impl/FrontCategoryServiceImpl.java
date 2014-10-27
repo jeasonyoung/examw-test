@@ -2,7 +2,6 @@ package com.examw.test.service.settings.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -14,8 +13,9 @@ import org.springframework.util.StringUtils;
 import com.examw.test.dao.settings.ICategoryDao;
 import com.examw.test.domain.settings.Category;
 import com.examw.test.domain.settings.Exam;
-import com.examw.test.model.settings.ExamInfo;
 import com.examw.test.model.settings.FrontCategoryInfo;
+import com.examw.test.model.settings.FrontExamInfo;
+import com.examw.test.service.settings.ExamStatus;
 import com.examw.test.service.settings.IExamService;
 import com.examw.test.service.settings.IFrontCategoryService;
 
@@ -95,19 +95,14 @@ public class FrontCategoryServiceImpl implements IFrontCategoryService {
 		FrontCategoryInfo info = new FrontCategoryInfo();
 		BeanUtils.copyProperties(category, info, new String[]{"exams","children"});
 		if(category.getExams() != null && category.getExams().size() > 0){
-			List<ExamInfo> exams = new ArrayList<>();
+			List<FrontExamInfo> exams = new ArrayList<>();
 			for(Exam exam : category.getExams()){
-				if(exam == null) continue;
-				ExamInfo examInfo = this.examService.conversion(exam);
+				if(exam == null || exam.getStatus() !=  ExamStatus.ENABLE.getValue()) continue;
+				FrontExamInfo examInfo = new FrontExamInfo(this.examService.conversion(exam));
 				if(examInfo != null) exams.add(examInfo);
 			}
 			if(exams.size() > 0){
-				Collections.sort(exams, new Comparator<ExamInfo>() {
-					@Override
-					public int compare(ExamInfo o1, ExamInfo o2) {
-						return o1.getCode() - o2.getCode();
-					}
-				});
+				Collections.sort(exams);
 				info.setExams(exams);
 			}
 		}

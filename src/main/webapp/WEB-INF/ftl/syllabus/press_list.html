@@ -5,38 +5,15 @@
 <script type="text/javascript">
 <!--
 $(function(){
-	//dg
-	var dg=$("#${dg}").datagrid({
-		url:"<@s.url '/syllabus/press/datagrid'/>",
-		fit:true,fitColumns:true,rownumbers:true,
-		pagination:true,pagePosition:"bottom",pageSize:20,pageList:[20,30,40],
-		border:true,striped:true,
-		queryParams:{
-			"name":$("#${dg}_toobar input[name='name']").val()
-		},
-		idField:"id",sortName:"name",
-		columns:[[{
-			field:"id",checkbox:true
-		},{
-			title:"出版社名称",
-			field:"name",width:100,align:"left",sortable:true
-		}]],
-		toolbar:"#${dg}_toobar",
-		onLoadError:function(e){ <@error_dialog "e"/> },
-		onDblClickRow:function(rowIndex,rowData){
-			edit_window("修改出版社",rowIndex,rowData,null);
-		}
-	});
 	<@shiro.hasPermission name="${PER_UPDATE}">
 	//add
-	${dg}_add = function(){ edit_window("新增出版社",0,null); };
+	${dg}_add = function(){ ${module}_edit_window("新增出版社",0,null); };
 	</@shiro.hasPermission>
 	//edit
-	function edit_window(title,index,row){
+	${module}_edit_window = function(title,index,row){
 		var d = $("<div/>").dialog({
-			title:title, width:400,height:140,
+			title:title, width:400,height:140,modal:true,
 			href:"<@s.url '/syllabus/press/edit'/>",
-			modal:true,
 			buttons:[
 			 <@shiro.hasPermission name="${PER_UPDATE}">
 			  {
@@ -50,24 +27,15 @@ $(function(){
 							if (!isValid)$.messager.progress("close");
 							return isValid;
 						},
-						onLoadError:function(e){
-							$.messager.progress("close");
-							<@error_dialog "e"/>
-						},
+						onLoadError:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
 						success:function(data){
 							$.messager.progress("close");
 							var data = $.parseJSON(data);
 							if(data.success){
-								dg.datagrid(row ? "updateRow" : "insertRow",{
-									index:index,
-									row:data.data
-								});
+								$("#${dg}").datagrid(row ? "updateRow" : "insertRow",{index:index, row:data.data });
 								d.dialog("close");
 							}else{
-								$.messager.show({
-									title:"保存异常",
-									msg:data.msg
-								});
+								$.messager.show({ title:"保存异常", msg:data.msg });
 							}
 						}
 					});
@@ -79,48 +47,35 @@ $(function(){
 				handler:function(){ d.dialog("close"); }
 			}],
 			onClose:function(){ $(this).dialog("destroy"); },
-			onLoad:function(){
-				if(row) $("#${module}_edit_form").form("load",row);
-			}
+			onLoad:function(){ if(row) $("#${module}_edit_form").form("load",row); }
 	  });
 	};
 	//search
 	${dg}_search = function(){
-		dg.datagrid("load",{
+		$("#${dg}").datagrid("load",{
 			  "name":$("#${dg}_toobar input[name='name']").val()
 		});
 	};
 	<@shiro.hasPermission name="${PER_DELETE}">
 	//delete
 	${dg}_delete = function(){
-		var rows = dg.datagrid("getChecked");
+		var rows = $("#${dg}").datagrid("getChecked");
 		if(rows && rows.length > 0){
 			$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
 				if(!r)return;
 				$.messager.progress();
 				var ids = [];
-				for(var i = 0; i < rows.length; i++){
-					ids.push(rows[i].id);
-				}
+				for(var i = 0; i < rows.length; i++){ ids.push(rows[i].id); }
 				$.ajax({
 					url:"<@s.url '/syllabus/press/delete'/>",
-					type:"POST",
-					data:{ id:ids.join("|") },
-					dataType:"json",
-					error:function(e){
-						$.messager.progress("close");
-						<@error_dialog "e"/>
-					},
+					type:"POST", data:{ id:ids.join("|") }, dataType:"json",
+					error:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
 					success:function(data,textStatus){
 						$.messager.progress("close");
 						if(data.success){
-							dg.datagrid("load");
-							dg.datagrid("unselectAll");
+							$("#${dg}").datagrid("load");$("#${dg}").datagrid("unselectAll");
 						}else{
-							$.messager.show({
-								title:"提示",
-								msg:data.msg
-							});
+							$.messager.show({ title:"提示", msg:data.msg });
 						}
 					}
 				});
@@ -133,7 +88,16 @@ $(function(){
 });
 //-->
 </script>
-<table id="${dg}"></table>
+<table id="${dg}" class="easyui-datagrid" data-options="url:'<@s.url '/syllabus/press/datagrid'/>',fit:true,fitColumns:true,rownumbers:true,border:true,striped:true,
+	pagination:true,pagePosition:'bottom',pageSize:20,pageList:[20,30,40],idField:'id',sortName:'name',toolbar:'#${dg}_toobar',onLoadError:function(e){ <@error_dialog 'e'/> },
+	onDblClickRow:function(rowIndex,rowData){${module}_edit_window('修改出版社',rowIndex,rowData,null);} ">
+	<thead>
+		<tr>
+			<th data-options="field:'id',checkbox:true"></th>
+			<th data-options="field:'name',width:100,align:'left',sortable:true">出版社名称</th>
+		</tr>
+	</thead>
+</table>
 <div id="${dg}_toobar">
 	<@shiro.hasPermission name="${PER_UPDATE}">
 	<a href="#" class="easyui-linkbutton" onclick="${dg}_add()" data-options="iconCls:'icon-add',plain:true" style="float:left;">新增</a>

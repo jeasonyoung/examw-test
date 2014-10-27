@@ -5,60 +5,28 @@
 <script type="text/javascript">
 <!--
 $(function(){
-	var current_chapter_id = "";
-	//tree
-	var t = $("#${module}_list_tree").tree({
-		url:"<@s.url '/syllabus/book/${current_book_id}/chapters'/>",
-		lines:true,
-		formatter:function(node){
-			return "<span title='"+ node.attributes["content"] +"' class='chapter-tooltip'>"+node.text+"</span>";
-		},
-		onBeforeLoad:function(n,p){
-			current_chapter_id = "";
-		},
-		onClick:function(node){
-			current_chapter_id = node.id;
-			${dg}_search();
-		},
-		onDblClick:function(node){
-			current_chapter_id = node.id;
-		 	if(node.attributes){
-		 		chapter_window_edit("编辑章节",node.attributes,null);
-		 	}
-		},
-		onContextMenu:function(e,node){
-		 	e.preventDefault();
-		 	if(t){ t.tree("select",node.target); }
-		 	current_chapter_id = node.id;
-		 	$("#${module}_list_menus").menu("show",{ 
-		 		left: e.pageX,top: e.pageY 
-		 	});
-		 },
-		 onLoadSuccess:function(){
-			 $(".chapter-tooltip").tooltip({
-				 position:"right"
-			 });
-		 }
-	});
 	<@shiro.hasPermission name="${PER_UPDATE}">
 	//add
 	var m = false;
 	${module}_add = function(top){
 		if(m)return;
 		m = true;
-		var pid = (top) ?  (current_chapter_id = "") : current_chapter_id;
+		var pid = "";
+		if(!top){
+			var node = $("#${module}_list_tree").tree("getSelected");
+			if(node) pid = node["id"];
+		}
 		$.getJSON("<@s.url '/syllabus/book/chapters/order'/>?pid="+pid +"&_=" + Math.random(),function(data){
 			m = false;
-			chapter_window_edit("新增章节",null,data);
+			${module}_chapter_window_edit("新增章节",null,data);
 		});
 	};
 	</@shiro.hasPermission>
 	//window_edit
-	function chapter_window_edit(title,row,order){
+	${module}_chapter_window_edit = function(title,row,order){
 		var d = $("<div/>").dialog({
-			title:title,width:600,height:240,
+			title:title,width:600,height:240,modal:true,
 			href:"<@s.url '/syllabus/book/${current_book_id}/chapters/edit'/>",
-			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
 			{
@@ -72,10 +40,7 @@ $(function(){
 							if (!isValid)$.messager.progress("close");
 							return isValid;
 						},
-						onLoadError:function(e){
-							$.messager.progress("close");
-							<@error_dialog "e"/>
-						},
+						onLoadError:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
 						success:function(data){
 							$.messager.progress("close");
 							var data = $.parseJSON(data);
@@ -83,10 +48,7 @@ $(function(){
 								d.dialog("close");
 								${module}_reload();
 							}else{
-								$.messager.show({
-									title:"保存异常",
-									msg:data.msg
-								});
+								$.messager.show({ title:"保存异常", msg:data.msg });
 							}
 						}
 					});
@@ -99,7 +61,13 @@ $(function(){
 			}],
 			onClose:function(){ $(this).dialog("destroy"); },
 			onLoad:function(){
-				var data = row ? row : {"pid":current_chapter_id,"orderNo":order};
+				var data = row;
+				if(!row){
+					var pid = "";
+					var node = $("#${module}_list_tree").tree("getSelected");
+					if(node) pid = node["id"];
+					data = {"pid":pid,"orderNo":order}
+				}
 				$("#${module}_edit_form").form("load",data);
 			}
 		});
@@ -107,30 +75,21 @@ $(function(){
 	<@shiro.hasPermission name="${PER_DELETE}">
 	//remove
 	${module}_remove = function(){
-		if(!t)return;
-		var node = t.tree("getSelected");
+		var node = $("#${module}_list_tree").tree("getSelected");
 		if(!node) return;
 		$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
 			if(!r)return;
 			$.messager.progress();
 			$.ajax({
 				url:"<@s.url '/syllabus/book/chapters/delete'/>",
-				type:"POST",
-				data:{ id:node.id },
-				dataType:"json",
-				error:function(e){
-					$.messager.progress("close");
-					<@error_dialog "e"/>
-				},
+				type:"POST", data:{ id:node.id }, dataType:"json",
+				error:function(e){$.messager.progress("close"); <@error_dialog "e"/> },
 				success:function(data,textStatus){
 					$.messager.progress("close");
 					if(data.success){
 						${module}_reload();
 					}else{
-						$.messager.show({
-							title:"提示",
-							msg:data.msg
-						});
+						$.messager.show({ title:"提示", msg:data.msg });
 					}
 				}
 			});
@@ -139,23 +98,16 @@ $(function(){
 	</@shiro.hasPermission>
 	//reload
 	${module}_reload = function(){
-		if(t)t.tree("reload");
+		$("#${module}_list_tree").tree("reload");
 		${dg}_search();
 	};
 	//===========================================================================
-	//knowledges.
- 	$("#${dg}").datagrid({
-		queryParams:{
-			"chapterId":current_chapter_id,
-			"title":$("#${dg}_toobar input[name='title']").val()
-		}
-	});
 	//search
 	${dg}_search = function(){
-		$("#${dg}").datagrid("load",{
-			"chapterId":current_chapter_id,
-			"title":$("#${dg}_toobar input[name='title']").val()
-		});
+		var chapter_id = "";
+		var node = $("#${module}_list_tree").tree("getSelected");
+		if(node) chapter_id = node["id"];
+		$("#${dg}").datagrid("load",{"chapterId":chapter_id, "title":$("#${dg}_toobar input[name='title']").val() });
 	};
 	<@shiro.hasPermission name="${PER_UPDATE}">
 	//add knowledges
@@ -163,15 +115,18 @@ $(function(){
 	${dg}_add = function(){
 		if(show) return;
 		show = true;
-		$.getJSON("<@s.url '/syllabus/book/knowledges/order'/>?chapterId="+current_chapter_id +"&_=" + Math.random(),function(data){
+		var chapter_id = "";
+		var node = $("#${module}_list_tree").tree("getSelected");
+		if(node) chapter_id = node["id"];
+		$.getJSON("<@s.url '/syllabus/book/knowledges/order'/>?chapterId="+chapter_id +"&_=" + Math.random(),function(order){
 			show = false;
-			knowledges_edit_window("新增知识点",null,null,data);
+			knowledges_edit_window("新增知识点",0,null,order);
 		});
 	};
 	</@shiro.hasPermission>
 	//edit knowledges
 	${dg}_edit_window = function(title,index,row){
-		knowledges_edit_window(title,index,row);
+		knowledges_edit_window(title,index,row,null);
 	};
 	//
 	function knowledges_edit_window(title,index,row,order){
@@ -180,9 +135,8 @@ $(function(){
 			syllabus_id = row.topSyllabusId;
 		}
 		var d = $("<div/>").dialog({
-			title:title,width:600,height:400,
+			title:title,width:600,height:400,modal:true,
 			href:"<@s.url '/syllabus/book/${current_book_id}/knowledge/edit'/>?syllabusId=" + syllabus_id,
-			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
 			{
@@ -196,24 +150,15 @@ $(function(){
 							if (!isValid)$.messager.progress("close");
 							return isValid;
 						},
-						onLoadError:function(e){
-							$.messager.progress("close");
-							<@error_dialog "e"/>
-						},
+						onLoadError:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
 						success:function(data){
 							$.messager.progress("close");
 							var data = $.parseJSON(data);
 							if(data.success){
-								$("#${dg}").datagrid(row ? "updateRow" : "insertRow",{
-									index:index,
-									row:data.data
-								});
+								$("#${dg}").datagrid(row ? "updateRow" : "insertRow",{ index:index, row:data.data });
 								d.dialog("close");
 							}else{
-								$.messager.show({
-									title:"保存异常",
-									msg:data.msg
-								});
+								$.messager.show({ title:"保存异常", msg:data.msg });
 							}
 						}
 					});
@@ -226,7 +171,13 @@ $(function(){
 			}],
 			onClose:function(){ $(this).dialog("destroy"); },
 			onLoad:function(){
-				var _data = row ? row : {"chapterId":current_chapter_id,"orderNo":order};
+				var _data = row
+				if(!row){
+					var chapter_id = "";
+					var node = $("#${module}_list_tree").tree("getSelected");
+					if(node) chapter_id = node["id"];
+					_data ={"chapterId":chapter_id,"orderNo":order};
+				}
 				$("#${module}_knowledges_edit_form").form("load",_data);
 			}
 		});
@@ -245,22 +196,14 @@ $(function(){
 				}
 				$.ajax({
 					url:"<@s.url '/syllabus/book/knowledges/delete'/>",
-					type:"POST",dataType:"json",
-					data:{ id:ids.join("|") },
-					error:function(e){
-						$.messager.progress("close");
-						<@error_dialog "e"/>
-					},
+					type:"POST",dataType:"json", data:{ id:ids.join("|") },
+					error:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
 					success:function(data,textStatus){
 						$.messager.progress("close");
 						if(data.success){
-							$("#${dg}").datagrid("load");
-							$("#${dg}").datagrid("unselectAll");
+							$("#${dg}").datagrid("load"); $("#${dg}").datagrid("unselectAll");
 						}else{
-							$.messager.show({
-								title:"提示",
-								msg:data.msg
-							});
+							$.messager.show({ title:"提示", msg:data.msg });
 						}
 					}
 				});
@@ -272,10 +215,13 @@ $(function(){
 //-->
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
-	<div data-options="region:'west',split:true,title:'教材章节',
-								  tools:[{iconCls:'icon-reload',handler:function(){${module}_reload();}},
-								  {iconCls:'icon-add',handler:function(){${module}_add(true); }}]" style="width:220px;padding:5px;">
-			<ul id="${module}_list_tree" class="easyui-tree"></ul>
+	<div data-options="region:'west',split:true,title:'教材章节',tools:[{iconCls:'icon-reload',handler:function(){${module}_reload();}},
+								{iconCls:'icon-add',handler:function(){${module}_add(true); }}]" style="width:220px;padding:5px;">
+			<ul id="${module}_list_tree" class="easyui-tree" data-options="url:'<@s.url '/syllabus/book/${current_book_id}/chapters'/>',lines:true,
+					formatter:function(node){ return '<span title=\''+node['attributes']['content'] + '\' class=\'chapter-tooltip\'>' + node['text'] + '</span>';},
+					onContextMenu:function(e,node){ e.preventDefault();  $('#${module}_list_tree').tree('select',node.target);$('#${module}_list_menus').menu('show',{ left: e.pageX,top: e.pageY });},
+					onClick:function(node){ ${dg}_search(); },onDblClick:function(node){if(node.attributes){ ${module}_chapter_window_edit('编辑章节',node.attributes,null); } },
+					onLoadSuccess:function(){ $('.chapter-tooltip').tooltip({position:'right' });}"></ul>
 			<div id="${module}_list_menus" class="easyui-menu" style="width:120px;">
 				<@shiro.hasPermission name="${PER_UPDATE}">
 				<div onclick="${module}_add(false)" data-options="iconCls:'icon-add'">新增章节</div>
@@ -287,13 +233,9 @@ $(function(){
 			</div>
 	</div>
 	<div data-options="region:'center',title:'知识点列表',border:false">
-		<table id="${dg}" class="easyui-datagrid" data-options="fit:true,fitColumns:true,rownumbers:true,pagination:true,pagePosition:'bottom',pageSize:20,pageList:[20,30,40],
-				border:true,striped:true,idField:'id',sortName:'orderNo',sortOrder:'desc',toolbar:'#${dg}_toobar',
-				url:'<@s.url '/syllabus/book/${current_book_id}/knowledges'/>',
-				onLoadError:function(e){ <@error_dialog 'e'/> },
-				onDblClickRow:function(rowIndex,rowData){
-					${dg}_edit_window('编辑知识点',rowIndex,rowData);
-				} ">
+		<table id="${dg}" class="easyui-datagrid" data-options="url:'<@s.url '/syllabus/book/${current_book_id}/knowledges'/>',fit:true,fitColumns:true,rownumbers:true,border:true,striped:true,
+				pagination:true,pagePosition:'bottom',pageSize:20,pageList:[20,30,40],idField:'id',sortName:'orderNo',sortOrder:'desc',toolbar:'#${dg}_toobar',
+				onLoadError:function(e){ <@error_dialog 'e'/> },onDblClickRow:function(rowIndex,rowData){ ${dg}_edit_window('编辑知识点',rowIndex,rowData); } ">
 			<thead>
 				<tr>
 					<th data-options="field:'id',checkbox:true"></th>

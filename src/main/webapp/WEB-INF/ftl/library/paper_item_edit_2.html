@@ -1,87 +1,20 @@
 <#--试卷试题（多选）编辑页面-->
 <#include "comm.ftl" />
+<#include "library/paper_item_edit_common.ftl"/>
 <#assign module = "library_paper_item_${current_item_type_value}" />
 <#assign form = "${module}_edit_form" />
 <#assign dg = "${module}_opts_dg"/>
 <script type="text/javascript">
 <!--
 $(function(){
-	//options list
-	var dg = $("#${dg}").datagrid({
-		fit:true,fitColumns:true,rownumbers:true,border:true,striped:true,
-		idField:"opt_id",
-		columns:[[{
-			field:"opt_id",checkbox:true
-		},{
-			title:"选项内容", field:"opt_content", width:100,align:"left",
-			formatter: function(value,row,index){
-				return value.replace(/<[^>]*>/g,"");
-			}
-		},{
-			title:"正确答案",field:"opt",width:10,align:"center",
-			formatter: function(value,row,index){
-				return "<input type='checkbox' name='answer' value='"+row["opt_id"] +"'/>";
-			}
-		}]],
-		onLoadError:function(e){<@error_dialog "e"/>},
-		onDblClickRow:function(rowIndex,rowData){edit_window("编辑选项",rowIndex,rowData);}
-	});
 	<@shiro.hasPermission name="${PER_UPDATE}">
 	//add option
-	${dg}_add = function(){edit_window("新增选项",0,null);};
+	${dg}_add = function(){${module}_edit_window("新增选项",0,null);};
 	</@shiro.hasPermission>
 	//option edit window
-	function edit_window(title,index,row){
-		var d = $("<div/>").dialog({
-			title:title,width:550,height:200,
-			href:"<@s.url '/library/item/edit/option/${current_item_type_value}'/>",
-			modal:true,
-			buttons:[
-			<@shiro.hasPermission name="${PER_UPDATE}">
-			{
-				text:"保存",iconCls:"icon-save",
-				handler:function(){
-					var data = $("#library_item_${current_item_type_value}_edit_opt_form").form("serialize");
-					if($.trim(data["opt_content"]) == ""){
-						$.messager.alert("警告","请输入选项内容！");
-						return;
-					}
-					var index = dg.datagrid("getRowIndex",data["opt_id"]);
-					if(index > -1) {
-						dg.datagrid("updateRow",{index:index, row : data});
-					}else{
-						dg.datagrid("appendRow",data);
-					}
-					d.dialog("close");
-				}
-			},
-			</@shiro.hasPermission>
-			{
-				text:"关闭",iconCls:"icon-cancel",
-				handler:function(){ d.dialog("close");}
-			}],
-			onClose:function(){$(this).dialog("destroy");},
-			onLoad:function(){if(row){$("#library_item_${current_item_type_value}_edit_opt_form").form("load",row);}}
-		});
-	};
-	<@shiro.hasPermission name="${PER_DELETE}">
-	${dg}_delete = function(){
-		var rows = dg.datagrid("getChecked");
-		if(rows && rows.length > 0){
-			$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
-				if(!r)return;
-				for(var i = 0; i < rows.length; i++){
-					var index = dg.datagrid("getRowIndex",rows[i]["opt_id"]);
-					if(index > -1){
-						dg.datagrid("deleteRow",index);
-					}
-				}
-			});
-		}else{
-			$.messager.alert("提示","未选中须删除的数据！");
-		}
-	};
-	</@shiro.hasPermission>
+	<@paper_item_edit_widow />
+	//option delete
+	<@paper_item_edit_opts_delete />
 	//============================================================================================
 		//load
 		${module}_load = function(row){
@@ -92,7 +25,7 @@ $(function(){
 					var opt = {};
 					opt["opt_id"] = n["id"];
 					opt["opt_content"] = n["content"];
-					dg.datagrid("appendRow",opt);
+					$("#${dg}").datagrid("appendRow",opt);
 				});
 			}
 			if(row.answer){
@@ -119,7 +52,7 @@ $(function(){
 				$.messager.alert("警告","请输入试题内容！");
 				return false;
 			}
-			var rows = dg.datagrid("getRows");
+			var rows = $("#${dg}").datagrid("getRows");
 			if(rows == null || rows.length == 0){
 				$.messager.alert("警告","请添加选项！");
 				return false;
@@ -145,7 +78,7 @@ $(function(){
 		//update
 		${module}_update = function(){
 			post["children"] = [];
-			var rows = dg.datagrid("getRows");
+			var rows = $("#${dg}").datagrid("getRows");
 			if(rows){
 				$.each(rows,function(i,n){
 					var opt  = {};
@@ -178,12 +111,7 @@ $(function(){
 			<textarea style="float:left" name="content" class="easyui-ueditor"  data-options="required:true,width:762,height:<#if current_item_child>120<#else>85</#if>" rows="5" cols="20" />
 		</div>
 	</div>
-	<div data-options="region:'center',title:'选项',tools:[
-			<@shiro.hasPermission name='${PER_UPDATE}'>{ iconCls:'icon-add',text:'添加选项', handler:function(){${dg}_add();}},</@shiro.hasPermission>
-			<@shiro.hasPermission name='${PER_DELETE}'>{ iconCls:'icon-remove',text:'删除选项', handler:function(){${dg}_delete();}}</@shiro.hasPermission>
-			],border:false">
-		<table id="${dg}"></table>
-	</div>
+	<@paper_item_edit_opts_dg "checkbox"/>
 	<div data-options="region:'south',title:'答案解析',collapsible:false,height:180,border:false">
 		<div style="float:left;margin-left:10px;margin-top:3px;">
 			<textarea style="float:left" name="analysis" class="easyui-ueditor"  data-options="required:true,width:762,height:80" rows="5" cols="20"/>

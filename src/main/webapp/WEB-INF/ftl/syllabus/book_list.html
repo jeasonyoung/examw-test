@@ -5,69 +5,12 @@
 <script type="text/javascript">
 <!--
 $(function(){
-	var current_exam_id = current_subject_id = "";
-	//exam tree
-	var exam_tree = $("#${module}_exam_tree").tree({
-		url:"<@s.url '/settings/category/exams/subject/tree'/>",
-		lines:true,
-		onLoadError:function(e){ <@error_dialog "e"/> },
-		onBeforeLoad:function(){
-			current_exam_id = current_subject_id = "";
-		},
-		onClick:function(node){
-			current_exam_id = current_subject_id = "";
-			if(node.attributes.type =="subject"){
-				current_subject_id = node.id;
-				var parent = exam_tree.tree("getParent",node.target);
-				if(parent) current_exam_id = parent.id;
-			}else{
-				current_exam_id = node.id;
-			}
-			${dg}_search();
-		}
-	});
-	//dg
-	var dg = $("#${dg}").datagrid({
-		url:"<@s.url '/syllabus/book/datagrid'/>",
-		fit:true,fitColumns:true,rownumbers:true,
-		pagination:true,pagePosition:"bottom",pageSize:20,pageList:[20,30,40],
-		border:true,striped:true,
-		idField:"id",sortName:"orderNo",sortOrder:"desc",
-		columns:[[{
-			field:"id",checkbox:true
-		},{
-			title:"所属科目",field:"subjectName", width:30, align:"left",sortable:true
-		},{
-			title:"教材名称",field:"name",width:25,align:"left",sortable:true
-		},{
-			title:"所属出版社",field:"pressName",width:30,align:"left",sortable:true
-		},{
-			title:"价格",field:"price", width:10, align:"right",sortable:true
-		},{
-			title:"优惠价格",field:"discount", width:10, align:"right",sortable:true
-		},{
-			title:"所属地区",field:"areaName", width:20, align:"center",sortable:true
-		},{
-			title:"状态",field:"statusName", width:8, align:"center",sortable:true
-		},{
-			title:"操作",field:"opt1", width:15, align:"center",
-			formatter:function(value,row,index){
-				return "<a href='#' onclick='${dg}_book_chapters(\""+row["id"] +"\",\"" +row["name"]+ "\");' title='教材章节/知识点管理'>[章节/知识点]</a>";
-			}
-		}]],
-		toolbar:"#${dg}_toobar",
-		onLoadError:function(e){ <@error_dialog "e"/> },
-		onDblClickRow:function(rowIndex,rowData){
-			edit_window("编辑教材",rowIndex,rowData, null);
-		}
-	});
 	//chapters
 	${dg}_book_chapters = function(id,title){
 		title = "教材［"+title+"］章节/知识点管理";
 		var d = $("<div/>").dialog({
-			title:title,width:800,height:600,
+			title:title,width:800,height:600,modal:true,
 			href:"<@s.url '/syllabus/book/'/>"+id + "/chapters/list",
-			modal:true,
 			buttons:[{
 				text:"关闭",iconCls:"icon-cancel",
 				handler:function(){d.dialog("close"); }
@@ -83,23 +26,31 @@ $(function(){
 		m = true;
 		$.getJSON("<@s.url '/syllabus/book/order'/>?_=" + Math.random(),function(data){
 			m = false;
-			edit_window("新增教材",0,null,data);
+			${module}_edit_window("新增教材",0,null,data);
 		});
 	};
 	</@shiro.hasPermission>
 	//edit
-	function edit_window(title,index,row,order){
-		var exam_id = current_exam_id,subject_id = current_subject_id;
+	${module}_edit_window = function(title,index,row,order){
+		var exam_id = "",subject_id = "";
 		if(row){
 			if(row.examId)exam_id = row.examId;
 			if(row.subjectId)subject_id = row.subjectId;
+		}else{
+			var node = $("#${module}_exam_tree").tree("getSelected");
+			if(node){
+				if(node["attributes"]["type"] =="subject"){
+					subject_id = node["id"];
+					var parent = $("#${module}_exam_tree").tree("getParent",node.target);
+					if(parent) exam_id = parent["id"];
+				}else{
+					exam_id = node["id"];
+				}
+			}
 		}
 		var d = $("<div/>").dialog({
-			title:title,
-			width:600,
-			height:400,
+			title:title,width:600,height:400,modal:true,
 			href:"<@s.url '/syllabus/book/edit'/>?examId="+exam_id + "&subjectId="+subject_id,
-			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">      
 			{
@@ -113,24 +64,15 @@ $(function(){
 							if (!isValid)$.messager.progress("close");
 							return isValid;
 						},
-						onLoadError:function(e){
-							$.messager.progress("close");
-							<@error_dialog "e"/>
-						},
+						onLoadError:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
 						success:function(data){
 							$.messager.progress("close");
 							var data = $.parseJSON(data);
 							if(data.success){
-								dg.datagrid(row ? "updateRow" : "insertRow",{
-									index:index,
-									row:data.data
-								});
+								$("#${dg}").datagrid(row ? "updateRow" : "insertRow",{index:index, row:data.data });
 								d.dialog("close");
 							}else{
-								$.messager.show({
-									title:"保存异常",
-									msg:data.msg
-								});
+								$.messager.show({ title:"保存异常", msg:data.msg });
 							}
 						}
 					});
@@ -139,9 +81,7 @@ $(function(){
 			</@shiro.hasPermission>
 			{
 				text:"关闭",iconCls:"icon-cancel",
-				handler:function(){
-					d.dialog("close");
-				}
+				handler:function(){ d.dialog("close"); }
 			}],
 			onClose:function(){ $(this).dialog("destroy"); },
 			onLoad:function(){
@@ -152,45 +92,39 @@ $(function(){
 	};
 	//search
 	${dg}_search = function(){
-		dg.datagrid("load",{
-			"examId":current_exam_id,
-			"subjectId":current_subject_id,
-			name:$("#${dg}_toobar input[name='name']").val()
-		});
+		var exam_id = "",subject_id = "";
+		var node = $("#${module}_exam_tree").tree("getSelected");
+		if(node){
+			if(node["attributes"]["type"] =="subject"){
+				subject_id = node["id"];
+				var parent = $("#${module}_exam_tree").tree("getParent",node.target);
+				if(parent) exam_id = parent["id"];
+			}else{
+				exam_id = node["id"];
+			}
+		}
+		$("#${dg}").datagrid("load",{ "examId":exam_id, "subjectId":subject_id, name:$("#${dg}_toobar input[name='name']").val() });
 	};
 	<@shiro.hasPermission name="${PER_DELETE}">
 	//delete
 	${dg}_delete = function(){
-		var rows = dg.datagrid("getChecked");
+		var rows = $("#${dg}").datagrid("getChecked");
 		if(rows && rows.length > 0){
 			$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
 				if(!r)return;
 				$.messager.progress();
 				var ids = [];
-				for(var i = 0; i < rows.length; i++){
-					ids.push(rows[i].id);
-				}
+				for(var i = 0; i < rows.length; i++){ ids.push(rows[i].id); }
 				$.ajax({
-					url:"<@s.url '/syllabus/textbook/delete'/>",
-					type:"POST",
-					data:{
-						id:ids.join("|")
-					},
-					dataType:"json",
-					error:function(e){
-						$.messager.progress("close");
-						<@error_dialog "e"/>
-					},
+					url:"<@s.url '/syllabus/book/delete'/>",
+					type:"POST",data:{ id:ids.join("|") }, dataType:"json",
+					error:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
 					success:function(data,textStatus){
 						$.messager.progress("close");
 						if(data.success){
-							dg.datagrid("load");
-							dg.datagrid("unselectAll");
+							$("#${dg}").datagrid("load"); $("#${dg}").datagrid("unselectAll");
 						}else{
-							$.messager.show({
-								title:"提示",
-								msg:data.msg
-							});
+							$.messager.show({ title:"提示", msg:data.msg });
 						}
 					}
 				});
@@ -204,17 +138,28 @@ $(function(){
 //-->
 </script>
 <div class="easyui-layout" data-options="fit:true">
-	<div data-options="region:'west',title:'所属科目',split:true,tools:[{
-			iconCls:'icon-reload',
-		 	handler:function(){
-		 		$('#${module}_exam_tree').tree('reload');
-		 		${dg}_search();
-		 	}
-		}]"  style="padding:5px;width:195px;">
-		<ul id="${module}_exam_tree"></ul>
+	<div data-options="region:'west',title:'所属科目',split:true,tools:[{iconCls:'icon-reload', handler:function(){ $('#${module}_exam_tree').tree('reload'); ${dg}_search(); } }]"  style="padding:5px;width:195px;">
+		<ul id="${module}_exam_tree" class="easyui-tree" data-options="url:'<@s.url '/settings/category/exams/subject/tree'/>',lines:true,
+			onLoadError:function(e){ <@error_dialog 'e'/> },onClick:function(node){ ${dg}_search(); }"></ul>
 	</div>
 	<div data-options="region:'center',title:'教材列表'">
-		<table id="${dg}"></table>
+		<table id="${dg}" class="easyui-datagrid" data-options="url:'<@s.url '/syllabus/book/datagrid'/>',fit:true,fitColumns:true,rownumbers:true,border:true,striped:true,
+			pagination:true,pagePosition:'bottom',pageSize:20,pageList:[20,30,40],idField:'id',sortName:'orderNo',sortOrder:'desc',toolbar:'#${dg}_toobar',
+			onLoadError:function(e){ <@error_dialog 'e'/> },onDblClickRow:function(rowIndex,rowData){ ${module}_edit_window('编辑教材',rowIndex,rowData, null); } ">
+			<thead>
+				<tr>
+					<th data-options="field:'id',checkbox:true"></th>
+					<th data-options="field:'subjectName',width:30,align:'left',sortable:true">所属科目</th>
+					<th data-options="field:'name',width:25,align:'left',sortable:true">教材名称</th>
+					<th data-options="field:'pressName',width:30,align:'left',sortable:true">所属出版社</th>
+					<th data-options="field:'price',width:10,align:'right',sortable:true">价格</th>
+					<th data-options="field:'discount',width:10,align:'right',sortable:true">优惠价格</th>
+					<th data-options="field:'areaName',width:20,align:'center',sortable:true">所属地区</th>
+					<th data-options="field:'statusName',width:8,align:'center',sortable:true">状态</th>
+					<th data-options="field:'opt',width:15,align:'center',formatter:function(value,row,index){return '<a href=\'#\' onclick=${dg}_book_chapters(\''+row['id'] +'\',\'' +row['name']+ '\'); title=\'教材章节/知识点管理\'>[章节/知识点]</a>'; }">操作</th>
+				</tr>
+			</thead>
+		</table>
 		<div id="${dg}_toobar">
 			<@shiro.hasPermission name="${PER_UPDATE}">
 			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"  onclick="${dg}_add()" style="float:left;">新增</a>

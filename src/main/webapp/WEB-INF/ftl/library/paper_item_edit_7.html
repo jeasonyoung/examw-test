@@ -7,31 +7,14 @@
 <script type="text/javascript">
 <!--
 $(function(){
-	//share options list.
-	var share_opt_dg = $("#${dg}_share_opts").datagrid({
-		fit:true,fitColumns:true,rownumbers:true,border:true,striped:true,idField:"opt_id",
-		columns:[[{
-			field:"id",checkbox:true
-		},{
-			title:"选项内容",field:"opt_content",width:100,align:"left",
-			formatter: function(value,row,index){
-				return value.replace(/<[^>]*>/g,"");
-			}
-		}]],
-		onLoadError:function(e){ <@error_dialog "e"/> },
-		onDblClickRow:function(rowIndex,rowData){
-			edit_share_opts_window("编辑共享答案选项",rowIndex,rowData);
-		}
-	});
 	<@shiro.hasPermission name="${PER_UPDATE}">
 	//share options 
-	${dg}_share_opts_add = function(){ edit_share_opts_window("新增共享答案选项",0,null);};
+	${dg}_share_opts_add = function(){ ${module}_edit_share_opts_window("新增共享答案选项",0,null);};
 	</@shiro.hasPermission>
-	function edit_share_opts_window(title,index,row){
+	${module}_edit_share_opts_window = function(title,index,row){
 		var d = $("<div/>").dialog({
-			title:title,width:550,height:200,
+			title:title,width:600,height:200,modal:true,
 			href:"<@s.url '/library/item/edit/option/${current_item_type_value}'/>",
-			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
 			{
@@ -42,11 +25,11 @@ $(function(){
 						$.messager.alert("警告","请输入选项内容！");
 						return;
 					}
-					var index = share_opt_dg.datagrid("getRowIndex",data["opt_id"]);
+					var index = $("#${dg}_share_opts").datagrid("getRowIndex",data["opt_id"]);
 					if(index > -1) {
-						share_opt_dg.datagrid("updateRow",{index:index, row : data});
+						$("#${dg}_share_opts").datagrid("updateRow",{index:index, row : data});
 					}else{
-						share_opt_dg.datagrid("appendRow",data);
+						$("#${dg}_share_opts").datagrid("appendRow",data);
 					}
 					d.dialog("close");
 				}
@@ -62,9 +45,9 @@ $(function(){
 	};
 	<@shiro.hasPermission name="${PER_DELETE}">
 	${dg}_share_opts_delete = function(){
-		var rows = share_opt_dg.datagrid("getChecked");
+		var rows = $("#${dg}_share_opts").datagrid("getChecked");
 		if(rows && rows.length > 0){
-			var items = dg.datagrid("getRows");
+			var items = $("#${dg}").datagrid("getRows");
 			if(items && items.length > 0){
 				$.messager.alert("警告","请先删除全部的子题！");
 				return;
@@ -72,9 +55,9 @@ $(function(){
 			$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
 				if(!r)return;
 				for(var i = 0; i < rows.length; i++){
-					var index = share_opt_dg.datagrid("getRowIndex",rows[i]["opt_id"]);
+					var index = $("#${dg}_share_opts").datagrid("getRowIndex",rows[i]["opt_id"]);
 					if(index > -1){
-						share_opt_dg.datagrid("deleteRow",index);
+						$("#${dg}_share_opts").datagrid("deleteRow",index);
 					}
 				}
 			});
@@ -84,9 +67,9 @@ $(function(){
 	};
 	</@shiro.hasPermission>
 	//加载共享选项。
-	function load_share_opts(){
+	${module}_load_share_opts = function(){
 		var opts = [];
-		var rows = share_opt_dg.datagrid("getRows");
+		var rows = $("#${dg}_share_opts").datagrid("getRows");
 		if(rows && $.isArray(rows) && rows.length > 0){
 			$.each(rows,function(i,n){
 				var opt  = {};
@@ -99,30 +82,10 @@ $(function(){
 		return opts;
 	};
 //============================================================================================
-	//children items list.
-	var dg = $("#${dg}").datagrid({
-		fit:true,fitColumns:true,rownumbers:true,border:true,striped:true,idField:"id",
-		columns:[[{
-			field:"id",checkbox:true
-		},{
-			title:"子题类型",field:"typeName",width:15,align:"center"
-		},{
-			title:"子题内容",field:"content",width:100,align:"left",
-			formatter: function(value,row,index){
-				return value.replace(/<[^>]*>/g,"");
-			}
-		}]],
-		toolbar:"#${dg}_toobar",
-		onLoadError:function(e){<@error_dialog "e"/> },
-		onDblClickRow:function(rowIndex,rowData){
-			rowData["children"] = load_share_opts();
-			edit_window("编辑共享答案子试题［"+rowData.typeName+"］",rowIndex,rowData,rowData.type);
-		}
-	});
 	<@shiro.hasPermission name="${PER_UPDATE}">
 	//add child items.
 	${dg}_add = function(item){
-		var opts = load_share_opts();
+		var opts =${module}_load_share_opts();
 		if(opts.length == 0){
 			$.messager.alert("警告","请先添加共享答案选项！");
 			return;
@@ -133,13 +96,13 @@ $(function(){
 			$.getJSON("<@s.url '/library/item/uuid'/>?count=2",function(data){
 				pop = false;
 				$("#${form} input[name='items_id']").val(data[0]);
-				edit_window("新增共享答案子试题［"+$(item).text()+"］",0,{"id":data[1],"children":opts},$(item).attr("value"));
+				${module}_edit_window("新增共享答案子试题［"+$(item).text()+"］",0,{"id":data[1],"children":opts},$(item).attr("value"));
 			});
 		}
 	};
 	</@shiro.hasPermission>
 	//child item edit window
-	function edit_window(title,index,row,type){
+	${module}_edit_window = function(title,index,row,type){
 		var d = $("<div/>").dialog({
 			title:title,width:800,height:600,
 			href:"<@s.url '/library/paper/items/edit/'/>" + type + "?child=true",
@@ -157,11 +120,11 @@ $(function(){
 						$.messager.alert("警告","未能获取子题ID！");
 						return;
 					}
-					var index = dg.datagrid("getRowIndex",post["id"]);
+					var index = $("#${dg}").datagrid("getRowIndex",post["id"]);
 					if(index > -1) {
-						dg.datagrid("updateRow",{index:index, row : post});
+						$("#${dg}").datagrid("updateRow",{index:index, row : post});
 					}else{
-						dg.datagrid("appendRow",post);
+						$("#${dg}").datagrid("appendRow",post);
 					}
 					d.dialog("close");
 				}
@@ -178,14 +141,14 @@ $(function(){
 	<@shiro.hasPermission name="${PER_DELETE}">
 	//delete child items.
 	${dg}_delete = function(){
-		var rows = dg.datagrid("getChecked");
+		var rows = $("#${dg}").datagrid("getChecked");
 		if(rows && rows.length > 0){
 			$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
 				if(!r)return;
 				for(var i = 0; i < rows.length; i++){
-					var index = dg.datagrid("getRowIndex",rows[i]["id"]);
+					var index = $("#${dg}").datagrid("getRowIndex",rows[i]["id"]);
 					if(index > -1){
-						dg.datagrid("deleteRow",index);
+						$("#${dg}").datagrid("deleteRow",index);
 					}
 				}
 			});
@@ -204,14 +167,14 @@ $(function(){
 				var opt ={};
 				opt["opt_id"] = row.children[i]["id"];
 				opt["opt_content"] = row.children[i]["content"];
-				share_opt_dg.datagrid("appendRow",opt);
+				$("#${dg}_share_opts").datagrid("appendRow",opt);
 			}
 			var items = row.children[row.children.length - 1];
 			if(items){
 				$("#${form} input[name='items_id']").val(items["id"]);
 				if(items.children && $.isArray(items.children)){
 					$.each(items.children,function(i,n){
-						dg.datagrid("appendRow",n);
+						$("#${dg}").datagrid("appendRow",n);
 					});
 				}
 			}
@@ -233,7 +196,7 @@ $(function(){
 			$.messager.alert("警告","请输入试题内容！");
 			return false;
 		}
-		var opts = share_opt_dg.datagrid("getRows");
+		var opts = $("#${dg}_share_opts").datagrid("getRows");
 		if(opts == null || opts.length == 0){
 			$.messager.alert("警告","请添加共享答案选项！");
 			return false;
@@ -243,7 +206,7 @@ $(function(){
 			$.messager.alert("警告","获取共享答案子试题集合ID失败！");
 			return false;
 		}
-		var items = dg.datagrid("getRows");
+		var items = $("#${dg}").datagrid("getRows");
 		if(items == null || items.length == 0){
 			$.messager.alert("警告","请添加共享答案子试题！");
 			return false;
@@ -253,7 +216,7 @@ $(function(){
 	//save update
 	${module}_update = function(){
 		post["children"] = [];
-		var opts = load_share_opts();
+		var opts = ${module}_load_share_opts();
 		if(opts){
 			$.each(opts,function(i,n){
 				post["children"].push(n);
@@ -264,7 +227,7 @@ $(function(){
 		child["content"] = "共享答案题目";
 		child["orderNo"] = opts.length + 1;
 		child["children"] = [];
-		var items = dg.datagrid("getRows");
+		var items = $("#${dg}").datagrid("getRows");
 		if(items){
 			$.each(items,function(i,n){
 				n["orderNo"] = i + 1;
@@ -306,10 +269,28 @@ $(function(){
 			{ iconCls:'icon-remove', text:'删除选项',handler:function(){ ${dg}_share_opts_delete();}}
 			</@shiro.hasPermission>
 		 ],border:false">
-		<table id="${dg}_share_opts"></table>
+		<table id="${dg}_share_opts" class="easyui-datagrid" data-options="fit:true,fitColumns:true,rownumbers:true,border:true,striped:true,idField:'opt_id',
+			onLoadError:function(e){ <@error_dialog 'e'/> },onDblClickRow:function(rowIndex,rowData){ ${module}_edit_share_opts_window('编辑共享答案选项',rowIndex,rowData); }">
+			<thead>
+				<tr>
+					<th data-options="field:'id',checkbox:true"></th>
+					<th data-options="field:'opt_content',width:100,align:'left',formatter:function(value,row,index){ return value.replace(/<[^>]*>/g,''); }">选项内容</th>
+				</tr>
+			</thead>
+		</table>
 	</div>
 	<div data-options="region:'south',title:'子题集合',collapsible:false,height:220,border:false">
-		<table id="${dg}"></table>
+		<table id="${dg}" class="easyui-datagrid" data-options="fit:true,fitColumns:true,rownumbers:true,border:true,striped:true,idField:'id',	toolbar:'#${dg}_toobar',
+			onLoadError:function(e){<@error_dialog 'e'/> },onDblClickRow:function(rowIndex,rowData){ rowData['children'] = ${module}_load_share_opts();
+			${module}_edit_window('编辑共享答案子试题［'+rowData.typeName+'］',rowIndex,rowData,rowData.type);}">
+			<thead>
+				<tr>
+					<th data-options="field:'id',checkbox:true"></th>
+					<th data-options="field:'typeName',width:15,align:'center'">子题类型</th>
+					<th data-options="field:'content',width:100,align:'left',formatter:function(value,row,index){ return value.replace(/<[^>]*>/g,''); }">子题内容</th>
+				</tr>
+			</thead>
+		</table>
 		<div id="${dg}_toobar">
 			<@shiro.hasPermission name="${PER_UPDATE}">
 			<a href="#" class="easyui-menubutton" data-options="iconCls:'icon-add',menu:'#${dg}_toobar_menu',plain:true" style="float:left;">新增</a>

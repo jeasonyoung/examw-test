@@ -103,4 +103,17 @@ public class BookDaoImpl extends BaseDaoImpl<Book> implements IBookDao {
 		List<Book> list = this.find(hql, parameters, 0, 0);
 		return (list == null || list.size() == 0) ? null : list.get(0);
 	}
+	/*
+	 * 删除数据。
+	 * @see com.examw.test.dao.impl.BaseDaoImpl#delete(java.lang.Object)
+	 */
+	@Override
+	public void delete(Book data) {
+		if(data == null) return;
+		int count = 0;
+		if(data.getChapters() != null && (count = data.getChapters().size()) > 0){
+			throw new RuntimeException(String.format("教材［%1$s］关联［%2$d］章节，暂不能删除！", data.getName(), count));
+		}
+		super.delete(data);
+	}
 }

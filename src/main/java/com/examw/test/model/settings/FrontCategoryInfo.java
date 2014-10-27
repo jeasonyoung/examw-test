@@ -13,13 +13,13 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class FrontCategoryInfo extends CategoryInfo  {	
 	private static final long serialVersionUID = 1L;
-	private List<ExamInfo> exams;
+	private List<FrontExamInfo> exams;
 	private Set<FrontCategoryInfo> children;
 	/**
 	 * 获取考试集合。
 	 * @return 考试集合。
 	 */
-	public List<ExamInfo> getExams() {
+	public List<FrontExamInfo> getExams() {
 		return exams;
 	}
 	/**
@@ -27,7 +27,7 @@ public class FrontCategoryInfo extends CategoryInfo  {
 	 * @param exams
 	 * 考试集合。
 	 */
-	public void setExams(List<ExamInfo> exams) {
+	public void setExams(List<FrontExamInfo> exams) {
 		this.exams = exams;
 	}
 	/**

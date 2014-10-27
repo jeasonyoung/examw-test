@@ -10,13 +10,13 @@
 	</div>
 	<div style="float:left;margin-top:8px;width:100%;">
 		<label style="width:75px;">所属科目：</label>
-		<input id="${form}_examId" type="text" name="examId" class="easyui-combotree" data-options="url:'<@s.url '/settings/category/exams/tree'/>',required:true,
+		<input id="${form}_examId" name="examId" class="easyui-combotree" data-options="url:'<@s.url '/settings/category/exams/tree'/>',required:true,
 				onLoadError:function(e){ <@error_dialog 'e'/> },onSelect:function(record){
 					$('#${form}_subjectId').combobox('clear');$('#${form}_subjectId').combobox('reload','<@s.url '/settings/subject/all'/>?examId=' + record.id);
 					$('#${form}_areaId').combobox('clear');
 				}
 			" style="width:280px;"/>
-		<input id="${form}_subjectId" type="text" name="subjectId" class="easyui-combobox" data-options="url:'<@s.url '/settings/subject/all'/>?examId=${current_exam_id}',
+		<input id="${form}_subjectId" name="subjectId" class="easyui-combobox" data-options="url:'<@s.url '/settings/subject/all'/>?examId=${current_exam_id}',
 				required:true,valueField:'id',textField:'name',onLoadError:function(e){ <@error_dialog 'e'/> },
 				onSelect:function(record){
 					$('#${form}_areaId').combobox('clear'); $('#${form}_areaId').combobox('reload','<@s.url '/settings/subject/areas'/>?subjectId=' + record.id);
@@ -25,7 +25,7 @@
 	</div> 
 	<div style="float:left; margin-top:8px; width:100%;">
 		<label style="width:75px;">教材名称：</label>
-		<input type="text" name="name" class="easyui-validatebox"  data-options="required:true" style="width:460px;"/>
+		<input type="text" name="name" class="easyui-textbox"  data-options="required:true" style="width:460px;"/>
 	</div>
 	<div style="float:left; margin-top:8px; width:100%;">
 		<label style="width:75px;">所属地区：</label>

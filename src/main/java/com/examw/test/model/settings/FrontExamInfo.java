@@ -12,7 +12,7 @@ import com.examw.model.Paging;
  * @since 2014年10月27日
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class FrontExamInfo extends Paging {
+public class FrontExamInfo extends Paging implements Comparable<FrontExamInfo> {
 	private static final long serialVersionUID = 1L;
 	private String id,name,abbr,categoryId,categoryName;
 	private String[] areaId,areaName;
@@ -154,5 +154,21 @@ public class FrontExamInfo extends Paging {
 	 */
 	public void setAreaName(String[] areaName) {
 		this.areaName = areaName;
+	}
+	/**
+	 * 排序比较。
+	 */
+	@Override
+	public int compareTo(FrontExamInfo o) {
+		int index = 0;
+		if(this == o) return index; 
+		index = this.getCode() - o.getCode();
+		if(index == 0){
+			index = this.getName().compareToIgnoreCase(o.getName());
+			if(index == 0){
+				index = this.getId().compareToIgnoreCase(o.getId());
+			}
+		}
+		return index;
 	}
 }

@@ -43,14 +43,14 @@
 </div>
 </#macro>
 <#--选择题选项-->
-<#macro item_edit_opts_dg>
+<#macro item_edit_opts_dg type>
 <table id="${dg}" class="easyui-datagrid" data-options="fit:true,border:true,striped:true,fitColumns:true,rownumbers:true,idField:'opt_id',
 	onLoadError:function(e){<@error_dialog 'e'/>},onDblClickRow:function(rowIndex,rowData){${module}_edit_opts_window('编辑选项',rowIndex,rowData);}">
 	<thead>
 		<tr>
 			<th data-options="field:'opt_id',checkbox:true"></th>
 			<th data-options="field:'opt_content', width:100,align:'left',formatter:function(value,row,index){return value.replace(/<[^>]*>/g,'');}">选项内容</th>
-			<th data-options="field:'opt',width:10,align:'center',formatter:function(value,row,index){ return '<input type=\'radio\' name=\'answer\' value='+row['opt_id'] +'/>';}">正确答案</th>
+			<th data-options="field:'opt',width:10,align:'center',formatter:function(value,row,index){ return '<input type=\'${type}\' name=\'answer\' value='+row['opt_id'] +'/>';}">正确答案</th>
 		</tr>
 	</thead>
 </table>

@@ -4,53 +4,33 @@
 <script type="text/javascript">
 <!--
 $(function(){
-	var parent_syllabus_id = "${current_syllabus_id}";
-	//syllabus_tree
-	var st = $("#${module}_list_tree").tree({
-		url:"<@s.url '/syllabus/syllabus/${current_syllabus_id}/tree'/>",
-		onClick:function(node){
-			parent_syllabus_id = node.id;
-		},
-		onDblClick:function(node){
-			if(st){
-				var p = st.tree("getParent",node.target);
-		 		if(p == null)return;
-			}
-			if(node.attributes){
-				points_edit_window("编辑大纲要点",node.attributes);
-			}
-		},
-		onContextMenu:function(e,node){
-		 	e.preventDefault();
-		 	if(st){ st.tree("select",node.target); }
-		 	parent_syllabus_id = node.id;
-		 	$("#${module}_list_menus").menu("show",{ 
-		 		left: e.pageX,top: e.pageY 
-		 	});
-		 }
-	});
 	<@shiro.hasPermission name="${PER_UPDATE}">
 	//add
 	var show = false;
 	${module}_add = function(){
 		if(show)return;
 		show = true;
-		$.getJSON("<@s.url '/syllabus/syllabus/order'/>?syllabusId="+parent_syllabus_id+"&_=" + Math.random(),function(data){
+		var parent_syllabus_id = "${current_syllabus_id}";
+		var node = $("#${module}_tree").tree("getSelected");
+		if(node){ parent_syllabus_id = node["id"]; }
+		$.getJSON("<@s.url '/syllabus/syllabus/order?syllabusId='/>" + parent_syllabus_id +"&_" + Math.random(),function(order){
 			show = false;
-			points_edit_window("新增大纲要点",{"orderNo":data});
+			${module}_points_edit_window("新增大纲要点",{"orderNo":order});
 		});
 	};
 	</@shiro.hasPermission>
 	//edit_window
-	function points_edit_window(title,row){
-		var pid = parent_syllabus_id;
+	${module}_points_edit_window = function(title,row){
+		var pid = "${current_syllabus_id}";
 		if(row && row.pid){
 			pid = row.pid;
+		}else{
+			var node = $("#${module}_tree").tree("getSelected");
+			if(node){ pid = node["id"]; }
 		}
 		var d = $("<div/>").dialog({
-			title:title,width:600, height:160,
+			title:title,width:600, height:160,modal:true,
 			href:"<@s.url '/syllabus/syllabus/'/>"+pid + "/points_edit",
-			modal:true,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
 			{
@@ -64,21 +44,14 @@ $(function(){
 							if (!isValid)$.messager.progress("close");
 							return isValid;
 						},
-						onLoadError:function(e){
-							$.messager.progress("close");
-							<@error_dialog "e"/>
-						},
+						onLoadError:function(e){ $.messager.progress("close");<@error_dialog "e"/> },
 						success:function(data){
 							$.messager.progress("close");
 							var data = $.parseJSON(data);
 							if(data.success){
-								d.dialog("close");
-								${module}_reload();
+								d.dialog("close"); ${module}_reload();
 							}else{
-								$.messager.show({
-									title:"保存异常",
-									msg:data.msg
-								});
+								$.messager.show({ title:"保存异常", msg:data.msg });
 							}
 						}
 					});
@@ -90,18 +63,15 @@ $(function(){
 				handler:function(){ d.dialog("close"); }
 			}],
 			onClose:function(){ $(this).dialog("destroy");},
-			onLoad:function(){
-				if(row)$("#${module}_edit_form").form("load",row);
-			}
+			onLoad:function(){ if(row)$("#${module}_edit_form").form("load",row); }
 		});
 	};
 	<@shiro.hasPermission name="${PER_DELETE}">
 	//remove
 	${module}_remove = function(){
-		if(!st)return;
-		var node = st.tree("getSelected");
+		var node = $("#${module}_tree").tree("getSelected");
 		if(!node) return;
-		var p = st.tree("getParent",node.target);
+		var p = $("#${module}_tree").tree("getParent",node.target);
  		if(p == null){
  			$.messager.alert("警告","根节点不允许删除！");
  			return;
@@ -111,22 +81,14 @@ $(function(){
 			$.messager.progress();
 			$.ajax({
 				url:"<@s.url '/syllabus/syllabus/delete'/>",
-				type:"POST",
-				data:{ id:node.id },
-				dataType:"json",
-				error:function(e){
-					$.messager.progress("close");
-					<@error_dialog "e"/>
-				},
+				type:"POST", data:{ id:node.id }, dataType:"json",
+				error:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
 				success:function(data,textStatus){
 					$.messager.progress("close");
 					if(data.success){
 						${module}_reload();
 					}else{
-						$.messager.show({
-							title:"提示",
-							msg:data.msg
-						});
+						$.messager.show({ title:"提示", msg:data.msg });
 					}
 				}
 			});
@@ -135,14 +97,16 @@ $(function(){
 	</@shiro.hasPermission>
 	//reload
 	${module}_reload = function(){
-		if(st)st.tree("reload");
-		parent_syllabus_id = "${current_syllabus_id}";
+		$("#${module}_tree").tree("reload");
 	};
 });
 //-->
 </script>
-<ul id="${module}_list_tree" class="easyui-tree"></ul>
-<div id="${module}_list_menus" class="easyui-menu" style="width:120px;">
+<ul id="${module}_tree" class="easyui-tree" data-options="url:'<@s.url '/syllabus/syllabus/${current_syllabus_id}/tree'/>', onContextMenu:function(e,node){
+		 	e.preventDefault();$('#${module}_tree').tree('select',node.target); $('#${module}_menus').menu('show',{ left: e.pageX,top: e.pageY  }); },
+		 	onDblClick:function(node){ var p = $('#${module}_tree').tree('getParent',node.target); if(p == null) return;  if(node.attributes){
+				${module}_points_edit_window('编辑大纲要点',node.attributes); }}"></ul>
+<div id="${module}_menus" class="easyui-menu" style="width:120px;">
 	<@shiro.hasPermission name="${PER_UPDATE}">
 	<div onclick="${module}_add()" data-options="iconCls:'icon-add'">新增大纲要点</div>
 	</@shiro.hasPermission>

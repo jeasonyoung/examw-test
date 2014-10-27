@@ -1,6 +1,6 @@
 <#--试卷试题通用macro-->
 <#--选择题选项显示-->
-<#macro paper_item_edit_opts_dg>
+<#macro paper_item_edit_opts_dg type>
 <div data-options="region:'center',title:'选项',tools:[
 			<@shiro.hasPermission name='${PER_UPDATE}'>{ iconCls:'icon-add',text:'添加选项', handler:function(){${dg}_add();}},</@shiro.hasPermission>
 			<@shiro.hasPermission name='${PER_DELETE}'>{ iconCls:'icon-remove',text:'删除选项', handler:function(){${dg}_delete();}}</@shiro.hasPermission>
@@ -11,7 +11,7 @@
 			<tr>
 				<th data-options="field:'opt_id',checkbox:true"></th>
 				<th data-options="field:'opt_content', width:100,align:'left',formatter:function(value,row,index){ return value.replace(/<[^>]*>/g,''); }">选项内容</th>
-				<th data-options="field:'opt',width:10,align:'center',formatter: function(value,row,index){return '<input type=\'radio\' name=\'answer\' value=\''+row['opt_id'] +'\'/>';}">正确答案</th>
+				<th data-options="field:'opt',width:10,align:'center',formatter: function(value,row,index){return '<input type=\'${type}\' name=\'answer\' value=\''+row['opt_id'] +'\'/>';}">正确答案</th>
 			</tr>
 		</thead>
 	</table>
