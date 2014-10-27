@@ -1,5 +1,6 @@
 package com.examw.test.controllers.api;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import com.examw.test.model.products.FrontProductInfo;
 import com.examw.test.model.settings.AreaInfo;
 import com.examw.test.model.settings.ExamInfo;
 import com.examw.test.model.settings.FrontCategoryInfo;
+import com.examw.test.model.settings.FrontExamInfo;
 import com.examw.test.model.settings.SubjectInfo;
 import com.examw.test.model.syllabus.ChapterKnowledgeInfo;
 import com.examw.test.model.syllabus.SyllabusInfo;
@@ -85,9 +87,17 @@ public class FrontController {
 	 */
 	@RequestMapping(value = {"/exams"} , method = {RequestMethod.GET})
 	@ResponseBody
-	public List<ExamInfo> loadExams(String categoryId){
+	public List<FrontExamInfo> loadExams(String categoryId){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试［categoryId = %s］信息集合...", categoryId));
-		return this.examService.loadExams(categoryId,ExamStatus.ENABLE);
+		 List<FrontExamInfo> list = new ArrayList<>();
+		List<ExamInfo> exams =  this.examService.loadExams(categoryId,ExamStatus.ENABLE);
+		if(exams != null && exams.size() > 0){
+			for(ExamInfo exam : exams){
+				if(exam == null) continue;
+				list.add(new FrontExamInfo(exam));
+			}
+		}
+		return list;
 	}
 	/**
 	 * 加载考试信息。
@@ -96,9 +106,9 @@ public class FrontController {
 	 */
 	@RequestMapping(value = {"/exams/{examId}"} , method = {RequestMethod.GET})
 	@ResponseBody
-	public ExamInfo loadExam(@PathVariable String examId){
+	public FrontExamInfo loadExam(@PathVariable String examId){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试［examId = %s］信息...", examId));
-		return this.examService.loadExam(examId);
+		return new FrontExamInfo(this.examService.loadExam(examId));
 	}
 	/**
 	 * 加载考试下所有的产品
