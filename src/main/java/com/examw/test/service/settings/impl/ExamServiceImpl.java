@@ -226,18 +226,18 @@ public class ExamServiceImpl extends BaseDataServiceImpl<Exam, ExamInfo> impleme
 		return list;
 	}
 	/*
-	 * 加载考试信息集合。
-	 * @see com.examw.test.service.settings.IExamService#loadExams(java.lang.String)
+	 *  加载考试信息集合。
+	 * @see com.examw.test.service.settings.IExamService#loadExams(java.lang.String, com.examw.test.service.settings.ExamStatus)
 	 */
 	@Override
-	public List<ExamInfo> loadExams(final String categoryId) {
+	public List<ExamInfo> loadExams(final String categoryId,final ExamStatus status) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载［categoryId = %s］考试信息...", categoryId));
 		return this.changeModel(this.examDao.findExams(new ExamInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public String getCategoryId() { return categoryId; }
 			@Override
-			public Integer getStatus() {return ExamStatus.ENABLE.getValue();}
+			public Integer getStatus() {return status == null ? null : status.getValue();}
 			@Override
 			public String getSort() { return "code";}
 			@Override

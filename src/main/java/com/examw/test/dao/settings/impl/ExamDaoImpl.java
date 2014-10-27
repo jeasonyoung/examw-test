@@ -35,6 +35,8 @@ public class ExamDaoImpl extends BaseDaoImpl<Exam> implements IExamDao {
 		if(!StringUtils.isEmpty(info.getSort())){
 			if(info.getSort().equalsIgnoreCase("categoryName")){
 				info.setSort("category.name");
+			}else if(info.getSort().equalsIgnoreCase("statusName")){
+				info.setSort("status");
 			}
 			hql += " order by e." + info.getSort() + " " + info.getOrder();
 		}

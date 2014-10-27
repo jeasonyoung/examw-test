@@ -88,7 +88,7 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 			parameters.put("sourceId", info.getSourceId());
 		}
 		if(!StringUtils.isEmpty(info.getAreaId())){
-			hql += " and ((i.area is null) or (i.area.code = 0) or (i.area.id = :areaId)) ";
+			hql += " and ((i.area is null) or (i.area.code = 1) or (i.area.id = :areaId)) ";
 			parameters.put("areaId", info.getAreaId());
 		}
 		if(!StringUtils.isEmpty(info.getStatus())){
@@ -186,13 +186,23 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 	@Override
 	public List<Item> loadItems(Subject subject, ItemType itemType,Area area) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载试题［subject = %1$s］［itemType = %2$s］［area = %3$s］集合...", subject, itemType, area));
-		final String hql = "from Item i where (i.parent is null) and (i.subject.id = :subjectId) and (i.type = :type) and ((i.area is null) or (i.area.code = 1) or (i.area.id = :areaId))";
+		StringBuilder hqlBuilder = new StringBuilder();
+		hqlBuilder.append("from Item i where (i.parent is null) ");
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("subjectId", subject.getId());
-		parameters.put("type", itemType.getValue());
-		parameters.put("areaId", area == null ? null : area.getId());
-		if(logger.isDebugEnabled()) logger.debug(hql);
-		return this.find(hql, parameters, null, null);
+		if(subject != null && !StringUtils.isEmpty(subject.getId())){
+			hqlBuilder.append("and (i.subject.id = :subjectId) ");
+			parameters.put("subjectId", subject.getId());
+		}
+		if(itemType != null){
+			hqlBuilder.append(" and (i.type = :type) ");
+			parameters.put("type", itemType.getValue());
+		}
+		if(area != null && !StringUtils.isEmpty(area.getId())){
+			hqlBuilder.append("  and ((i.area is null) or (i.area.code = 1) or (i.area.id = :areaId)) ");
+			parameters.put("areaId", area.getId());
+		}
+		if(logger.isDebugEnabled()) logger.debug(hqlBuilder.toString());
+		return this.find(hqlBuilder.toString(), parameters, null, null);
 	}
 	/*
 	 * 加载科目下的题型集合。
@@ -201,20 +211,22 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 	@Override
 	public List<ItemType> loadItemTypes(Subject subject) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载科目［%s］下的题型集合...", subject == null ? "" : subject.getId()));
-		final String hql = "select i.type from Item i where (i.parent is null) and (i.subject.id = :subjectId) and ((i.area is null) or (i.area.code = 1) or (i.area.id in (:areaId))) group by i.type order by i.type";
+		if(subject == null || StringUtils.isEmpty(subject.getId())) return null;
+		StringBuilder hqlBuilder = new StringBuilder();
+		hqlBuilder.append("select i.type from Item i where (i.parent is null) and (i.subject.id = :subjectId) ");
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("subjectId", subject == null ?  null : subject.getId());
-		String[] areaIds = null;
+		parameters.put("subjectId", subject.getId());
 		if(subject.getAreas() != null && subject.getAreas().size() > 0){
+			hqlBuilder.append(" and ((i.area is null) or (i.area.code = 1) or (i.area.id in (:areaId))) ");
 			List<String> list = new ArrayList<>();
 			for(Area area : subject.getAreas()){
 				if(area == null) continue;
 				list.add(area.getId());
 			}
-			if(list.size() > 0) areaIds = list.toArray(new String[0]);
+			parameters.put("areaId", list);
 		}
-		parameters.put("areaId", areaIds);
-		List<?> types = this.query(hql, parameters, null, null);
+		hqlBuilder.append(" group by i.type order by i.type ");
+		List<?> types = this.query(hqlBuilder.toString(), parameters, null, null);
 		if(types == null || types.size() == 0) return null;
 		List<ItemType> list = new ArrayList<>();
 		for(Object obj : types){
