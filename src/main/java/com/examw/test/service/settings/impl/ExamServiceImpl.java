@@ -21,6 +21,7 @@ import com.examw.test.domain.settings.Exam;
 import com.examw.test.model.settings.AreaInfo;
 import com.examw.test.model.settings.ExamInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
+import com.examw.test.service.settings.ExamStatus;
 import com.examw.test.service.settings.IAreaService;
 import com.examw.test.service.settings.IExamService;
 
@@ -235,6 +236,8 @@ public class ExamServiceImpl extends BaseDataServiceImpl<Exam, ExamInfo> impleme
 			private static final long serialVersionUID = 1L;
 			@Override
 			public String getCategoryId() { return categoryId; }
+			@Override
+			public Integer getStatus() {return ExamStatus.ENABLE.getValue();}
 			@Override
 			public String getSort() { return "code";}
 			@Override

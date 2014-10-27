@@ -67,6 +67,10 @@ public class ExamDaoImpl extends BaseDaoImpl<Exam> implements IExamDao {
 			hql += " and (e.category.id = :categoryId)";
 			parameters.put("categoryId", info.getCategoryId());
 		}
+		if(info.getStatus() != null){
+			hql += " and (e.status = :status) ";
+			parameters.put("status", info.getStatus());
+		}
 		return hql;
 	}
 	/*
