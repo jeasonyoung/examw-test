@@ -23,6 +23,7 @@ import com.examw.test.model.syllabus.ChapterKnowledgeInfo;
 import com.examw.test.model.syllabus.SyllabusInfo;
 import com.examw.test.service.library.IFrontPaperService;
 import com.examw.test.service.products.IFrontProductService;
+import com.examw.test.service.settings.ExamStatus;
 import com.examw.test.service.settings.IExamService;
 import com.examw.test.service.settings.IFrontCategoryService;
 import com.examw.test.service.syllabus.IChapterKnowledgeService;
@@ -86,7 +87,7 @@ public class FrontController {
 	@ResponseBody
 	public List<ExamInfo> loadExams(String categoryId){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试［categoryId = %s］信息集合...", categoryId));
-		return this.examService.loadExams(categoryId);
+		return this.examService.loadExams(categoryId,ExamStatus.ENABLE);
 	}
 	/**
 	 * 加载考试信息。

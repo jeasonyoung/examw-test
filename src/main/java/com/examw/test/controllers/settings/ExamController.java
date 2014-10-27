@@ -80,7 +80,7 @@ public class ExamController {
 	@ResponseBody
 	public List<ExamInfo> all(String categoryId){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试类别［categoryId = %s］下的考试集合...", categoryId));
-		return this.examService.loadExams(categoryId);
+		return this.examService.loadExams(categoryId,null);
 	}
 	/**
 	 * 加载考试所属地区集合。

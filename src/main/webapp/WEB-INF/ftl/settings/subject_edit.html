@@ -10,7 +10,7 @@
 				$('#${form}_examId').combobox('clear');$('#${form}_examId').combobox('reload','<@s.url '/settings/exam/all?categoryId='/>'+n);
 				$('#${form}_areaId').combobox('clear');
 			}" style="width:198px;"/>
-		<input id="${form}_examId" name="examId" class="easyui-combobox" data-options="url:'<@s.url '/settings/exam/all'/>?categoryId=${current_categogy_id}',
+		<input id="${form}_examId" name="examId" class="easyui-combobox" data-options="url:'<@s.url '/settings/exam/all'/>?categoryId=${current_category_id}',
 			required:true,valueField:'id',textField:'name',onLoadError:function(e){ <@error_dialog 'e'/> },onChange:function(n,o){
 				$('#${form}_areaId').combobox('clear');$('#${form}_areaId').combobox('reload','<@s.url '/settings/exam/areas?examId='/>'+n);
 			}" style="width:168px;"/>
