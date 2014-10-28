@@ -21,6 +21,16 @@ public interface IStructureDao extends IBaseDao<Structure> {
 	 */
 	List<Structure> loadStructures(String paperId);
 	/**
+	 * 加载试卷试题。
+	 * @param structureId
+	 * 所属试卷结构ID。
+	 * @param itemId
+	 * 所属试题ID。
+	 * @return
+	 * 试卷试题。
+	 */
+	StructureItem loadStructureItem(String structureId, String itemId);
+	/**
 	 *  查询试卷试题。
 	 * @param info
 	 * 查询条件。

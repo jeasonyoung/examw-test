@@ -190,8 +190,19 @@ $(function(){
 	<div data-options="region:'center',border:false" >
 		<table id="${dg}" class="easyui-datagrid" data-options="url:'<@s.url '/library/item/datagrid'/>',border:true,striped:true,fit:true,fitColumns:true,rownumbers:true,
 			pagination:true,pagePosition:'bottom',pageSize:20,pageList:[20,30,40],idField:'id',sortName:'createTime',sortOrder:'desc',toolbar:'#${dg}_toobar',
-			onLoadError:function(e){ <@error_dialog 'e'/> },
-			onDblClickRow:function(rowIndex,rowData){ ${module}_edit_window('编辑试题［'+rowData.typeName+'］',rowIndex,rowData);}">
+			onLoadError:function(e){ <@error_dialog 'e'/> },onDblClickRow:function(rowIndex,rowData){ 
+				$.messager.progress({'text':'正在加载数据，请稍后...'}); 
+				$.getJSON('<@s.url '/library/item/'/>' + rowData['id'],function(callback){
+					$.messager.progress('close');
+					if(callback['success']){
+						${module}_edit_window('编辑试题［'+rowData['typeName']+'］',rowIndex,callback['data'],rowData['type']);
+					}else{
+						$.messager.show({ title:'提示', msg:callback['msg']});
+					}
+				});
+				
+				
+				}">
 			<thead>
 				<tr>
 					<th data-options="field:'id',checkbox:true"></th>

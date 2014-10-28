@@ -209,7 +209,7 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		if(logger.isDebugEnabled()) logger.debug("试题数据模型转换...");
 		if(data == null) return null;
 		ItemInfo info = new ItemInfo();
-		this.conversion(data, info);
+		this.conversion(data, info, false);
 		return info;
 	}
 	/*
@@ -217,7 +217,7 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 	 * @see com.examw.test.service.library.IItemService#conversion(com.examw.test.domain.library.Item, com.examw.test.model.library.BaseItemInfo)
 	 */
 	@Override
-	public void conversion(Item source, BaseItemInfo<?> target) {
+	public void conversion(Item source, BaseItemInfo<?> target,boolean isAll) {
 		if(logger.isDebugEnabled()) logger.debug("数据模型转换 Item => BaseItemInfo<?> ...");
 		if(source == null || target == null) return;
 		ItemParser parser = this.itemParsers.get(source.getType());
@@ -226,7 +226,7 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 			logger.error(err);
 			throw new RuntimeException(err);
 		}
-		parser.conversion(source, target);
+		parser.conversion(source, target, isAll);
 		if(target.getType() != null) target.setTypeName(this.loadTypeName(target.getType()));
 		if(target.getStatus() != null) target.setStatusName(this.loadStatusName(target.getStatus()));
 		if(target.getOpt() != null) target.setOptName(this.paperService.loadTypeName(target.getOpt()));

@@ -31,7 +31,11 @@ public interface ItemParser {
 	/**
 	 * 试题数据模型转换。
 	 * @param source
+	 * 试卷数据。
 	 * @param target
+	 * 目标模型
+	 * @param isAll
+	 * 是否全部转换。
 	 */
-	void conversion(Item source, BaseItemInfo<?> target);
+	void conversion(Item source, BaseItemInfo<?> target,boolean isAll);
 }

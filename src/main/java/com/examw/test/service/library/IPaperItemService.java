@@ -11,6 +11,15 @@ import com.examw.test.service.IBaseDataService;
  */
 public interface IPaperItemService extends IBaseDataService<StructureItemInfo> {
 	/**
+	 * 加载试卷试题。
+	 * @param structureId
+	 * 所属试卷结构ID。
+	 * @param itemId
+	 * 试题ID。
+	 * @return
+	 */
+	StructureItemInfo loadPaperItem(String structureId,String itemId);
+	/**
 	 * 加载试卷结构下试题最大的排序号。
 	 * @param structureId
 	 * 所属结构ID。
@@ -20,9 +29,10 @@ public interface IPaperItemService extends IBaseDataService<StructureItemInfo> {
 	/**
 	 * 数据模型转换。
 	 * @param source
+	 * @param isAll
 	 * @return
 	 */
-	StructureItemInfo conversion(StructureItem source);
+	StructureItemInfo conversion(StructureItem source,boolean isAll);
 	/**
 	 * 删除试卷结构下的试题。
 	 * @param structureId

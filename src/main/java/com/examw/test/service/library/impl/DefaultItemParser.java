@@ -108,14 +108,14 @@ public class DefaultItemParser implements ItemParser {
 		return true;
 	}
 	/*
-	 *试题数据模型转换。
-	 * @see com.examw.test.service.library.ItemParser#conversion(com.examw.test.domain.library.Item, com.examw.test.model.library.BaseItemInfo)
+	 * 试题数据模型转换。
+	 * @see com.examw.test.service.library.ItemParser#conversion(com.examw.test.domain.library.Item, com.examw.test.model.library.BaseItemInfo, boolean)
 	 */
 	@Override
-	public void conversion(Item source, BaseItemInfo<?> target){
+	public void conversion(Item source, BaseItemInfo<?> target,boolean isAll){
 		if(logger.isDebugEnabled()) logger.debug(String.format("解析试题:Item => BaseItemInfo<?> ［%s］ ...", target == null ? "" : target.getClass()));
 		if(source == null || target == null) return;
-		this.conversionModel(source, target);
+		this.conversionModel(source, target, isAll);
 		//所属科目
 		if(source.getSubject() != null){
 			target.setSubjectId(source.getSubject().getId());
@@ -141,13 +141,14 @@ public class DefaultItemParser implements ItemParser {
 	 * 模型转换辅助方法。
 	 * @param source
 	 * @param target
+	 * @param isAll
 	 */
-	protected void conversionModel(Item source, BaseItemInfo<?> target) {
+	protected void conversionModel(Item source, BaseItemInfo<?> target,boolean isAll) {
 		try {
 			if(target instanceof ItemInfo){
-				changeModel(source, ((ItemInfo)target));
+				changeModel(source, ((ItemInfo)target), isAll);
 			}else if(target instanceof StructureItemInfo) {
-				changeModel(source, ((StructureItemInfo)target));
+				changeModel(source, ((StructureItemInfo)target), isAll);
 			}
 		} catch (Exception e) {
 			String err = String.format("试题数据模型转换［%1$s => %2$s］异常：%3$s", source.getClass(), target.getClass(), e.getMessage());
@@ -160,19 +161,20 @@ public class DefaultItemParser implements ItemParser {
 	 * 数据模型转换。
 	 * @param source
 	 * @param target
+	 * @param isAll
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T extends BaseItemInfo<T>> void changeModel(Item source, T target) throws Exception {
+	protected <T extends BaseItemInfo<T>> void changeModel(Item source, T target, boolean isAll) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("数据模型转换 Item => T...");
 		if(source == null || target == null) return;
 		BeanUtils.copyProperties(source, target, new String[]{"children"});
-		if(source.getChildren() != null && source.getChildren().size() > 0){
+		if(isAll && source.getChildren() != null && source.getChildren().size() > 0){
 			Set<T> children = new TreeSet<>();
 			for(Item item : source.getChildren()){
 				if(item == null) continue;
 				T info = (T)target.getClass().newInstance();
 				if(info != null){
-					this.changeModel(item, info);
+					this.changeModel(item, info, isAll);
 					info.setPid(target.getId());
 					children.add(info);
 				}

@@ -38,13 +38,13 @@ public class DefaultShareTitleItemParser extends DefaultItemParser {
 		return source.getChildren().size();
 	}
 	/*
-	 * 类型转换。
-	 * @see com.examw.test.service.library.impl.DefaultItemParser#conversion(com.examw.test.domain.library.Item, com.examw.test.model.library.BaseItemInfo)
+	 * 数据模型转换。
+	 * @see com.examw.test.service.library.impl.DefaultItemParser#conversion(com.examw.test.domain.library.Item, com.examw.test.model.library.BaseItemInfo, boolean)
 	 */
 	@Override
-	public void conversion(Item source, BaseItemInfo<?> target) {
-		super.conversion(source, target);
-		if(target.getType() == ItemType.SHARE_TITLE.getValue() && target.getChildren() != null && target.getChildren().size() > 0){
+	public void conversion(Item source, BaseItemInfo<?> target,boolean isAll) {
+		super.conversion(source, target,isAll);
+		if(isAll && target.getType() == ItemType.SHARE_TITLE.getValue() && target.getChildren() != null && target.getChildren().size() > 0){
 			for(BaseItemInfo<?> info : target.getChildren()){
 				if(info == null || info.getType() == null) continue;
 				info.setTypeName(this.itemService.loadTypeName(info.getType()));

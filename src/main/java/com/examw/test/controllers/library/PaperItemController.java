@@ -127,6 +127,32 @@ public class PaperItemController implements IUserAware {
 		return String.format("/library/paper_item_edit_%d", itemType.getValue());
 	}
 	/**
+	 * 加载试卷结构下的试题。
+	 * @param structureId
+	 * @param itemId
+	 * @return
+	 */
+	@RequestMapping(value = "/{structureId}/{itemId}", method = RequestMethod.GET)
+	@ResponseBody
+	public Json loadPaperItem(@PathVariable String structureId,@PathVariable String itemId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷结构［％1$s］下的试题［%2$s］...", structureId,itemId));
+		Json json = new Json();
+		try{
+			StructureItemInfo info = this.paperItemService.loadPaperItem(structureId, itemId);
+			json.setSuccess(info != null);
+			if(!json.isSuccess()){
+				json.setMsg("试卷试题不存在！");
+				logger.error(json.getMsg());
+				return json;
+			}
+			json.setData(info);
+		}catch(Exception e){
+			json.setSuccess(false);
+			json.setMsg(e.getMessage());
+		}
+		return json;
+	}
+	/**
 	 * 更新试卷结构下试题数据。
 	 * @param paperId
 	 * 所属试卷ID。

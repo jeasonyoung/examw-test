@@ -222,12 +222,40 @@ public class ItemController implements IUserAware {
 			throw new RuntimeException(String.format("试题［itemId = %s］不存在！", itemId));
 		}
 		ItemInfo itemInfo = new ItemInfo();
-		this.itemService.conversion(item, itemInfo);
+		this.itemService.conversion(item, itemInfo, true);
 		model.addAttribute("item", itemInfo);
 		if(itemInfo.getType() == ItemType.SHARE_TITLE.getValue()){
 			PaperItemUtils.addItemJudgeAnswers(this.itemService, model);//判断题答案
 		}
 		return "library/item_preview";
+	}
+	/**
+	 * 加载试题信息。
+	 * @param itemId
+	 * 试题ID。
+	 * @return
+	 */
+	@RequestMapping(value = "/{itemId}", method = RequestMethod.GET)
+	@ResponseBody
+	public Json loadItem(@PathVariable String itemId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试题［%s］信息...", itemId));
+		Json json = new Json();
+		try {
+			Item item = this.itemService.loadItem(itemId);
+			json.setSuccess(item != null);
+			if(!json.isSuccess()){
+				json.setMsg(String.format("试题［%s］不存在！", itemId));
+				logger.error(json.getMsg());
+				return json;
+			}
+			ItemInfo itemInfo = new ItemInfo();
+			this.itemService.conversion(item, itemInfo, true);
+			json.setData(itemInfo);
+		} catch (Exception e) {
+			json.setSuccess(false);
+			json.setMsg(e.getMessage());
+		}
+		return json;
 	}
 	/**
 	 * 试题审核。

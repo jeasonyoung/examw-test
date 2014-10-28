@@ -118,7 +118,7 @@ public class PaperPreviewServiceImpl implements IPaperPreviewService {
 		Set<StructureItemInfo> items = new TreeSet<>();
 		for(StructureItem item : structureItems){
 			if(item == null) continue;
-			StructureItemInfo info = this.paperItemService.conversion(item);
+			StructureItemInfo info = this.paperItemService.conversion(item,true);
 			if(info != null){
 				items.add(info);
 			}

@@ -51,6 +51,16 @@ public class PaperItemServiceImpl extends BaseDataServiceImpl<StructureItem,Stru
 		return this.structureDao.loadItemMaxOrder(structureId);
 	}
 	/*
+	 * 加载试卷试题。
+	 * @see com.examw.test.service.library.IPaperItemService#loadPaperItem(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public StructureItemInfo loadPaperItem(String structureId, String itemId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷试题［structureId = %1$s,itemId = %2$s］...", structureId,itemId));
+		if(StringUtils.isEmpty(structureId) || StringUtils.isEmpty(itemId)) return null;
+		return this.conversion(this.structureDao.loadStructureItem(structureId, itemId), true);
+	}
+	/*
 	 * 查询数据。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#find(java.lang.Object)
 	 */
@@ -65,23 +75,23 @@ public class PaperItemServiceImpl extends BaseDataServiceImpl<StructureItem,Stru
 	 */
 	@Override
 	protected StructureItemInfo changeModel(StructureItem source) {
+		return this.conversion(source, false);
+	}
+	/*
+	 * 数据模型转换。
+	 * @see com.examw.test.service.library.IPaperItemService#conversion(com.examw.test.domain.library.StructureItem, boolean)
+	 */
+	@Override
+	public StructureItemInfo conversion(StructureItem source, boolean isAll) {
 		if(logger.isDebugEnabled())logger.debug("数据模型转换[StructureItem => StructureItemInfo]...");
 		if(source == null || source.getItem() == null) return null;
 		StructureItemInfo info = new StructureItemInfo();
-		this.itemService.conversion(source.getItem(), info);
+		this.itemService.conversion(source.getItem(), info, isAll);
 		info.setOrderNo(source.getOrderNo());
 		if(source.getStructure() != null){
 			info.setStructureId(source.getStructure().getId());
 		}
 		return info;
-	}
-	/*
-	 * 数据模型转换。
-	 * @see com.examw.test.service.library.IPaperItemService#conversion(com.examw.test.domain.library.StructureItem)
-	 */
-	@Override
-	public StructureItemInfo conversion(StructureItem source) {
-		return this.changeModel(source);
 	}
 	/*
 	 * 查询数据统计。

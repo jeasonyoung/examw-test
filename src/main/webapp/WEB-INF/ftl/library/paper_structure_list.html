@@ -5,18 +5,6 @@
 <script type="text/javascript">
 <!--
 $(function(){
-	//var current_structure_id = current_item_type_value  = current_item_type_name = "";
-	//structure_tree
-	/*  
-		if(!node || (typeof(node) == "string")){
-			current_structure_id = current_item_type_value  = current_item_type_name = "";
-			return;
-		}
-		if(node){
-			current_structure_id = node.id;
-			current_item_type_value = node.attributes.type;
-			current_item_type_name = node.attributes.typeName;
-		}  */
 	<@shiro.hasPermission name="${PER_UPDATE}">
 	//add structure
 	var m = false;
@@ -255,7 +243,17 @@ $(function(){
 	<div data-options="region:'center'" >
 		<table id="${dg}" class="easyui-datagrid" data-options="url:'<@s.url '/library/paper/items/datagrid/${current_paper_id}'/>',fit:true,fitColumns:true,rownumbers:true,border:true,striped:true,
 			pagination:true,pagePosition:'bottom',pageSize:20,pageList:[20,30,40],idField:'id',sortName:'orderNo',sortOrder:'desc',toolbar:'#${dg}_toobar',onLoadError:function(e){ <@error_dialog 'e'/> },
-			onDblClickRow:function(rowIndex,rowData){${module}_edit_structure_items_window('编辑试题［'+ rowData['typeName'] +'］',rowIndex,rowData,null);}">
+			onDblClickRow:function(rowIndex,rowData){
+				$.messager.progress({'text':'正在加载数据，请稍后...'}); 
+				$.getJSON('<@s.url '/library/paper/items/'/>' + rowData['structureId'] + '/' + rowData['id'],function(callback){
+					$.messager.progress('close');
+					if(callback['success']){
+						${module}_edit_structure_items_window('编辑试题［'+ rowData['typeName'] +'］',rowIndex,callback['data'],null);
+					}else{
+						$.messager.show({ title:'提示', msg:callback['msg']});
+					}
+				});
+			}">
 			<thead>
 				<tr>
 					<th data-options="field:'id',checkbox:true"></th>

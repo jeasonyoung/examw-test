@@ -69,7 +69,11 @@ public interface IItemService extends IBaseDataService<ItemInfo> {
 	/**
 	 * 试题数据模型转换。
 	 * @param source
+	 * 试题数据。
 	 * @param target
+	 * 目标数据。
+	 * @param isAll
+	 * 是否全部转换。
 	 */
-	void conversion(Item source, BaseItemInfo<?> target);
+	void conversion(Item source, BaseItemInfo<?> target,boolean isAll);
 }

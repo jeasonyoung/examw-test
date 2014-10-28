@@ -51,6 +51,26 @@ public class StructureDaoImpl extends BaseDaoImpl<Structure> implements IStructu
 		super.delete(data);
 	}
 	/*
+	 * 加载试卷试题。
+	 * @see com.examw.test.dao.library.IStructureDao#loadStructureItem(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public StructureItem loadStructureItem(String structureId, String itemId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷试题［structureId = %1$s, itemId = %2$s］...", structureId, itemId));
+		final String hql = "from StructureItem s where s.structure.id = :structureId and s.item.id = :itemId order by s.createTime desc ";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("structureId", structureId);
+		parameters.put("itemId", itemId);
+		List<?> list = this.query(hql, parameters, null, null);
+		if(list != null && list.size() > 0){
+			Object obj = list.get(0);
+			if(obj instanceof StructureItem){
+				return (StructureItem)obj;
+			}
+		}
+		return null;
+	}
+	/*
 	 * 查询试卷下试题数据。
 	 * @see com.examw.test.dao.library.IStructureDao#findItems(com.examw.test.model.library.StructureItemInfo)
 	 */
