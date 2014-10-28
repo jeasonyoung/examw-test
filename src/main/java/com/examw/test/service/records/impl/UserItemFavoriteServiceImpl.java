@@ -237,6 +237,7 @@ public class UserItemFavoriteServiceImpl extends BaseDataServiceImpl<UserItemFav
 		Json json = new Json();
 		UserItemFavorite data = this.userItemFavoriteDao.load(info.getUserId(), info.getItemId());
 		if(data == null){
+			if(!StringUtils.isEmpty(info.getItemContent()))
 			this.update(info);
 			json.setData(0);
 		}else{
