@@ -29414,10 +29414,11 @@ UE.registerUI('autosave', function(editor) {
             if(uid){
                 editor.trigger('hidemessage',uid);
             }
+            /*
             uid = editor.trigger('showmessage',{
                 content : editor.getLang('autosave.success'),
                 timeout : 2000
-            });
+            });*/
 
         },2000)
     })
