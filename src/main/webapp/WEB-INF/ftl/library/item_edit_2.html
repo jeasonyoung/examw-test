@@ -24,7 +24,7 @@ $(function(){
 					var opt = {};
 					opt["opt_id"] = n["id"];
 					opt["opt_content"] = n["content"];
-					dg.datagrid("appendRow",opt);
+					$("#${dg}").datagrid("appendRow",opt);
 				});
 			}
 			if(row.answer){
@@ -56,7 +56,7 @@ $(function(){
 				$.messager.alert("警告","请输入试题内容！");
 				return false;
 			}
-			var rows = dg.datagrid("getRows");
+			var rows = $("#${dg}").datagrid("getRows");
 			if(rows == null || rows.length == 0){
 				$.messager.alert("警告","请添加选项！");
 				return false;
@@ -82,7 +82,7 @@ $(function(){
 		//update
 		${module}_update = function(){
 			post["children"] = [];
-			var rows = dg.datagrid("getRows");
+			var rows = $("#${dg}").datagrid("getRows");
 			if(rows){
 				$.each(rows,function(i,n){
 					var opt  = {};
