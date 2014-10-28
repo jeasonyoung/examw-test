@@ -4,6 +4,9 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import com.examw.test.model.library.StructureItemInfo;
+import com.examw.test.service.library.ItemType;
+
 /**
  * 
  * @author fengwei.
@@ -20,5 +23,8 @@ public class Test01 {
 		String id = "cbe9d85a-fd6b-4e6b-8fac-745a37f4d980,b83e1d20-c1f5-4876-bbfa-aa56a243298c,16ed2088-e503-425d-a301-31241079d8e8";
 		System.out.println(id);
 		System.out.println(id.replaceAll("([a-z0-9-]{36})", "'$1'"));
+		StructureItemInfo info = new StructureItemInfo();
+		info.setType(1);
+		System.out.println(info.getType() == ItemType.SINGLE.getValue());
 	}
 }

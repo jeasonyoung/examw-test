@@ -87,7 +87,7 @@
     		<value>
     			/resources/** = anon
     			/uploadfiles/** = anon
-    			/uploads/upload = anon
+    			/upload/preview/** = anon
     			/error/** = anon
     			/login = anon
     			/verifyCodeImage = anon
