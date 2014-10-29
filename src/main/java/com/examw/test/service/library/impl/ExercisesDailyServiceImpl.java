@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
+import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.library.IItemDao;
 import com.examw.test.dao.library.IPaperDao;
@@ -172,11 +173,17 @@ public class ExercisesDailyServiceImpl implements IExercisesDailyService {
 	//构建试卷对象。
 	private Paper buildPaper(Subject subject, Area area){
 		Paper paper = new Paper();
-		paper.setName(String.format("%1$s-%2$s%3$s[%4$s]", subject.getExam().getName(), subject.getName(),
-																						  (area == null ? "" : "[" + area.getName() + "]"),
-																						  new SimpleDateFormat("yyyy-MM-dd").format(paper.getCreateTime())));
+		String examName = subject.getExam().getName();
+		if(!StringUtils.isEmpty(examName) && !examName.endsWith("考试")){
+			examName = String.format("%s考试", examName);
+		}
+		paper.setName(String.format("%1$s《％2$s》%3$s每日一练[%4$s]", examName, subject.getName(),
+				(area == null ? "" : "[" + area.getName() + "]"),
+				new SimpleDateFormat("yyyy-MM-dd").format(paper.getCreateTime())));
 		paper.setSubject(subject);
 		paper.setType(PaperType.DAILY.getValue());
+		paper.setScore(null);
+		paper.setTime(null);
 		paper.setYear(Integer.parseInt(new SimpleDateFormat("yyyy").format(paper.getCreateTime())));
 		paper.setArea(area);
 		paper.setStructures(new TreeSet<Structure>());

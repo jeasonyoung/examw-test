@@ -221,6 +221,14 @@ $(function(){
 		}
 	};
 	</@shiro.hasPermission>
+	${module}_paper_item_preview = function(structrureId,itemId){
+		var d = $("<div/>").dialog({
+			title:"试题预览",width:800,height:600,modal:true,
+			href:"<@s.url '/library/paper/items/preview/'/>" +structrureId + '/' +itemId,
+			buttons:[{text:"关闭",iconCls:"icon-cancel",handler:function(){ d.dialog("close");}}],
+			onClose:function(){$(this).dialog("destroy");}
+		});
+	};
 });
 //-->
 </script>
@@ -245,7 +253,7 @@ $(function(){
 			pagination:true,pagePosition:'bottom',pageSize:20,pageList:[20,30,40],idField:'id',sortName:'orderNo',sortOrder:'desc',toolbar:'#${dg}_toobar',onLoadError:function(e){ <@error_dialog 'e'/> },
 			onDblClickRow:function(rowIndex,rowData){
 				$.messager.progress({'text':'正在加载数据，请稍后...'}); 
-				$.getJSON('<@s.url '/library/paper/items/'/>' + rowData['structureId'] + '/' + rowData['id'],function(callback){
+				$.getJSON('<@s.url '/library/paper/items/'/>' + rowData['structureId'] + '/' + rowData['id'] + '?_' + Math.random(),function(callback){
 					$.messager.progress('close');
 					if(callback['success']){
 						${module}_edit_structure_items_window('编辑试题［'+ rowData['typeName'] +'］',rowIndex,callback['data'],null);
@@ -259,7 +267,8 @@ $(function(){
 					<th data-options="field:'id',checkbox:true"></th>
 					<th data-options="field:'orderNo',width:10,align:'right',sortable:true">序号</th>
 					<th data-options="field:'typeName',width:18,align:'center',sortable:true">题型</th>
-					<th data-options="field:'content',width:100,align:'left',formatter:function(value,row,index){ return value.replace(/<[^>]*>/g,''); }">试题内容</th>
+					<th data-options="field:'content',width:100,align:'left',formatter:function(value,row,index){ value= value.replace(/<[^>]*>/g,''); return '<span title=\''+value+'\'>'+value+'</span>'; }">试题内容</th>
+					<th data-options="field:'preview',width:10,align:'center',formatter:function(value,row,index){ return '<a href=\'#\' onclick=${module}_paper_item_preview(\''+row['structureId']+'\',\'' +row['id']+ '\');>预览</a>';}">预览</th>
 				</tr>
 			</thead>
 		</table>

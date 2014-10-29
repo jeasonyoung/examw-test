@@ -164,15 +164,16 @@ public class StructureDaoImpl extends BaseDaoImpl<Structure> implements IStructu
 	 * @see com.examw.test.dao.library.IStructureDao#deleteStructureItems(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void deleteStructureItems(String structureId, String itemId) {
+	public Integer deleteStructureItems(String structureId, String itemId) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("删除试卷［structureId = %1$s］结构［itemId = %2$s］试题..", structureId,itemId));
 		final String hql = "delete from StructureItem si where (si.structure.id = :structureId) and (si.item.id = :itemId)";
-		if(StringUtils.isEmpty(structureId) || StringUtils.isEmpty(itemId)) return;
+		if(StringUtils.isEmpty(structureId) || StringUtils.isEmpty(itemId)) return 0;
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("structureId", structureId);
 		parameters.put("itemId", itemId);
 		int count = this.execuateUpdate(hql, parameters);
 		if(logger.isDebugEnabled()) logger.debug(String.format("删除数据［%d］", count));
+		return count;
 	}
 	/*
 	 * 统计试题被试卷关联次数。

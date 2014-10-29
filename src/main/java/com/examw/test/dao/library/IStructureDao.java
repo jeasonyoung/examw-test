@@ -83,5 +83,5 @@ public interface IStructureDao extends IBaseDao<Structure> {
 	 * @param itemId
 	 * 试题ID。
 	 */
-	void deleteStructureItems(String structureId,String itemId);
+	Integer deleteStructureItems(String structureId,String itemId);
 }

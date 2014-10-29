@@ -3,6 +3,7 @@ package com.examw.test.service.library.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -11,9 +12,9 @@ import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.library.IPaperDao;
 import com.examw.test.dao.library.ISourceDao;
-import com.examw.test.dao.library.IStructureDao;
 import com.examw.test.dao.settings.IAreaDao;
 import com.examw.test.dao.settings.ISubjectDao;
+import com.examw.test.domain.library.Item;
 import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.library.Source;
 import com.examw.test.domain.library.Structure;
@@ -36,7 +37,6 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	private IPaperDao paperDao;
 	private ISourceDao sourceDao;
 	private ISubjectDao subjectDao;
-	private IStructureDao structureDao;
 	private IAreaDao areaDao;
 	private Map<Integer, String> statusMap;
 	private Map<String, String> typeMap;	//修改为Map<String,String>
@@ -66,15 +66,6 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	public void setSubjectDao(ISubjectDao subjectDao) {
 		if(logger.isDebugEnabled())logger.debug("注入科目数据接口...");
 		this.subjectDao = subjectDao;
-	}
-	/**
-	 * 设置试卷结构数据接口。
-	 * @param structureDao
-	 * 试卷结构数据接口。
-	 */
-	public void setStructureDao(IStructureDao structureDao) {
-		if(logger.isDebugEnabled())logger.debug("注入试卷数据接口...");
-		this.structureDao = structureDao;
 	}
 	/**
 	 * 设置所属地区数据接口。
@@ -255,34 +246,58 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		Paper data = this.paperDao.load(Paper.class, paperId);
 		if (data == null) {
 			msg = String.format("试卷［paperId=%s］不存在！", paperId);
+			throw new RuntimeException(msg);
 		}
-		if (status == PaperStatus.AUDIT) {
-			// 将试卷下未审核的题目批量审核。
-			List<Structure> structures = this.structureDao.loadStructures(data.getId());
+		this.updatePaperStatus(data, status);
+	}
+	/**
+	 * 更新试卷状态。
+	 * @param paperId
+	 * @param status
+	 */
+	protected void updatePaperStatus(Paper paper, PaperStatus status){
+		if(paper == null || status == null) return;
+		String msg = null;
+		if(status == PaperStatus.AUDIT){
+			//审核。
+			Set<Structure> structures = paper.getStructures();
 			if(structures == null || structures.size() == 0){
-				logger.error(msg = "没有试卷结构不能通过审核！");
+				msg = "没有试卷结构不能通过审核！";
+				if(logger.isDebugEnabled())logger.debug(msg);
 				throw new RuntimeException(msg);
 			}
 			for (Structure structure : structures) {
 				this.auditPaperItems(structure);
 			} 
+		}else if(status == PaperStatus.NONE){
+			//反审核。
+			Set<Structure> structures = paper.getStructures();
+			if(structures != null && structures.size() > 0){
+				for (Structure structure : structures) {
+					this.unAuditPaperItems(structure);
+				} 
+			}
+		}else if(status == PaperStatus.PUBLISH){
+			//发布。
+			if(paper.getStatus() == PaperStatus.NONE.getValue()){
+				msg = "试卷未审核！";
+				if(logger.isDebugEnabled())logger.debug(msg);
+				throw new RuntimeException(msg);
+			}
+			if(paper.getStatus() == PaperStatus.AUDIT.getValue()){
+				paper.setPublishTime(new Date());
+			}
 		}
-		if (status == PaperStatus.PUBLISH) {
-			data.setPublishTime(new Date());
-		}
-		data.setLastTime(new Date());
+		paper.setLastTime(new Date());
 		if (logger.isDebugEnabled())logger.debug(String.format("更新状态［%1$s,%2$s］%3$s ＝> %4$s",
-																			data.getId(), 
-																			data.getName(), 
-																			PaperStatus.convert(data.getStatus()), 
-																			status));
-		data.setStatus(status.getValue());
+				paper.getId(), paper.getName(),  PaperStatus.convert(paper.getStatus()),  status));
+		paper.setStatus(status.getValue());
 		//更新数据。
-		this.paperDao.saveOrUpdate(data);
+		this.paperDao.saveOrUpdate(paper);
 	}
-	// 审核试卷下的题目。
+	// 审核试卷下的试题。
 	private void auditPaperItems(Structure structure) {
-		if(logger.isDebugEnabled()) logger.debug("审核试卷试题....");
+		if(logger.isDebugEnabled()) logger.debug(String.format("审核试卷结构［%s］...", structure));
 		String msg = null;
 		if(structure == null || structure.getItems() == null || structure.getItems().size() == 0){
 			logger.error(msg = (structure == null ? "试卷结构不存在！" : String.format("试卷结构［%s］下没有试题！", structure.getTitle())));
@@ -297,8 +312,23 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 			}
 		}
 		if(structure.getTotal() != total){
-			logger.error(msg = String.format("试卷结构［%1$s］下试题设置数目［%2$d］与实际试题［%3$d］不一致！", structure.getTitle(), structure.getTotal(),total));
+			if(logger.isDebugEnabled())logger.error(msg = String.format("试卷结构［%1$s］下试题设置数目［%2$d］与实际试题［%3$d］不一致！", structure.getTitle(), structure.getTotal(),total));
 			throw new RuntimeException(msg);
+		}
+	}
+	//反审核试卷下试题。
+	private void unAuditPaperItems(Structure structure){
+		if(logger.isDebugEnabled()) logger.debug(String.format("反审核试卷结构［%s］...", structure));
+		if(structure == null || structure.getItems() == null || structure.getItems().size() == 0) return;
+		Item item = null;
+		for(StructureItem structureItem : structure.getItems()){
+			if(structureItem == null || (item = structureItem.getItem()) == null){
+				continue;
+			}
+			if(item.getStatus() == ItemStatus.AUDIT.getValue() && (item.getStructures() == null || item.getStructures().size() <= 1)){
+				item.setStatus(ItemStatus.NONE.getValue());
+				if(logger.isDebugEnabled()) logger.debug(String.format("更新试题［id = %1$s］状态［status = %2$s］", item.getId(), ItemStatus.convert(item.getStatus())));
+			}
 		}
 	}
 }

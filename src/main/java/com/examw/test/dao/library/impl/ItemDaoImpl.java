@@ -143,7 +143,7 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 	public Item loadItemByCode(String checkCode) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载［checkcode = %s］试题...", checkCode));
 		if(StringUtils.isEmpty(checkCode)) return null;
-		final String hql = "from Item i where (i.parent is null) and (i.checkCode = :checkCode) ";
+		final String hql = "from Item i where (i.parent is null) and (i.checkCode = :checkCode) order by i.createTime desc ";
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("checkCode", checkCode);
 		List<Item> list = this.find(hql, parameters, null, null);

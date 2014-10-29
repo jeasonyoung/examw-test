@@ -265,9 +265,19 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 			if(logger.isDebugEnabled())logger.debug(msg);
 			throw new RuntimeException(msg);
 		}
-		if(data == null) data = this.itemDao.loadItemByCode(checkCode);
+		//检查试题是否存在。
+		Item checkItem = this.itemDao.loadItemByCode(checkCode);
+		if(checkItem != null){//题库中已存在试题。
+			if(data == null){//新增的试题
+				throw new RuntimeException("试题在题库已存在，不能重复添加！");
+			}
+			//试题修改后与题库中存在的试题内容一致, 但不是同一试题；
+			if(!data.getId().equalsIgnoreCase(checkItem.getId())){
+				throw new RuntimeException("试题修改后与题库中已存在的试题一致，不能重复添加！");
+			}
+		}
 		if(data != null && data.getStatus() == ItemStatus.AUDIT.getValue()){
-			return data;
+			throw new RuntimeException(String.format("试题状态为［%s］,暂不能修改！", this.loadStatusName(data.getStatus())));
 		}
 		if(data == null){
 			if(StringUtils.isEmpty(info.getId())) info.setId(UUID.randomUUID().toString());

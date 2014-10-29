@@ -1,8 +1,8 @@
 <#--选择题预览-->
-<#macro item_choice info>
+<#macro item_choice info order>
 <div style="float:left;width:100%;">
 	<dl style="float:left;margin-left:15px;">
-		<dt><#if (info.orderNo > 0)>${info.orderNo}.</#if> ${info.content}</dt>
+		<dt><#if (info.orderNo > 0)><#if order ??>${info.orderNo + order - 1}<#else>${info.orderNo}</#if>.</#if> ${info.content}</dt>
 		<dt>[选项]:</dt>
 		<#list info.children as c>
 			<dd>${c.content}</dd>
@@ -21,10 +21,10 @@
 </div>
 </#macro>
 <#--判断题预览-->
-<#macro item_judge info>
+<#macro item_judge info order>
 <div style="float:left;width:100%;">
 	<dl style="float:left;margin-left:15px;">
-		<dt><#if (info.orderNo > 0)>${info.orderNo}.</#if>${info.content}</dt>
+		<dt><#if (info.orderNo > 0)><#if order ??>${info.orderNo + order - 1}<#else>${info.orderNo}</#if>.</#if>${info.content}</dt>
 		<dt>[答案]:</dt>
 		<#if (info.answer??) && (ItemJudgeAnswers??)>
 			<#list ItemJudgeAnswers?keys as key>
@@ -39,10 +39,10 @@
 </div>
 </#macro>
 <#--问答题预览-->
-<#macro item_qanda info>
+<#macro item_qanda info order>
 <div style="float:left;width:100%;">
 	<dl style="float:left;margin-left:15px;">
-		<dt><#if (info.orderNo > 0)>${info.orderNo}.</#if>${info.content}</dt>
+		<dt><#if (info.orderNo > 0)><#if order ??>${info.orderNo + order - 1}<#else>${info.orderNo}</#if>.</#if>${info.content}</dt>
 		<dt>[答案]:</dt>
 		<dd>${info.answer}</dd>
 		<dt>[解析]:</dt>
@@ -54,7 +54,7 @@
 <#macro item_share_title info>
 <div style="float:left;width:100%;">
 	<dl style="float:left;margin-left:15px;">
-		<dt><#if (info.orderNo > 0)>${info.orderNo}.</#if>${info.content}</dt>
+		<dt>${info.content}</dt>
 		<dt>[子题集合]:</dt>
 		<#list info.children as c>
 			<dd>
@@ -62,13 +62,25 @@
 					<#case 1><#--单选-->
 					<#case 2><#--多选-->
 					<#case 3><#--不定向选-->
-						<@item_choice c/>
+						<#if (info.orderNo > 0)>
+							<@item_choice c info.orderNo/>
+						<#else>
+							<@item_choice c/>
+						</#if>
 					<#break>
 					<#case 4><#--判断题-->
-						<@item_judge c/>
+						<#if (info.orderNo > 0)>
+							<@item_judge c info.orderNo/>
+						<#else>
+							<@item_judge c/>
+						</#if>
 					<#break>
 					<#case 5><#--问答题-->
-						<@item_qanda c/>
+						<#if (info.orderNo > 0)>
+							<@item_qanda c info.orderNo/>
+						<#else>
+							<@item_qanda c/>
+						</#if>
 					<#break>
 					<#default>
 					<span style="float:left;margin-left:15px;">子题型［${c.typeName} - ${c.type}］暂不支持预览！</span>
@@ -82,7 +94,7 @@
 <#macro item_share_answer info>
 <div style="float:left;width:100%;">
 	<dl style="float:left;margin-left:15px;">
-		<dt><#if (info.orderNo > 0)>${info.orderNo}.</#if>${info.content}</dt>
+		<dt>${info.content}</dt>
 		<#if info.children??>
 			<dt>[共享答案]:</dt>
 			<#assign len = (info.children?size) - 1 />
@@ -96,7 +108,7 @@
 			<#if ((child??) && (child.children??))>
 				<#list child.children as c>
 					<dl style="float:left;margin-left:15px;">
-						<dd>${c.content}</dd>
+						<dd><#if (info.orderNo > 0)>${info.orderNo + c_index - 1}.</#if> ${c.content}</dd>
 						<#list info.children as p>
 						<dt>[答案]</dt>
 						<#if c.answer?index_of(p.id) != -1>

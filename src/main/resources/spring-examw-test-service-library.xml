@@ -18,8 +18,6 @@
 		<property name="sourceDao" ref="sourceDao" />
 		<!-- 考试科目数据接口 -->
 		<property name="subjectDao" ref="subjectDao" />
-		<!-- 试卷结构数据接口 -->
-		<property name="structureDao" ref="structureDao" />
 		<!-- 所属地区数据接口 -->
 		<property name="areaDao" ref="areaDao" />
 		<!-- 试卷类型 -->

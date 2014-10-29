@@ -224,7 +224,9 @@ public class ItemController implements IUserAware {
 		ItemInfo itemInfo = new ItemInfo();
 		this.itemService.conversion(item, itemInfo, true);
 		model.addAttribute("item", itemInfo);
-		if(itemInfo.getType() == ItemType.SHARE_TITLE.getValue()){
+		if(itemInfo.getType() == ItemType.JUDGE.getValue()){
+			PaperItemUtils.addItemJudgeAnswers(this.itemService, model);
+		}else if(itemInfo.getType() == ItemType.SHARE_TITLE.getValue()){
 			PaperItemUtils.addItemJudgeAnswers(this.itemService, model);//判断题答案
 		}
 		return "library/item_preview";
