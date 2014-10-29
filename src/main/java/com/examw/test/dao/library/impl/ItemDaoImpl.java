@@ -237,4 +237,14 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 		}
 		return list;
 	}
+	/*
+	 * 加载与试卷无关联的试题数据集合。
+	 * @see com.examw.test.dao.library.IItemDao#deleteIsolatedItems()
+	 */
+	@Override
+	public List<Item> loadIsolatedItems() {
+		if(logger.isDebugEnabled()) logger.debug("加载与试卷无关联的试题数据集合...");
+		final String hql = "from Item i where (i.parent is null) and (i.id not in (select si.item.id  from StructureItem si order by si.createTime)) ";
+		return this.find(hql, null, null, null);
+	}
 }

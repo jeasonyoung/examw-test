@@ -72,4 +72,8 @@ public interface IItemDao extends IBaseDao<Item> {
 	 * 题型集合。
 	 */
 	List<ItemType> loadItemTypes(Subject subject);
+	/**
+	 * 加载与试卷无关联的试题数据集合。
+	 */
+	List<Item> loadIsolatedItems();
 }

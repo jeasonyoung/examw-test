@@ -326,4 +326,24 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 			}
 		}
 	}
+	/*
+	 * 删除孤立试题。
+	 * @see com.examw.test.service.library.IItemService#deleteIsolated()
+	 */
+	@Override
+	public Integer deleteIsolated() {
+		if(logger.isDebugEnabled()) logger.debug("删除孤立试题...");
+		Integer count = 0;
+		List<Item> items = this.itemDao.loadIsolatedItems();
+		if(items != null && items.size() > 0){
+			for(Item item : items){
+				if(item == null) continue;
+				item.setStatus(ItemStatus.NONE.getValue());
+				this.itemDao.delete(item);
+				count += 1;
+			}
+		}
+		if(logger.isDebugEnabled()) logger.debug(String.format("删除孤立试题数据：%d", count));
+		return count;
+	}
 }

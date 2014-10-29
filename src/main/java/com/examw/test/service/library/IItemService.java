@@ -76,4 +76,8 @@ public interface IItemService extends IBaseDataService<ItemInfo> {
 	 * 是否全部转换。
 	 */
 	void conversion(Item source, BaseItemInfo<?> target,boolean isAll);
+	/**
+	 * 删除与试卷结构无关联的试题。
+	 */
+	Integer deleteIsolated();
 }
