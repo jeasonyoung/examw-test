@@ -172,8 +172,8 @@ public class ExercisesDailyServiceImpl implements IExercisesDailyService {
 	//构建试卷对象。
 	private Paper buildPaper(Subject subject, Area area){
 		Paper paper = new Paper();
-		paper.setName(String.format("%1$s-%2$s[%3$s][%4$s]", subject.getExam().getName(), subject.getName(),
-																						  (area == null ? "" : area.getName()),
+		paper.setName(String.format("%1$s-%2$s%3$s[%4$s]", subject.getExam().getName(), subject.getName(),
+																						  (area == null ? "" : "[" + area.getName() + "]"),
 																						  new SimpleDateFormat("yyyy-MM-dd").format(paper.getCreateTime())));
 		paper.setSubject(subject);
 		paper.setType(PaperType.DAILY.getValue());
