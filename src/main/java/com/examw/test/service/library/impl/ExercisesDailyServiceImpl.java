@@ -177,7 +177,7 @@ public class ExercisesDailyServiceImpl implements IExercisesDailyService {
 		if(!StringUtils.isEmpty(examName) && !examName.endsWith("考试")){
 			examName = String.format("%s考试", examName);
 		}
-		paper.setName(String.format("%1$s《％2$s》%3$s每日一练[%4$s]", examName, subject.getName(),
+		paper.setName(String.format("%1$s《%2$s》%3$s每日一练[%4$s]", examName, subject.getName(),
 				(area == null ? "" : "[" + area.getName() + "]"),
 				new SimpleDateFormat("yyyy-MM-dd").format(paper.getCreateTime())));
 		paper.setSubject(subject);
