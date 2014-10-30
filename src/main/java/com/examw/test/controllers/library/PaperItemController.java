@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.examw.aware.IUserAware;
 import com.examw.model.DataGrid;
 import com.examw.model.Json;
+import com.examw.test.domain.library.Structure;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.library.StructureItemInfo;
 import com.examw.test.service.library.IItemService;
@@ -241,6 +242,26 @@ public class PaperItemController implements IUserAware {
 			logger.error("随机导入试卷结构试题发生异常", e);
 		}
 		return result;
+	}
+	/**
+	 *  加载试卷结构导入试题页面。
+	 * @param structureId
+	 * 所属结构ID。
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE})
+	@RequestMapping(value = "/import/{structureId}", method = RequestMethod.GET)
+	public String loadImportStructureItems(@PathVariable String structureId, Model model){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷结构［%s］导入试题页面...", structureId));
+		Structure structure = this.paperItemService.loadStructure(structureId);
+		if(structure == null) throw new RuntimeException(String.format("试卷结构［%s］不存在！", structureId));
+		if(structure.getPaper() == null) throw new RuntimeException(String.format("试卷结构［%1$s,%2$s］所属试卷不存在！", structure.getId(), structure.getTitle()));
+		model.addAttribute("current_type_value", structure.getType());
+		model.addAttribute("current_subject_id", structure.getPaper().getSubject() == null ? "" : structure.getPaper().getSubject().getId());
+		model.addAttribute("current_opt_value", structure.getPaper().getType());
+		model.addAttribute("current_year_value", structure.getPaper().getYear());
+		model.addAttribute("current_area_id", (structure.getPaper().getArea() == null) ? "" : structure.getPaper().getArea().getId());
+		return "library/paper_item_import";
 	}
 	/**
 	 * 删除试卷结构下试题数据。

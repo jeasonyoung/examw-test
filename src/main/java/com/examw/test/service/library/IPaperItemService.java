@@ -1,4 +1,5 @@
 package com.examw.test.service.library;
+import com.examw.test.domain.library.Structure;
 import com.examw.test.domain.library.StructureItem;
 import com.examw.test.model.library.StructureItemInfo;
 import com.examw.test.service.IBaseDataService;
@@ -10,6 +11,13 @@ import com.examw.test.service.IBaseDataService;
  * @since 2014年9月22日
  */
 public interface IPaperItemService extends IBaseDataService<StructureItemInfo> {
+	/**
+	 * 加载试卷结构。
+	 * @param structureId
+	 * 所属试卷结构ID。
+	 * @return
+	 */
+	Structure loadStructure(String structureId);
 	/**
 	 * 加载试卷试题。
 	 * @param structureId

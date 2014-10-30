@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ipower verion="1.0" xmlns="http://ipower.org/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://ipower.org/ iPowerSchema.xsd ">
-  <system id="ETS0000000" sign="examw.test" name="考试系统" description="考试系统">
+  <system id="ETS0000000" sign="examw.test" name="中华考试网题库系统" description="考试系统">
   	<module id="ETS0000001"  icon="" name="系统管理" uri="" order="1">
   		<module id="ETS0000101" icon="" name="菜单设置" uri="/security/menu" order="1"/>
   		<module id="ETS0000201" icon="" name="基础权限" uri="/security/right" order="2"/>

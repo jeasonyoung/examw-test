@@ -69,6 +69,7 @@ public class IndexController implements IUserAware {
 	@RequestMapping(value = "/top", method = RequestMethod.GET)
 	public String top(Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载top...");
+		model.addAttribute("systemName", this.menuService.loadSystemName());
 		model.addAttribute("USER_ID", this.userId);
 		model.addAttribute("USER_NAME", this.userName);
 		model.addAttribute("USER_NICKNAME", this.userNickName);

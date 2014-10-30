@@ -16,6 +16,18 @@
 		<span style="float:left;width:128px;margin-top:2px;border-bottom:solid 1px #ccc;"><#if item.year??> ${item.year?string('####')}</#if><br/></span>
 	</div>
 </div>
+<#if (papers??) && (papers?size > 0)>
+<div style="float:left;margin-top:2px;margin-left:12px;width:750px;border:solid 1px #ccc">
+	<dl>
+		<dt>关联的试卷：</dt>
+		<#list papers as paper>
+		<dd>
+			<div style="float:left;">${paper_index+1}.${paper[0]}[${paper[1]}][${paper[2]}]</div>
+		</dd>
+		</#list>
+	</dl>
+</div>
+</#if>
 <div style="float:left;margin-top:12px;width:100%;">
 <#switch item.type>
 	<#case 1><#--单选-->

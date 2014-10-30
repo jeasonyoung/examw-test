@@ -105,6 +105,10 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 			hql += " and (i.opt = :opt) ";
 			parameters.put("opt", info.getOpt());
 		}
+		if(info.getYear() != null && info.getYear() > 0){
+			hql += " and (i.year = :year)";
+			parameters.put("year", info.getYear());
+		}
 		if(!StringUtils.isEmpty(info.getContent())){
 			hql += " and (i.content like :content) ";
 			parameters.put("content", "%"+ info.getContent() +"%");
@@ -131,7 +135,7 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 		}
 		int count = 0;
 		if(parent.getStructures() != null && (count = parent.getStructures().size()) > 0){
-			msg = String.format("试题［%1$s］被关联在［%2$d］试卷结构中，暂不能删除！", parent.getContent(), count);
+			msg = String.format("被关联在［%d］试卷中，暂不能删除！", count);
 			if(logger.isDebugEnabled()) logger.debug(msg);
 			throw new RuntimeException(msg);
 		}

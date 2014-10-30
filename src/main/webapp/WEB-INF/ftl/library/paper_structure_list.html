@@ -116,12 +116,27 @@ $(function(){
 			});
 			return;
 		}
-		//import
-		if($(obj).attr("value") == "import"){
+		//random
+		if($(obj).attr("value") == "random"){
 			random_import_structure_items(structure_id);
 			return;
 		}
+		//import
+		if($(obj).attr("value") == "import"){
+			import_structure_items(structure_id);
+			return;
+		}
+		alert("[" + $(obj).text() + "]未实现！");
 	};
+	//导入指定的试题；
+	function import_structure_items(structureId){
+		var d = $("<div/>").dialog({
+			title:"从题库中导入试题",width:800,height:600,modal:true,
+			href:"<@s.url '/library/paper/items/import/'/>" + structureId,
+			buttons:[{text:"关闭",iconCls:"icon-cancel",handler:function(){ d.dialog("close");}}],
+			onClose:function(){$(this).dialog("destroy");}
+		});
+	}
 	//随机导入结构试题
 	function random_import_structure_items(structureId){
 		$.messager.confirm("试卷结构下导入试题","确认在选中的试卷结构下随机导入试题？",function(r){
@@ -277,7 +292,8 @@ $(function(){
 			<a href="#" class="easyui-menubutton" data-options="iconCls:'icon-add',menu:'#${dg}_toobar_menu_add',plain:true" style="float:left;">添加</a>
 			<div id="${dg}_toobar_menu_add" style="width:168px;">
 				<div onclick="${dg}_add(this)" value="new">新增试题</div>
-				<div onclick="${dg}_add(this)" value="import">从题库中随机导入</div>
+				<div onclick="${dg}_add(this)" value="random">从题库中随机导入</div>
+				<div onclick="${dg}_add(this)" value="import">从题库中导入指定试题</div>
 			</div>
 			</@shiro.hasPermission>
 			<span>|</span>

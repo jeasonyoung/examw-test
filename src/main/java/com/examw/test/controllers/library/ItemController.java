@@ -22,6 +22,7 @@ import com.examw.aware.IUserAware;
 import com.examw.model.DataGrid;
 import com.examw.model.Json;
 import com.examw.test.domain.library.Item;
+import com.examw.test.domain.library.StructureItem;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.library.ItemInfo;
 import com.examw.test.service.library.IItemService;
@@ -245,6 +246,17 @@ public class ItemController implements IUserAware {
 		ItemInfo itemInfo = new ItemInfo();
 		this.itemService.conversion(item, itemInfo, true);
 		model.addAttribute("item", itemInfo);
+		
+		List<String[]> papers = new ArrayList<>();
+		if(item.getStructures() != null && item.getStructures().size() > 0){
+			for(StructureItem structureItem : item.getStructures()){
+				if(structureItem.getStructure() != null && structureItem.getStructure().getPaper() != null){
+					papers.add(new String[]{ structureItem.getStructure().getPaper().getName(), structureItem.getStructure().getTitle(), structureItem.getOrderNo().toString()});
+				}
+			}
+		}
+		model.addAttribute("papers", papers);
+		
 		if(itemInfo.getType() == ItemType.JUDGE.getValue()){
 			PaperItemUtils.addItemJudgeAnswers(this.itemService, model);
 		}else if(itemInfo.getType() == ItemType.SHARE_TITLE.getValue()){

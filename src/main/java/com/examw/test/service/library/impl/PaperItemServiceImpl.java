@@ -51,6 +51,16 @@ public class PaperItemServiceImpl extends BaseDataServiceImpl<StructureItem,Stru
 		return this.structureDao.loadItemMaxOrder(structureId);
 	}
 	/*
+	 * 加载试卷结构。
+	 * @see com.examw.test.service.library.IPaperItemService#loadStructure(java.lang.String)
+	 */
+	@Override
+	public Structure loadStructure(String structureId) {
+		 if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷结构［%s］...", structureId));
+		 if(StringUtils.isEmpty(structureId)) throw new RuntimeException("试卷结构ID为空！");
+		 return this.structureDao.load(Structure.class, structureId);
+	}
+	/*
 	 * 加载试卷试题。
 	 * @see com.examw.test.service.library.IPaperItemService#loadPaperItem(java.lang.String, java.lang.String)
 	 */
