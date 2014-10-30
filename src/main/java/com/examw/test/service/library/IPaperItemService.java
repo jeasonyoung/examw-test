@@ -34,11 +34,13 @@ public interface IPaperItemService extends IBaseDataService<StructureItemInfo> {
 	 */
 	StructureItemInfo conversion(StructureItem source,boolean isAll);
 	/**
-	 * 删除试卷结构下的试题。
+	 * 删除试卷结构与试题的关联。
 	 * @param structureId
 	 * 试卷结构ID。
 	 * @param itemId
 	 * 试题ID。
+	 * @param isForced
+	 * 是否删除试题。
 	 */
-	void delete(String structureId,String itemId);
+	void delete(String structureId,String itemId,boolean isForced);
 }

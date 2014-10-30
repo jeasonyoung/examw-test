@@ -182,19 +182,15 @@ public class PaperItemServiceImpl extends BaseDataServiceImpl<StructureItem,Stru
 		throw new RuntimeException("该方法未实现，请调用 delete(String structureId, String[] itemIds) ");
 	}
 	/*
-	 * 删除试卷试题。
-	 * @see com.examw.test.service.library.IPaperItemService#delete(java.lang.String, java.lang.String[])
+	 * 删除试卷结构与试题的关联。
+	 * @see com.examw.test.service.library.IPaperItemService#delete(java.lang.String, java.lang.String, boolean)
 	 */
 	@Override
-	public void delete(String structureId, String itemId) {
+	public void delete(String structureId, String itemId,boolean isForced) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("删除试卷结构［structureId = %1$s］下的试题［itemIds = %2$s］...", structureId, itemId));
 		if(StringUtils.isEmpty(structureId) || StringUtils.isEmpty(itemId)) return;
-		if(this.structureDao.deleteStructureItems(structureId, itemId) > 0){
-			try{
-				this.itemService.delete(new String[]{ itemId });
-			}catch(Exception e){
-				if(logger.isDebugEnabled()) logger.error(String.format("删除试卷［%1$s］异常：%2$s", itemId, e.getMessage()), e);
-			}
+		if(this.structureDao.deleteStructureItems(structureId, itemId) > 0 && isForced){
+			this.itemService.deleteStructureForced(itemId);
 		}
 	}
 }

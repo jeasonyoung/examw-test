@@ -300,7 +300,8 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		if(logger.isDebugEnabled()) logger.debug(String.format("审核试卷结构［%s］...", structure));
 		String msg = null;
 		if(structure == null || structure.getItems() == null || structure.getItems().size() == 0){
-			logger.error(msg = (structure == null ? "试卷结构不存在！" : String.format("试卷结构［%s］下没有试题！", structure.getTitle())));
+			msg = (structure == null ? "试卷结构不存在！" : String.format("试卷结构［%s］下没有试题！", structure.getTitle()));
+			if(logger.isDebugEnabled()) logger.error(msg);
 			throw new RuntimeException(msg);
 		}
 		int total = 0;
@@ -312,7 +313,8 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 			}
 		}
 		if(structure.getTotal() != total){
-			if(logger.isDebugEnabled())logger.error(msg = String.format("试卷结构［%1$s］下试题设置数目［%2$d］与实际试题［%3$d］不一致！", structure.getTitle(), structure.getTotal(),total));
+			msg = String.format("试卷结构［%1$s］下试题设置数目［%2$d］与实际试题［%3$d］不一致！", structure.getTitle(), structure.getTotal(),total);
+			if(logger.isDebugEnabled()) logger.error(msg);
 			throw new RuntimeException(msg);
 		}
 	}

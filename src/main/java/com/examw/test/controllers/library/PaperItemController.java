@@ -251,7 +251,7 @@ public class PaperItemController implements IUserAware {
 	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.DELETE})
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public Json structureItemsDelete(String id){
+	public Json structureItemsDelete(String id, Boolean isForced){
 		if(logger.isDebugEnabled()) logger.debug(String.format("删除试卷结构下试题［%s］数据...",  id));
 		Json result = new Json();
 		try {
@@ -261,7 +261,7 @@ public class PaperItemController implements IUserAware {
 				String[] str_attrs = array[i].split("\\$");
 				String structrure_id = str_attrs[0], item_id =  str_attrs[1];
 				if(StringUtils.isEmpty(structrure_id) || StringUtils.isEmpty(item_id)) continue;
-				this.paperItemService.delete(structrure_id, item_id);
+				this.paperItemService.delete(structrure_id, item_id, isForced == null ? false : isForced);
 			}
 			result.setSuccess(true);
 		} catch (Exception e) {

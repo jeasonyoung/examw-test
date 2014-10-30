@@ -37,23 +37,25 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
-			if(info.getSort().equalsIgnoreCase("typeName")){
-				info.setSort("type");
-			}
-			if(info.getSort().equalsIgnoreCase("statusName")){
-				info.setSort("status");
-			}
-			if(info.getSort().equalsIgnoreCase("optName")){
-				info.setSort("opt");
-			}
-			if(info.getSort().equalsIgnoreCase("examName")){
-				info.setSort("subject.exam.name");
-			}
-			if(info.getSort().equalsIgnoreCase("subjectName")){
-				info.setSort("subject.name");
-			}
-			if(info.getSort().equalsIgnoreCase("sourceName")){
-				info.setSort("source.name");
+			switch(info.getSort()){
+				case "typeName":
+					info.setSort("type");
+					break;
+				case "statusName":
+					info.setSort("status");
+					break;
+				case "optName":
+					info.setSort("opt");
+					break;
+				case "examName":
+					info.setSort("subject.exam.name");
+					break;
+				case "subjectName":
+					info.setSort("subject.name");
+					break;
+				case "sourceName":
+					info.setSort("source.name");
+					break;
 			}
 			hql += " order by i." + info.getSort() + " " + info.getOrder();
 		}

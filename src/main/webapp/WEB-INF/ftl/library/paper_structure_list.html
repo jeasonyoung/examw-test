@@ -192,10 +192,10 @@ $(function(){
 	};
 	<@shiro.hasPermission name="${PER_DELETE}">
 	//delete structure items
-	${dg}_delete = function(){
+	${dg}_delete = function(obj){
 		var rows = $("#${dg}").datagrid("getChecked");
 		if(rows && rows.length > 0){
-			$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
+			$.messager.confirm("确认","您是否确认删除选中数据（"+ $(obj).text()+"）?",function(r){
 				if(!r)return;
 				$.messager.progress();
 				var ids = [];
@@ -203,7 +203,7 @@ $(function(){
 					ids.push(rows[i].structureId + "$" + rows[i].id);
 				}
 				$.ajax({
-					url:"<@s.url '/library/paper/items/delete'/>",
+					url:"<@s.url '/library/paper/items/delete?isForced='/>" + $(obj).attr("value"),
 					type:"POST", data:{ id:ids.join("|") }, dataType:"json",
 					error:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
 					success:function(data,textStatus){
@@ -274,15 +274,19 @@ $(function(){
 		</table>
 		<div id="${dg}_toobar">
 			<@shiro.hasPermission name="${PER_UPDATE}">
-			<a id="${dg}_toobar_add" href="#" class="easyui-menubutton" data-options="iconCls:'icon-add',menu:'#${dg}_toobar_menu',plain:true" style="float:left;">添加</a>
-			<div id="${dg}_toobar_menu" style="width:168px;">
+			<a href="#" class="easyui-menubutton" data-options="iconCls:'icon-add',menu:'#${dg}_toobar_menu_add',plain:true" style="float:left;">添加</a>
+			<div id="${dg}_toobar_menu_add" style="width:168px;">
 				<div onclick="${dg}_add(this)" value="new">新增试题</div>
 				<div onclick="${dg}_add(this)" value="import">从题库中随机导入</div>
 			</div>
 			</@shiro.hasPermission>
 			<span>|</span>
 			<@shiro.hasPermission name="${PER_DELETE}">
-			<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
+			<a href="#" class="easyui-menubutton" data-options="iconCls:'icon-add',menu:'#${dg}_toobar_menu_remove',plain:true" style="float:left;">删除</a>
+			<div id="${dg}_toobar_menu_remove" style="width:128px;">
+				<div onclick="${dg}_delete(this)" value="false">仅删除关联</div>
+				<div onclick="${dg}_delete(this)" value="true">删除试题</div>
+			</div>
 			</@shiro.hasPermission>
 			<label>题目：<input name="content" type="text" style="width:268px;"/></label>	
 			<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>

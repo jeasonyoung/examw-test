@@ -2,7 +2,7 @@
 <#macro item_choice info order>
 <div style="float:left;width:100%;">
 	<dl style="float:left;margin-left:15px;">
-		<dt><#if (info.orderNo > 0)><#if order ??>${info.orderNo + order - 1}<#else>${info.orderNo}</#if>.</#if> ${info.content}</dt>
+		<dt><#if (order??)>${order}.<#elseif (info.orderNo > 0)> ${info.orderNo}.</#if> ${info.content}</dt>
 		<dt>[选项]:</dt>
 		<#list info.children as c>
 			<dd>${c.content}</dd>
@@ -24,7 +24,7 @@
 <#macro item_judge info order>
 <div style="float:left;width:100%;">
 	<dl style="float:left;margin-left:15px;">
-		<dt><#if (info.orderNo > 0)><#if order ??>${info.orderNo + order - 1}<#else>${info.orderNo}</#if>.</#if>${info.content}</dt>
+		<dt><#if (order??)>${order}.<#elseif (info.orderNo > 0)> ${info.orderNo}.</#if>${info.content}</dt>
 		<dt>[答案]:</dt>
 		<#if (info.answer??) && (ItemJudgeAnswers??)>
 			<#list ItemJudgeAnswers?keys as key>
@@ -42,7 +42,7 @@
 <#macro item_qanda info order>
 <div style="float:left;width:100%;">
 	<dl style="float:left;margin-left:15px;">
-		<dt><#if (info.orderNo > 0)><#if order ??>${info.orderNo + order - 1}<#else>${info.orderNo}</#if>.</#if>${info.content}</dt>
+		<dt><#if (order??)>${order}.<#elseif (info.orderNo > 0)> ${info.orderNo}.</#if>${info.content}</dt>
 		<dt>[答案]:</dt>
 		<dd>${info.answer}</dd>
 		<dt>[解析]:</dt>
@@ -63,21 +63,21 @@
 					<#case 2><#--多选-->
 					<#case 3><#--不定向选-->
 						<#if (info.orderNo > 0)>
-							<@item_choice c info.orderNo/>
+							<@item_choice c info.orderNo+c_index/>
 						<#else>
 							<@item_choice c/>
 						</#if>
 					<#break>
 					<#case 4><#--判断题-->
 						<#if (info.orderNo > 0)>
-							<@item_judge c info.orderNo/>
+							<@item_judge c info.orderNo+c_index/>
 						<#else>
 							<@item_judge c/>
 						</#if>
 					<#break>
 					<#case 5><#--问答题-->
 						<#if (info.orderNo > 0)>
-							<@item_qanda c info.orderNo/>
+							<@item_qanda c info.orderNo+c_index/>
 						<#else>
 							<@item_qanda c/>
 						</#if>

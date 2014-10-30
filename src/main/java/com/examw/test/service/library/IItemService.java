@@ -80,4 +80,19 @@ public interface IItemService extends IBaseDataService<ItemInfo> {
 	 * 删除与试卷结构无关联的试题。
 	 */
 	Integer deleteIsolated();
+	/**
+	 * 强制删除试题。
+	 * @param itemId
+	 * 试题ID。
+	 */
+	void deleteStructureForced(String itemId);
+	/**
+	 * 重置试题的校验码。
+	 * @param rows
+	 * 每批数据。
+	 * @param page
+	 * 批次。
+	 * @return 剩余批次。
+	 */
+	int resetCheckCode(Integer rows,Integer page);
 }

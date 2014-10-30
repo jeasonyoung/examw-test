@@ -321,4 +321,27 @@ public class ItemController implements IUserAware {
 		}
 		return result;
 	}
+	/**
+	 * 重置试题校验码。
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_ITEM + ":" + Right.UPDATE})
+	@RequestMapping(value= {"/checkcode/reset/{rows}/{page}","/checkcode/reset/{page}" }, method = RequestMethod.GET)
+	@ResponseBody
+	public Json resetCheckCode(@PathVariable Integer rows,@PathVariable Integer page){
+		if(logger.isDebugEnabled()) logger.debug("重置试题校验码...");
+		Json json = new Json();
+		try {
+			if(rows == null) rows = 30;
+			if(page == null || page < 1) page = 1;
+			int pages = this.itemService.resetCheckCode(rows,page);
+			json.setSuccess(true);
+			json.setData(pages);
+			json.setMsg(String.format("第［%1$d］批重置校验码完成，还剩［%2$d］未处理每批［%3$d］！", page, pages, rows));
+		} catch (Exception e) {
+			json.setSuccess(false);
+			json.setMsg(e.getMessage());
+		}
+		return json;
+	}
 }

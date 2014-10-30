@@ -1,4 +1,5 @@
 package com.examw.test.service.library.impl;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -345,5 +346,79 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		}
 		if(logger.isDebugEnabled()) logger.debug(String.format("删除孤立试题数据：%d", count));
 		return count;
+	}
+	/*
+	 * 强制删除试题。
+	 * @see com.examw.test.service.library.IItemService#deleteStructureForced(java.lang.String)
+	 */
+	@Override
+	public void deleteStructureForced(String itemId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("强制删除试题［%s］...", itemId));
+		if(StringUtils.isEmpty(itemId)) return;
+		this.deleteStructureForced(this.itemDao.loadItem(itemId)); 
+	}
+	/**
+	 * 强制删除试题。
+	 * @param item
+	 * 试题。
+	 */
+	protected void deleteStructureForced(Item item){
+		if(item == null || item.getStructures() == null || item.getStructures().size() > 0)return;
+		if(item.getStatus() == ItemStatus.AUDIT.getValue()){
+			item.setStatus(ItemStatus.NONE.getValue());
+		}
+		this.itemDao.delete(item);
+	}
+	/*
+	 * 重置试题的校验码。
+	 * @see com.examw.test.service.library.IItemService#resetCheckCode(java.lang.Integer, java.lang.Integer)
+	 */
+	@Override
+	public int resetCheckCode(Integer rows, Integer page) {
+		if(logger.isDebugEnabled()) logger.debug("重置全部试题的校验码...");
+		Long total = this.itemDao.total(new ItemInfo(){private static final long serialVersionUID = 1L;});
+		if(total == null || total == 0 || rows == null) return 0;
+		if(logger.isDebugEnabled()) logger.debug(String.format("共有［%d］数据需要重置校验码...", total));
+		
+ 		int pages = ((int)((long)total) / rows) + ((int)(long)total % rows == 0 ? 0 :1);
+ 		if(page >= pages) page = pages;
+		if(logger.isDebugEnabled()) logger.debug(String.format("共有［%1$d］试题需要重置，将分［%2$d］批处理，每批［%3$d］...",total, pages, rows));
+ 		List<String> checkCodes = new ArrayList<>();
+ 		this.updateResetCheckCode(page, rows, checkCodes); 
+ 		if(logger.isDebugEnabled()) logger.debug(String.format(" 重置第［%1$d］批试题校验码［%2$d］...", page, checkCodes.size()));
+ 		return pages -page;
+	}
+	private void updateResetCheckCode(final int page,final int rows, List<String> checkCodes){
+		List<Item> items = this.itemDao.findItems(new ItemInfo(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public String getSort() { return "createTime"; }
+			@Override
+			public String getOrder() { return "asc";}
+			@Override
+			public Integer getPage() {return page;}
+			@Override
+			public Integer getRows() { return rows;}
+		});
+		if(items == null || items.size() == 0) return;
+		//重新生成验证码。
+		for(Item item : items){
+			String checkCode = this.updateResetCheckCode(item);
+			if(!StringUtils.isEmpty(checkCode) && !checkCodes.contains(checkCode)){
+				checkCodes.add(checkCode);
+			}
+		}
+	}
+	//更新重置的验证码。
+	private String updateResetCheckCode(Item item){
+		if(item == null || StringUtils.isEmpty(item.getCheckCode())) return null;
+		ItemInfo info = new ItemInfo();
+		this.conversion(item, info, true);
+		String checkCode = this.itemDuplicateCheck.computeCheckCode(info);
+		if(StringUtils.isEmpty(checkCode)) return null;
+		if(!item.getCheckCode().equalsIgnoreCase(checkCode)){
+			item.setCheckCode(checkCode);
+		}
+		return checkCode;
 	}
 }
