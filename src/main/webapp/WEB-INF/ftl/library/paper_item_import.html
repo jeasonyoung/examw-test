@@ -5,8 +5,16 @@
 <script type="text/javascript">
 <!--
 $(function(){
+	//
 	${module}_post = function(){
-		
+		var post = [];
+		var rows = $("#${dg}").datagrid("getChecked");
+		if(rows && rows.length > 0){
+			$.each(rows,function(i,n){
+				post.push(n["id"]);
+			});
+		}
+		return post;
 	};
 	//查询试题。
 	${dg}_search = function(){

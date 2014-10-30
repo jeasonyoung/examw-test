@@ -1,5 +1,7 @@
 package com.examw.test.controllers.library;
 
+import java.util.Arrays;
+
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
@@ -262,6 +264,29 @@ public class PaperItemController implements IUserAware {
 		model.addAttribute("current_year_value", structure.getPaper().getYear());
 		model.addAttribute("current_area_id", (structure.getPaper().getArea() == null) ? "" : structure.getPaper().getArea().getId());
 		return "library/paper_item_import";
+	}
+	/**
+	 * 保存导入试卷结构试题数据。
+	 * @param structureId
+	 * 所属结构ID。
+	 * @param itemId
+	 * 导入试题ID集合。
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE})
+	@RequestMapping(value = "/import/{structureId}/save", method = RequestMethod.POST)
+	@ResponseBody
+	public Json saveImportStructureItems(@PathVariable String structureId,@RequestBody String[] itemId){
+		Json json = new Json();
+		try {
+			 this.paperItemService.saveImports(structureId, itemId);
+			 json.setSuccess(true);
+		} catch (Exception e) {
+			json.setSuccess(false);
+			json.setMsg(e.getMessage());
+			if(logger.isDebugEnabled()) logger.debug(String.format("保存导入试卷结构［%1$s］试题［%2$s］时发生异常：%3$s", structureId, Arrays.toString(itemId), e.getMessage()), e);
+		}
+		return json;
 	}
 	/**
 	 * 删除试卷结构下试题数据。

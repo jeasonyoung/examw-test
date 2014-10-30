@@ -133,7 +133,31 @@ $(function(){
 		var d = $("<div/>").dialog({
 			title:"从题库中导入试题",width:800,height:600,modal:true,
 			href:"<@s.url '/library/paper/items/import/'/>" + structureId,
-			buttons:[{text:"关闭",iconCls:"icon-cancel",handler:function(){ d.dialog("close");}}],
+			buttons:[{
+				text:"导入",iconCls:"icon-save",
+				handler:function(){
+					var post = library_paper_item_import_post();
+					//alert(post);console.info(post);
+					$.ajax({
+						url:"<@s.url '/library/paper/items/import/'/>" + structureId + "/save",
+						type:"POST",data:JSON.stringify(post),dataType:"json",
+						contentType:"application/json;charset=UTF-8",
+						error:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
+						success:function(callback,textStatus){
+							$.messager.progress("close");
+							if(callback.success){
+								$("#${dg}").datagrid("load");$("#${dg}").datagrid("unselectAll");
+							}else{
+								$.messager.show({title:"提示", msg:callback.msg });
+							}
+							d.dialog("close");
+						}
+					});
+				}
+			},{
+				text:"关闭",iconCls:"icon-cancel",
+				handler:function(){ d.dialog("close");}
+			}],
 			onClose:function(){$(this).dialog("destroy");}
 		});
 	}

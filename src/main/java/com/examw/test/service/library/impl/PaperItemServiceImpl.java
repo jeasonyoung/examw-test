@@ -1,5 +1,6 @@
 package com.examw.test.service.library.impl;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.library.IStructureDao;
+import com.examw.test.domain.library.Item;
 import com.examw.test.domain.library.Structure;
 import com.examw.test.domain.library.StructureItem;
 import com.examw.test.model.library.StructureItemInfo;
@@ -202,5 +204,32 @@ public class PaperItemServiceImpl extends BaseDataServiceImpl<StructureItem,Stru
 		if(this.structureDao.deleteStructureItems(structureId, itemId) > 0 && isForced){
 			this.itemService.deleteStructureForced(itemId);
 		}
+	}
+	/*
+	 * 保存导入试卷结构下试题集合。
+	 * @see com.examw.test.service.library.IPaperItemService#saveImports(java.lang.String, java.lang.String[])
+	 */
+	@Override
+	public void saveImports(String structureId, String[] itemId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("保存导入试卷结构［%1$s］下试题［%2$s］集合...", structureId, Arrays.toString(itemId)));
+		if(StringUtils.isEmpty(structureId) || itemId == null || itemId.length == 0) return;
+		Structure structure = this.structureDao.load(Structure.class,structureId);
+		if(structure == null) throw new RuntimeException(String.format("试卷结构［%s］不存在！", structureId));
+		if(structure.getItems() == null){
+			structure.setItems(new HashSet<StructureItem>());
+		}
+		if(structure.getTotal() ==  null || structure.getTotal() <= 0) throw new RuntimeException("试卷结构下未设置试题量，暂不能导入试题！");
+		int index = structure.getItems().size(),count = structure.getTotal() - index;
+		if(count < 0) throw new RuntimeException(String.format("试题数量超过结构设置的试题量［%1$d］，暂不能导入试题！", Math.abs(count)));
+		for(int  i = 0; i < itemId.length; i++){
+			if(StringUtils.isEmpty(itemId[i])) continue;
+			if(count <= 0) throw new RuntimeException("已到达试卷结构设置的试题量！");
+			Item item = this.itemService.loadItem(itemId[i]);
+			if(item != null){
+				structure.getItems().add(new StructureItem(structure, item, index + i + 1));
+				count--;
+			}
+		}
+		this.structureDao.saveOrUpdate(structure);
 	}
 }

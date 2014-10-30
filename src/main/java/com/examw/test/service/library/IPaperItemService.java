@@ -51,4 +51,12 @@ public interface IPaperItemService extends IBaseDataService<StructureItemInfo> {
 	 * 是否删除试题。
 	 */
 	void delete(String structureId,String itemId,boolean isForced);
+	/**
+	 * 保存导入试题集合。
+	 * @param structureId
+	 * 所属试卷结构ID。
+	 * @param itemId
+	 * 试题集合。
+	 */
+	void saveImports(String structureId,String[]itemId);
 }

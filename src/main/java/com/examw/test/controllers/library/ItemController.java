@@ -209,27 +209,27 @@ public class ItemController implements IUserAware {
 		}
 		return result;
 	}
-	/**
-	 * 删除无关联的试题数据。
-	 * @return
-	 */
-	@RequiresPermissions({ModuleConstant.LIBRARY_ITEM + ":" + Right.DELETE})
-	@RequestMapping(value = {"/delete/isolated"}, method = { RequestMethod.GET})
-	@ResponseBody
-	public Json deleteIsolated(){
-		Json json = new Json();
-		try{
-			Integer count = this.itemService.deleteIsolated();
-			json.setSuccess(true);
-			json.setMsg(String.format("删除［%d］条无关联的试题数据！", count));
-			if(logger.isDebugEnabled()) logger.debug(json.getMsg());
-		}catch(Exception e){
-			json.setSuccess(false);
-			json.setMsg(e.getMessage());
-			logger.error(String.format("删除无关联的试题数据异常：%s", e.getMessage()), e);
-		}
-		return json;
-	}
+//	/**
+//	 * 删除无关联的试题数据。
+//	 * @return
+//	 */
+//	@RequiresPermissions({ModuleConstant.LIBRARY_ITEM + ":" + Right.DELETE})
+//	@RequestMapping(value = {"/delete/isolated"}, method = { RequestMethod.GET})
+//	@ResponseBody
+//	public Json deleteIsolated(){
+//		Json json = new Json();
+//		try{
+//			Integer count = this.itemService.deleteIsolated();
+//			json.setSuccess(true);
+//			json.setMsg(String.format("删除［%d］条无关联的试题数据！", count));
+//			if(logger.isDebugEnabled()) logger.debug(json.getMsg());
+//		}catch(Exception e){
+//			json.setSuccess(false);
+//			json.setMsg(e.getMessage());
+//			logger.error(String.format("删除无关联的试题数据异常：%s", e.getMessage()), e);
+//		}
+//		return json;
+//	}
 	/**
 	 * 试题预览。
 	 * @param itemId
