@@ -1,0 +1,307 @@
+<!doctype html>
+<html>
+<head>
+<title>模拟考场 考试系统题库 - ${PAPER.name}</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<!-- css -->
+<link href="<@s.url "/resources/front-preview/pub.css"/>" rel="stylesheet" type="text/css">
+<link href="<@s.url "/resources/front-preview/tiku.css"/>" rel="stylesheet" type="text/css">
+
+<link href="<@s.url "/resources/front-preview/ui-dialog.css"/>" rel="stylesheet" type="text/css">
+<!-- jquery -->
+<script type="text/javascript" src="<@s.url "/resources/jquery.min.1.11.1.js"/>"></script>
+<!-- scrollTo -->
+<script type="text/javascript" src="<@s.url "/resources/front-preview/jquery.scrollTo.js"/>"></script>
+<script type="text/javascript" src="<@s.url "/resources/front-preview/dialog-min.js"/>"></script>
+</head>
+<body>
+<#assign MODEL = "multi" />
+<#include "library/item_front_preview.ftl"/>
+<div class="top fl">
+	<div class="main">
+    	<div class="fl">
+            <a href="http://www.examw.com/" class="logo fl" title="中华考试网"></a>
+            <div class="topnva check"><a href="tiku.html" title="题库" class="nvabox check-tiku"><em class="tiku"></em>题库</a></div>
+            <div class="topnva"><a href="#" title="课程" class="nvabox check-video"><em class="video"></em>课程</a></div>
+        </div>
+        <div class="fr">
+        	<div class="topnva check"><a href="#" title="信息" class="nvabox check-vip"><em class="xinxi"></em><span>5</span></a></div>
+            <div class="topnva check"><a href="#" title="会员中心" class="nvabox check-vip"><em class="vip"></em></a></div>
+        </div>
+    </div>
+</div>
+<div class="nvatiku fl">
+    <div class="main">
+    	<div class="nav fl">
+            <div class="menuout" onMouseOver="this.className='menuover'" onMouseOut="this.className='menuout'"><div class="fl">一级建筑师 · 题库</div><span></span>
+                <div class="nav-list fl">
+                    <div class="list" id="moren">
+                        <ul>
+                            <li><a href="#" class="fenlei">会计从业资格</a><a href="#" class="moren">设为默认</a></li>
+                            <li><a href="#" class="fenlei">政法干警</a></li>
+                            <li><a href="#" class="fenlei">一级建筑师</a></li>
+                            <li><a href="#" class="fenlei">基金销售从业</a></li>
+                            <li class="bb-no more"><a href="考试类选择页.html">添加/管理考试科目&gt;&gt;</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="nva fr">
+        	<div class="list">
+            	<ul>
+                	<li class="bg">首 页</li>
+                    <li><a href="#">模拟考场</a></li>
+                    <li><a href="#">章节练习</a></li>
+                    <li><a href="#">每日一练</a><span>7</span></li>
+                    <li><a href="#">评估报告</a></li>
+                    <li><a href="#">练习记录</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="main">
+	<div class="h30"></div>
+	<div class="content fl">
+    	<div class="cont-l fl" id="leftArea">
+        	<div class="box fl yinying">
+                <div class="jiaojuan-botton">
+                	<a href="javascript:void(0)" onclick="audit(this,'${PAPER.id}')"><#if PAPER.status == paper_status_none_value>审核<#else>反审核</#if></a>
+                </div>
+                <div class="h10"></div>
+            </div>
+        </div>
+        <div class="cont-r fr f-f14" id="paper_body">
+        	<div class="box fl yinying">
+            	<div class="daxiao">
+                	<div class="list">
+                    	<ul id="fontset">
+                        	<li id="f-f14" current="true" class="out bg" onMouseOver="this.className='over bg'" onMouseOut="this.className='out bg'"><a href="#">小</a></li>
+                            <li id="f-f16" class="out" onMouseOver="this.className='over'" onMouseOut="this.className='out'"><a href="#">中</a></li>
+                            <li id="f-f18" class="out" onMouseOver="this.className='over'" onMouseOut="this.className='out'"><a href="#">大</a></li>
+                            <li>字体大小:</li>
+                        </ul>
+                    </div>
+                </div>
+            	<div class="name"><h1>${PAPER.name}</h1></div>
+                <div class="h20"></div>
+                <#if PAPER.score??>
+                <div class="shuoming" >
+                	<p>&gt; 本卷共分为${PAPER.structures?size}大题 ${PAPER.total}小题，作答时间为${PAPER.time}分钟，总分${PAPER.score}分</p>
+                    <#if paper.year??>
+					<p>&gt; 使用年份：${PAPER.year?string("####")}</p>
+					</#if>
+					<#if (PAPER.price??) && (PAPER.price > 0)>
+					<p>&gt; 价格：${PAPER.price}考试币</p>
+					</#if>
+					<#if (PAPER.sourceName??) && (PAPER.sourceName?length > 0)>
+					<<p>&gt; 试卷来源：${PAPER.sourceName}</p>
+					</#if>
+					<#if (PAPER.areaName??) && (PAPER.areaName?length > 0)>
+					<p>&gt; 所属地区：${PAPER.areaName}</p>
+					</#if>
+                </div>
+                <div class="shuoming" >
+                	<p>${PAPER.description}</p>
+                </div>
+                </#if>
+                <div class="tixing fl">
+                	<div class="list">
+                    	<ul>
+                    		<#list PAPER.structures as structure>
+                    		<#if structure_index == 0>
+                        	<li><a class="bg" href="javascript:void(0)" onclick="chooseRule(this,'${structure.id}');">${structure.title}</a></li>
+                        	<#else>
+                        	<li><a href="javascript:void(0)" onclick="chooseRule(this,'${structure.id}');">${structure.title}</a></li>
+                        	</#if>
+                        	</#list>
+                        </ul>
+                    </div>
+                </div>
+            </div><a name="danxiang" id="danxiang"></a>
+            <#list PAPER.structures as structure>
+            <#assign total = total + structure.total/> 
+            <#assign xuhao = total-structure.total + 1 />
+            <div class="tx-box fl" structure_id="${structure.id}">${structure.title} ${structure.description}</div>
+            <#list structure.items?sort_by(["orderNo"]) as i>
+            	<#if i.type != 6 && i.type != 7><#-- 共享题干题或共享daan -->
+            		<@show_item father=null item=i index=(i_index+xuhao)/>
+            	<#else>
+            		<@show_item father=null item=i index=xuhao/>
+            	</#if>
+            </#list>
+            </#list>
+            <div class="datika fl" id="answerCard" style="width:830px;">
+            	<div class="ka fl" id="font14">展开答题卡</div>
+                <div class="ka-ge fl"></div>
+                <div class="ka-box fl" style="display:none">
+                	<@answer_card ITEMLIST />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="h30"></div>
+</div>
+<div class="footer">
+	<div class="menu">
+		<a href="/about/">关于本站</a>┊<a href="/about/map.htm">网站地图</a>┊<a href="/about/copyright.html">网站声明</a>┊<a href="/about/ads.html">广告服务</a>┊<a href="/link/">友情链接</a>┊<a href="/about/job/">诚聘英才</a>┊<a href="/about/contact.html">联系我们</a>┊<a href="http: //bbs.examw.com/forum-4-1.html">意见咨询</a></div>
+	<div id="ft_about"></div>
+</div>
+<script type="text/javascript" charset="gb2312" src="http://img.examw.com/tiku/c.js"></script>
+<script type="text/javascript" charset="gb2312" src="http://img.examw.com/e.js"></script>
+</body>
+<script type="text/javascript">
+<!-- 浮动,参数isTop是否距离顶部,否表示距离底部 -->
+$.fn.smartFloat = function(isTop) {
+	var position = function(element) {
+		var top = element.position().top,left =element.position().left, pos = element.css("position");
+		var height = $(this).height();
+		$(window).scroll(function() {
+			var scrolls = $(this).scrollTop();
+			var flag;
+			if(isTop) flag = scrolls-top;
+			else flag = top-height-scrolls;
+			if (flag > 0) { //如果滚动到页面超出了当前元素element的相对页面顶部的高度
+				if (window.XMLHttpRequest) { //如果不是ie6
+					if(isTop) element.css({position: "fixed",left:left,top: 0});
+					else
+					element.css({
+						position: "fixed",
+						left:left,
+						bottom: 0
+					});	
+				} else { //如果是ie6
+					if(isTop) element.css({position: "absolute",left:left,top: scrolls});
+					else
+					element.css({
+						position: "absolute",
+						left:left,
+						bottom: 0
+					});	
+				}
+			}else {	//滑到了底部
+				if(isTop) element.css({position: pos,left:left,top: top});
+				else
+				element.css({
+					position: pos,
+					left:left,
+					bottom: top
+				});	
+			}
+		});
+	};
+	return $(this).each(function() {
+		position($(this));						 
+	});
+};
+$(function(){
+	//var obj = '${PAPERJSON}';
+	//console.info(obj);
+	var status = "${PAPER.status}";
+	var paperId = "${PAPER.id}";
+	var productId = "${PRODUCTID}";
+	var totalNum = Number("${PAPER.total}");
+	$("#answerCard").smartFloat(false);	//答题卡浮动
+	$("#leftArea").smartFloat(1);//左侧浮动
+	//<!-- 答题卡点击显示  -->
+	$("#answerCard div").first().click(function(){
+		var card = $(this).siblings("div").last();
+		if(card.is(":hidden"))
+		{
+			$(this).html("隐藏答题卡");
+			card.show();
+		}
+		else{
+			$(this).html("展开答题卡");
+			card.hide();
+		}
+	});
+	//<!-- 字体选择 -->
+	$("#fontset li").click(function(){
+		if($(this)==$("#fontset li[current='true']")) return;
+		$("#paper_body").addClass($(this).attr("id")).removeClass($("#fontset li[current='true']").attr("id"));
+		$(this).addClass("bg");
+		$(this).attr("current",'true');
+		$(this).siblings().removeClass("bg").attr("current",'false');
+	});
+	//<!-- timer -->
+	//<!-- 滑动到目标题目 -->
+	focusTo = function(obj,index){
+		var target = $("div[item_id='"+$(obj).attr("item_id")+"']");
+		$.scrollTo(target,800,{axis:'y', offset:-20 });
+		
+	}
+	//<!-- 切换大题 -->
+	chooseRule = function(obj,id){
+		var target = $("div[structure_id='" + id + "']");
+		$(obj).addClass("bg");
+		$(obj).parent().siblings().children().removeClass("bg");
+		$.scrollTo(target,800,{axis:'y', offset:-20 });
+	}
+	//<!-- 查看材料 -->
+	showCommonTitle = function(id){
+		dialog({
+			id:'cailiaoDialog',
+			title: '查看材料',
+			drag: true,
+	        content: "<div class='cont-r'><div class='fenxiti fl' style='border:0px'>"+$("div[fenxi_item_id='"+id+"']").html()+"</div></div>"
+	    }).show();
+	}
+	//<!-- 显示收起解析 -->
+	toggleAnalysis = function(obj,id){
+		var target = $("div[name='jiexi'][item_id='"+id+"']");
+		if(target.is(":hidden")){
+			target.show();
+			$(obj).html("收起解析");
+			$(obj).parent().siblings("em").attr("class","jiexi-h");
+			$("div[class='zhankai-bg'][item_id='"+id+"']").show();
+		}else{
+			target.hide();
+			$(obj).html("展开解析");
+			$(obj).parent().siblings("em").attr("class","jiexi");
+			$("div[class='zhankai-bg'][item_id='"+id+"']").hide();
+		}
+	}
+	//显示提示
+	function showTips(obj,msg){
+		var d = dialog({
+		    content: msg,
+		    quickClose: true// 点击空白处快速关闭
+		});
+		d.show(obj);
+	}
+	
+	audit = function(obj,paperId){
+		var isAudit = status == '${paper_status_none_value}';
+		var t = confirm("您是否确认进行［"+$(obj).html()+"］?");
+		if(t){
+			var d = dialog({}).showModal();
+			$.ajax({
+				url:"<@s.url '/library/paper/'/>" + (isAudit?"audit" :"unaudit") + "/" +paperId,
+				type:"GET",dataType:"json",
+				error:function(e){ alert("出错:"+ e.responseText)},
+				success:function(data,textStatus){
+					d.close().remove();
+					if(data.success){
+						alert($(obj).html()+"成功,后台试卷列表页需要刷新一下");
+						if(isAudit) 
+						{
+							$(obj).html("反审核");
+							status = 1;
+						}else{
+							$(obj).html("审核");
+							status = 0;
+						}
+					}else{
+						alert($(obj).html()+"失败,提示:"+data.msg);
+					}
+				}
+			});
+		}
+	}
+});
+</script>
+</html>

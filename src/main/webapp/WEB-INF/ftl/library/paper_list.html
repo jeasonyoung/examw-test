@@ -74,6 +74,9 @@ $(function(){
 			onClose:function(){ $(this).dialog("destroy");}
 		});
 	};
+	${dg}_paper_front_preview = function(paperId){
+		window.open("<@s.url '/library/paper/preview/front/'/>" +paperId);    
+	}
 	<@shiro.hasPermission name="${PER_UPDATE}">
 	//add paper
 	${dg}_add = function(){
@@ -225,7 +228,7 @@ $(function(){
 					<th data-options="field:'typeName',width:70,align:'center',sortable:true">类型</th>
 					<th data-options="field:'statusName',width:50,align:'center',sortable:true">状态</th>
 					<th data-options="field:'opt',width:60,align:'center',formatter:function(value,row,index){ return '<a href=\'#\' onclick=${dg}_paper_structure(\''+row['id'] +'\',\'' + row['name'] +'\',\''+ row['status']+'\');>试卷内容</a>';}">操作</th>
-					<th data-options="field:'preview',width:40,align:'center',formatter:function(value,row,index){return '<a href=\'#\' onclick=${dg}_paper_preview(\''+row['id'] +'\',\'' +row['status']+ '\');>预览</a>';}">预览</th>
+					<th data-options="field:'preview',width:40,align:'center',formatter:function(value,row,index){return '<a href=\'#\' onclick=${dg}_paper_front_preview(\''+row['id'] +'\',\'' +row['status']+ '\');>预览</a>';}">预览</th>
 					<th data-options="field:'userName',width:60,align:'left',sortable:true,formatter:function(value,row,index){ return (!value) ? ' ' : '<span title=\''+value+'\'>'+value+'</span>'}">操作者</th>
 				</tr>
 			</thead>

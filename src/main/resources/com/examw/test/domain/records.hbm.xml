@@ -82,4 +82,35 @@
 	    <!-- 收藏时间 -->
 	    <property name="createTime" column="create_time" type="timestamp" />
 	</class>
+	<!-- 用户提供的纠错信息 -->
+	<class name="UserItemErrorRecovery" table="tbl_Examw_Test_Records_UserItemErrorRecovery">
+	    <cache usage="read-write" />
+	    <!-- 纠错ID -->
+	    <id name="id" type="string" length="64" />
+	    <!-- 所属用户 -->
+	    <many-to-one name="user" column="user_id" class="com.examw.test.domain.products.ProductUser" unique-key="user_favorite_item_key" not-null="true"/>
+	    <!-- 所属试题ID -->
+	    <property name="itemId" type="string" length="128" unique-key="user_favorite_item_key"  not-null="true" />
+	    <!-- 试题题型 -->
+	    <property name="itemType" column="item_type" type="integer" />
+	    <!-- 纠错内容 -->
+	    <property name="content" type="text" />
+	    <!-- 纠错类型 -->
+	    <property name="errorType" column="error_type" type="integer"/>
+	    <!-- 状态 -->
+	    <property name="status" type="integer" not-null="true"/>
+	    <!-- 所属终端类型 -->
+	    <many-to-one name="terminal" column="terminal_id" class="com.examw.test.domain.products.SoftwareType" />
+	    <!-- 提出时间 -->
+	    <property name="createTime" column="create_time" type="timestamp" />
+	    <!-- 处理时间 -->
+	    <property name="dealTime" column="deal_time" type="timestamp"/>
+	    <!-- 处理人 -->
+	    <!-- 管理用户ID -->
+		<property name="adminUserId" column="admin_user_id" type="string" length="64" />
+		<!-- 管理用户名称 -->
+		<property name="adminUserName" column="admin_user_name" type="string" length="32" />
+		<!-- 备注  -->
+		<property name="remarks" type="text" />
+	</class>
 </hibernate-mapping>
