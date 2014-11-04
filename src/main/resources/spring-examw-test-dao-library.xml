@@ -23,5 +23,9 @@
 	<bean id="paperReleaseDao" class="com.examw.test.dao.library.impl.PaperReleaseDaoImpl">
 	    <property name="sessionFactory"  ref="sessionFactory" />
 	</bean>
+	<!-- 试题纠错 -->
+	<bean id="itemErrorRecorveryDao" class="com.examw.test.dao.library.impl.ItemErrorRecorveryDaoImpl">
+	    <property name="sessionFactory"  ref="sessionFactory" />
+	</bean>
 	<!--  题库管理  数据接口实现 end -->
 </beans>

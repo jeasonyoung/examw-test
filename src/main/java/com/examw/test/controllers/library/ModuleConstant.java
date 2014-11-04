@@ -21,4 +21,8 @@ public final class ModuleConstant {
 	 * 试卷发布ID。
 	 */
 	public static final String LIBRARY_PUBLISH = "ETS0000403";
+	/**
+	 * 试卷发布ID。
+	 */
+	public static final String LIBRARY_ITEM_RECORVERY = "ETS0000503";
 }

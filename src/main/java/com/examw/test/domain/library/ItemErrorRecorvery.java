@@ -1,4 +1,4 @@
-package com.examw.test.domain.records;
+package com.examw.test.domain.library;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -7,16 +7,17 @@ import com.examw.test.domain.products.ProductUser;
 import com.examw.test.domain.products.SoftwareType;
 
 /**
- * 用户纠错
+ * 试题纠错
  * @author fengwei.
- * @since 2014年11月3日 下午5:01:18.
+ * @since 2014年11月4日 下午1:30:07.
  */
-public class UserItemErrorRecovery implements Serializable{
+public class ItemErrorRecorvery implements Serializable{
 	private static final long serialVersionUID = 1L;
-	private String id,itemId,content,remarks,adminUserId,adminUserName;
+	private String id,content,remarks,adminUserId,adminUserName;
 	private ProductUser user;
-	private Integer status,itemType,errorType;
+	private Integer status,errorType;
 	private SoftwareType terminal;
+	private Item item;
 	private Date createTime,dealTime;
 	/**
 	 * 获取 ID
@@ -34,21 +35,22 @@ public class UserItemErrorRecovery implements Serializable{
 	public void setId(String id) {
 		this.id = id;
 	}
+	
 	/**
-	 * 获取 题目ID
-	 * @return itemId
-	 * 题目ID
+	 * 获取 有错的试题
+	 * @return item
+	 * 有错的试题
 	 */
-	public String getItemId() {
-		return itemId;
+	public Item getItem() {
+		return item;
 	}
 	/**
-	 * 设置 题目ID
-	 * @param itemId
-	 * 题目ID
+	 * 设置 有错的试题
+	 * @param item
+	 * 有错的试题
 	 */
-	public void setItemId(String itemId) {
-		this.itemId = itemId;
+	public void setItem(Item item) {
+		this.item = item;
 	}
 	/**
 	 * 获取 错误内容描述
@@ -145,22 +147,6 @@ public class UserItemErrorRecovery implements Serializable{
 	 */
 	public void setStatus(Integer status) {
 		this.status = status;
-	}
-	/**
-	 * 获取 题型
-	 * @return itemType
-	 * 题型
-	 */
-	public Integer getItemType() {
-		return itemType;
-	}
-	/**
-	 * 设置 题型
-	 * @param itemType
-	 * 题型
-	 */
-	public void setItemType(Integer itemType) {
-		this.itemType = itemType;
 	}
 	/**
 	 * 获取 错误类型

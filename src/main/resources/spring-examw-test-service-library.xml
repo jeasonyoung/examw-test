@@ -191,5 +191,19 @@
 		<!-- 用户试卷记录服务接口 -->
 		<property name="userPaperRecordService" ref="userPaperRecordService"/>
 	</bean>
+	
+	<!-- 试题纠错服务 -->
+	<bean id="itemErrorRecorveryService" class="com.examw.test.service.library.impl.ItemErrorRecorveryServiceImpl">
+	    <!-- 试题纠错数据接口 -->
+	    <property name="itemErrorRecorveryDao" ref="itemErrorRecorveryDao" />
+		<!-- 试题数据接口 -->
+		<property name="itemDao" ref="itemDao"/>
+		<!-- 试题服务接口 -->
+		<property name="itemService" ref="itemService"/>
+		 <!-- 产品用户数据接口 -->
+	    <property name="productUserDao" ref="productUserDao" />
+	    <!-- 终端类型数据接口 -->
+	    <property name="softwareTypeDao" ref="softwareTypeDao" />
+	</bean>
 	<!-- 题库管理 服务接口实现 end-->
 </beans>

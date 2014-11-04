@@ -1,0 +1,224 @@
+<#--渠道列表-->
+<#include "comm.ftl"/>
+<#assign module="item_error_recorvery"/>
+<#assign dg="${module}_list_dg"/>
+<script type="text/javascript">
+<!--
+$(function(){
+	//dg
+	var dg=$("#${dg}").datagrid({
+		url:"<@s.url '/library/item/recorvery/datagrid'/>",
+		fit:true,
+		fitColumns:true,
+		rownumbers:true,
+		pagination:true,
+		pagePosition:"bottom",
+		pageSize:20,
+		pageList:[20,30,40],
+		border:true,
+		striped:true,
+		idField:"id",
+		sortName:"createTime",
+		sortOrder:"desc",
+		columns:[[{
+			field:"id",
+			checkbox:true
+		},{
+			title:"用户名",
+			field:"userName",
+			width:10,
+			align:"left",
+			sortable:true
+		},{
+			title:"题目",
+			field:"itemContent",
+			width:30,
+			align:"left"
+		},{
+			title:"错误类型",
+			field:"errorTypeName",
+			width:10,
+			align:"left",
+			sortable:true
+		},{
+			title:"错误描述",
+			field:"content",
+			width:30,
+			align:"left"
+		},{
+			title:"状态",
+			field:"status",
+			width:10,
+			align:"left",
+			sortable:true
+		},{
+			title:"提出时间",
+			field:"createTime",
+			width:10,
+			align:"left"
+		},{
+			title:"处理人",
+			field:"adminUserName",
+			width:10,
+			align:"left"
+		},{
+			title:"处理时间",
+			field:"dealTime",
+			width:10,
+			align:"left"
+		}]],
+		toolbar:"#${dg}_toobar",
+		onLoadError:function(e){
+			<@error_dialog "e"/>
+		},
+		onDblClickRow:function(rowIndex,rowData){
+			edit_window("纠错",rowIndex,rowData,null);
+		}
+	});
+	//edit
+	function edit_window(title,index,row,code){
+		var d = $("<div/>").dialog({
+			title:title,
+			width:400,
+			height:190,
+			href:"<@s.url '/products/channel/edit'/>",
+			modal:true,
+			buttons:[
+			 <@shiro.hasPermission name="${PER_UPDATE}">
+			  {
+				text:"保存",
+				iconCls:"icon-save",
+				handler:function(){
+					$.messager.progress();
+					$("#${module}_edit_form").form("submit",{
+						url:"<@s.url '/products/channel/update'/>",
+						onSubmit: function(){
+							var isValid = $(this).form("validate");
+							if (!isValid)$.messager.progress("close");
+							return isValid;
+						},
+						onLoadError:function(e){
+							$.messager.progress("close");
+							<@error_dialog "e"/>
+						},
+						success:function(data){
+							$.messager.progress("close");
+							var data = $.parseJSON(data);
+							if(data.success){
+								dg.datagrid(row ? "updateRow" : "insertRow",{
+									index:index,
+									row:data.data
+								});
+								d.dialog("close");
+							}else{
+								$.messager.show({
+									title:"保存异常",
+									msg:data.msg
+								});
+							}
+						}
+					});
+				}
+			},
+			</@shiro.hasPermission>
+			{
+				text:"关闭",
+				iconCls:"icon-cancel",
+				handler:function(){
+					d.dialog("close");
+				}
+			}],
+			onClose:function(){
+				$(this).dialog("destroy");
+			},
+			onLoad:function(){
+				if(code && !row){
+					$("#${module}_edit_form").form("load",{"code":code});
+					return;
+				}
+				if(row) $("#${module}_edit_form").form("load",row);
+			}
+	  });
+	};
+	//search
+	${dg}_search = function(){
+		var exam_id = "",subject_id = "";
+		var node = $("#${module}_tree").tree("getSelected");
+		if(node){
+			if(node.attributes.type =="subject"){
+				subject_id = node["id"];
+				var parent = $("#${module}_tree").tree("getParent",node.target);
+				if(parent) exam_id = parent["id"];
+			}else{
+				exam_id = node["id"];
+			}
+		}
+		$("#${dg}").datagrid("load",{
+			"examId":exam_id,
+			"subjectId":subject_id,
+			"userName":$("#${dg}_toobar input[name='userName']").val()
+		});
+	};
+	<@shiro.hasPermission name="${PER_DELETE}">
+	//delete
+	${dg}_delete = function(){
+		var rows = dg.datagrid("getChecked");
+		if(rows && rows.length > 0){
+			$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
+				if(!r)return;
+				$.messager.progress();
+				var ids = [];
+				for(var i = 0; i < rows.length; i++){
+					ids.push(rows[i].id);
+				}
+				$.ajax({
+					url:"<@s.url '/products/channel/delete'/>",
+					type:"POST",
+					data:{
+						id:ids.join("|")
+					},
+					dataType:"json",
+					error:function(e){
+						$.messager.progress("close");
+						<@error_dialog "e"/>
+					},
+					success:function(data,textStatus){
+						$.messager.progress("close");
+						if(data.success){
+							dg.datagrid("load");
+							dg.datagrid("unselectAll");
+						}else{
+							$.messager.show({
+								title:"提示",
+								msg:data.msg
+							});
+						}
+					}
+				});
+			});
+		}else{
+			$.messager.alert("提示","未选中须删除的数据！");
+		}
+	};
+	</@shiro.hasPermission>
+});
+//-->
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+	<div data-options="region:'west' ,title:'所属考试科目',split:true,tools:[{iconCls:'icon-reload',handler:function(){$('#${module}_tree').tree('reload');${dg}_search();}}]" style="width:220px;">
+		<ul id="${module}_tree" class="easyui-tree" data-options="url:'<@s.url '/settings/category/exams/subject/tree'/>',lines:true,onLoadError:function(e){ <@error_dialog 'e'/> },
+			onClick:function(node){${dg}_search();}"></ul>
+	</div>
+	<div data-options="region:'center',border:false" >
+		<table id="${dg}"></table>
+		<div id="${dg}_toobar">
+		<@shiro.hasPermission name="${PER_DELETE}">
+		<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
+		</@shiro.hasPermission>
+	
+		<label>用户名：<input name="userName" type="text" style="width:198px;"/></label>
+	
+		<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
+		</div>
+	</div>
+</div>

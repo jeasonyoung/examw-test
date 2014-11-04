@@ -185,6 +185,7 @@ public class UserPaperRecordServiceImpl extends BaseDataServiceImpl<UserPaperRec
 		BeanUtils.copyProperties(data, info, new String[]{"items"});
 		if(data.getUser() != null){//用户
 			info.setUserId(data.getUser().getId());
+			info.setUserName(data.getUser().getName());	//用户名
 		}
 		if(data.getPaper() != null){//试卷
 			info.setPaperId(data.getPaper().getId());

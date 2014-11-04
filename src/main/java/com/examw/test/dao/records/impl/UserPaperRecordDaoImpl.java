@@ -68,9 +68,17 @@ public class UserPaperRecordDaoImpl extends BaseDaoImpl<UserPaperRecord> impleme
 			hql += " and (u.paper.type = :type) ";
 			parameters.put("type", info.getPaperType());
 		}
+		if(!StringUtils.isEmpty(info.getPaperName())){
+			hql += " and (u.paper.name like :paperName)";
+			parameters.put("paperName", "%" + info.getPaperName() + "%");
+		}
 		if(!StringUtils.isEmpty(info.getUserId())){
 			hql += " and (u.user.id = :userId) ";
 			parameters.put("userId", info.getUserId());
+		}
+		if(!StringUtils.isEmpty(info.getUserName())){
+			hql += " and (u.user.name like :userName)";
+			parameters.put("userName", "%" + info.getUserName() + "%");
 		}
 		if(info.getTerminalCode() != null){
 			hql += " and (u.terminal.code = :terminalCode)";

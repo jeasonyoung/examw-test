@@ -1,0 +1,35 @@
+<#--试卷列表页面-->
+<#include "comm.ftl"/>
+<#assign module="library_paper"/>
+<#assign dg="${module}_list_dg"/>
+<script type="text/javascript">
+<!--
+$(function(){
+	//search papers
+	${dg}_search = function(){
+		$("#${dg}").datagrid("load",{"userName":$("#${dg}_toobar input[name='userName']").val(),"paperName":$("#${dg}_toobar input[name='paperName']").val()});
+	};
+});
+//-->
+</script>
+<table id="${dg}" class="easyui-datagrid" data-options="url:'<@s.url '/record/paper/datagrid'/>',fit:true,fitColumns:true,rownumbers:true,border:true,striped:true,resizable:true,
+			pagination:true,pagePosition:'bottom',pageSize:20,pageList:[20,30,40],idField:'id',sortName:'createTime',sortOrder:'desc',toolbar:'#${dg}_toobar',
+			onLoadError:function(e){<@error_dialog 'e'/> },onDblClickRow:function(rowIndex,rowData){}">
+			<thead>
+				<tr>
+					<th data-options="field:'id',checkbox:true"></th>
+					<th data-options="field:'userName',width:100,align:'left',sortable:true">用户名</th>
+					<th data-options="field:'paperName',width:368,align:'left',sortable:true,formatter:function(value,row,index){ return '<span title=\''+value+'\'>'+value+'</span>';}">试卷名称</th>
+					<th data-options="field:'paperTypeName',width:70,align:'center'">类型</th>
+					<th data-options="field:'status',width:70,align:'center',sortable:true,formatter:function(value,row,index){if(value == ${STATUS_UNDONE}) return '<span style=\'color:red\'>未完成</span>';else return '完成'}">考试状态</th>
+					<th data-options="field:'usedTime',width:80,align:'center'">使用时间(秒)</th>
+					<th data-options="field:'score',width:70,align:'center'">得分(分)</th>
+					<th data-options="field:'createTime',width:140,align:'center',sortable:true,formatter:function(value,row,index){ return '<span title=\''+value+'\'>'+value+'</span>'}">考试时间</th>
+				</tr>
+			</thead>
+</table>
+<div id="${dg}_toobar">
+	<label>用户名: <input name="userName" type="text" style="width:168px;"/></label>
+	<label>试卷名称：<input name="paperName" type="text" style="width:268px;"/></label>
+	<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
+</div>
