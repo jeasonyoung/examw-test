@@ -59,6 +59,15 @@ public interface IItemService extends IBaseDataService<ItemInfo> {
 	 */
 	Item updateItem(BaseItemInfo<?> info);
 	/**
+	 * 更新试题	[Add by FW 2014.10.05 纠错时调用]
+	 * @param info
+	 * 试题信息
+	 * @param andAudit
+	 * 是否同时审核
+	 * @return
+	 */
+	Item updateItem(BaseItemInfo<?> info,boolean andAudit);
+	/**
 	 * 加载试题数据。
 	 * @param itemId
 	 * 试题ID。

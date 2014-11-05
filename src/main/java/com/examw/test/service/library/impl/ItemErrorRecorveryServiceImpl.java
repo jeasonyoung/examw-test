@@ -19,6 +19,7 @@ import com.examw.test.domain.products.ProductUser;
 import com.examw.test.domain.products.SoftwareType;
 import com.examw.test.model.library.ItemErrorRecorveryInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
+import com.examw.test.service.library.ErrorRecorveryStatus;
 import com.examw.test.service.library.IItemErrorRecorveryService;
 import com.examw.test.service.library.IItemService;
 
@@ -114,7 +115,7 @@ public class ItemErrorRecorveryServiceImpl extends BaseDataServiceImpl<ItemError
 	public String loadStatusName(Integer status) {
 		if(this.statusMap == null || status == null)
 		return null;
-		return this.typeMap.get(status);
+		return this.statusMap.get(status);
 	}
 	/*
 	 * 查询数据
@@ -181,11 +182,18 @@ public class ItemErrorRecorveryServiceImpl extends BaseDataServiceImpl<ItemError
 			info.setCreateTime(new Date());
 			data = new ItemErrorRecorvery();
 		}
-		if(!isAdded){
+		if(info.getStatus()==null) info.setStatus(ErrorRecorveryStatus.NONE.getValue());
+		if(!isAdded){	//如果是更新的话 就更新
 			info.setCreateTime(data.getCreateTime());
 			if(info.getCreateTime() == null) {
 				info.setCreateTime(new Date());
 			}
+			data.setRemarks(info.getRemarks());
+			data.setStatus(ErrorRecorveryStatus.WORKED.getValue()); //已经处理
+			data.setAdminUserId(info.getAdminUserId());
+			data.setAdminUserName(info.getAdminUserName());
+			data.setDealTime(new Date());
+			return this.changeModel(data);
 		}
 		BeanUtils.copyProperties(info, data);
 		if(StringUtils.isEmpty(info.getUserId())) throw new RuntimeException("用户ID不能为空！");

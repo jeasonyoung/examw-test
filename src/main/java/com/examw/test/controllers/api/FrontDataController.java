@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.model.Json;
+import com.examw.test.model.library.ItemErrorRecorveryInfo;
 import com.examw.test.model.products.FrontUserInfo;
 import com.examw.test.model.records.UserItemFavoriteInfo;
 import com.examw.test.model.records.UserItemRecordInfo;
 import com.examw.test.model.records.UserPaperRecordInfo;
 import com.examw.test.model.settings.FrontSubjectInfo;
 import com.examw.test.service.library.IFrontPaperService;
+import com.examw.test.service.library.IItemErrorRecorveryService;
 import com.examw.test.service.products.IProductUserService;
 import com.examw.test.service.records.IUserItemFavoriteService;
 import com.examw.test.service.records.IUserItemRecordService;
@@ -49,6 +51,8 @@ public class FrontDataController {
 	private IProductUserService productUserService;
 	@Resource
 	private IFrontPaperService frontPaperService;
+	@Resource
+	private IItemErrorRecorveryService itemErrorRecorveryServcie;
 	private ObjectMapper mapper;
 	/**
 	 * 构造函数。
@@ -140,6 +144,28 @@ public class FrontDataController {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
 			logger.error("添加用户试题收藏发生异常：" + e.getMessage(), e);
+		}
+		return result;
+	}
+	/**
+	 * 添加用户试题收藏。
+	 * @param userId
+	 * @param info
+	 * @return
+	 */
+	@RequestMapping(value = {"/{userId}/itemerrorrecorvery/add"}, method = {RequestMethod.POST})
+	@ResponseBody
+	public Json addItemErrorRecorvery(@PathVariable String userId,@RequestBody ItemErrorRecorveryInfo info){
+		if(logger.isDebugEnabled()) logger.debug(String.format("添加用户［userId = %s］试题纠错信息..", userId));
+		Json result = new Json();
+		try {
+			info.setUserId(userId);
+			this.itemErrorRecorveryServcie.update(info);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("添加用户试题纠错发生异常：" + e.getMessage(), e);
 		}
 		return result;
 	}

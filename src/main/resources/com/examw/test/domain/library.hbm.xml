@@ -182,7 +182,7 @@
 	    <!-- 纠错ID -->
 	    <id name="id" type="string" length="64" />
 	    <!-- 所属用户 -->
-	    <many-to-one name="user" column="user_id" class="com.examw.test.domain.products.ProductUser" unique-key="user_favorite_item_key" not-null="true"/>
+	    <many-to-one name="user" column="user_id" class="com.examw.test.domain.products.ProductUser" not-null="true"/>
 	    <!-- 所属试题ID -->
 	    <many-to-one name="item" column="item_id" class="Item" />
 	    <!-- 纠错内容 -->

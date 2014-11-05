@@ -189,6 +189,29 @@ public class ItemController implements IUserAware {
 		return result;
 	}
 	/**
+	 * 更新试题同时审核 [Add by FW 2014.11.05]
+	 * @param info
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_ITEM + ":" + Right.UPDATE})
+	@RequestMapping(value="/updateAndAudit", method = RequestMethod.POST)
+	@ResponseBody
+	public Json updateAndAudit(@RequestBody ItemInfo info){
+		if(logger.isDebugEnabled()) logger.debug("更新数据...");
+		Json result = new Json();
+		try {
+			info.setUserId(this.current_userId);
+			info.setUserName(this.current_userName);
+			this.itemService.updateItem(info,true);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("更新数据发生异常", e);
+		}
+		return result;
+	}
+	/**
 	 * 删除数据。
 	 * @param id
 	 * @return

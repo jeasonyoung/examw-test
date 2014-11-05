@@ -1,0 +1,162 @@
+<#--纠错编辑页面-->
+<#include "comm.ftl"/>
+<#assign module="item_error_recorvery"/>
+<#assign module2="library_item"/>
+<#assign form="${module}_edit_form" />
+<script type="text/javascript">
+<!--
+$(function(){
+	//弹出对话框处理试题
+	${module}_deal_item = function(){
+		var itemId = $("input[name='itemId']").val();
+		$.messager.progress();
+		var data;
+		$.ajax({
+			async:false,
+			url:"<@s.url '/library/item/'/>"+itemId,
+			dataType:"json",
+			success:function(d){
+				if(d.success){
+					data = d.data;
+				}
+			},
+			error:function(e){
+				<@error_dialog "e"/>
+			}
+		});
+		$.messager.progress("close");
+		var d ;
+		var saveButtonObj = {
+				text:"保存并审核",iconCls:"icon-save",
+				handler:function(){
+					$.messager.progress();
+					var valid = eval("${module2}_"+data.type+"_validate()");
+					if(!valid){
+						$.messager.progress("close");
+						return;
+					}
+					var post = eval("${module2}_"+data.type+"_update()");
+					if(!post){
+						$.messager.progress("close");
+						$.messager.alert("提示","获取试题数据失败！");
+						return;
+					}
+					$.ajax({
+						url:"<@s.url '/library/item/updateAndAudit'/>",
+						type:"POST",dataType:"json",
+						data:JSON.stringify(post),
+						contentType:"application/json;charset=UTF-8",
+						error:function(e){
+							$.messager.progress("close");
+							<@error_dialog "e"/>
+						},
+						success:function(data,textStatus){
+							$.messager.progress("close");
+							if(data.success){
+								$.messager.show({title:"提示",msg:"修改成功"});
+								d.dialog("close");
+							}else{
+								$.messager.show({title:"提示",msg:data.msg});
+							}
+						}
+					});
+				}
+			};
+		var isAudit = true;
+		var auditButtonObj = {
+				text:("反审核"),
+				iconCls:"icon-save",
+				handler:function(){
+					if(!isAudit){ return;}
+					$.messager.confirm("确认","您是否确认进行反审核?",function(r){
+						if(!r)return;
+						$.messager.progress();
+						$.ajax({
+							url:"<@s.url '/library/item/'/>" + "unaudit" + "/" +itemId,
+							type:"GET",dataType:"json",
+							error:function(e){
+								$.messager.progress("close");
+								<@error_dialog "e"/>
+							},
+							success:function(data,textStatus){
+								$.messager.progress("close");
+								if(data.success){
+									isAudit = false;
+									$.messager.show({title:"提示",msg:"反审核成功"});
+								}else{
+									$.messager.show({title:"提示",msg:data.msg});
+								}
+							}
+						});
+					});
+				}
+			};
+		var closeButtonObj = {
+				text:"关闭",iconCls:"icon-cancel",
+				handler:function(){ d.dialog("close");}
+			}
+		var buttons = [];
+		if(data.status != 0){
+			<@shiro.hasPermission name="${PER_ITEM_UPDATE}">
+			buttons.push(auditButtonObj);
+			</@shiro.hasPermission>
+		}
+		<@shiro.hasPermission name="${PER_ITEM_UPDATE}">
+		buttons.push(saveButtonObj);
+		</@shiro.hasPermission>
+		buttons.push(closeButtonObj);
+		d = $("<div/>").dialog({
+			title:"编辑试题",width:800,height:600,modal:true,
+			href:"<@s.url '/library/item/edit/'/>" + data.type + "?examId=" + data.exam_id + "&subjectId=" + data.subject_id,
+			buttons:buttons,
+			onClose:function(){ $(this).dialog("destroy"); },
+			onLoad:function(){
+				eval("${module2}_"+data.type+"_load(data)");
+			}
+		});
+	}
+});
+//-->
+</script>
+<form id="${form}" method="POST" style="padding:10px;">
+	<div style="float:left;margin-top:12px;width:100%;">
+		<div style="float:left;">
+			<label style="width:75px;">提出用户：</label>
+			<input name="userName" type="text" class="easyui-textbox" data-options="readonly:true,disabled:true" style="width:210px;"/>
+		</div>
+		<div style="float:right;margin-right:35px;">
+			<label style="width:75px;">提出时间：</label>
+			<input name="createTime" type="text" class="easyui-textbox" data-options="readonly:true,disabled:true" style="width:210px;"/>
+		</div>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">题目：</label>
+		<textarea name="itemContent" rows="3" cols="20" style="width:555px;" readonly="readonly"/>
+		<input name="id" type="hidden" />
+		<input name="itemId" type="hidden"/>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<div style="float:left;">
+			<label style="width:75px;">纠错类型：</label>
+			<input name="errorTypeName" type="text" class="easyui-textbox" data-options="readonly:true" style="width:210px;"/>
+		</div>
+		<div style="float:right;margin-right:35px;">
+			<label style="width:75px;">题目类型：</label>
+			<input name="itemTypeName" type="text" class="easyui-textbox" data-options="readonly:true" style="width:210px;"/>
+		</div>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">错误描述：</label>
+		<textarea name="content" rows="3" cols="20" style="width:555px;" readonly="readonly"/>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<div style="float:left;margin-left:100px">
+		    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit',width:500"
+    			onclick="${module}_deal_item()">弹出试题,进行纠错</a>
+    	</div>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">处理备注：</label>
+		<textarea style="float:left" name="remarks" class="easyui-ueditor"  data-options="required:true,width:560,height:100" rows="5" cols="20"/>
+	</div>
+</form>

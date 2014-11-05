@@ -183,7 +183,7 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 	 */
 	@Override
 	public void updateStatus(String itemId,ItemStatus status) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("更新题目［％1$s］状态为［status = %2$s］..", itemId, status));
+		if(logger.isDebugEnabled()) logger.debug(String.format("更新题目［%1$s］状态为［status = %2$s］..", itemId, status));
 		Item item = this.itemDao.load(Item.class, itemId);
 		if(item != null){
 			if(item.getStatus() != status.getValue()) {
@@ -257,6 +257,14 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 	 */
 	@Override
 	public Item updateItem(BaseItemInfo<?> info) {
+		return updateItem(info,false);
+	}
+	/*
+	 * 更新题目。[Add by FW 2014.10.05 纠错时调用]
+	 * @see com.examw.test.service.library.IItemService#updateItem(com.examw.test.model.library.BaseItemInfo, boolean)
+	 */
+	@Override
+	public Item updateItem(BaseItemInfo<?> info, boolean andAudit) {
 		if(logger.isDebugEnabled()) logger.debug("更新题目...");
 		if(info == null) return null;
 		Item data = StringUtils.isEmpty(info.getId()) ? null : this.itemDao.load(Item.class, info.getId());
@@ -307,6 +315,7 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 			throw new RuntimeException(err);
 		}
 		parser.parser(info, data);
+		if(andAudit) data.setStatus(ItemStatus.AUDIT.getValue());
 		this.itemDao.saveOrUpdate(data);
 		return data;
 	}

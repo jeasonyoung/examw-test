@@ -204,6 +204,24 @@
 	    <property name="productUserDao" ref="productUserDao" />
 	    <!-- 终端类型数据接口 -->
 	    <property name="softwareTypeDao" ref="softwareTypeDao" />
+	    <!-- 错误类型 -->
+		<property name="typeMap">
+		    <map>
+		        <entry key="1" value="错别字" />
+				<entry key="2" value="错误答案" />
+				<entry key="3" value="解析错误" />
+				<entry key="4" value="题目不完整" />
+				<entry key="5" value="图片不存在" />
+				<entry key="6" value="其他" />
+		    </map>
+		</property>
+		<!-- 题目状态 -->
+		<property name="statusMap">
+			<map>
+				<entry key="0" value="未处理" />
+				<entry key="1" value="已处理" />
+			</map>
+		</property>
 	</bean>
 	<!-- 题库管理 服务接口实现 end-->
 </beans>

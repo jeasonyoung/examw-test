@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -76,14 +75,27 @@ public class ItemErrorRecorveryController implements IUserAware {
 		return this.itemErrorRecorveryService.datagrid(info);
 	}
 	/**
+	 * 加载编辑页面。
+	 * @param model
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_ITEM_RECORVERY + ":" + Right.UPDATE})
+	@RequestMapping(value="/edit", method = RequestMethod.GET)
+	public String edit(String examId,String subjectId,Model model){
+		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
+		//拥有试题修改权限
+		model.addAttribute("PER_ITEM_UPDATE", ModuleConstant.LIBRARY_ITEM + ":" + Right.UPDATE);
+		return "library/item_error_recorvery_edit";
+	}
+	/**
 	 * 更新数据。
 	 * @param info
 	 * @return
 	 */
-	@RequiresPermissions({ModuleConstant.LIBRARY_ITEM + ":" + Right.UPDATE})
+	@RequiresPermissions({ModuleConstant.LIBRARY_ITEM_RECORVERY + ":" + Right.UPDATE})
 	@RequestMapping(value="/update", method = RequestMethod.POST)
 	@ResponseBody
-	public Json update(@RequestBody ItemErrorRecorveryInfo info){
+	public Json update(ItemErrorRecorveryInfo info){
 		if(logger.isDebugEnabled()) logger.debug("更新数据...");
 		Json result = new Json();
 		try {

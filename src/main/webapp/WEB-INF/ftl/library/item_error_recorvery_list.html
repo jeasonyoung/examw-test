@@ -24,7 +24,7 @@ $(function(){
 			field:"id",
 			checkbox:true
 		},{
-			title:"用户名",
+			title:"提出用户",
 			field:"userName",
 			width:10,
 			align:"left",
@@ -47,7 +47,7 @@ $(function(){
 			align:"left"
 		},{
 			title:"状态",
-			field:"status",
+			field:"statusName",
 			width:10,
 			align:"left",
 			sortable:true
@@ -72,26 +72,26 @@ $(function(){
 			<@error_dialog "e"/>
 		},
 		onDblClickRow:function(rowIndex,rowData){
-			edit_window("纠错",rowIndex,rowData,null);
+			edit_window("纠错",rowIndex,rowData);
 		}
 	});
 	//edit
-	function edit_window(title,index,row,code){
+	function edit_window(title,index,row){
 		var d = $("<div/>").dialog({
 			title:title,
-			width:400,
-			height:190,
-			href:"<@s.url '/products/channel/edit'/>",
+			width:700,
+			height:600,
+			href:"<@s.url '/library/item/recorvery/edit'/>",
 			modal:true,
 			buttons:[
-			 <@shiro.hasPermission name="${PER_UPDATE}">
-			  {
-				text:"保存",
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			 {
+				text:"完成纠错",
 				iconCls:"icon-save",
 				handler:function(){
 					$.messager.progress();
 					$("#${module}_edit_form").form("submit",{
-						url:"<@s.url '/products/channel/update'/>",
+						url:"<@s.url '/library/item/recorvery/update'/>",
 						onSubmit: function(){
 							var isValid = $(this).form("validate");
 							if (!isValid)$.messager.progress("close");
@@ -132,10 +132,6 @@ $(function(){
 				$(this).dialog("destroy");
 			},
 			onLoad:function(){
-				if(code && !row){
-					$("#${module}_edit_form").form("load",{"code":code});
-					return;
-				}
 				if(row) $("#${module}_edit_form").form("load",row);
 			}
 	  });
