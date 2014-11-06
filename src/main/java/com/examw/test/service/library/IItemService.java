@@ -68,6 +68,11 @@ public interface IItemService extends IBaseDataService<ItemInfo> {
 	 */
 	Item updateItem(BaseItemInfo<?> info,boolean andAudit);
 	/**
+	 * 纠正题目错误 同时还要重新发布修改试卷的状态
+	 * @param info
+	 */
+	void recorveryItemError(BaseItemInfo<?> info);
+	/**
 	 * 加载试题数据。
 	 * @param itemId
 	 * 试题ID。

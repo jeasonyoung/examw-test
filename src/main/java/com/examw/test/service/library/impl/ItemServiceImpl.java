@@ -14,6 +14,7 @@ import com.examw.test.dao.settings.IAreaDao;
 import com.examw.test.dao.settings.ISubjectDao;
 import com.examw.test.domain.library.Item;
 import com.examw.test.domain.library.Source;
+import com.examw.test.domain.library.StructureItem;
 import com.examw.test.domain.settings.Area;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.library.BaseItemInfo;
@@ -24,6 +25,7 @@ import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperService;
 import com.examw.test.service.library.ItemParser;
 import com.examw.test.service.library.ItemStatus;
+import com.examw.test.service.library.PaperStatus;
 /**
  * 题目服务接口实现类。
  * 
@@ -318,6 +320,18 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		if(andAudit) data.setStatus(ItemStatus.AUDIT.getValue());
 		this.itemDao.saveOrUpdate(data);
 		return data;
+	}
+	@Override
+	public void recorveryItemError(BaseItemInfo<?> info) {
+		Item item = this.updateItem(info, true);
+		if(item.getStructures() != null && item.getStructures().size() > 0){
+			for(StructureItem structureItem : item.getStructures()){
+				if(structureItem.getStructure() != null && structureItem.getStructure().getPaper() != null){
+					structureItem.getStructure().getPaper().setStatus(PaperStatus.AUDIT.getValue()); //修改相关试卷状态,让其重新发布	
+				}
+			}
+		}
+		
 	}
 	/*
 	 * 删除数据。

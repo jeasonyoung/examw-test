@@ -202,7 +202,7 @@ public class ItemController implements IUserAware {
 		try {
 			info.setUserId(this.current_userId);
 			info.setUserName(this.current_userName);
-			this.itemService.updateItem(info,true);
+			this.itemService.recorveryItemError(info);
 			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);

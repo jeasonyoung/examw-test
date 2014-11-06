@@ -41,10 +41,13 @@
 		state.validPanel = $('<input id=\''+targetId  +'_valid\'  type=\'hidden\' value=\'false\'/>');
 		$(target).parent().append(state.validPanel);
 		var editor = state.editor = UE.getEditor(targetId,state.options);
-		//初始化事件
-		_initEvents(target);
-		//初始化验证
-		_initializeValidate(target);
+		//在编辑器准备就绪后 [modify by FW 2014.11.06] 解决在一些编辑页面第一次加载编辑器是无法保存编辑的情况
+		editor.addListener( 'ready', function( editor ) {
+			//初始化事件
+			_initEvents(target);
+			//初始化验证
+			_initializeValidate(target);
+		 } );
 	};
 	//获取ueditor的ID。
 	function _getTargetId(target){

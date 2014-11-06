@@ -8037,7 +8037,7 @@ UE.Editor.defaultOptions = function(editor){
         readonly: false,
         zIndex: 999,
         imagePopup: true,
-        enterTag: 'p',
+        enterTag: '',	//去掉p,不自动加p标签 2014.11.06
         customDomain: false,
         lang: 'zh-cn',
         langPath: _url + 'lang/',
