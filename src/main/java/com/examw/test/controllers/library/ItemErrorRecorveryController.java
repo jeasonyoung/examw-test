@@ -15,6 +15,7 @@ import com.examw.model.DataGrid;
 import com.examw.model.Json;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.library.ItemErrorRecorveryInfo;
+import com.examw.test.service.library.ErrorRecorveryStatus;
 import com.examw.test.service.library.IItemErrorRecorveryService;
 
 /**
@@ -60,6 +61,8 @@ public class ItemErrorRecorveryController implements IUserAware {
 		if(logger.isDebugEnabled()) logger.debug("加载列表页面...");
 		model.addAttribute("PER_UPDATE", ModuleConstant.LIBRARY_ITEM_RECORVERY + ":" + Right.UPDATE);
 		model.addAttribute("PER_DELETE", ModuleConstant.LIBRARY_ITEM_RECORVERY + ":" + Right.DELETE);
+		model.addAttribute("ERRORTYPE_MAP",this.itemErrorRecorveryService.loadErrorTypes());
+		model.addAttribute("STATUS_UNDONE", ErrorRecorveryStatus.NONE.getValue());
 		return "library/item_error_recorvery_list";
 	}
 	/**
@@ -107,6 +110,28 @@ public class ItemErrorRecorveryController implements IUserAware {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
 			logger.error("更新数据发生异常", e);
+		}
+		return result;
+	}
+	
+	/**
+	 * 删除数据。
+	 * @param id
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_ITEM + ":" + Right.DELETE})
+	@RequestMapping(value="/delete", method = RequestMethod.POST)
+	@ResponseBody
+	public Json delete(String id){
+		if(logger.isDebugEnabled()) logger.debug("删除数据［"+ id +"］...");
+		Json result = new Json();
+		try {
+			this.itemErrorRecorveryService.delete(id.split("\\|"));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("删除数据["+id+"]时发生异常:", e);
 		}
 		return result;
 	}

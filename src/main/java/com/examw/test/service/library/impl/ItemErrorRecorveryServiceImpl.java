@@ -217,6 +217,16 @@ public class ItemErrorRecorveryServiceImpl extends BaseDataServiceImpl<ItemError
 	 */
 	@Override
 	public void delete(String[] ids) {
+		if(logger.isDebugEnabled()) logger.debug("删除数据...");
+		if(ids == null || ids.length == 0) return;
+		for(int i = 0; i < ids.length; i++){
+			if(StringUtils.isEmpty(ids[i])) continue;
+			ItemErrorRecorvery data = this.itemErrorRecorveryDao.load(ItemErrorRecorvery.class, ids[i]);
+			if(data != null){
+				if(logger.isDebugEnabled()) logger.debug(String.format("删除数据［%s］", ids[i]));
+				this.itemErrorRecorveryDao.delete(data);
+			}
+		}
 	}
 	/*
 	 * 加载错误类型映射

@@ -44,7 +44,7 @@ public class DefaultShareTitleItemParser extends DefaultItemParser {
 	@Override
 	public void conversion(Item source, BaseItemInfo<?> target,boolean isAll) {
 		super.conversion(source, target,isAll);
-		if(isAll && target.getType() == ItemType.SHARE_TITLE.getValue() && target.getChildren() != null && target.getChildren().size() > 0){
+		if(isAll && target.getType().equals(ItemType.SHARE_TITLE.getValue()) && target.getChildren() != null && target.getChildren().size() > 0){
 			for(BaseItemInfo<?> info : target.getChildren()){
 				if(info == null || info.getType() == null) continue;
 				info.setTypeName(this.itemService.loadTypeName(info.getType()));

@@ -90,7 +90,7 @@ $(function(){
    <@shiro.hasPermission name="${PER_DELETE}">
 	//delete
 	${dg}_delete = function(){
-		var rows = dg.datagrid("getChecked");
+		var rows = $("#${dg}").datagrid("getChecked");
 		if(rows && rows.length > 0){
 			$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
 				if(!r)return;

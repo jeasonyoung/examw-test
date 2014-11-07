@@ -6,6 +6,7 @@
 <script type="text/javascript">
 <!--
 $(function(){
+	var isChecked = false;
 	//弹出对话框处理试题
 	${module}_deal_item = function(){
 		var itemId = $("input[name='itemId']").val();
@@ -114,7 +115,9 @@ $(function(){
 				eval("${module2}_"+data.type+"_load(data)");
 			}
 		});
+		isChecked = true;
 	}
+	${module}_checked = function(){return isChecked;}
 });
 //-->
 </script>

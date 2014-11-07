@@ -50,7 +50,13 @@ $(function(){
 			field:"statusName",
 			width:10,
 			align:"left",
-			sortable:true
+			sortable:true,
+			formatter:function(value,row,index){
+				if(row.status == ${STATUS_UNDONE}) 
+					return '<span style=\'color:red\'>未处理</span>';
+				else 
+					return '已处理';
+			}
 		},{
 			title:"提出时间",
 			field:"createTime",
@@ -89,6 +95,11 @@ $(function(){
 				text:"完成纠错",
 				iconCls:"icon-save",
 				handler:function(){
+					if(!${module}_checked()){
+						$.messager.progress("close");
+						$.messager.alert("提示","您并没有认真纠错,请弹出试题进行纠错");
+						return false;
+					}
 					$.messager.progress();
 					$("#${module}_edit_form").form("submit",{
 						url:"<@s.url '/library/item/recorvery/update'/>",
@@ -152,7 +163,8 @@ $(function(){
 		$("#${dg}").datagrid("load",{
 			"examId":exam_id,
 			"subjectId":subject_id,
-			"userName":$("#${dg}_toobar input[name='userName']").val()
+			"userName":$("#${dg}_toobar input[name='userName']").val(),
+			"errorType":$('#${module}_type').combobox('getValue')
 		});
 	};
 	<@shiro.hasPermission name="${PER_DELETE}">
@@ -164,11 +176,20 @@ $(function(){
 				if(!r)return;
 				$.messager.progress();
 				var ids = [];
+				var flag = false;
 				for(var i = 0; i < rows.length; i++){
 					ids.push(rows[i].id);
+					if(rows[i].status==${STATUS_UNDONE}){
+						flag = true;
+					}
+				}
+				if(flag){
+					$.messager.progress("close");
+					$.messager.alert("提示","包含未处理的纠错不能删除");
+					return;
 				}
 				$.ajax({
-					url:"<@s.url '/products/channel/delete'/>",
+					url:"<@s.url '/library/item/recorvery/delete'/>",
 					type:"POST",
 					data:{
 						id:ids.join("|")
@@ -213,7 +234,12 @@ $(function(){
 		</@shiro.hasPermission>
 	
 		<label>用户名：<input name="userName" type="text" style="width:198px;"/></label>
-	
+		<select id="${module}_type" class="easyui-combobox" name="errorType" style="width:200px;">
+			<option value="">全部</option>
+			<#list ERRORTYPE_MAP?keys as key>
+			<option value="${key}">${ERRORTYPE_MAP[key]}</option>
+			</#list>	
+		</select>
 		<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
 		</div>
 	</div>

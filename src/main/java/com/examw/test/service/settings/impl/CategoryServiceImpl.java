@@ -151,6 +151,14 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		return result;
 	}
 	//创建考试类别树。
+	/**
+	 * 创建考试类别树。
+	 * @param data	顶级考试分类
+	 * @param ignoreCategoryId 避免加载的考试分类
+	 * @param withExam	是否加载考试
+	 * @param withSubject	是否加载科目
+	 * @return
+	 */
 	private TreeNode createTreeNode(Category data,String ignoreCategoryId,boolean withExam,boolean withSubject){
 		if(data == null || data.getId().equalsIgnoreCase(ignoreCategoryId)) return null;
 		TreeNode node = new TreeNode();
@@ -189,7 +197,14 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 				}
 				examTreeNodes.add(tn_exam);
 			}
-			if(examTreeNodes.size() > 0) node.setChildren(examTreeNodes);
+			if(examTreeNodes.size() > 0){
+				if(node.getChildren()!=null && node.getChildren().size()>0){
+					List<TreeNode> nodes = node.getChildren();
+					nodes.addAll(examTreeNodes);
+					node.setChildren(nodes);
+				}else
+					node.setChildren(examTreeNodes);
+			}
 		}
 		if(data.getChildren() != null && data.getChildren().size() > 0){
 			List<TreeNode> children = new ArrayList<>();
@@ -198,7 +213,14 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 				TreeNode e = this.createTreeNode(child, ignoreCategoryId, withExam, withSubject);
 				if(e != null) children.add(e);
 			}
-			if(children.size() > 0) node.setChildren(children); 
+			if(children.size() > 0){
+				if(node.getChildren()!=null && node.getChildren().size()>0){
+					List<TreeNode> nodes = node.getChildren();
+					nodes.addAll(children);
+					node.setChildren(nodes);
+				}else
+					node.setChildren(children);
+			}
 		}
 		return node;
 	}

@@ -287,6 +287,35 @@ public class ItemController implements IUserAware {
 		}
 		return "library/item_preview";
 	}
+	@RequiresPermissions({ModuleConstant.LIBRARY_ITEM + ":" + Right.VIEW})
+	@RequestMapping(value="/front/preview/{itemId}", method = {RequestMethod.GET, RequestMethod.POST})
+	public String itemFrontPreview(@PathVariable String itemId,Model model){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试题［itemId = %s］预览...", itemId));
+		Item item = this.itemService.loadItem(itemId);
+		if(item == null){
+			throw new RuntimeException(String.format("试题［itemId = %s］不存在！", itemId));
+		}
+		ItemInfo itemInfo = new ItemInfo();
+		this.itemService.conversion(item, itemInfo, true);
+		model.addAttribute("item", itemInfo);
+		
+		List<String[]> papers = new ArrayList<>();
+		if(item.getStructures() != null && item.getStructures().size() > 0){
+			for(StructureItem structureItem : item.getStructures()){
+				if(structureItem.getStructure() != null && structureItem.getStructure().getPaper() != null){
+					papers.add(new String[]{ structureItem.getStructure().getPaper().getName(), structureItem.getStructure().getTitle(), structureItem.getOrderNo().toString()});
+				}
+			}
+		}
+		model.addAttribute("papers", papers);
+		
+		if(itemInfo.getType() == ItemType.JUDGE.getValue()){
+			PaperItemUtils.addItemJudgeAnswers(this.itemService, model);
+		}else if(itemInfo.getType() == ItemType.SHARE_TITLE.getValue()){
+			PaperItemUtils.addItemJudgeAnswers(this.itemService, model);//判断题答案
+		}
+		return "library/item_front_preview";
+	}
 	/**
 	 * 加载试题信息。
 	 * @param itemId

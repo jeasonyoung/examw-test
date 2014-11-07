@@ -174,6 +174,19 @@ public class PaperItemController implements IUserAware {
 		}
 		return "library/item_preview";
 	}
+	@RequestMapping(value = "/front/preview/{structureId}/{itemId}", method = {RequestMethod.GET, RequestMethod.POST})
+	public String loadPaperItemFrontPreview(@PathVariable String structureId,@PathVariable String itemId, Model model){
+		if(logger.isDebugEnabled()) logger.debug(String.format("预览试卷结构［％1$s］下的试题［%2$s］...", structureId,itemId));
+		StructureItemInfo info = this.paperItemService.loadPaperItem(structureId, itemId);
+		if(info == null) throw new RuntimeException(String.format("预览试卷结构［％1$s］下的试题［%2$s］不存在！", structureId,itemId));
+		model.addAttribute("item", info);
+		if(info.getType() == ItemType.JUDGE.getValue()){
+			PaperItemUtils.addItemJudgeAnswers(this.itemService, model);
+		}else if(info.getType() == ItemType.SHARE_TITLE.getValue()){
+			PaperItemUtils.addItemJudgeAnswers(this.itemService, model);//判断题答案
+		}
+		return "library/item_front_preview";
+	}
 	/**
 	 * 更新试卷结构下试题数据。
 	 * @param paperId

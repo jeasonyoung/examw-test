@@ -9,8 +9,8 @@ $(function(){
 	${dg}_preview = function(itemId,status){
 		var isAudit = (status == ${item_status_none_value});
 		var d = $("<div/>").dialog({
-			title:"试题预览",width:800,height:600,modal:true,
-			href:"<@s.url '/library/item/preview/'/>" +itemId,
+			title:"试题预览",width:880,height:600,modal:true,
+			href:"<@s.url '/library/item/front/preview/'/>" +itemId,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
 			{

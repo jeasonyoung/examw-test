@@ -1,0 +1,24 @@
+<!-- css -->
+<link href="<@s.url "/resources/front-preview/pub.css"/>" rel="stylesheet" type="text/css">
+<link href="<@s.url "/resources/front-preview/tiku.css"/>" rel="stylesheet" type="text/css">
+<#include "library/item_front_view.ftl"/>
+<div class="main" style="width:770px;margin-left:10px">
+	<div class="content fl" style="width:770px;margin-top:10px">
+        <div class="cont-r fr" style="width:770px">
+        	<div class="box fl yinying">
+				<div class="h20"></div>
+                <div class="shuoming" id="font14">
+                	<p><span style="color:blue">所属科目：</span>${item.examName} &gt; ${item.subjectName}		<span style="color:blue">所属类型：</span>${item.optName}<br/></p>
+                	<p><span style="color:blue">试题来源：</span>${item.sourceName}     <span style="color:blue">所属地区：</span>${item.areaName}   <span style="color:blue">使用年份：</span><#if item.year??> ${item.year?string('####')}</#if></p>
+                	<#if papers?? && (papers?size>0)>
+                	<p style="color:blue">关联的试卷：</p>
+					<#list papers as paper>
+						<p>${paper_index+1}.${paper[0]}[${paper[1]}][${paper[2]}]</p>
+					</#list>
+					</#if>
+                </div>
+            </div>
+            <@show_item father=null item=item index=1/>
+        </div>
+    </div>
+</div>

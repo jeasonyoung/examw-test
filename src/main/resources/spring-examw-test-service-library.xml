@@ -85,9 +85,9 @@
 			            <property name="itemDao" ref="itemDao" />
 			        </bean>
 			    </entry>
-			    <entry key="3"><!-- 不定向选题 -->
+			    <entry key="3"><!-- 不定项选题 -->
 			        <bean class="com.examw.test.service.library.impl.DefaultItemParser">
-			            <constructor-arg value="不定向选" />
+			            <constructor-arg value="不定项选" />
 			            <property name="itemDao" ref="itemDao" />
 			        </bean>
 			    </entry>
