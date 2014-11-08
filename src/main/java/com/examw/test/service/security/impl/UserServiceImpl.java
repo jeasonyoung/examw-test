@@ -12,6 +12,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
+import com.examw.service.Gender;
+import com.examw.service.Status;
 import com.examw.test.dao.security.IRoleDao;
 import com.examw.test.dao.security.IUserDao;
 import com.examw.test.domain.security.MenuRight;
@@ -19,6 +21,7 @@ import com.examw.test.domain.security.Role;
 import com.examw.test.domain.security.User;
 import com.examw.test.model.security.UserInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
+import com.examw.test.service.security.IUserAuthorization;
 import com.examw.test.service.security.IUserService;
 import com.examw.test.support.PasswordHelper;
 
@@ -27,11 +30,11 @@ import com.examw.test.support.PasswordHelper;
  * @author yangyong.
  * @since 2014-05-08.
  */
-public class UserServiceImpl extends BaseDataServiceImpl<User, UserInfo> implements IUserService {
-	private static final Logger logger = Logger.getLogger(UserServiceImpl.class);
+public class UserServiceImpl extends BaseDataServiceImpl<User, UserInfo> implements IUserService,IUserAuthorization {
+	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
 	private IUserDao userDao;
 	private IRoleDao roleDao; 
-	private Map<Integer, String> genderNames,statusNames;
+	private Map<Integer, String> genderNameMap,statusNameMap;
 	private PasswordHelper passwordHelper;
 	/**
 	 * 设置用户数据接口。
@@ -39,7 +42,7 @@ public class UserServiceImpl extends BaseDataServiceImpl<User, UserInfo> impleme
 	 * 用户数据接口。
 	 */
 	public void setUserDao(IUserDao userDao) {
-		if(logger.isDebugEnabled()) logger.debug("设置用户数据接口...");
+		if(logger.isDebugEnabled()) logger.debug("注入用户数据接口...");
 		this.userDao = userDao;
 	}
 	/**
@@ -48,7 +51,7 @@ public class UserServiceImpl extends BaseDataServiceImpl<User, UserInfo> impleme
 	 * 角色数据接口。
 	 */
 	public void setRoleDao(IRoleDao roleDao) {
-		if(logger.isDebugEnabled()) logger.debug("设置角色数据接口...");
+		if(logger.isDebugEnabled()) logger.debug("注入角色数据接口...");
 		this.roleDao = roleDao;
 	}
 	/**
@@ -56,26 +59,46 @@ public class UserServiceImpl extends BaseDataServiceImpl<User, UserInfo> impleme
 	 * @param passwordHelper
 	 */
 	public void setPasswordHelper(PasswordHelper passwordHelper) {
-		if(logger.isDebugEnabled()) logger.debug("设置密码工具类...");
+		if(logger.isDebugEnabled()) logger.debug("注入密码工具...");
 		this.passwordHelper = passwordHelper;
 	}
 	/**
-	 * 设置性别名称。
-	 * @param genderNames
-	 * 性别名称。
+	 * 设置性别名称集合。
+	 * @param genderNameMap
+	 * 性别名称集合。
 	 */
-	public void setGenderNames(Map<Integer, String> genderNames) {
-		if(logger.isDebugEnabled()) logger.debug("设置性别名称集合...");
-		this.genderNames = genderNames;
+	public void setGenderNameMap(Map<Integer, String> genderNameMap) {
+		if(logger.isDebugEnabled()) logger.debug("注入性别名称集合...");
+		this.genderNameMap = genderNameMap;
 	}
 	/**
-	 * 设置状态名称。
-	 * @param statusNames
-	 * 状态名称。
+	 * 设置状态名称集合。
+	 * @param statusNameMap
+	 * 状态名称集合。
 	 */
-	public void setStatusNames(Map<Integer, String> statusNames) {
-		if(logger.isDebugEnabled()) logger.debug("设置状态名称集合...");
-		this.statusNames = statusNames;
+	public void setStatusNameMap(Map<Integer, String> statusNameMap) {
+		if(logger.isDebugEnabled()) logger.debug("注入状态名称集合...");
+		this.statusNameMap = statusNameMap;
+	}
+	/*
+	 * 加载性别名称。
+	 * @see com.examw.netplatform.service.admin.IUserService#loadGenderName(java.lang.Integer)
+	 */
+	@Override
+	public String loadGenderName(Integer gender) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载性别［%d］名称...", gender));
+		if(this.genderNameMap == null || this.genderNameMap.size() == 0) return null;
+		return this.genderNameMap.get(gender);
+	}
+	/*
+	 * 加载用户状态名称。
+	 * @see com.examw.netplatform.service.admin.security.IUserService#loadStatusName(java.lang.Integer)
+	 */
+	@Override
+	public String loadStatusName(Integer status) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户状态［%d］名称...", status));
+		if(this.statusNameMap == null || this.statusNameMap.size() == 0) return null;
+		return this.statusNameMap.get(status);
 	}
 	/*
 	 * 查找数据。
@@ -84,41 +107,63 @@ public class UserServiceImpl extends BaseDataServiceImpl<User, UserInfo> impleme
 	@Override
 	protected List<User> find(UserInfo info) {
 		if(logger.isDebugEnabled()) logger.debug("查询数据...");
-		return this.userDao.findUsers(info);
+		 return this.userDao.findUsers(info);
 	}
 	/*
-	 * 类型转换。
+	 * 数据模型转换。
 	 * @see com.examw.netplatform.service.impl.BaseDataServiceImpl#changeModel(java.lang.Object)
 	 */
 	@Override
 	protected UserInfo changeModel(User data) {
-		if(logger.isDebugEnabled()) logger.debug("类型转换...");
+		if(logger.isDebugEnabled()) logger.debug("数据模型转换 User => UserInfo ...");
+		return this.changeModel(data, false);
+	}
+	//数据模型转换。
+	private UserInfo changeModel(User data, boolean isViewPwd){
 		if(data == null) return null;
-		
 		UserInfo info = new UserInfo(); 
 		BeanUtils.copyProperties(data, info, new String[]{"password"});
 		//解密密码。
-		info.setPassword(this.passwordHelper.decryptAESPassword(data));
-		
-		if(info.getGender() != null) info.setGenderName(this.loadGenderName(info.getGender()));
-		if(info.getStatus() != null) info.setStatusName(this.loadUserStatusName(info.getStatus()));
+		if(isViewPwd){
+			info.setPassword(this.passwordHelper.decryptAESPassword(data));
+		}
+		//性别
+		if(info.getGender() != null){
+			info.setGenderName(this.loadGenderName(info.getGender()));
+		}
+		//状态
+		if(info.getStatus() != null){
+			info.setStatusName(this.loadStatusName(info.getStatus()));
+		}
 		//角色
 		if(data.getRoles() != null){
-			List<String> list = new ArrayList<>();
+			List<String> listRoleId = new ArrayList<>(), listRoleName = new ArrayList<>();
 			for(Role role : data.getRoles()){
-				if(role != null) list.add(role.getId());
+				if(role == null) continue;
+				listRoleId.add(role.getId());
+				listRoleName.add(role.getName());
 			}
-			info.setRoleId(list.toArray(new String[0]));
+			info.setRoleId(listRoleId.toArray(new String[0]));
+			info.setRoleName(listRoleName.toArray(new String[0]));
 		}
 		return info;
 	}
 	/*
-	 * 查询统计。
+	 * 数据模型转换。
+	 * @see com.examw.netplatform.service.admin.security.IUserService#conversion(com.examw.netplatform.domain.admin.security.User, boolean)
+	 */
+	@Override
+	public UserInfo conversion(User data, boolean isViewPwd) {
+		if(logger.isDebugEnabled()) logger.debug("数据模型转换 User => UserInfo...");
+		return this.changeModel(data, isViewPwd);
+	}
+	/*
+	 * 查询数据统计。
 	 * @see com.examw.netplatform.service.impl.BaseDataServiceImpl#total(java.lang.Object)
 	 */
 	@Override
 	protected Long total(UserInfo info) {
-		if(logger.isDebugEnabled())logger.debug("查询统计...");
+		if(logger.isDebugEnabled()) logger.debug("查询数据统计...");
 		return this.userDao.total(info);
 	}
 	/*
@@ -128,37 +173,43 @@ public class UserServiceImpl extends BaseDataServiceImpl<User, UserInfo> impleme
 	@Override
 	public UserInfo update(UserInfo info) {
 		if(logger.isDebugEnabled()) logger.debug("更新数据...");
+		return this.changeModel(this.updateUser(info));
+	}
+	//更新数据。
+	private User updateUser(final UserInfo info){
 		if(info == null) return null;
 		boolean isAdded = false;
-		User  data = StringUtils.isEmpty(info.getId()) ?  null : this.userDao.load(User.class, info.getId());
-		if(isAdded = (data == null)){
-			if(StringUtils.isEmpty(info.getId())){
-				info.setId(UUID.randomUUID().toString());
-			}
-			info.setCreateTime(new Date());
-			data = new User();
+		User user = StringUtils.isEmpty(info.getId()) ? null : this.userDao.load(User.class, info.getId());
+		if(isAdded = (user == null)){
+			if(StringUtils.isEmpty(info.getId())) info.setId(UUID.randomUUID().toString());
+		    long total =	this.total(new UserInfo(){
+				private static final long serialVersionUID = 1L;
+				@Override
+				public String getAccount() { return info.getAccount(); }
+			});
+			if(total > 0) throw new RuntimeException(String.format("账号［%s］已存在！", info.getAccount()));
+			user = new User();
+		}else{
+			info.setAccount(user.getAccount());
+			info.setCreateTime(user.getCreateTime());
+			if(info.getCreateTime() == null) info.setCreateTime(new Date());
 		}
-		if(!isAdded)info.setCreateTime(data.getCreateTime());
-		BeanUtils.copyProperties(info, data, new String[]{"password"});
-		//加密密码。
-		data.setPassword(this.passwordHelper.encryptAESPassword(info));
-		//添加角色。
-		Set<Role> roleSets = new HashSet<>();
+		BeanUtils.copyProperties(info, user, new String[]{"password"});
+		Set<Role> roles = null;
 		if(info.getRoleId() != null && info.getRoleId().length > 0){
-			for(String id : info.getRoleId()){
-				if(StringUtils.isEmpty(id)) continue;
-				Role role = this.roleDao.load(Role.class, id);
-				if(role != null)roleSets.add(role);
+			roles = new HashSet<>();
+			for(String roleId : info.getRoleId()){
+				if(StringUtils.isEmpty(roleId)) continue;
+				Role role = this.roleDao.load(Role.class, roleId);
+				if(role != null)roles.add(role);
 			}
 		}
-		data.setRoles(roleSets);
-		//新增数据。
-		if(isAdded) this.userDao.save(data);
-		//性别名称。
-		if(StringUtils.isEmpty(info.getGenderName()) && info.getGender() != null){
-			info.setGenderName(this.loadGenderName(info.getGender()));
+		user.setRoles(roles);
+		if(isAdded){
+			user.setPassword(this.passwordHelper.encryptAESPassword(info));
+			this.userDao.save(user);
 		}
-		return info;
+		return user;
 	}
 	/*
 	 * 删除数据。
@@ -172,96 +223,80 @@ public class UserServiceImpl extends BaseDataServiceImpl<User, UserInfo> impleme
 			 if(StringUtils.isEmpty(ids[i])) continue;
 			 User data = this.userDao.load(User.class, ids[i]);
 			 if(data != null){
-				 logger.debug("删除数据：" + ids[i]);
+				 if(logger.isDebugEnabled()) logger.debug("删除数据：" + ids[i]);
 				 this.userDao.delete(data);
 			 }
 		 }
 	}
 	/*
-	 * 加载用户状态名称。
-	 * @see com.examw.netplatform.service.admin.IUserService#loadUserStatusName(int)
+	 * 修改密码。
+	 * @see com.examw.netplatform.service.admin.security.IUserService#modifyPassword(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public String loadUserStatusName(Integer status) {
-		if(logger.isDebugEnabled()) logger.debug("加载用户状态［"+ status +"］名称...");
-		if(this.statusNames == null || this.statusNames.size() == 0) return status.toString();
-		return this.statusNames.get(status);
+	public void modifyPassword(String userId,String oldPassword,String newPassword) throws Exception {
+		if(logger.isDebugEnabled()) logger.debug(String.format("更新用户［%1$s］密码:［%1$s］ =>［％2$s］", userId,oldPassword,newPassword));
+		if(StringUtils.isEmpty(userId)) throw new Exception("用户ID为空！");
+		if(StringUtils.isEmpty(oldPassword)) throw new Exception("旧密码为空！");
+		if(StringUtils.isEmpty(newPassword)) throw new Exception("新密码为空！");
+		User user = this.userDao.load(User.class, userId);
+		if(user == null) throw new Exception(String.format("用户［％s］不存在！", userId));
+		String old_pwd = this.passwordHelper.decryptAESPassword(user);
+		if(!oldPassword.equalsIgnoreCase(old_pwd)) throw new Exception("旧密码错误！");
+		UserInfo info = new UserInfo();
+		BeanUtils.copyProperties(user, info, new String[]{"password"});
+		info.setPassword(newPassword);
+		user.setPassword(this.passwordHelper.encryptAESPassword(info));
+		if(logger.isDebugEnabled()) logger.debug("密码修改成功！");
 	}
 	/*
-	 * 加载性别名称
-	 * @see com.examw.netplatform.service.admin.IUserService#loadGenderName(java.lang.Integer)
+	 * 根据账号加载用户。
+	 * @see com.examw.netplatform.service.admin.security.IUserAuthorization#loadUserByAccount(java.lang.String)
 	 */
 	@Override
-	public String loadGenderName(Integer gender) {
-		if(logger.isDebugEnabled()) logger.debug("加载性别［"+ gender +"］名称...");
-		if(this.genderNames == null || this.genderNames.size() == 0) return gender.toString();
-		return this.genderNames.get(gender);
-	}
-	/*
-	 * 更新密码。
-	 * @see com.examw.netplatform.service.admin.IUserService#changePassword(java.lang.String, java.lang.String)
-	 */
-	@Override
-	public void changePassword(String userId, String newPassword) {
-		if(logger.isDebugEnabled()) logger.debug("更新用户［"+ userId +"］密码：" + newPassword);
-		if(StringUtils.isEmpty(userId) || StringUtils.isEmpty(newPassword)) return;
-		User data = this.userDao.load(User.class, userId);
-		if(data != null){
-			UserInfo info = new UserInfo();
-			BeanUtils.copyProperties(data, info, new String[]{"password"}); 
-			info.setPassword(newPassword);
-			data.setPassword(this.passwordHelper.encryptAESPassword(info));
-		}
-	}
-	/*
-	 * 根据账号查找用户。
-	 * @see com.examw.netplatform.service.admin.IUserService#findByAccount(java.lang.String)
-	 */
-	@Override
-	public User findByAccount(String account) {
-		if(logger.isDebugEnabled()) logger.debug("根据账号［"+ account +"］查找用户...");
+	public User loadUserByAccount(String account) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("根据账号［%s］加载用户...", account));
 		if(StringUtils.isEmpty(account)) return null;
 		return this.userDao.findByAccount(account);
 	}
 	/*
-	 * 根据账号查找用户角色。
+	 * 根据账号查找用户角色ID集合。
 	 * @see com.examw.netplatform.service.admin.IUserService#findRoles(java.lang.String)
 	 */
 	@Override
-	public Set<String> findRoles(String account) {
-		if(logger.isDebugEnabled()) logger.debug("根据账号［"+ account +"］查找用户角色集合...");
-		Set<String> rolesSet = new HashSet<String>();
-		User user = this.findByAccount(account);
-		if(user != null && user.getRoles() != null){
-			for(Role role : user.getRoles()){
-				if(role == null || role.getStatus() == Role.STATUS_DISABLE) continue;
-				rolesSet.add(role.getId());
-			}
+	public Set<String> findRolesByAccount(String account) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("根据账号［%s］查找用户角色ID集合...", account));
+		Set<String> roleIds = new HashSet<>();
+		User user = this.loadUserByAccount(account);
+		if(user != null && user.getRoles() != null && user.getRoles().size() > 0){
+			 for(Role role : user.getRoles()){
+				 if(role == null || role.getStatus() == null || role.getStatus() != Status.ENABLED.getValue()) continue;
+				 roleIds.add(role.getId());
+			 }
 		}
-		return rolesSet;
+		return roleIds;
 	}
 	/*
 	 * 查询权限集合。
 	 * @see com.examw.wechat.service.security.IUserService#findPermissions(java.lang.String)
 	 */
 	@Override
-	public Set<String> findPermissions(String account) {
-		if(logger.isDebugEnabled()) logger.debug("加载账号［"+ account +"］权限集合...");
-		if(StringUtils.isEmpty(account)) return null;
-	    User user =	this.findByAccount(account);
-	    if(user == null || user.getRoles() == null || user.getRoles().size() == 0) return null;
-	    Set<String> rights = new HashSet<>();
-	    for(Role role : user.getRoles()){
-	    	if(role == null || role.getStatus() == Role.STATUS_DISABLE || role.getRights() == null) continue;
-	    	for(MenuRight mr : role.getRights()){
-	    		String code = null;
-	    		if(mr == null || StringUtils.isEmpty(code = mr.getCode())) continue;
-	    		if(!rights.contains(code)){
-	    			rights.add(code);
-	    		}
-	    	}
-	    }
-	    return rights;
+	public Set<String> findPermissionsByAccount(String account) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("查询账号［%s］权限集合...", account));
+		Set<String> rightCodes = new HashSet<>();
+		User user =	this.loadUserByAccount(account);
+		if(user != null && user.getRoles() != null && user.getRoles().size() > 0){
+			 for(Role role : user.getRoles()){
+				 if(role == null || role.getStatus() == null || role.getStatus() != Status.ENABLED.getValue() || role.getRights() == null || role.getRights().size() == 0) continue;
+				 for(MenuRight menuRight : role.getRights()){
+					 String code = null;
+					 if(menuRight == null || StringUtils.isEmpty(code = menuRight.getCode())) continue;
+					 if(!rightCodes.contains(code)){
+						 rightCodes.add(code);
+					 }
+				 }
+			 }
+		}
+		return rightCodes;
 	}
 	/*
 	 * 初始化用户。
@@ -269,60 +304,18 @@ public class UserServiceImpl extends BaseDataServiceImpl<User, UserInfo> impleme
 	 */
 	@Override
 	public void init(String roleId,String account, String password) throws Exception {
-		if(logger.isDebugEnabled())logger.debug("初始化用户［" + account +","+ password +"］...");
-		String err = null;
-		if(StringUtils.isEmpty(roleId)){
-			err = "角色ID为空！";
-			if(logger.isDebugEnabled()) logger.debug(err);
-			throw new Exception(err);
-		}
-		if(this.userDao.total(new UserInfo(){ private static final long serialVersionUID = 1L;}) > 0){
-			err = "已有用户存在！";
-			if(logger.isDebugEnabled()) logger.debug(err);
-			throw new Exception(err);
-		}
-		Role role = this.roleDao.load(Role.class, roleId);
-		if(role == null){
-			err = "角色ID［"+roleId +"］不存在！";
-			if(logger.isDebugEnabled()) logger.debug(err);
-			throw new Exception(err);
-		}
-		if(StringUtils.isEmpty(account)) account = "admin";
-		if(StringUtils.isEmpty(password)) password = "123456";
-		User data = new User();
-		data.setId(UUID.randomUUID().toString());
-		data.setAccount(account);
-		data.setPassword(password);
+		if(logger.isDebugEnabled())logger.debug(String.format("初始化用户［roleId = %1$s,account=%2$s,password=%3$s］...",roleId,account,password));
+		if(StringUtils.isEmpty(roleId)) throw new Exception("角色ID为空！");
+		if(StringUtils.isEmpty(account) || StringUtils.isEmpty(password)) throw new Exception("账号或密码为空！");
 		UserInfo info = new UserInfo();
-		BeanUtils.copyProperties(data, info);
-		data.setPassword(this.passwordHelper.encryptAESPassword(info));
-		data.setCreateTime(new Date());
-		data.setGender(User.GENDER_MALE);
-		data.setName(data.getAccount());
-		data.setNickName(data.getAccount());
-		Set<Role> roles = new HashSet<>();
-		roles.add(role);
-		data.setRoles(roles);
-		data.setStatus(User.STATUS_ENABLED);
-		this.userDao.save(data);
-	}
-	/*
-	 * 加载用户角色ID集合。
-	 * @see com.examw.oa.service.security.IUserService#loadRoles(java.lang.String)
-	 */
-	@Override
-	public String[] loadRoles(String userId) {
-		if(logger.isDebugEnabled()) logger.debug("加载用户［useId="+ userId +"］角色ID集合...");
-		if(StringUtils.isEmpty(userId)) return null;
-		User user = this.userDao.load(User.class, userId);
-		if(user == null) return null;
-		List<String> list = new ArrayList<>();
-		if(user.getRoles() != null){
-			for(Role role : user.getRoles()){
-				if(role == null) continue;
-				list.add(role.getId());
-			}
-		}
-		return list.toArray(new String[0]);
+		info.setAccount(account);
+		info.setName(account);
+		info.setNickName(account);
+		info.setPassword(password);
+		info.setRoleId(new String[]{ roleId });
+		info.setGender(Gender.NONE.getValue());
+		info.setStatus(Status.ENABLED.getValue());
+		this.updateUser(info);
+		if(logger.isDebugEnabled()) logger.debug("初始化用户完成。");
 	}
 }

@@ -76,44 +76,37 @@
 		        <entry key="1"><!-- 单选题 -->
 			        <bean class="com.examw.test.service.library.impl.DefaultItemParser">
 			            <constructor-arg value="单选" />
-			            <property name="itemDao" ref="itemDao" />
 			        </bean>
 			    </entry>
 			    <entry key="2"><!-- 多选题 -->
 			        <bean class="com.examw.test.service.library.impl.DefaultItemParser">
 			            <constructor-arg value="多选" />
-			            <property name="itemDao" ref="itemDao" />
 			        </bean>
 			    </entry>
 			    <entry key="3"><!-- 不定项选题 -->
 			        <bean class="com.examw.test.service.library.impl.DefaultItemParser">
 			            <constructor-arg value="不定项选" />
-			            <property name="itemDao" ref="itemDao" />
 			        </bean>
 			    </entry>
 			    <entry key="4"><!-- 判断题 -->
 			        <bean class="com.examw.test.service.library.impl.DefaultItemParser">
 			            <constructor-arg value="判断题" />
-			            <property name="itemDao" ref="itemDao" />
 			        </bean>
 			    </entry>
 			    <entry key="5"><!-- 问答题 -->
 			        <bean class="com.examw.test.service.library.impl.DefaultItemParser">
 			            <constructor-arg value="问答题" />
-			            <property name="itemDao" ref="itemDao" />
 			        </bean>
 			    </entry>
 			    <entry key="6"><!-- 共享题干题 -->
 			        <bean class="com.examw.test.service.library.impl.DefaultShareTitleItemParser">
 			            <constructor-arg value="共享题干题" />
-			            <property name="itemDao" ref="itemDao" />
 			            <property name="itemService" ref="itemService" />
 			        </bean>
 			    </entry>
 			    <entry key="7"><!-- 共享答案题 -->
 			        <bean class="com.examw.test.service.library.impl.DefaultShareAnswerItemParser">
 			            <constructor-arg value="共享答案题" />
-			            <property name="itemDao" ref="itemDao" />
 			            <property name="itemService" ref="itemService" />
 			        </bean>
 			    </entry>

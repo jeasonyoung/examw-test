@@ -13,8 +13,9 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 
+import com.examw.service.Status;
 import com.examw.test.domain.security.User;
-import com.examw.test.service.security.IUserService;
+import com.examw.test.service.security.IUserAuthorization;
 import com.examw.test.support.PasswordHelper;
 
 /**
@@ -24,15 +25,15 @@ import com.examw.test.support.PasswordHelper;
  */
 public class UserRealm extends AuthorizingRealm implements IShiroCacheClear {
 	private static Logger logger = Logger.getLogger(UserRealm.class);
-	private IUserService userService;
+	private IUserAuthorization userAuthorization;
 	private PasswordHelper passwordHelper;
 	/**
 	 * 设置用户服务。
-	 * @param userService
+	 * @param userAuthorization
 	 */
-	public void setUserService(IUserService userService) {
+	public void setUserAuthorization(IUserAuthorization userAuthorization) {
 		if(logger.isDebugEnabled()) logger.debug("设置用户服务接口...");
-		this.userService = userService;
+		this.userAuthorization = userAuthorization;
 	}
 	/**
 	 * 设置密码工具。
@@ -52,8 +53,8 @@ public class UserRealm extends AuthorizingRealm implements IShiroCacheClear {
 		String account = (String)principals.getPrimaryPrincipal();
 		if(logger.isDebugEnabled()) logger.debug("account=" + account);
 		SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
-		authorizationInfo.setRoles(this.userService.findRoles(account));
-		authorizationInfo.setStringPermissions(this.userService.findPermissions(account));
+		authorizationInfo.setRoles(this.userAuthorization.findRolesByAccount(account));
+		authorizationInfo.setStringPermissions(this.userAuthorization.findPermissionsByAccount(account));
 		return authorizationInfo;
 	}
 	/*
@@ -65,9 +66,9 @@ public class UserRealm extends AuthorizingRealm implements IShiroCacheClear {
 		if(logger.isDebugEnabled()) logger.debug("获取认证信息...");
 		String account = (String)token.getPrincipal();
 		if(logger.isDebugEnabled()) logger.debug("account=" + account);
-		User user = this.userService.findByAccount(account);
+		User user = this.userAuthorization.loadUserByAccount(account);
 		if(user == null) throw new UnknownAccountException();//没找到账号。
-		if(user.getStatus() == User.STATUS_DISABLE){
+		if(user.getStatus() == Status.DISABLE.getValue()){
 			throw new LockedAccountException();//账号锁定。
 		}
 		String pwd = this.passwordHelper.encryptPassword(user);

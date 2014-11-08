@@ -1,10 +1,11 @@
 package com.examw.test.controllers.security;
 /**
- * 安全模块菜单常量。
+ * 模块常量。
  * @author yangyong.
- * @since 2014-06-30.
+ * @since 2014-07-17.
  */
 public final class ModuleConstant {
+	/**系统设置  begin */
 	/**
 	 * 菜单设置ID。
 	 */
@@ -29,4 +30,5 @@ public final class ModuleConstant {
 	 * 登录日志ID。
 	 */
 	public static final String SECURITY_LOGIN_LOG = "ETS0000601";
+	/**系统设置  end */
 }

@@ -1,7 +1,5 @@
 package com.examw.test.service.security;
 
-import java.util.Set;
-
 import com.examw.test.domain.security.User;
 import com.examw.test.model.security.UserInfo;
 import com.examw.test.service.IBaseDataService;
@@ -19,7 +17,7 @@ public interface IUserService extends IBaseDataService<UserInfo> {
 	 * @return
 	 * 状态名称。
 	 */
-	String loadUserStatusName(Integer status);
+	String loadStatusName(Integer status);
 	/**
 	 * 加载性别名称。
 	 * @param gender
@@ -29,45 +27,25 @@ public interface IUserService extends IBaseDataService<UserInfo> {
 	 */
 	String loadGenderName(Integer gender);
 	/**
-	 * 修改密码。
+	 * 数据模型转换。
+	 * @param data
+	 * 用户数据。
+	 * @param isViewPwd
+	 * 是否显示明文密码。
+	 * @return
+	 */
+	UserInfo conversion(User data,boolean isViewPwd);
+	/**
+	 * 修改用户密码。
 	 * @param userId
 	 * 用户ID。
+	 * @param oldPassword
+	 * 旧密码。
 	 * @param newPassword
 	 * 新密码。
+	 * @throws Exception
 	 */
-	void changePassword(String userId, String newPassword);
-	/**
-	 * 根据账号查找用户。
-	 * @param account
-	 * 用户账号。
-	 * @return
-	 * 用户信息。
-	 */
-	User findByAccount(String account);
-	/**
-	 * 根据账号查找用户角色。
-	 * @param account
-	 * 用户账号。
-	 * @return
-	 * 角色ID集合。
-	 */
-	Set<String> findRoles(String account);
-	/**
-	 * 加载用户角色ID集合。
-	 * @param userId
-	 * 用户ID。
-	 * @return
-	 * 角色集合。
-	 */
-	String[] loadRoles(String userId);
-	/**
-	 * 根据账号查询其权限。
-	 * @param account
-	 * 用户账号。
-	 * @return
-	 * 权限集合。
-	 */
-	Set<String> findPermissions(String account);
+	void modifyPassword(String userId,String oldPassword,String newPassword) throws Exception;
 	/**
 	 * 初始化用户。
 	 * @param roleId

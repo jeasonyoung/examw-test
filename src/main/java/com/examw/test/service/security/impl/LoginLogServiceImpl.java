@@ -1,6 +1,5 @@
 package com.examw.test.service.security.impl;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,25 +27,8 @@ public class LoginLogServiceImpl extends BaseDataServiceImpl<LoginLog, LoginLogI
 	 * 数据接口。
 	 */
 	public void setLoginLogDao(ILoginLogDao loginLogDao) {
-		if(logger.isDebugEnabled())logger.debug("注入登录日志数据操作对象..");
+		if(logger.isDebugEnabled()) logger.debug("注入登录日志数据接口...");
 		this.loginLogDao = loginLogDao;
-	}
-	/*
-	 * 添加登录日志。
-	 * @see com.examw.netplatform.service.admin.ILoginLogService#addLog(java.lang.String, java.lang.String, java.lang.String)
-	 */
-	@Override
-	public void addLog(String account, String ip, String browser) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("account=%1$s ip=%2$s browser=%3$s", account,ip,browser));
-		if(!StringUtils.isEmpty(account)){
-			LoginLog data = new LoginLog();
-			data.setId(UUID.randomUUID().toString());
-			data.setAccount(account);
-			data.setIp(ip);
-			data.setBrowser(browser);
-			data.setTime(new Date());
-			this.loginLogDao.save(data);
-		}
 	}
 	/*
 	 * 查询数据。
@@ -58,12 +40,12 @@ public class LoginLogServiceImpl extends BaseDataServiceImpl<LoginLog, LoginLogI
 		return this.loginLogDao.findLoginLogs(info);
 	}
 	/*
-	 * 类型转换。
+	 * 数据模型转换。
 	 * @see com.examw.netplatform.service.impl.BaseDataServiceImpl#changeModel(java.lang.Object)
 	 */
 	@Override
 	protected LoginLogInfo changeModel(LoginLog data) {
-		if(logger.isDebugEnabled())logger.debug("开始类型转换...");
+		if(logger.isDebugEnabled()) logger.debug(" 数据模型转换 LoginLog => LoginLogInfo");
 		if(data == null) return null;
 		LoginLogInfo info = new LoginLogInfo();
 		BeanUtils.copyProperties(data, info);

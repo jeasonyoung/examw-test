@@ -13,11 +13,15 @@ import com.examw.test.model.security.MenuRightInfo;
  */
 public interface IMenuRightDao extends IBaseDao<MenuRight> {
 	/**
-	 * 加载数据。
-	 * @param info
+	 * 加载菜单权限数据。
+	 * @param menuId
+	 * 菜单ID。
+	 * @param rightId
+	 * 权限ID。
 	 * @return
+	 * 菜单权限数据。
 	 */
-	MenuRight load(MenuRightInfo info);
+	MenuRight loadMenuRight(String menuId,String rightId);
 	/**
 	 * 查询数据。
 	 * @param info
@@ -25,21 +29,13 @@ public interface IMenuRightDao extends IBaseDao<MenuRight> {
 	 * @return
 	 * 查询结果。
 	 */
-	 List<MenuRight> findMenuRights(MenuRightInfo info);
-	 /**
-	  * 查询菜单ID下的所有权限。
-	  * @param menuId
-	  * 菜单ID
-	  * @return
-	  * 菜单权限集合。
-	  */
-	 List<MenuRight> findMenuRights(String menuId);
-	 /**
-		 * 查询数据总数。
-		 * @param info
-		 * 查询条件。
-		 * @return
-		 * 数据总数。
-		 */
+	List<MenuRight> findMenuRights(MenuRightInfo info);
+	/**
+	 * 查询数据总数。
+	 * @param info
+	 * 查询条件。
+	 * @return
+	 * 数据总数。
+	 */
 	 Long total(MenuRightInfo info);
 }

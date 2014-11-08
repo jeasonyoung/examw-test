@@ -29,23 +29,25 @@ public class RightDaoImpl extends BaseDaoImpl<Right> implements IRightDao {
 		String hql = "from Right r where 1=1 ";
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
-		if(logger.isDebugEnabled()) logger.debug(hql);
+		if(!StringUtils.isEmpty(info.getSort())){
+			if(StringUtils.isEmpty(info.getOrder())) info.setOrder("asc");
+			hql += " order by r." + info.getSort() + " " + info.getOrder();
+		}
 		return this.find(hql, parameters, info.getPage(), info.getRows());
 	}
 	/*
-	 * 查询数据统计。
+	 * 查询数据汇总。
 	 * @see examw.wechat.dao.security.IRightDao#total(examw.wechat.model.security.RightInfo)
 	 */
 	@Override
 	public Long total(RightInfo info) {
-		if(logger.isDebugEnabled()) logger.debug("查询数据统计..");
+		if(logger.isDebugEnabled()) logger.debug("查询数据汇总...");
 		String hql = "select count(*) from Right r where 1=1 ";
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
-		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.count(hql, parameters);
 	}
-	//添加查询条件到HQL。
+	//添加查询条件
 	private String addWhere(RightInfo info, String hql, Map<String, Object> parameters){
 		if(!StringUtils.isEmpty(info.getName())){
 			hql += " and (r.name like :name)";

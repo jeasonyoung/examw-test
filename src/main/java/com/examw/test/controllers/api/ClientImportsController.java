@@ -24,7 +24,7 @@ import com.examw.test.service.library.IPaperItemService;
 import com.examw.test.service.library.IPaperService;
 import com.examw.test.service.library.IPaperStructureService;
 import com.examw.test.service.library.ItemType;
-import com.examw.test.service.security.IUserService;
+import com.examw.test.service.security.IUserAuthorization;
 import com.examw.test.service.settings.IExamService;
 import com.examw.test.support.PasswordHelper;
 import com.examw.utils.MD5Util;
@@ -40,7 +40,7 @@ public class ClientImportsController {
 	private static final Logger logger = Logger.getLogger(ClientImportsController.class);
 	//注入用户服务。
 	@Resource
-	private IUserService userService;
+	private IUserAuthorization userAuthorization;
 	//注入密码服务。
 	@Resource
 	private PasswordHelper passwordHelper;
@@ -72,7 +72,7 @@ public class ClientImportsController {
 		if(logger.isDebugEnabled()) logger.debug(String.format("客户端身份［username=%1$s, token=%2$s］验证...", username, token));
 		Json result = new Json();
 		try {
-			User user = this.userService.findByAccount(username);
+			User user = this.userAuthorization.loadUserByAccount(username);
 			if(user == null){
 				result.setSuccess(false);
 				result.setMsg(String.format("用户[%s]不存在！", username));

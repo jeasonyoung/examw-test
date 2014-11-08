@@ -2,9 +2,9 @@ package com.examw.test.service.security;
 
 import java.util.List;
 
-import com.examw.model.TreeNode; 
 import com.examw.test.model.security.RoleInfo;
 import com.examw.test.service.IBaseDataService;
+
 /**
  * 角色服务接口。
  * @author yangyong.
@@ -12,7 +12,7 @@ import com.examw.test.service.IBaseDataService;
  */
 public interface IRoleService extends IBaseDataService<RoleInfo> {
 	/**
-	 * 获取状态名称。
+	 * 加载状态名称。
 	 * @param status
 	 * 状态值。
 	 * @return
@@ -20,21 +20,17 @@ public interface IRoleService extends IBaseDataService<RoleInfo> {
 	 */
 	String loadStatusName(Integer status);
 	/**
-	 * 加载角色权限树数据。
+	 * 加载全部角色数据集合。
+	 * @return
+	 */
+	List<RoleInfo> loadAll();
+	/**
+	 * 加载角色权限集合。
 	 * @param roleId
 	 * 角色ID。
 	 * @return
-	 * 角色权限树数据。
 	 */
-	List<TreeNode> loadRoleRightTree(String roleId);
-	/**
-	 * 添加角色权限。
-	 * @param roleId
-	 * 角色ID。
-	 * @param menuRightIds
-	 * 菜单权限ID数组。
-	 */
-	void addRoleRight(String roleId,String[] menuRightIds);
+	String[] loadRoleRightIds(String roleId);
 	/**
 	 * 初始化角色。
 	 * @param roleId
@@ -42,4 +38,12 @@ public interface IRoleService extends IBaseDataService<RoleInfo> {
 	 * @throws Exception
 	 */
 	void init(String roleId) throws Exception;
+	/**
+	 * 更新角色权限。
+	 * @param roleId
+	 * 角色ID。
+	 * @param rightIds
+	 * 权限ID集合。
+	 */
+	void updateRoleRights(String roleId,String[] rightIds) throws Exception;
 }
