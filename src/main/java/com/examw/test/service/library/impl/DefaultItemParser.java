@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
+import com.examw.test.dao.library.IItemDao;
 import com.examw.test.domain.library.Item;
 import com.examw.test.model.library.BaseItemInfo;
 import com.examw.test.model.library.ItemInfo;
@@ -23,6 +24,7 @@ import com.examw.test.service.library.ItemType;
  */
 public class DefaultItemParser implements ItemParser {
 	private static final Logger logger = Logger.getLogger(DefaultItemParser.class);
+	protected IItemDao itemDao;
 	private String typeName;
 	/**
 	 * 构造函数。
@@ -31,6 +33,14 @@ public class DefaultItemParser implements ItemParser {
 	 */
 	public DefaultItemParser(String typeName){
 		this.typeName = typeName;
+	}
+	/**
+	 * 设置试题数据接口。
+	 * @param itemDao 
+	 *	  试题数据接口。
+	 */
+	public void setItemDao(IItemDao itemDao) {
+		this.itemDao = itemDao;
 	}
 	/*
 	 *  获取题型名称。
@@ -97,19 +107,21 @@ public class DefaultItemParser implements ItemParser {
 		}
 		BeanUtils.copyProperties(source, target, new String[]{"children"});
 		if(source.getChildren() != null && source.getChildren().size() > 0){
-			Set<Item> children = new HashSet<>();
+			if(target.getChildren() == null) target.setChildren(new HashSet<Item>());
 			for(BaseItemInfo<?> info : source.getChildren()){
 				if(info == null) continue;
-				if(StringUtils.isEmpty(info.getId())){
-					info.setId(UUID.randomUUID().toString());
+				Item item = StringUtils.isEmpty(info.getId()) ? null : this.itemDao.load(Item.class, info.getId());
+				if(item == null){
+					if(StringUtils.isEmpty(info.getId())){
+						info.setId(UUID.randomUUID().toString());
+					}
+					item = new Item();
 				}
-				Item item =  new Item();
 				item.setParent(target);
 				if(this.changeModel(info, item)){
-					children.add(item);
+					target.getChildren().add(item);
 				}
 			}
-			target.setChildren((children == null || children.size() == 0) ? null : children);
 		}
 		return true;
 	}
