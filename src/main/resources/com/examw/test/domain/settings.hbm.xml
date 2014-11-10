@@ -38,6 +38,8 @@
 		<property name="name" type="string" length="32" not-null="true" />
 		<!-- 考试类别EN简称 -->
 		<property name="abbr" type="string" length="10" unique="true" not-null="true" />
+		<!-- 图片地址 -->
+		<property name="imageUrl" column="image_url" type="string" length="512"/>
 		<!-- 上级考试类别 -->
 		<many-to-one name="parent" column="pid" class="Category" />
 		<!-- 子考试类别集合 -->
@@ -64,6 +66,8 @@
 		<property name="abbr" type="string" length="10" unique="true" not-null="true" />
 		<!-- 考试状态 -->
 		<property name="status" type="integer" />
+		<!-- 图片地址 -->
+		<property name="imageUrl" column="image_url" type="string" length="512"/>
 		<!-- 所属类别 -->
 		<many-to-one name="category" column="category_id" class="Category" not-null="true"/>
 		<!-- 所属地区集合 -->
@@ -90,13 +94,20 @@
 		<!-- 科目名称 -->
 		<property name="name" type="string" length="32" not-null="true" />
 		<!-- 所属考试 -->
-		<many-to-one name="exam" column="exam_id" class="Exam" not-null="true" />
+		<many-to-one name="exam" column="exam_id" class="Exam" not-null="true"/>
 		<!-- 所属地区集合 -->
 		<set name="areas" inverse="false" cascade="save-update"  table="tbl_Examw_Test_Settings_SubjectAreas">
 		    <!-- 科目ID -->
 			<key column="subject_id" />
 			<!-- 所属地区ID -->
 			<many-to-many class="Area"  column="area_id" />
+		</set>
+		<!-- 上级科目类别[类似文科理科综合] -->	
+		<many-to-one name="parent" column="pid" class="Subject" />
+		<!-- 子考试类别集合 -->
+		<set name="children" inverse="true" cascade="save-update" order-by="code asc">
+			<key column="pid" />
+			<one-to-many class="Subject"/>
 		</set>
 	</class>
 </hibernate-mapping>

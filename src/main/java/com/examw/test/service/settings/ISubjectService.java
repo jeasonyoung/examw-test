@@ -2,6 +2,7 @@ package com.examw.test.service.settings;
 
 import java.util.List;
 
+import com.examw.model.TreeNode;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.settings.AreaInfo;
 import com.examw.test.model.settings.SubjectInfo;
@@ -26,6 +27,12 @@ public interface ISubjectService extends IBaseDataService<SubjectInfo>{
 	 * 科目集合。
 	 */
 	List<SubjectInfo> loadAllSubjects(String examId);
+	/**
+	 * 加载考试下的科目树。
+	 * @return
+	 * 树结构数据。
+	 */
+	List<TreeNode> loadSubjectTree(String examId,String ignoreCategoryId);
 	/**
 	 * 加载考试科目所在地区集合。
 	 * @param examId

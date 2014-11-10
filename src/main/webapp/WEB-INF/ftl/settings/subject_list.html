@@ -19,10 +19,11 @@ $(function(){
 	</@shiro.hasPermission>
 	//edit
 	${module}_edit_window = function(title,index,row,code){
-		var catalog_id = "",exam_id ="";
+		var catalog_id = "",exam_id ="",subject_id="";
 		if(row){
 			catalog_id = (row.categoryId) ?  row.categoryId : "";
 			exam_id = (row.examId) ? row.examId : "";
+			subject_id = row.id
 		}else{
 			var node = $("#${module}_tree").tree("getSelected");
 			if(node){
@@ -38,7 +39,7 @@ $(function(){
 		}
 		var d = $("<div/>").dialog({
 			title:title,width:498,height:270,modal:true,
-			href:"<@s.url '/settings/subject/edit'/>?categoryId=" + catalog_id + "&examId=" + exam_id,
+			href:"<@s.url '/settings/subject/edit'/>?categoryId=" + catalog_id + "&examId=" + exam_id+"&subjectId="+subject_id,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
 			  {
@@ -78,6 +79,7 @@ $(function(){
 			onClose:function(){ $(this).dialog("destroy"); },
 			onLoad:function(){
 				$("#${module}_edit_form").form("load",row ? row : {"categoryId":catalog_id,"examId":exam_id,"code":code});
+				if(row.pid) $("#${module}_edit_form_area_part").hide();
 			}
 	  });
 	};
@@ -159,6 +161,7 @@ $(function(){
 						<th data-options="field:'id',checkbox:true"></th>
 						<th data-options="field:'examName',width:30,align:'left',sortable:true">所属考试</th>
 						<th data-options="field:'code',width:15,align:'right',sortable:true">科目代码</th>
+						<th data-options="field:'fullName',width:50,align:'left'">科目全称</th>
 						<th data-options="field:'name',width:50,align:'left',sortable:true">科目名称</th>
 						<th data-options="field:'areaName',width:80,align:'left'">所属地区</th>
 					</tr>

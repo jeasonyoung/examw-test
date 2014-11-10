@@ -14,6 +14,9 @@ public class Subject implements Serializable,Comparable<Subject>{
 	private Integer code;
 	private Exam exam;
 	private Set<Area> areas;
+	//Add by FW,2014.11.10 将科目改为树形结构 适应类似3+x考试
+	private Subject parent;
+	private Set<Subject> children;
 	/**
 	 * 获取科目ID。
 	 * @return 科目ID。
@@ -88,6 +91,39 @@ public class Subject implements Serializable,Comparable<Subject>{
 	 */
 	public void setAreas(Set<Area> areas) {
 		this.areas = areas;
+	}
+	
+	/**
+	 * 获取 上级科目
+	 * @return parent
+	 * 上级科目
+	 */
+	public Subject getParent() {
+		return parent;
+	}
+	/**
+	 * 设置 上级科目
+	 * @param parent
+	 * 上级科目
+	 */
+	public void setParent(Subject parent) {
+		this.parent = parent;
+	}
+	/**
+	 * 获取 子科目集合
+	 * @return children
+	 * 子科目集合
+	 */
+	public Set<Subject> getChildren() {
+		return children;
+	}
+	/**
+	 * 设置 子科目集合
+	 * @param children
+	 * 子科目集合
+	 */
+	public void setChildren(Set<Subject> children) {
+		this.children = children;
 	}
 	/*
 	 * 对象字符串。

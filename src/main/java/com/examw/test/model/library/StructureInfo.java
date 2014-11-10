@@ -16,10 +16,27 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class StructureInfo implements Serializable,Comparable<StructureInfo> {
 	private static final long serialVersionUID = 1L;
-	private String id,title,description,typeName;
+	private String pid,id,title,description,typeName;
 	private Integer type,total,orderNo;
 	private BigDecimal score,min;
 	private Set<StructureItemInfo> items;
+	
+	/**
+	 * 获取 结构父ID
+	 * @return pid
+	 * 结构父ID
+	 */
+	public String getPid() {
+		return pid;
+	}
+	/**
+	 * 设置 结构父ID
+	 * @param pid
+	 * 结构父ID
+	 */
+	public void setPid(String pid) {
+		this.pid = pid;
+	}
 	/**
 	 * 获取结构ID。
 	 * @return 结构ID。

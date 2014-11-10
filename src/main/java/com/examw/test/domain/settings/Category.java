@@ -15,6 +15,7 @@ public class Category implements Serializable {
 	private Set<Category> children;
 	private Set<Exam> exams;
 	private Integer code;
+	private String imageUrl;	//图片地址 add by fw 2014.11.10
 	/**
 	 * 获取类别ID。
 	 * @return 类别ID。
@@ -119,6 +120,22 @@ public class Category implements Serializable {
 	 */
 	public void setExams(Set<Exam> exams) {
 		this.exams = exams;
+	}
+	/**
+	 * 获取 图片地址
+	 * @return imageUrl
+	 * 图片地址
+	 */
+	public String getImageUrl() {
+		return imageUrl;
+	}
+	/**
+	 * 设置 图片地址
+	 * @param imageUrl
+	 * 图片地址
+	 */
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 	/*
 	 * 对象字符串。

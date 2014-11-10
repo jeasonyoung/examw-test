@@ -227,7 +227,7 @@ $(function(){
 </script>
 <div class="easyui-layout" data-options="fit:true,border:false">
 	<div data-options="region:'west' ,title:'所属考试科目',split:true,tools:[{iconCls:'icon-reload',handler:function(){$('#${module}_tree').tree('reload');${dg}_search();}}]" style="width:220px;">
-		<ul id="${module}_tree" class="easyui-tree" data-options="url:'<@s.url '/settings/category/exams/subject/tree'/>',lines:true,onLoadError:function(e){ <@error_dialog 'e'/> },
+		<ul id="${module}_tree" class="easyui-tree" data-options="url:'<@s.url '/settings/category/exams/subject/all/tree'/>',lines:true,onLoadError:function(e){ <@error_dialog 'e'/> },
 			onClick:function(node){${dg}_search();}"></ul>
 	</div>
 	<div data-options="region:'center',border:false" >

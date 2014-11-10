@@ -13,7 +13,14 @@
 		<input id="${form}_examId" name="examId" class="easyui-combobox" data-options="url:'<@s.url '/settings/exam/all'/>?categoryId=${current_category_id}',
 			required:true,valueField:'id',textField:'name',onLoadError:function(e){ <@error_dialog 'e'/> },onChange:function(n,o){
 				$('#${form}_areaId').combobox('clear');$('#${form}_areaId').combobox('reload','<@s.url '/settings/exam/areas?examId='/>'+n);
+				$('#${form}_pid').combotree('reload','<@s.url '/settings/subject/tree?examId='/>'+n+'&ignoreSubjectId=${current_subject_id}');
 			}" style="width:168px;"/>
+	</div>
+	<!-- 上级科目 -->
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">上级科目：</label>
+		<input id="${form}_pid" name="pid"  class="easyui-combotree" data-options="url:'<@s.url '/settings/subject/tree'/>?examId=${current_exam_id}&ignoreSubjectId=${current_subject_id}',valueField:'id',textField:'name',
+			onLoadError:function(e){ <@error_dialog 'e'/> },onChange:function(n,o){$('#${form}_area_part').hide();},icons:[{iconCls:'icon-clear',  handler:function(e){ $(e.data.target).combotree('clear');$('#${form}_area_part').show();} }]" style="width:268px;"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">科目代码：</label>
@@ -24,7 +31,7 @@
 		<label style="width:75px;">科目名称：</label>
 		<input type="text" name="name" class="easyui-validatebox" style="width:368px;" data-options="required:true"/>
 	</div>
-	<div style="float:left;margin-top:12px;width:100%;">
+	<div style="float:left;margin-top:12px;width:100%;" id="${form}_area_part">
 		<label style="width:75px;">地区：</label>
 		<input id="${form}_areaId" name="areaId" class="easyui-combobox" data-options="url:'<@s.url '/settings/exam/areas?examId=${current_exam_id}'/>',
 			multiple:true,valueField:'id',textField:'name',onLoadError:function(e){<@error_dialog 'e'/> },icons:[{iconCls:'icon-sum', 

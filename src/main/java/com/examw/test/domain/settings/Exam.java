@@ -15,6 +15,7 @@ public class Exam implements Serializable,Comparable<Exam> {
 	private Category category;
 	private Set<Area> areas;
 	private Set<Subject> subjects;
+	private String imageUrl ; //图片地址 add by FW 2014.11.10
 	/**
 	 * 获取考试ID。
 	 * @return 考试ID。
@@ -134,6 +135,23 @@ public class Exam implements Serializable,Comparable<Exam> {
 	 */
 	public void setSubjects(Set<Subject> subjects) {
 		this.subjects = subjects;
+	}
+	
+	/**
+	 * 获取 图片地址
+	 * @return imageUrl
+	 * 图片地址
+	 */
+	public String getImageUrl() {
+		return imageUrl;
+	}
+	/**
+	 * 设置 图片地址
+	 * @param imageUrl
+	 * 图片地址
+	 */
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 	/*
 	 * 对象字符串。

@@ -5,12 +5,18 @@
 	<label style="width:75px;">所属科目：</label>
 	<input name="examId" class="easyui-combotree" data-options="url:'<@s.url '/settings/category/exams/tree'/>',required:true,lines:true,onLoadError:function(e){<@error_dialog 'e'/>},
 			onChange:function(n,o){
-				$('#${form}_subjectId').combobox('clear');
-				$('#${form}_subjectId').combobox('reload','<@s.url '/settings/subject/all'/>?examId=' + n);
+				$('#${form}_subjectId').combotree('clear');
+				$('#${form}_subjectId').combotree('reload','<@s.url '/settings/subject/tree'/>?examId=' + n);
 				$('#${form}_areaId').combobox('clear');
 			}" style="width:368px;"/>
-	<input id="${form}_subjectId" name="subjectId" class="easyui-combobox" data-options="url:'<@s.url '/settings/subject/all'/>?examId=${current_exam_id}',required:true,
+	<input id="${form}_subjectId" name="subjectId" class="easyui-combotree" data-options="url:'<@s.url '/settings/subject/tree'/>?examId=${current_exam_id}',required:true,
 			valueField:'id',textField:'name',onLoadError:function(e){<@error_dialog 'e'/>},
+			onSelect:function(n){
+				if(n.children && n.children.length>0)
+				{
+					$('#${form}_subjectId').combotree('clear');	//中间科目不能够直接加题
+				}
+			},
 			onChange:function(n,o){
 				$('#${form}_areaId').combobox('clear');
 				$('#${form}_areaId').combobox('reload','<@s.url '/settings/subject/areas'/>?subjectId=' + n);

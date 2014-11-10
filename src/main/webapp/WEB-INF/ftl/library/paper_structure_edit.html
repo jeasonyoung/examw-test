@@ -2,21 +2,37 @@
 <#include "comm.ftl"/>
 <#assign module="library_paper_structure"/>
 <#assign form="${module}_edit_form" />
+<script type="text/javascript">
+<!--
+	$(function(){
+		//checkbox 变成单选
+	})
+//-->
+</script>
 <form id="${form}" method="POST" style="padding:10px;">
 	<div style="float:left;margin-top:2px;width:100%;">
+		<label style="width:50px;">上级：</label>
+		<input id="${form}_pid" name="pid"  class="easyui-combotree" data-options="url:'<@s.url '/settings/subject/tree'/>?examId=${current_exam_id}&ignoreSubjectId=${current_subject_id}',valueField:'id',textField:'name',
+			onLoadError:function(e){ <@error_dialog 'e'/> },onChange:function(n,o){$('#${form}_area_part').hide();},icons:[{iconCls:'icon-clear',  handler:function(e){ $(e.data.target).combotree('clear');$('#${form}_area_part').show();} }]" style="width:298px;"/>
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:50px;">标题：</label>
 		<input name="title" class="easyui-textbox" data-options="required:true,width:302" />
 		<input name="id" type="hidden" />
 	</div>
-	<div style="float:left;margin-top:7px;width:100%;">
+	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:50px;">描述：</label>
 		<textarea name="description" style="width:298px;" rows="2" cols="10" />
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+			<label style="width:50px;">排序号：</label>
+			<input name="orderNo" class="easyui-numberbox" data-options="min:0,value:1" style="width:60px;text-align:right;">
 	</div>
 	<div style="float:left;margin-top:7px;width:100%;">
 		<label style="margin-top:5px;width:50px;">题型：</label>
 		<div style="float:left;width:280px;">
 			<#list ItemTypeMaps?keys as key>
-				<label style="padding-top:0px;margin-left:5px;"><input type="radio" name="type" value="${key}"  <#if (key_index == 0)> checked="checked" </#if> />${ItemTypeMaps[key]}</label>
+				<label style="padding-top:0px;margin-left:5px;"><input type="checkbox" name="type" value="${key}" />${ItemTypeMaps[key]}</label>
 			</#list>
 		</div>
 	</div>
@@ -35,10 +51,6 @@
 		<div style="float:left;">
 			<label style="width:60px;">题目数量：</label>
 			<input name="total" class="easyui-numberbox" data-options="min:0,value:1" style="width:60px;text-align:right;">
-		</div>
-		<div style="float:right;">
-			<label style="width:50px;">排序号：</label>
-			<input name="orderNo" class="easyui-numberbox" data-options="min:0,value:1" style="width:60px;text-align:right;">
 		</div>
 	</div>
 </form>

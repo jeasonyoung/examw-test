@@ -17,6 +17,7 @@ public class FrontExamInfo extends Paging implements Comparable<FrontExamInfo> {
 	private String id,name,abbr,categoryId,categoryName;
 	private String[] areaId,areaName;
 	private Integer code;
+	private String imageUrl; //图片地址 add by fw 2014.11.10
 	/**
 	 * 构造函数。
 	 */
@@ -154,6 +155,22 @@ public class FrontExamInfo extends Paging implements Comparable<FrontExamInfo> {
 	 */
 	public void setAreaName(String[] areaName) {
 		this.areaName = areaName;
+	}
+	/**
+	 * 获取 图片地址
+	 * @return imageUrl
+	 * 图片地址
+	 */
+	public String getImageUrl() {
+		return imageUrl;
+	}
+	/**
+	 * 设置 图片地址
+	 * @param imageUrl
+	 * 图片地址
+	 */
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 	/**
 	 * 排序比较。

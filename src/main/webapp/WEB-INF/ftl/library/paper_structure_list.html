@@ -20,7 +20,7 @@ $(function(){
 	//edit structure
 	${module}_structure_edit_window = function(title,row,order){
 		var d = $("<div/>").dialog({
-			title:title,width:400,height:300,modal:true,
+			title:title,width:420,height:380,modal:true,
 			href:"<@s.url '/library/paper/structure/edit'/>",
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">

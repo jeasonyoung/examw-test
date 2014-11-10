@@ -17,6 +17,9 @@ public class Structure implements Serializable,Comparable<Structure> {
 	private BigDecimal score,min;
 	private Paper paper;
 	private Set<StructureItem> items;
+	//add by fw 2011.11.10
+	private Structure parent;
+	private Set<Structure> children;
 	/**
 	 * 构造函数。
 	 */
@@ -181,6 +184,38 @@ public class Structure implements Serializable,Comparable<Structure> {
 	 */
 	public void setItems(Set<StructureItem> items) {
 		this.items = items;
+	}
+	/**
+	 * 获取 父结构
+	 * @return parent
+	 * 父结构
+	 */
+	public Structure getParent() {
+		return parent;
+	}
+	/**
+	 * 设置 父结构
+	 * @param parent
+	 * 父结构
+	 */
+	public void setParent(Structure parent) {
+		this.parent = parent;
+	}
+	/**
+	 * 获取 子结构集合
+	 * @return children
+	 * 子结构集合
+	 */
+	public Set<Structure> getChildren() {
+		return children;
+	}
+	/**
+	 * 设置 子结构集合
+	 * @param children
+	 * 子结构集合
+	 */
+	public void setChildren(Set<Structure> children) {
+		this.children = children;
 	}
 	/*
 	 * 比较排序。

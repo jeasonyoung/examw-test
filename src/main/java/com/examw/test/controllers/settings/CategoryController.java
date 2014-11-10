@@ -96,6 +96,16 @@ public class CategoryController {
 		return this.categroyService.loadAllCategoryExamSubjects();
 	}
 	/**
+	 * 加载考试类别/考试/全部科目树。
+	 * @return
+	 */
+	@RequestMapping(value = "/exams/subject/all/tree", method = { RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public List<TreeNode> allCatalogExamAllSubjects(){
+		if(logger.isDebugEnabled()) logger.debug("加载考试类别/考试/科目树...");
+		return this.categroyService.loadAllCategoryExamAllSubjects();
+	}
+	/**
 	 * 更新数据。
 	 * @param info
 	 * 更新源数据。

@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
+import com.examw.model.TreeNode;
 import com.examw.test.dao.settings.IAreaDao;
 import com.examw.test.dao.settings.IExamDao;
 import com.examw.test.dao.settings.ISubjectDao;
@@ -135,7 +136,7 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 		if(logger.isDebugEnabled())logger.debug("数据模型转换...");
 		if(data == null) return null;
 		SubjectInfo info = new SubjectInfo();
-		BeanUtils.copyProperties(data, info);
+		BeanUtils.copyProperties(data, info,new String[]{"children"});
 		if(data.getExam() != null){
 			info.setExamId(data.getExam().getId());
 			info.setExamName(data.getExam().getName());
@@ -154,7 +155,19 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 			info.setAreaId(list_ids.toArray(new String[0]));
 			info.setAreaName(list_names.toArray(new String[0]));
 		}
+		if(data.getParent() != null){
+			info.setPid(data.getParent().getId());
+		}
+		info.setFullName(this.loadFullName(data));
 		return info;
+	}
+	//加载科目全称。
+	private String loadFullName(Subject data){
+		if(data == null) return null;
+		if(data.getParent() == null) return data.getName();
+		StringBuilder builder = new StringBuilder(data.getName());
+		builder.insert(0, this.loadFullName(data.getParent()) + " >> ");
+		return builder.toString();
 	}
 	/*
 	 * 数据模型转换。
@@ -190,25 +203,39 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 			}
 			data = new Subject();
 		}
-		BeanUtils.copyProperties(info, data);
-		//考试
-		if(!StringUtils.isEmpty(info.getExamId()) && (data.getExam() == null || !data.getExam().getId().equalsIgnoreCase(info.getExamId()))){
-			Exam exam = this.examDao.load(Exam.class, info.getExamId());
-			if(exam != null) data.setExam(exam);
-		}
-		//地区
-		Set<Area> areas = null;
-		if(info.getAreaId() != null && info.getAreaId().length > 0){
-			areas = new HashSet<>();
-			for(String areaId : info.getAreaId()){
-				if(StringUtils.isEmpty(areaId)) continue;
-				Area area = this.areaDao.load(Area.class, areaId);
-				if(area != null){
-					areas.add(area);
-				}
+		BeanUtils.copyProperties(info, data,new String[]{"children"});
+		//父类  modify by FW 2014.11.10
+		if(!StringUtils.isEmpty(info.getPid()) && (data.getParent() == null || !data.getParent().getId().equalsIgnoreCase(info.getPid()))){
+			Subject parent = this.subjectDao.load(Subject.class, info.getPid());
+			//自己不能是自己的父类
+			if(parent != null && !parent.getId().equalsIgnoreCase(data.getId())){
+				data.setParent(parent);
+				//是子类的科目 加父类所属考试 不要再地区
+				data.setExam(parent.getExam());
+				data.setAreas(null);
 			}
 		}
-		data.setAreas(areas);
+		if(StringUtils.isEmpty(info.getPid())){
+			data.setParent(null);
+			//考试
+			if(!StringUtils.isEmpty(info.getExamId()) && (data.getExam() == null || !data.getExam().getId().equalsIgnoreCase(info.getExamId()))){
+				Exam exam = this.examDao.load(Exam.class, info.getExamId());
+				if(exam != null) data.setExam(exam);
+			}
+			//地区
+			Set<Area> areas = null;
+			if(info.getAreaId() != null && info.getAreaId().length > 0){
+				areas = new HashSet<>();
+				for(String areaId : info.getAreaId()){
+					if(StringUtils.isEmpty(areaId)) continue;
+					Area area = this.areaDao.load(Area.class, areaId);
+					if(area != null){
+						areas.add(area);
+					}
+				}
+			}
+			data.setAreas(areas);
+		}
 		if(isAdded)this.subjectDao.save(data);
 		return this.changeModel(data);
 	}
@@ -228,5 +255,45 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 				this.subjectDao.delete(data);
 			}
 		}
+	}
+	/*
+	 * 加载考试下的科目树
+	 * @see com.examw.test.service.settings.ISubjectService#loadSubjectTree(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<TreeNode> loadSubjectTree(String examId, String ignoreSubjectId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试[examId= %1$s]类别［ignore = %2$s］",examId, ignoreSubjectId));
+		List<TreeNode> result = new ArrayList<>();
+		List<Subject> subjects = this.subjectDao.loadAllSubjects(examId);
+		if(subjects != null && subjects.size() > 0){
+			for(Subject data : subjects){
+				if(data == null) continue;
+				TreeNode e = this.createTreeNode(data,ignoreSubjectId);
+				if(e != null)result.add(e);
+			}
+		}
+		return result;
+	}
+	/**
+	 * 创建科目树
+	 * @param data
+	 * @param ignoreSubjectId
+	 * @return
+	 */
+	private TreeNode createTreeNode(Subject data, String ignoreSubjectId) {
+		if(data ==null || data.getId().equals(ignoreSubjectId)) return null;
+		TreeNode node = new TreeNode();
+		node.setId(data.getId());
+		node.setText(data.getName());
+		if(data.getChildren()!=null && data.getChildren().size()>0){
+			List<TreeNode> children = new ArrayList<>();
+			for(Subject s : data.getChildren()){
+				if(s == null) continue;
+				TreeNode child =(createTreeNode(s, ignoreSubjectId));
+				if(child!=null) children.add(child);
+			}
+			node.setChildren(children);
+		}
+		return node;
 	}
 }

@@ -1,6 +1,7 @@
 package com.examw.test.model.settings;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import com.examw.model.Paging;
 
 /**
@@ -14,6 +15,7 @@ public class CategoryInfo extends Paging implements Comparable<CategoryInfo> {
 	private String pid,id,name,abbr;
 	private String fullName;
 	private Integer code;
+	private String imageUrl; //图片地址 add by fw 2014.11.10
 	/**
 	 * 获取上级类别ID。
 	 * @return pid
@@ -104,6 +106,22 @@ public class CategoryInfo extends Paging implements Comparable<CategoryInfo> {
 	 */
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+	}
+	/**
+	 * 获取 图片地址
+	 * @return imageUrl
+	 * 图片地址
+	 */
+	public String getImageUrl() {
+		return imageUrl;
+	}
+	/**
+	 * 设置 图片地址
+	 * @param imageUrl
+	 * 图片地址
+	 */
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 	/*
 	 * 排序比较。

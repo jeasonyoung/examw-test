@@ -12,7 +12,7 @@ import com.examw.model.Paging;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class SubjectInfo extends Paging implements Comparable<SubjectInfo>{
 	private static final long serialVersionUID = 1L;
-	private String id,name,examId,examName,categoryId,categoryName;
+	private String pid,id,name,examId,examName,categoryId,categoryName,fullName;
 	private Integer code;
 	private String[] areaId,areaName;
 	/**
@@ -156,6 +156,40 @@ public class SubjectInfo extends Paging implements Comparable<SubjectInfo>{
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
 	}
+	
+	/**
+	 * 获取 父ID
+	 * @return pid
+	 * 父ID
+	 */
+	public String getPid() {
+		return pid;
+	}
+	/**
+	 * 设置 父ID
+	 * @param pid
+	 * 父ID
+	 */
+	public void setPid(String pid) {
+		this.pid = pid;
+	}
+	/**
+	 * 获取 科目全称
+	 * @return fullName
+	 * 科目全称
+	 */
+	public String getFullName() {
+		return fullName;
+	}
+	/**
+	 * 设置 科目全称
+	 * @param fullName
+	 * 科目全称
+	 */
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+	
 	/*
 	 * 排序比较。
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)

@@ -30,9 +30,15 @@ public interface ICategoryService extends IBaseDataService<CategoryInfo>{
 	 */
 	List<TreeNode> loadAllCategoryExams();
 	/**
-	 * 加载全部考试类别/考试/科目树。
+	 * 加载全部考试类别/考试/顶级科目树。
 	 * @return
 	 * 树结构数据。
 	 */
 	List<TreeNode> loadAllCategoryExamSubjects();
+	/**
+	 * 加载全部考试类别/考试/全部科目树。
+	 * @return
+	 * 树结构数据。
+	 */
+	List<TreeNode> loadAllCategoryExamAllSubjects();
 }

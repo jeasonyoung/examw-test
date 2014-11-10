@@ -50,6 +50,10 @@ public class SubjectDaoImpl extends BaseDaoImpl<Subject> implements ISubjectDao{
 	}
 	// 添加查询条件到HQL。
 	private String addWhere(SubjectInfo info, String hql,Map<String, Object> parameters) {
+		if (!StringUtils.isEmpty(info.getPid())) {
+			hql += " and (s.parent.id = :pid or s.id = :pid)";
+			parameters.put("pid", info.getPid());
+		}
 		if (!StringUtils.isEmpty(info.getName())) {
 			hql += " and (s.name like :name)";
 			parameters.put("name", "%" + info.getName() + "%");
@@ -86,7 +90,7 @@ public class SubjectDaoImpl extends BaseDaoImpl<Subject> implements ISubjectDao{
 	@Override
 	public List<Subject> loadAllSubjects(String examId) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试[examId=%s]下的科目...", examId));
-		final String hql = "from Subject s where s.exam.id = :examId order by s.code ";
+		final String hql = "from Subject s where s.parent is null and s.exam.id = :examId order by s.code ";
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("examId", examId);
 		return this.find(hql, parameters, null, null);

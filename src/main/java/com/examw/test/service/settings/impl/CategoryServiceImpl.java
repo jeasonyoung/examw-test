@@ -144,7 +144,7 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		if(topCategories != null && topCategories.size() > 0){
 			for(Category data : topCategories){
 				if(data == null) continue;
-				TreeNode e = this.createTreeNode(data,ignoreCategoryId,false,false);
+				TreeNode e = this.createTreeNode(data,ignoreCategoryId,false,false,false);
 				if(e != null)result.add(e);
 			}
 		}
@@ -157,9 +157,10 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 	 * @param ignoreCategoryId 避免加载的考试分类
 	 * @param withExam	是否加载考试
 	 * @param withSubject	是否加载科目
+	 * @param withSubjectChildren 是否加载子科目
 	 * @return
 	 */
-	private TreeNode createTreeNode(Category data,String ignoreCategoryId,boolean withExam,boolean withSubject){
+	private TreeNode createTreeNode(Category data,String ignoreCategoryId,boolean withExam,boolean withSubject,boolean withSubjectChildren){
 		if(data == null || data.getId().equalsIgnoreCase(ignoreCategoryId)) return null;
 		TreeNode node = new TreeNode();
 		node.setId(data.getId());
@@ -183,13 +184,8 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 					List<TreeNode> subjectNodes = new ArrayList<>();
 					for(final Subject subject : exam.getSubjects()){
 						if(subject == null) continue;
-						TreeNode tn_subject = new TreeNode();
-						tn_subject.setId(subject.getId());
-						tn_subject.setText(subject.getName());
-						Map<String, Object> subject_attributes = new HashMap<>();
-						subject_attributes.put("type", "subject");
-						tn_subject.setAttributes(subject_attributes);
-						subjectNodes.add(tn_subject);
+						if(subject.getParent()!=null) continue;	//如果科目是子科目,应该跳过加载
+						subjectNodes.add(createSubjectTreeNode(subject,withSubjectChildren));
 					}
 					if(subjectNodes.size() > 0){
 						tn_exam.setChildren(subjectNodes);
@@ -210,7 +206,7 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 			List<TreeNode> children = new ArrayList<>();
 			for(Category child : data.getChildren()){
 				if(child == null) continue;
-				TreeNode e = this.createTreeNode(child, ignoreCategoryId, withExam, withSubject);
+				TreeNode e = this.createTreeNode(child, ignoreCategoryId, withExam, withSubject,withSubjectChildren);
 				if(e != null) children.add(e);
 			}
 			if(children.size() > 0){
@@ -224,6 +220,30 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		}
 		return node;
 	}
+	/**
+	 * 创建科目的节点
+	 * @param subject
+	 * @return
+	 */
+	private TreeNode createSubjectTreeNode(Subject subject,boolean withSubjectChildren){
+		TreeNode tn_subject = new TreeNode();
+		tn_subject.setId(subject.getId());
+		tn_subject.setText(subject.getName());
+		Map<String, Object> subject_attributes = new HashMap<>();
+		subject_attributes.put("type", "subject");
+		tn_subject.setAttributes(subject_attributes);
+		if(withSubjectChildren && subject.getChildren()!=null && subject.getChildren().size()>0){
+			List<TreeNode> children = new ArrayList<TreeNode>();
+			for(Subject data:subject.getChildren())
+			{
+				if(data == null) continue;
+				TreeNode node = this.createSubjectTreeNode(data,withSubjectChildren);
+				children.add(node);
+			}
+			tn_subject.setChildren(children);
+		}
+		return tn_subject;
+	}
 	/*
 	 * 加载全部考试类别/考试树。
 	 * @see com.examw.test.service.settings.ICategoryService#loadAllCategoryExams()
@@ -236,14 +256,14 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		if(list != null && list.size() > 0){
 			for(final Category data : list){
 				if(data == null) continue;
-				TreeNode e = this.createTreeNode(data,null,true,false);
+				TreeNode e = this.createTreeNode(data,null,true,false,false);
 				if(e != null)treeNodes.add(e);
 			}
 		}
 		return treeNodes;
 	}
 	/*
-	 * 加载全部考试类别/考试/科目树。
+	 * 加载全部考试类别/考试/顶级科目树。
 	 * @see com.examw.test.service.settings.ICategoryService#loadAllCategoryExamSubjects()
 	 */
 	@Override
@@ -254,7 +274,25 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		if(list != null && list.size() > 0){
 			for(final Category data : list){
 				if(data == null) continue;
-				TreeNode e = this.createTreeNode(data,null,true,true);
+				TreeNode e = this.createTreeNode(data,null,true,true,false);
+				if(e != null)treeNodes.add(e);
+			}
+		}
+		return treeNodes;
+	}
+	/*
+	 *  加载全部考试类别/考试/全部科目树。
+	 * @see com.examw.test.service.impl.BaseDataServiceImpl#datagrid(java.lang.Object)
+	 */
+	@Override
+	public List<TreeNode> loadAllCategoryExamAllSubjects() {
+		if(logger.isDebugEnabled()) logger.debug("加载全部考试类别/考试/科目树...");
+		List<TreeNode> treeNodes = new ArrayList<>();
+		List<Category> list = this.categoryDao.loadTopCategories();
+		if(list != null && list.size() > 0){
+			for(final Category data : list){
+				if(data == null) continue;
+				TreeNode e = this.createTreeNode(data,null,true,true,true);
 				if(e != null)treeNodes.add(e);
 			}
 		}
