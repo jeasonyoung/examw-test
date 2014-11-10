@@ -14,7 +14,7 @@ public class Structure implements Serializable,Comparable<Structure> {
 	private static final long serialVersionUID = 1L;
 	private String id,title,description;
 	private Integer type,total,orderNo;
-	private BigDecimal score,min;
+	private BigDecimal score,min,ratio;
 	private Paper paper;
 	private Set<StructureItem> items;
 	//add by fw 2011.11.10
@@ -216,6 +216,23 @@ public class Structure implements Serializable,Comparable<Structure> {
 	 */
 	public void setChildren(Set<Structure> children) {
 		this.children = children;
+	}
+	
+	/**
+	 * 获取 分数比例
+	 * @return ratio
+	 * 分数比例
+	 */
+	public BigDecimal getRatio() {
+		return ratio;
+	}
+	/**
+	 * 设置 分数比例
+	 * @param ratio
+	 * 分数比例
+	 */
+	public void setRatio(BigDecimal ratio) {
+		this.ratio = ratio;
 	}
 	/*
 	 * 比较排序。
