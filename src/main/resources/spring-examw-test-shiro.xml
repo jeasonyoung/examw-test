@@ -24,7 +24,7 @@
 	<!-- Realm实现 -->
 	<bean id="userRealm"  class="com.examw.test.service.shiro.UserRealm">
 		<!-- 用户服务接口 -->
-		<property name="userService"  ref="userService" />
+		<property name="userAuthorization"  ref="userService" />
 		<!-- 用户密码工具 -->
 		<property name="passwordHelper"  ref="passwordHelper" />
 		<!-- 凭证匹配器 -->

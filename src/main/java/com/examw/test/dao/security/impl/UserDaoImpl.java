@@ -26,32 +26,35 @@ public class UserDaoImpl extends BaseDaoImpl<User> implements IUserDao {
 	@Override
 	public List<User> findUsers(UserInfo info) {
 		if(logger.isDebugEnabled()) logger.debug("查询数据...");
-		String hql = "from User u where 1=1 "; 
+		String hql = "select u from User u where 1=1 "; 
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
+			if(StringUtils.isEmpty(info.getOrder())) info.setOrder("asc");
 			hql += " order by u." + info.getSort() + " " + info.getOrder();
 		}
-		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.find(hql, parameters, info.getPage(), info.getRows());
 	}
 	/*
-	 * 统计查询数据。
+	 * 查询数据统计。
 	 * @see com.examw.netplatform.dao.admin.IUserDao#total(com.examw.netplatform.model.admin.UserInfo)
 	 */
 	@Override
 	public Long total(UserInfo info) {
-		if(logger.isDebugEnabled())logger.debug("查询数据统计...");
+		if(logger.isDebugEnabled()) logger.debug("查询数据统计...");
 		String hql = "select count(*) from User u where 1=1";
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
-		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.count(hql, parameters);
 	}
 	//添加查询条件到HQL。
 	private String addWhere(UserInfo info, String hql, Map<String, Object> parameters){
-		if(!StringUtils.isEmpty(info.getRoleId())){
-			hql += " and (u.roles.id = :roleId) ";
+		if(!StringUtils.isEmpty(info.getAccount())){
+			hql += " and (u.account = :account) ";
+			parameters.put("account", info.getAccount());
+		}
+		if(info.getRoleId() != null && info.getRoleId().length > 0){
+			hql += " and (u.roles.id in (:roleId)) ";
 			parameters.put("roleId", info.getRoleId());
 		}
 		if(info.getStatus() != null){
@@ -70,12 +73,11 @@ public class UserDaoImpl extends BaseDaoImpl<User> implements IUserDao {
 	 */
 	@Override
 	public User findByAccount(String account) {
-		if(logger.isDebugEnabled()) logger.debug("根据账号［"+ account +"］查询用户...");
+		if(logger.isDebugEnabled()) logger.debug(String.format("根据账号查询用户：%s", account));
 		if(StringUtils.isEmpty(account)) return null;
-		final String hql = "from User u where u.account = :account";
+		final String hql = "from User u where u.account = :account order by u.createTime desc ";
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("account", account);
-		if(logger.isDebugEnabled()) logger.debug(hql);
 		List<User> list = this.find(hql, parameters, null, null);
 		if(list == null || list.size() == 0) return null;
 		return list.get(0);

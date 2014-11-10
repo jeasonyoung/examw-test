@@ -30,19 +30,18 @@ public class MenuRightDaoImpl extends BaseDaoImpl<MenuRight> implements IMenuRig
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
+			if(StringUtils.isEmpty(info.getOrder())) info.setOrder("asc");
 			if(info.getSort().equalsIgnoreCase("menuName")){
 				info.setSort("menu.name");
-			}
-			if(info.getSort().equalsIgnoreCase("rightName")){
+			}else if(info.getSort().equalsIgnoreCase("rightName")){
 				info.setSort("right.name");
 			}
 			hql += " order by m." + info.getSort() + " " + info.getOrder();
 		}
-		if(logger.isDebugEnabled()) logger.debug(hql);
 		return  this.find(hql, parameters, info.getPage(), info.getRows());
 	}
     /*
-     * 查询数据总数。
+     * 查询数据汇总。
      * @see com.examw.netplatform.dao.admin.IMenuRightDao#total(com.examw.netplatform.model.admin.MenuRightInfo)
      */
 	@Override
@@ -51,10 +50,9 @@ public class MenuRightDaoImpl extends BaseDaoImpl<MenuRight> implements IMenuRig
 		String hql = "select count(*) from MenuRight m where 1 = 1 ";
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
-		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.count(hql, parameters);
 	}
-	//添加查询条件到HQL。
+	//添加查询条件到。
 	private String addWhere(MenuRightInfo info, String hql, Map<String, Object> parameters){
 		if(!StringUtils.isEmpty(info.getMenuId())){
 			hql += " and (m.menu.id = :menuId or m.menu.parent.id = :menuId)";
@@ -71,39 +69,36 @@ public class MenuRightDaoImpl extends BaseDaoImpl<MenuRight> implements IMenuRig
 		return hql;
 	}
 	/*
-	 * 加载数据。
+	 * 加载菜单权限数据。
 	 * @see com.examw.netplatform.dao.admin.IMenuRightDao#load(com.examw.netplatform.model.admin.MenuInfo)
 	 */
 	@Override
-	public MenuRight load(MenuRightInfo info) {
-		if(logger.isDebugEnabled()) logger.debug("加载数据...");
-		if(info == null) return null;
-		MenuRight data = StringUtils.isEmpty(info.getId()) ?  null : this.load(MenuRight.class, info.getId());
-		if(data != null) return data;
+	public MenuRight loadMenuRight(String menuId,String rightId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载菜单［%1$s］权限［%2$s］数据。...", menuId,rightId));
+		if(StringUtils.isEmpty(menuId) || StringUtils.isEmpty(rightId)) return null;
 		
-		final String hql = "from MenuRight m where m.menu.id = :menuId and m.right.id = :rightId";
+		final String hql = "from MenuRight m where (m.menu.id = :menuId) and (m.right.id = :rightId) ";
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("menuId", info.getMenuId());
-		parameters.put("rightId", info.getRightId());
+		parameters.put("menuId", menuId);
+		parameters.put("rightId", rightId);
 		
-		if(logger.isDebugEnabled()) logger.debug(hql);
 		List<MenuRight> list = this.find(hql, parameters, null, null);
 		if(list != null && list.size() > 0) return list.get(0);
 		
 		return null;
 	}
 	/*
-	 * 查询菜单下的权限。
-	 * @see com.examw.netplatform.dao.admin.IMenuRightDao#findMenuRights(java.lang.String)
+	 * 重载删除数据。
+	 * @see com.examw.netplatform.dao.impl.BaseDaoImpl#delete(java.lang.Object)
 	 */
 	@Override
-	public List<MenuRight> findMenuRights(String menuId) {
-		if(logger.isDebugEnabled()) logger.debug("查询菜单［"+ menuId+"］下的权限集合...");
-		final String hql = "from MenuRight m where m.menu.id = :menuId";
-		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("menuId", menuId);
-		
-		if(logger.isDebugEnabled()) logger.debug(hql);
-		return this.find(hql, parameters, null, null);
+	public void delete(MenuRight data) {
+		if(logger.isDebugEnabled()) logger.debug("重载删除数据...");
+		if(data == null) return;
+		int count = 0; 
+		if(data.getRoles() != null && (count = data.getRoles().size()) > 0){
+			throw new RuntimeException(String.format("已被［%d］角色关联，暂不能删除", count));
+		}
+		super.delete(data);
 	}
 }

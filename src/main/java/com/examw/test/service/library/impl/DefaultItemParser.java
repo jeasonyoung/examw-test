@@ -15,6 +15,7 @@ import com.examw.test.model.library.BaseItemInfo;
 import com.examw.test.model.library.ItemInfo;
 import com.examw.test.model.library.StructureItemInfo;
 import com.examw.test.service.library.ItemParser;
+import com.examw.test.service.library.ItemType;
 /**
  * 试题解析基础类。
  * 
@@ -23,8 +24,8 @@ import com.examw.test.service.library.ItemParser;
  */
 public class DefaultItemParser implements ItemParser {
 	private static final Logger logger = Logger.getLogger(DefaultItemParser.class);
+	protected IItemDao itemDao;
 	private String typeName;
-	private IItemDao itemDao;
 	/**
 	 * 构造函数。
 	 * @param typeName
@@ -33,6 +34,14 @@ public class DefaultItemParser implements ItemParser {
 	public DefaultItemParser(String typeName){
 		this.typeName = typeName;
 	}
+	/**
+	 * 设置试题数据接口。
+	 * @param itemDao 
+	 *	  试题数据接口。
+	 */
+	public void setItemDao(IItemDao itemDao) {
+		this.itemDao = itemDao;
+	}
 	/*
 	 *  获取题型名称。
 	 * @see com.examw.test.service.library.ItemParser#getTypeName()
@@ -40,20 +49,6 @@ public class DefaultItemParser implements ItemParser {
 	@Override
 	public String getTypeName() {
 		return this.typeName;
-	}
-	/**
-	 * 设置试题数据接口。
-	 * @param itemDao
-	 */
-	public void setItemDao(IItemDao itemDao) {
-		this.itemDao = itemDao;
-	}
-	/**
-	 * 获取试题数据接口。
-	 * @return
-	 */
-	protected IItemDao getItemDao(){
-		return this.itemDao;
 	}
 	/*
 	 * 试题解析。
@@ -65,6 +60,27 @@ public class DefaultItemParser implements ItemParser {
 		if(source == null || target == null) return;
 		source.setCount(this.calculationCount(source));
 		this.changeModel(source,target);
+		this.checkItemAnswers(target);
+	}
+	/**
+	 * 检查试题答案。
+	 * @param target
+	 */
+	protected void checkItemAnswers(Item target){
+		if(target == null) return;
+		ItemType itemType = ItemType.convert(target.getType());
+		if((itemType == ItemType.SHARE_TITLE) || (itemType == ItemType.SHARE_ANSWER)){
+			return;
+		}
+		if(StringUtils.isEmpty(target.getAnswer())){
+			throw new RuntimeException("试题未有答案！");
+		}
+		if((itemType == ItemType.SINGLE) &&  (target.getAnswer().indexOf(",") > -1)){
+			throw new RuntimeException("单选题答案只能有一个答案！");
+		}
+		if((itemType == ItemType.MULTY) && (target.getAnswer().indexOf(",") == -1)){
+			throw new RuntimeException("多选题答案应有不只一个答案！");
+		}
 	}
 	/**
 	 * 计算包含的试题数量。
@@ -91,16 +107,18 @@ public class DefaultItemParser implements ItemParser {
 		}
 		BeanUtils.copyProperties(source, target, new String[]{"children","syllabuses"});
 		if(source.getChildren() != null && source.getChildren().size() > 0){
-			if(target.getChildren()== null) target.setChildren(new HashSet<Item>());
+			if(target.getChildren() == null) target.setChildren(new HashSet<Item>());
 			for(BaseItemInfo<?> info : source.getChildren()){
 				if(info == null) continue;
-				Item item = (StringUtils.isEmpty(info.getId()) || this.getItemDao() == null) ? null : this.getItemDao().load(Item.class, info.getId());
+				Item item = StringUtils.isEmpty(info.getId()) ? null : this.itemDao.load(Item.class, info.getId());
 				if(item == null){
+					if(StringUtils.isEmpty(info.getId())){
+						info.setId(UUID.randomUUID().toString());
+					}
 					item = new Item();
-					item.setId(UUID.randomUUID().toString());
 				}
 				item.setParent(target);
-				if(this.changeModel(info,item)){
+				if(this.changeModel(info, item)){
 					target.getChildren().add(item);
 				}
 			}

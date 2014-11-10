@@ -21,6 +21,11 @@
 				<key  column="pid"/>
 				<one-to-many class="Menu"/>
 		</set>
+		<!-- 关联权限集合 -->
+		<set name="rights" inverse="true" cascade="save-update" order-by="code asc">
+		    <key column="menu_id" />
+		    <one-to-many class="MenuRight"/>
+		</set>
 	</class>
 	<!--  基础权限 -->
 	<class  name="Right"  table="tbl_Examw_Test_Security_Rights">
@@ -33,6 +38,11 @@
 		<property name="value"  type="integer" unique="true" />
 		<!-- 排序号 -->
 		<property name="orderNo"  type="integer" />
+		<!-- 关联权限菜单集合 -->
+		<set name="menus" inverse="true" cascade="save-update" order-by="code asc">
+		    <key column="right_id" />
+		    <one-to-many class="MenuRight"/>
+		</set>
 	</class>
 	<!-- 菜单权限 -->
 	<class name="MenuRight"  table="tbl_Examw_Test_Security_MenuRights">
@@ -64,14 +74,14 @@
      	 <property name="description"  type="string"  length="255" />
      	 <!-- 状态 -->
      	 <property name="status"  type="integer" />
-     	 <!-- 所属菜单权限集合 -->
+     	 <!-- 关联菜单权限集合 -->
      	 <set name="rights"  inverse="false"  cascade="save-update"  table="tbl_Examw_Test_Security_RoleRight">
      	 	<!-- 角色ID -->
      	 	<key column="role_id" />
      	 	<!-- 菜单权限ID -->
      	 	<many-to-many  class="MenuRight"  column="menu_right_id" />
      	 </set>
-     	 <!-- 所属用户集合 -->
+     	 <!-- 关联用户集合 -->
      	 <set name="users"  inverse="true"  table="tbl_Examw_Test_Security_UserRoles">
      	 	<!-- 角色ID -->
      	 	<key column="role_id" />

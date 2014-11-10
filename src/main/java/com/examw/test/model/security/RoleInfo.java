@@ -2,7 +2,6 @@ package com.examw.test.model.security;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
-
 import com.examw.model.Paging;
 /**
  * 角色信息。

@@ -1,5 +1,8 @@
 package com.examw.test.controllers.security;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
@@ -7,15 +10,17 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.model.DataGrid;
-import com.examw.model.Json; 
+import com.examw.model.Json;
+import com.examw.model.TreeNode;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.security.MenuRightInfo;
-import com.examw.test.model.security.RightInfo;
+import com.examw.test.model.security.MenuRightPost;
 import com.examw.test.service.security.IMenuRightService;
 import com.examw.test.service.security.IRightService;
 /**
@@ -27,17 +32,17 @@ import com.examw.test.service.security.IRightService;
 @RequestMapping(value = "/security/menu/right")
 public class MenuRightController {
 	private static final Logger logger = Logger.getLogger(MenuRightController.class);
-	//注入权限服务。
+	//权限服务。
 	@Resource
 	private IRightService rightService;
-	//注入菜单权限服务。
+	//菜单权限服务。
 	@Resource
 	private IMenuRightService menuRightService;
 	/**
 	 * 列表页面。
 	 * @return
 	 */
-	@RequiresPermissions({ModuleConstant.SECURITY_MENU_RIGHT + ":" + Right.VIEW})
+	@RequiresPermissions({ ModuleConstant.SECURITY_MENU_RIGHT + ":" + Right.VIEW})
 	@RequestMapping(value = {"","/list"}, method = RequestMethod.GET)
 	public String list(Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载列表页面...");
@@ -53,15 +58,8 @@ public class MenuRightController {
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
 	public String edit(String menuId, Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载添加页面...");
-		model.addAttribute("PER_UPDATE", ModuleConstant.SECURITY_MENU_RIGHT + ":" + Right.UPDATE);
-		 model.addAttribute("rights", this.rightService.datagrid(new RightInfo(){
-				private static final long serialVersionUID = 1L;
-				@Override
-				public Integer getPage(){return null;}
-				@Override
-				public Integer getRows(){return null;}
-			}).getRows());
-		 model.addAttribute("menuId", StringUtils.isEmpty(menuId) ? "" : menuId);
+		model.addAttribute("current_menu_id", menuId);
+		model.addAttribute("rights", this.rightService.loadAllRights());
 		return "security/menuright_add";
 	}
 	/**
@@ -76,6 +74,16 @@ public class MenuRightController {
 		return this.menuRightService.datagrid(info);
 	}
 	/**
+	 * 加载全部的菜单权限树。
+	 * @return
+	 */
+	@RequestMapping(value="/all/tree", method = RequestMethod.POST)
+	@ResponseBody
+	public List<TreeNode> loadAllMenuRights(){
+		if(logger.isDebugEnabled()) logger.debug("加载全部的菜单权限树...");
+		return this.menuRightService.loadAllMenuRights();
+	}
+	/**
 	 * 更新数据。
 	 * @param info
 	 * 更新源数据。
@@ -85,32 +93,24 @@ public class MenuRightController {
 	@RequiresPermissions({ModuleConstant.SECURITY_MENU_RIGHT + ":" + Right.UPDATE})
 	@RequestMapping(value="/update", method = RequestMethod.POST)
 	@ResponseBody
-	public Json update(MenuRightInfo info){
+	public Json update(@RequestBody MenuRightPost post){
 		if(logger.isDebugEnabled()) logger.debug("更新数据...");
 		Json result = new Json();
 		try {
-			if(StringUtils.isEmpty(info.getMenuId())){
-				result.setSuccess(false);
-				result.setMsg("未获取菜单ID数据！");
-				return result;
+			if(post.getMenuId() == null || post.getMenuId().length == 0){
+				throw new Exception("菜单ID为空！");
 			}
-			if(StringUtils.isEmpty(info.getRightId())){
-				result.setSuccess(false);
-				result.setMsg("未获取权限ID数据！");
-				return result;
+			if(post.getRightId() == null || post.getRightId().length == 0){
+				throw new Exception("权限ID为空！");
 			}
-			String[] menuIds = info.getMenuId().split("\\|"), rightIds = info.getRightId().split("\\|");
-			for(int i = 0; i < menuIds.length; i++){
-				if(StringUtils.isEmpty(menuIds[i])) 
-					continue;
-				for(int j = 0; j < rightIds.length; j++){
-					if(StringUtils.isEmpty(rightIds[j]))
-						continue;
-					MenuRightInfo data = new MenuRightInfo();
-					data.setMenuId(menuIds[i]);
-					data.setRightId(rightIds[j]);
-					
-					this.menuRightService.update(data);
+			for(String menuId : post.getMenuId()){
+				if(StringUtils.isEmpty(menuId)) continue;
+				for(String rightId : post.getRightId()){
+					if(StringUtils.isEmpty(rightId)) continue;
+					MenuRightInfo info = new MenuRightInfo();
+					info.setMenuId(menuId);
+					info.setRightId(rightId);
+					this.menuRightService.update(info);
 				}
 			}
 			result.setSuccess(true);
@@ -129,16 +129,16 @@ public class MenuRightController {
 	@RequiresPermissions({ModuleConstant.SECURITY_MENU_RIGHT + ":" + Right.DELETE})
 	@RequestMapping(value="/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public Json delete(String id){
-		if(logger.isDebugEnabled()) logger.debug("删除数据［"+id+"］...");
+	public Json delete(@RequestBody String[] id){
+		if(logger.isDebugEnabled()) logger.debug(String.format("删除数据：%s...", Arrays.toString(id)));
 		Json result = new Json();
 		try {
-			this.menuRightService.delete(id.split("\\|"));
+			this.menuRightService.delete(id);
 			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
-			logger.error("删除数据["+id+"]时发生异常:", e);
+			logger.error(String.format("删除数据时发生异常:%s",e.getMessage()), e);
 		}
 		return result;
 	}

@@ -30,9 +30,9 @@ public class LoginLogDaoImpl extends BaseDaoImpl<LoginLog> implements ILoginLogD
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
+			if(info.getOrder() == null) info.setOrder("");
 			hql += " order by l." + info.getSort() + " " + info.getOrder();
 		}
-		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.find(hql, parameters, info.getPage(), info.getRows());
 	}
 	/*
@@ -45,13 +45,12 @@ public class LoginLogDaoImpl extends BaseDaoImpl<LoginLog> implements ILoginLogD
 		String hql = "select count(*) from LoginLog l where 1 = 1 ";
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
-		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.count(hql, parameters);
 	}
-	//添加查询条件到HQL。
+	// 添加查询条件.
 	private String addWhere(LoginLogInfo info, String hql, Map<String, Object> parameters){
 		if(!StringUtils.isEmpty(info.getAccount())){
-			hql += " and (l.account like :account)";
+			hql += " and ((l.account like :account) or (l.ip like :account) or (l.browser like :account)) ";
 			parameters.put("account", "%" + info.getAccount() + "%");
 		}
 		return hql;

@@ -59,7 +59,7 @@
 		<!-- mvc 拦截器 -->
 		<mvc:interceptors>
 			<bean class="com.examw.test.interceptors.UserAuthenticationInterceptor">
-				<property name="userService"  ref="userService" />
+				<property name="userAuthorization"  ref="userService" />
 			</bean>
 		</mvc:interceptors>
 		<!-- 文件上传 -->

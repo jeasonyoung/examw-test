@@ -2,6 +2,7 @@ package com.examw.test.domain.security;
 
 import java.io.Serializable;
 import java.util.Set;
+
 /**
  * 菜单权限。
  * @author yangyong.
@@ -13,6 +14,22 @@ public class MenuRight implements Serializable {
 	private Menu menu;
 	private Right right;
 	private Set<Role> roles;
+	/**
+	 * 构造函数。
+	 */
+	public MenuRight(){}
+	/**
+	 * 构造函数。
+	 * @param menu
+	 * 所属菜单。
+	 * @param right
+	 * 所属权限。
+	 */
+	public MenuRight(Menu menu, Right right){
+		this();
+		this.setMenu(menu);
+		this.setRight(right);
+	}
 	/**
 	 * 获取菜单权限ID。
 	 * @return

@@ -1,23 +1,28 @@
 package com.examw.test.controllers.security;
 
+import java.util.Arrays;
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.model.DataGrid;
 import com.examw.model.Json;
+import com.examw.service.Gender;
+import com.examw.service.Status;
 import com.examw.test.domain.security.Right;
-import com.examw.test.domain.security.User;
-import com.examw.test.model.security.RoleInfo;
 import com.examw.test.model.security.UserInfo;
 import com.examw.test.service.security.IRoleService;
 import com.examw.test.service.security.IUserService;
+import com.examw.test.support.EnumMapUtils;
 /**
  * 用户管理控制器。
  * @author yangyong.
@@ -44,16 +49,15 @@ public class UserController {
 		model.addAttribute("PER_UPDATE", ModuleConstant.SECURITY_USER + ":" + Right.UPDATE);
 		model.addAttribute("PER_DELETE", ModuleConstant.SECURITY_USER + ":" + Right.DELETE);
 		
-		model.addAttribute("STATUS_ENABLED_VALUE", User.STATUS_ENABLED);
-		model.addAttribute("STATUS_ENABLED_NAME", this.userService.loadUserStatusName(User.STATUS_ENABLED));
-		model.addAttribute("STATUS_DISABLE_VALUE", User.STATUS_DISABLE);
-		model.addAttribute("STATUS_DISABLE_NAME", this.userService.loadUserStatusName(User.STATUS_DISABLE));
+		Map<String, String> statusMap = EnumMapUtils.createTreeMap();
+		for(Status status : Status.values()){
+			statusMap.put(String.format("%d", status.getValue()), this.userService.loadStatusName(status.getValue()));	
+		}
+		model.addAttribute("statusMap", statusMap);
 		return "security/user_list";
 	}
 	/**
 	 * 获取编辑页面。
-	 * @param agencyId
-	 * 所属培训机构。
 	 * @param model
 	 * 数据绑定。
 	 * @return
@@ -61,30 +65,24 @@ public class UserController {
 	 */
 	@RequiresPermissions({ModuleConstant.SECURITY_USER + ":" + Right.UPDATE})
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
-	public String edit(String agencyId,Model model){
+	public String edit(Boolean modify,Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
-		model.addAttribute("STATUS_ENABLED_VALUE", User.STATUS_ENABLED);
-		model.addAttribute("STATUS_ENABLED_NAME", this.userService.loadUserStatusName(User.STATUS_ENABLED));
-		model.addAttribute("STATUS_DISABLE_VALUE", User.STATUS_DISABLE);
-		model.addAttribute("STATUS_DISABLE_NAME", this.userService.loadUserStatusName(User.STATUS_DISABLE));
+		//是否修改
+		model.addAttribute("current_is_modify", modify == null ? false : modify);
 		
-		model.addAttribute("GENDER_MALE_VALUE", User.GENDER_MALE);
-		model.addAttribute("GENDER_MALE_NAME", this.userService.loadGenderName(User.GENDER_MALE));
-		model.addAttribute("GENDER_FEMALE_VALUE",User.GENDER_FEMALE);
-		model.addAttribute("GENDER_FEMALE_NAME", this.userService.loadGenderName(User.GENDER_FEMALE));
-
-		DataGrid<RoleInfo> roles = this.roleService.datagrid(new RoleInfo(){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public Integer getPage(){return null;}
-			@Override
-			public Integer getRows(){return null;}
-			@Override
-			public String getSort(){ return "name"; }
-			@Override
-			public String getOrder() { return "asc"; }
-		});
-		model.addAttribute("roles", roles.getRows());
+		Map<String, String> statusMap = EnumMapUtils.createTreeMap(), genderMap = EnumMapUtils.createTreeMap();
+		//状态
+		for(Status status : Status.values()){
+			statusMap.put(String.format("%d", status.getValue()), this.userService.loadStatusName(status.getValue()));	
+		}
+		model.addAttribute("statusMap", statusMap);
+		//性别
+		for(Gender gender : Gender.values()){
+			genderMap.put(String.format("%d", gender.getValue()), this.userService.loadGenderName(gender.getValue()));
+		}
+		model.addAttribute("genderMap", genderMap);
+		//角色
+		model.addAttribute("all_roles", this.roleService.loadAll());
 		
 		return "security/user_edit";
 	}
@@ -130,16 +128,16 @@ public class UserController {
 	@RequiresPermissions({ModuleConstant.SECURITY_USER + ":" + Right.DELETE})
 	@RequestMapping(value="/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public Json delete(String id){
-		if(logger.isDebugEnabled()) logger.debug("删除数据［"+ id +"］...");
+	public Json delete(@RequestBody String[] ids){
+		if(logger.isDebugEnabled()) logger.debug(String.format("删除数据: %s...", Arrays.toString(ids)));
 		Json result = new Json();
 		try {
-			this.userService.delete(id.split("\\|"));
+			this.userService.delete(ids);
 			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
-			logger.error("删除数据["+id+"]时发生异常:", e);
+			logger.error(String.format("删除数据时发生异常:", e.getMessage()), e);
 		}
 		return result;
 	}

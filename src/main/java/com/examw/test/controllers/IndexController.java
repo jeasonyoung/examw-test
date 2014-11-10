@@ -83,7 +83,7 @@ public class IndexController implements IUserAware {
 	@RequestMapping(value = "/left", method = RequestMethod.GET)
 	public String left(Model model){ 
 		if(logger.isDebugEnabled()) logger.debug("加载left...");
-		model.addAttribute("modules", this.menuService.loadModules());
+		model.addAttribute("modules", this.menuService.loadAllMenus());
 		return "/left";
 	}
 	/**
