@@ -98,6 +98,15 @@ public class SyllabusDaoImpl extends BaseDaoImpl<Syllabus> implements ISyllabusD
 		parameters.put("subjectId", subjectId);
 		return this.find(hql, parameters, null, null);
 	}
+	@Override
+	public List<Syllabus> findEnableSyllabuses(String subjectId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载科目［subjectId = %s］下启用的考试大纲集合...", subjectId));
+		final String hql = "from Syllabus s where (s.parent is null)  and (s.status = :status) and (s.subject.id = :subjectId) order by s.orderNo desc";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("status", SyllabusStatus.ENABLE.getValue());
+		parameters.put("subjectId", subjectId);
+		return this.find(hql, parameters, null, null);
+	}
 	/*
 	 * 删除数据。
 	 * @see com.examw.test.dao.impl.BaseDaoImpl#delete(java.lang.Object)

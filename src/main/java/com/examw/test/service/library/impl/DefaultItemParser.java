@@ -89,7 +89,7 @@ public class DefaultItemParser implements ItemParser {
 		if(target.getChildren() != null && target.getChildren().size() > 0){
 			target.getChildren().clear();
 		}
-		BeanUtils.copyProperties(source, target, new String[]{"children"});
+		BeanUtils.copyProperties(source, target, new String[]{"children","syllabuses"});
 		if(source.getChildren() != null && source.getChildren().size() > 0){
 			if(target.getChildren()== null) target.setChildren(new HashSet<Item>());
 			for(BaseItemInfo<?> info : source.getChildren()){
@@ -167,7 +167,7 @@ public class DefaultItemParser implements ItemParser {
 	protected <T extends BaseItemInfo<T>> void changeModel(Item source, T target, boolean isAll) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("数据模型转换 Item => T...");
 		if(source == null || target == null) return;
-		BeanUtils.copyProperties(source, target, new String[]{"children"});
+		BeanUtils.copyProperties(source, target, new String[]{"children","syllabuses"});
 		if(isAll && source.getChildren() != null && source.getChildren().size() > 0){
 			Set<T> children = new TreeSet<>();
 			for(Item item : source.getChildren()){

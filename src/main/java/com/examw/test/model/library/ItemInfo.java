@@ -5,6 +5,8 @@ import java.util.Set;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
+import com.examw.test.model.syllabus.SyllabusInfo;
+
 /**
  * 题目信息。
  * @author yangyong
@@ -61,5 +63,24 @@ public class ItemInfo extends BaseItemInfo<ItemInfo> {
 	@Override
 	public void setChildren(Set<ItemInfo> children) {
 		this.children = children;
+	}
+	
+	// 大纲要点 Add by FW [2014.11.08]
+	private Set<SyllabusInfo> syllabuses;	//大纲要点
+	/**
+	 * 获取 大纲要点集合
+	 * @return syllabuses
+	 * 大纲要点集合
+	 */
+	public Set<SyllabusInfo> getSyllabuses() {
+		return syllabuses;
+	}
+	/**
+	 * 设置 大纲要点集合
+	 * @param syllabuses
+	 * 大纲要点集合
+	 */
+	public void setSyllabuses(Set<SyllabusInfo> syllabuses) {
+		this.syllabuses = syllabuses;
 	}
 }

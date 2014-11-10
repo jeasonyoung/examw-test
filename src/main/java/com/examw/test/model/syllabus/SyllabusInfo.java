@@ -4,15 +4,13 @@ import java.util.Set;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
-
-import com.examw.model.Paging;
 /**
  * 大纲信息。
  * @author lq.
  * @since 2014-08-06.
  */
 @JsonSerialize(include = Inclusion.NON_NULL)
-public class SyllabusInfo extends Paging implements Comparable<SyllabusInfo> {
+public class SyllabusInfo extends BaseSyllabusInfo implements Comparable<SyllabusInfo> {
 	private static final long serialVersionUID = 1L;
 	private String pid,id,title,subjectId,subjectName,examId,examName,statusName;
 	private Set<SyllabusInfo> children;

@@ -19,6 +19,7 @@ public interface ISyllabusService extends IBaseDataService<SyllabusInfo> {
 	  * 考试大纲集合。
 	  */
 	 List<SyllabusInfo> loadAllSyllabuses(String subjectId);
+	 List<SyllabusInfo> loadEnableSyllabuses(String subjectId);
 	 /**
 	  * 加载科目下最新大纲要点集合。
 	  * @param subjectId

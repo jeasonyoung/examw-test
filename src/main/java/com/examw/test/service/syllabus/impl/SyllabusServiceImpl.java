@@ -218,6 +218,10 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载科目［subjectId = %s］下最新的大纲要点集合...", subjectId));
 		return this.changeModel(this.syllabusDao.findSyllabusesBySubject(subjectId));
 	}
+	@Override
+	public List<SyllabusInfo> loadEnableSyllabuses(String subjectId) {
+		return this.changeModel(this.syllabusDao.findEnableSyllabuses(subjectId));
+	}
 	/*
 	 * 加载考试大纲数据。
 	 * @see com.examw.test.service.syllabus.ISyllabusService#loadSyllabus(java.lang.String)

@@ -27,6 +27,7 @@ public interface ISyllabusDao extends IBaseDao<Syllabus>{
 	 * 大纲集合。
 	 */
 	List<Syllabus> findSyllabusesBySubject(String subjectId);
+	List<Syllabus> findEnableSyllabuses(String subjectId); 
 	/**
 	 * 查询统计。
 	 * @param info

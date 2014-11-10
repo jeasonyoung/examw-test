@@ -54,9 +54,9 @@ $.extend($.fn.validatebox.defaults.rules,{
 	},
 	english : {// 验证英语
 		validator : function(value) {
-			return /^[A-Za-z]+$/i.test(value);
+			return /^[A-Za-z0-9]+$/i.test(value);
 		},
-		message : "请输入英文"
+		message : "请输入英文或英文数字组合"
 	},
 	number : {// 验证数字
 		validator : function(value) {

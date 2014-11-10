@@ -48,6 +48,49 @@ $(function(){
 			onClose:function(){$(this).dialog("destroy");}
 		});
 	};
+	//添加大纲要点关联
+	${dg}_link_syllabus = function(itemId,subjectId,status){
+		var isAudit = (status == ${item_status_none_value});
+		var d = $("<div/>").dialog({
+			title:"添加大纲要点关联",width:880,height:600,modal:true,
+			href:"<@s.url '/library/item/syllabus/'/>" +subjectId+"/"+itemId,
+			buttons:[
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			{
+				text:(isAudit ? "审核":"反审核"),
+				iconCls:"icon-save",
+				handler:function(){
+					$.messager.confirm("确认","您是否确认进行［"+$(this).text() +"］?",function(r){
+						if(!r)return;
+						$.messager.progress();
+						$.ajax({
+							url:"<@s.url '/library/item/'/>" + (isAudit?"audit" :"unaudit") + "/" +itemId,
+							type:"GET",dataType:"json",
+							error:function(e){
+								$.messager.progress("close");
+								<@error_dialog "e"/>
+							},
+							success:function(data,textStatus){
+								$.messager.progress("close");
+								if(data.success){
+									$("#${dg}").datagrid("load");$("#${dg}").datagrid("unselectAll");
+									d.dialog("close");
+								}else{
+									$.messager.show({title:"提示",msg:data.msg});
+								}
+							}
+						});
+					});
+				}
+			},
+			</@shiro.hasPermission>
+			{
+				text:"关闭",iconCls:"icon-cancel",
+				handler:function(){ d.dialog("close");}
+			}],
+			onClose:function(){$(this).dialog("destroy");}
+		});
+	};
 	//search
 	${dg}_search = function(){
 		var exam_id = "",subject_id = "";
@@ -207,10 +250,11 @@ $(function(){
 					<th data-options="field:'typeName',width:12,align:'center',sortable:true">题型</th>
 					<th data-options="field:'content',width:60,align:'left',sortable:false,formatter:function(value,row,index){ value = value.replace(/<[^>]*>/g,'');  return  '<span title=\''+ value +'\'>' + value + '</spane>'; }">试题</th>
 					<th data-options="field:'optName',width:10,align:'center',sortable:true">类型</th>
-					<th data-options="field:'count',width:10,align:'right',sortable:true">试题数</th>
-					<th data-options="field:'createTime',width:13,align:'center',sortable:true,formatter:function(value,row,index){return '<span title=\''+ value +'\'>'+value+'</span>';}">创建时间</th>
+					<th data-options="field:'count',width:8,align:'right',sortable:true">试题数</th>
+					<th data-options="field:'createTime',width:22,align:'center',sortable:true,formatter:function(value,row,index){return '<span title=\''+ value +'\'>'+value+'</span>';}">创建时间</th>
 					<th data-options="field:'statusName',width:10,align:'center',sortable:true">状态</th>
 					<th data-options="field:'opt',width:10,align:'center',formatter:function(value,row,index){return '<a href=javascript:${dg}_preview(\''+row['id'] +'\',\'' +row['status']+'\');>预览</a>';}">预览</th>
+					<th data-options="field:'opt2',width:10,align:'center',formatter:function(value,row,index){return '<a href=javascript:${dg}_link_syllabus(\''+row['id'] +'\',\''+row['subjectId'] +'\',\'' +row['status']+'\');>关联</a>';}">知识点</th>
 				</tr>
 			</thead>	
 		</table>

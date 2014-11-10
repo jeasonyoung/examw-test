@@ -1,0 +1,53 @@
+<#--选择关联知识点页面-->
+<#include "comm.ftl"/>
+<#assign module="library_item_syllabus"/>
+<script type="text/javascript">
+<!--
+$(function(){
+	 ${module}_getChecked = function(){
+		 var nodes = $('#${module}_tree').tree('getChecked');
+		 var s = '';
+		 for(var i=0; i<nodes.length; i++){
+		 	if (s != '') s += ',';
+		 	s += nodes[i].id;
+		 }
+		 return s;
+	}
+	$("#${module}_syllabus_list").combobox({onSelect:function(rec){
+		$("#${module}_tree").tree({url:"<@s.url '/syllabus/syllabus/'/>"+rec.value+"/tree"});
+	}});
+});
+//-->
+</script>
+<div class="easyui-panel" style="padding:5px;">
+	 <select class="easyui-combobox" name="state" style="width:350px;" id="${module}_syllabus_list">
+	 	<#list SYLLABUSLIST as syllabus>
+		<option value="${syllabus.id}">${syllabus.title}</option>
+		</#list>
+	</select>
+</div>
+<#if (SYLLABUSLIST??) && (SYLLABUSLIST?size>0)>
+<div class="easyui-panel" style="padding:5px;height:280px">
+	<ul id="${module}_tree" class="easyui-tree" 
+		data-options="
+			url:'<@s.url '/syllabus/syllabus/'/>'+'${SYLLABUSLIST[0].id}'+'/tree',
+			method:'get',
+			animate:true,
+			onlyLeafCheck:true,
+			checkbox:true,
+			onLoadSuccess:function(node,data){
+				var ids = ${module}_getHad();
+				if(ids =='') return;
+				ids = ids.split(',');
+				for(var i=0;i<ids.length;i++){
+					var node = $('#${module}_tree').tree('find', ids[i]);
+					if(node)
+						$('#${module}_tree').tree('check', node.target);
+				}
+			}"
+		>
+	</ul>
+</div>
+<#else>
+该科目下暂时没有添加考试大纲
+</#if>
