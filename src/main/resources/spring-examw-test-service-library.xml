@@ -46,6 +46,8 @@
 	    <property name="structureDao" ref="structureDao" />
 	    <!-- 试卷数据接口 -->
 	    <property name="paperDao" ref="paperDao" />
+	    <!-- 科目数据接口 -->
+	    <property name="subjectDao" ref="subjectDao" />
 	    <!-- 试题服务接口 -->
 	    <property name="itemService" ref="itemService" />
 	</bean>
@@ -53,6 +55,8 @@
 	<bean id="paperItemService" class="com.examw.test.service.library.impl.PaperItemServiceImpl">
 	    <!-- 试卷结构数据接口 -->
 	    <property name="structureDao" ref="structureDao" />
+	    <!-- 试卷数据接口 -->
+	    <property name="paperDao" ref="paperDao" />
 	    <!-- 试题服务接口 -->
 	    <property name="itemService" ref="itemService" />
 	</bean>

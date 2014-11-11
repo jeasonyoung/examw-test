@@ -82,6 +82,8 @@
 		<property name="orderNo" type="integer" />
 		<!-- 所属试卷 -->
 		<many-to-one name="paper" column="paper_id" class="Paper" />
+		<!-- 所属科目 -->
+		<many-to-one name="subject" column="subject_id" class="com.examw.test.domain.settings.Subject"/>
 		<!-- 结构下试题集合 -->
 		<set name="items" inverse="false" cascade="save-update" order-by="orderNo asc">
 		    <!-- 结构ID -->

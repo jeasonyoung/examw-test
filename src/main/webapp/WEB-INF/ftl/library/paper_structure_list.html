@@ -19,9 +19,15 @@ $(function(){
 	</@shiro.hasPermission>
 	//edit structure
 	${module}_structure_edit_window = function(title,row,order){
+		var subjectId = '${current_subject_id}',structureId='';
+		if(row){
+			structureId = row.id;
+			if(row.pid)
+				subjectId = row.subjectId;
+		}
 		var d = $("<div/>").dialog({
-			title:title,width:420,height:380,modal:true,
-			href:"<@s.url '/library/paper/structure/edit'/>",
+			title:title,width:420,height:420,modal:true,
+			href:"<@s.url '/library/paper/structure/edit/${current_paper_id}'/>"+"?subjectId="+subjectId+"&structureId="+structureId,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
 			{
@@ -103,16 +109,24 @@ $(function(){
 		if(!node){
 			$.messager.alert("警告"," 请先选择所属［试卷结构］！");
 			return;
-		}else{
-			structure_id = node["id"];item_type_name = node["attributes"]["typeName"];
 		}
+		if(!$("#${module}_tree").tree("isLeaf",node.target)){
+			$.messager.alert("警告"," 请先选择最底层子结构！");
+			return;
+		}
+		if(!node.attributes.info.type){
+			$.messager.alert("警告"," 该子结构没有选择题型！");
+			return;
+		}
+		structure_id = node["id"];item_type_name = node["attributes"]["info"]["typeName"];
+		
 		//new
 		if($(obj).attr("value") == "new"){
 			if(show) return;
 			show = true;
 			$.getJSON("<@s.url '/library/paper/items/order/'/>" + structure_id + "?_=" + Math.random(),function(order){
 				show = false;
-				${module}_edit_structure_items_window("新增试题["+ item_type_name +"]",0,null, order);
+				${module}_edit_structure_items_window("新增试题["+ item_type_name +"]",-1,null, order);
 			});
 			return;
 		}
@@ -183,10 +197,10 @@ $(function(){
 		var structure_id = "", type = "";
 		if(row){
 			if(row.structureId)structure_id = row.structureId;
-			if(row.type)type = row.type;
+			if(row.type) type = row.type;
 		}else{
 			var node = $("#${module}_tree").tree("getSelected");
-			if(node){ structure_id = node["id"];type = node["attributes"]["type"]; }
+			if(node){ structure_id = node["id"];type = node["attributes"]["info"]["type"]; }
 		}
 		var d = $("<div/>").dialog({
 			title:title,width:800,height:600,modal:true,
@@ -205,13 +219,17 @@ $(function(){
 						type:"POST",data:JSON.stringify(post),dataType:"json",
 						contentType:"application/json;charset=UTF-8",
 						error:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
-						success:function(callback,textStatus){
+						success:function(data){
 							$.messager.progress("close");
-							if(callback.success){
-								$("#${dg}").datagrid((row) ? "updateRow" : "insertRow",{index:index, row:callback.data }); 
+							if(data.success){
+								//这里用row判断报个_725 is undefine的sb错误
+								if(index == -1)
+									$("#${dg}").datagrid("insertRow",{index:0, row:data.data });
+								else
+									$("#${dg}").datagrid("updateRow",{index:index, row:data.data });
 								d.dialog("close");
 							}else{
-								$.messager.show({title:"提示", msg:callback.msg });
+								$.messager.show({title:"提示", msg:data.msg });
 							}
 						}
 					});
@@ -275,9 +293,8 @@ $(function(){
 	<div data-options="region:'west',title:'试卷结构',split:true,tools:[{ iconCls:'icon-reload',handler:function(){ $('#${module}_tree').tree('reload'); ${dg}_search();}}
 		<@shiro.hasPermission name='${PER_UPDATE}'> ,{ iconCls:'icon-add', handler:function(){ ${module}_add(); } }</@shiro.hasPermission>]" style="width:190px;">
 		<ul id="${module}_tree" class="easyui-tree" data-options="url:'<@s.url '/library/paper/structure/all/${current_paper_id}'/>',lines:true,onContextMenu:function(e, node){
-			e.preventDefault();$('#${module}_tree_menu').menu('show', {left: e.pageX,top: e.pageY }); },onLoadError:function(e){ <@error_dialog 'e'/> },loadFilter:function(data){
-			var o = [];if(data && $.isArray(data)){ $.each(data,function(i,n){ var node = {};node['id'] = n['id'];node['text'] = n['title'];node['attributes'] = n;o.push(node);});	}  return o; },
-			onClick:function(node){ ${dg}_search(); }, onDblClick:function(node){ ${module}_structure_edit_window('编辑试卷结构',node.attributes,null); } "></ul>
+			e.preventDefault();$('#${module}_tree_menu').menu('show', {left: e.pageX,top: e.pageY }); },onLoadError:function(e){ <@error_dialog 'e'/> },
+			onClick:function(node){ ${dg}_search(); }, onDblClick:function(node){ ${module}_structure_edit_window('编辑试卷结构',node.attributes.info,null); } "></ul>
 		<div id="${module}_tree_menu" class="easyui-menu" style="width:120px;">
 			<@shiro.hasPermission name="${PER_UPDATE}">
 			<div onclick="${module}_add()" data-options="iconCls:'icon-add'">添加试卷结构</div>

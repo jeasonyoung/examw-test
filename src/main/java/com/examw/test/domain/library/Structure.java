@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.util.Set;
 import java.util.UUID;
 
+import com.examw.test.domain.settings.Subject;
+
 /**
  * 试卷结构。
  * @author yangyong.
@@ -20,6 +22,7 @@ public class Structure implements Serializable,Comparable<Structure> {
 	//add by fw 2011.11.10
 	private Structure parent;
 	private Set<Structure> children;
+	private Subject subject;
 	/**
 	 * 构造函数。
 	 */
@@ -233,6 +236,23 @@ public class Structure implements Serializable,Comparable<Structure> {
 	 */
 	public void setRatio(BigDecimal ratio) {
 		this.ratio = ratio;
+	}
+	
+	/**
+	 * 获取 所属科目
+	 * @return subject
+	 * 所属科目
+	 */
+	public Subject getSubject() {
+		return subject;
+	}
+	/**
+	 * 设置 所属科目
+	 * @param subject
+	 * 所属科目
+	 */
+	public void setSubject(Subject subject) {
+		this.subject = subject;
 	}
 	/*
 	 * 比较排序。

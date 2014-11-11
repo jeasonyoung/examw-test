@@ -93,8 +93,14 @@ public class SubjectController {
 	@RequestMapping(value = "/tree", method = {RequestMethod.GET,RequestMethod.POST})
 	@ResponseBody
 	public List<TreeNode> tree(String examId,String ignoreSubjectId){
-		if(logger.isDebugEnabled()) logger.debug("加载考试类别树...");
+		if(logger.isDebugEnabled()) logger.debug("加载考试科目树...");
 		return this.subjectService.loadSubjectTree(examId, ignoreSubjectId);
+	}
+	@RequestMapping(value = "/childTree", method = {RequestMethod.GET,RequestMethod.POST})
+	@ResponseBody
+	public List<TreeNode> tree(String subjectPid){
+		if(logger.isDebugEnabled()) logger.debug("加载考试科目子树...");
+		return this.subjectService.loadSubjectTree(subjectPid);
 	}
 	/**
 	 * 加载考试科目下地区数据。

@@ -6,7 +6,7 @@
 <!--
 $(function(){
 	//paper structures
-	${dg}_paper_structure = function(paperId,paperName,status){
+	${dg}_paper_structure = function(paperId,subjectId,paperName,status){
 		var title = "试卷[" + paperName +  "]结构";
 		var btns = [];
 		<@shiro.hasPermission name="${PER_UPDATE}">
@@ -31,7 +31,7 @@ $(function(){
 			text:"关闭",iconCls:"icon-cancel",
 			handler:function(){ d.dialog("close");}
 		});
-		var d = $("<div/>").dialog({title:title,width:800,height:600,modal:true,href:"<@s.url '/library/paper/structure/list/'/>" + paperId,buttons:btns, onClose:function(){ $(this).dialog("destroy");} });
+		var d = $("<div/>").dialog({title:title,width:800,height:600,modal:true,href:"<@s.url '/library/paper/structure/list/'/>" + paperId+"?subjectId="+subjectId,buttons:btns, onClose:function(){ $(this).dialog("destroy");} });
 	};
 	//paper preview
 	${dg}_paper_preview = function(paperId,status){
@@ -227,7 +227,7 @@ $(function(){
 					<th data-options="field:'createTime',width:70,align:'center',sortable:true,formatter:function(value,row,index){ return '<span title=\''+value+'\'>'+value+'</span>'}">创建时间</th>
 					<th data-options="field:'typeName',width:70,align:'center',sortable:true">类型</th>
 					<th data-options="field:'statusName',width:50,align:'center',sortable:true">状态</th>
-					<th data-options="field:'opt',width:60,align:'center',formatter:function(value,row,index){ return '<a href=\'#\' onclick=${dg}_paper_structure(\''+row['id'] +'\',\'' + row['name'] +'\',\''+ row['status']+'\');>试卷内容</a>';}">操作</th>
+					<th data-options="field:'opt',width:60,align:'center',formatter:function(value,row,index){ return '<a href=\'#\' onclick=${dg}_paper_structure(\''+row['id'] +'\',\''+row['subjectId'] +'\',\'' + row['name'] +'\',\''+ row['status']+'\');>试卷内容</a>';}">操作</th>
 					<th data-options="field:'preview',width:40,align:'center',formatter:function(value,row,index){return '<a href=\'#\' onclick=${dg}_paper_front_preview(\''+row['id'] +'\',\'' +row['status']+ '\');>预览</a>';}">预览</th>
 					<th data-options="field:'userName',width:60,align:'left',sortable:true,formatter:function(value,row,index){ return (!value) ? ' ' : '<span title=\''+value+'\'>'+value+'</span>'}">操作者</th>
 				</tr>

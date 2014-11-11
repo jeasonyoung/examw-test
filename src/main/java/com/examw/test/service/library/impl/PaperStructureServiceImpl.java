@@ -2,17 +2,22 @@ package com.examw.test.service.library.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
+import com.examw.model.TreeNode;
 import com.examw.test.dao.library.IPaperDao;
 import com.examw.test.dao.library.IStructureDao;
+import com.examw.test.dao.settings.ISubjectDao;
 import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.library.Structure;
+import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.library.StructureInfo;
 import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperStructureService;
@@ -28,6 +33,7 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 	private static final Logger logger = Logger.getLogger(PaperStructureServiceImpl.class);
 	private IStructureDao structureDao;
 	private IPaperDao paperDao;
+	private ISubjectDao subjectDao;
 	private IItemService itemService;
 	/**
 	 * 设置试卷结构数据接口。
@@ -56,6 +62,15 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 		if(logger.isDebugEnabled()) logger.debug("注入试卷服务接口...");
 		this.itemService = itemService;
 	}
+	
+	/**
+	 * 设置 科目数据接口
+	 * @param subjectDao
+	 * 科目数据接口
+	 */
+	public void setSubjectDao(ISubjectDao subjectDao) {
+		this.subjectDao = subjectDao;
+	}
 	/*
 	 * 加载试卷结构最大排序号。
 	 * @see com.examw.test.service.library.IPaperStructureService#loadMaxOrder(java.lang.String)
@@ -79,6 +94,70 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 		}
 		return this.changeModel(this.structureDao.loadStructures(paperId));
 	}
+	/*
+	 * 加载整个试卷的结构树
+	 * @see com.examw.test.service.library.IPaperStructureService#loadStructureTree(java.lang.String)
+	 */
+	@Override
+	public List<TreeNode> loadStructureTree(String paperId) {
+		if(logger.isDebugEnabled())logger.debug(String.format("加载结构[paperId=%s]树数据...", paperId));
+		return loadStructureTree(paperId,null,false);
+	}
+	/*
+	 * 加载试卷结构树,排除一些不能作为上级的结构
+	 * @see com.examw.test.service.library.IPaperStructureService#loadStructureTree(java.lang.String, java.lang.String, boolean)
+	 */
+	public List<TreeNode> loadStructureTree(String paperId,String ignoreStructureId,boolean checkHasItem){
+		if(logger.isDebugEnabled())logger.debug(String.format("加载结构[paperId=%s]树数据...", paperId));
+		String msg = null;
+		if (StringUtils.isEmpty(paperId)) {
+			logger.error(msg = "试卷ID不存在！");
+			throw new RuntimeException(msg);
+		}
+		List<Structure> structures = this.structureDao.loadStructures(paperId);
+		List<TreeNode> result = new ArrayList<>();
+		if(structures != null && structures.size() > 0){
+			for(Structure data : structures){
+				if(data == null) continue;
+				TreeNode e = this.createTreeNode(data,ignoreStructureId,checkHasItem,false);
+				if(e != null)result.add(e);
+			}
+		}
+		return result;
+	}
+	/**
+	 * 创建结构树
+	 * @param data
+	 * @param ignoreStructureId
+	 * @param checkHasItem
+	 * @return
+	 */
+	private TreeNode createTreeNode(Structure data, String ignoreStructureId,boolean checkHasItem,boolean isChildren) {
+		if(data == null || data.getId().equals(ignoreStructureId)) return null;
+		//TODO 这里如果是子类也与试卷关联的话就要进行一次判断
+		//if(!isChildren && data.getParent()!=null) return null;
+		if(checkHasItem){
+			Long totalItems = this.structureDao.totalStructureItems(data.getId());	
+			if(totalItems!=null && totalItems.longValue()>0)	//如果已经加题则不能再作为上级结构
+				return null;
+		}
+		TreeNode node = new TreeNode();
+		node.setId(data.getId());
+		node.setText(data.getTitle());
+		Map<String, Object> attributes = new HashMap<String,Object>();
+		attributes.put("info",this.changeModel(data, false));
+		node.setAttributes(attributes);
+		if(data.getChildren()!=null && data.getChildren().size()>0)
+		{
+			List<TreeNode> children = new ArrayList<>();
+			for(Structure s:data.getChildren()){
+				TreeNode child = this.createTreeNode(s, ignoreStructureId, checkHasItem,true);
+				if(child!=null) children.add(child);
+			}
+			node.setChildren(children);
+		}
+		return node;
+	}
 	/**
 	 * 数据模型集合转换。
 	 * @param structures
@@ -90,7 +169,7 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 		if(structures != null && structures.size() > 0){
 			for(Structure structure : structures){
 				if(structure == null) continue;
-				StructureInfo info = this.changeModel(structure);
+				StructureInfo info = this.changeModel(structure,false);
 				if(info != null){
 					list.add(info);
 				}
@@ -100,13 +179,28 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 		return list;
 	}
 	//数据模型转换。
-	protected StructureInfo changeModel(Structure data){
+	protected StructureInfo changeModel(Structure data,boolean isLoadChildren){
 		if(logger.isDebugEnabled()) logger.debug("数据模型转换 Structure => StructureInfo ...");
 		if(data == null) return null;
 		StructureInfo info = new StructureInfo();
-		BeanUtils.copyProperties(data, info,new String[]{"items"});
+		BeanUtils.copyProperties(data, info,new String[]{"items","children"});
 		if(data.getType() != null && this.itemService != null){
 			info.setTypeName(this.itemService.loadTypeName(data.getType()));
+		}
+		if(data.getParent()!=null){
+			info.setPid(data.getParent().getId());
+		}
+		if(data.getSubject()!=null){
+			info.setSubjectId(data.getSubject().getId());
+		}
+		if(isLoadChildren && data.getChildren()!=null && data.getChildren().size()>0){
+			List<StructureInfo> children = new ArrayList<>();
+			for(Structure s:data.getChildren())
+			{
+				StructureInfo child = this.changeModel(s,isLoadChildren);
+				if(child!=null) children.add(child);
+			}
+			if(children.size() > 0) Collections.sort(children);
 		}
 		return info;
 	}
@@ -117,7 +211,7 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 	@Override
 	public StructureInfo conversion(Structure structure) {
 		if(logger.isDebugEnabled()) logger.debug("数据模型转换...");
-		return this.changeModel(structure);
+		return this.changeModel(structure,true);
 	}
 	/*
 	 * 更新试卷结构。
@@ -146,12 +240,26 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 			}
 			data = new Structure();
 			data.setPaper(paper);
-		} 
+		}
 		Integer paperStatus = null;
 		if(data.getPaper() != null && (paperStatus = data.getPaper().getStatus()) != PaperStatus.NONE.getValue()){
 			throw new RuntimeException(String.format("所属试卷［状态＝%s］不允许修改试卷结构！", PaperStatus.convert(paperStatus)));
 		}
-		BeanUtils.copyProperties(info, data,new String[]{"items"});
+		//TODO 查询子结构下面的是否有其他科目
+		BeanUtils.copyProperties(info, data,new String[]{"items","children"});
+		if(!StringUtils.isEmpty(info.getPid()) ){
+			Structure parent = this.structureDao.load(Structure.class, info.getPid());
+			if(parent!=null)
+			{
+				data.setParent(parent);
+				data.setPaper(null); //子结构不加试卷关联
+			}
+		}
+		//加科目 [如果是子类,所选科目不能是非父类及父类下子类的科目]
+		if(!StringUtils.isEmpty(info.getSubjectId())){
+			Subject subject = this.subjectDao.load(Subject.class, info.getSubjectId());
+			if(subject!=null) data.setSubject(subject);
+		}
 		if (isAdded) this.structureDao.save(data);
 	}
 	/*

@@ -296,4 +296,16 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 		}
 		return node;
 	}
+	/*
+	 * 加载某科目下的子科目树
+	 * @see com.examw.test.service.settings.ISubjectService#loadSubjectTree(java.lang.String)
+	 */
+	@Override
+	public List<TreeNode> loadSubjectTree(String pid) {
+		Subject data = this.subjectDao.load(Subject.class, pid);
+		if(data == null)
+		return new ArrayList<TreeNode>();
+		TreeNode node = createTreeNode(data, null);
+		return node.getChildren()==null?new ArrayList<TreeNode>():node.getChildren();
+	}
 }

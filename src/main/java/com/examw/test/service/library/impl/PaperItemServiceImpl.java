@@ -7,8 +7,10 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
 
+import com.examw.test.dao.library.IPaperDao;
 import com.examw.test.dao.library.IStructureDao;
 import com.examw.test.domain.library.Item;
+import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.library.Structure;
 import com.examw.test.domain.library.StructureItem;
 import com.examw.test.model.library.StructureItemInfo;
@@ -25,6 +27,7 @@ import com.examw.test.service.library.PaperStatus;
 public class PaperItemServiceImpl extends BaseDataServiceImpl<StructureItem,StructureItemInfo> implements IPaperItemService {
 	private static final Logger logger = Logger.getLogger(PaperItemServiceImpl.class);
 	private IStructureDao structureDao;
+	private IPaperDao paperDao;
 	private IItemService itemService;
 	/**
 	 * 设置试卷结构数据接口。
@@ -34,6 +37,15 @@ public class PaperItemServiceImpl extends BaseDataServiceImpl<StructureItem,Stru
 	public void setStructureDao(IStructureDao structureDao) {
 		if(logger.isDebugEnabled()) logger.debug("注入试卷结构数据接口...");
 		this.structureDao = structureDao;
+	}
+	/**
+	 * 设置试卷数据接口。
+	 * @param paperDao 
+	 *	  试卷数据接口。
+	 */
+	public void setPaperDao(IPaperDao paperDao) {
+		if(logger.isDebugEnabled())logger.debug("注入试卷数据接口...");
+		this.paperDao = paperDao;
 	}
 	/**
 	 * 设置试题服务接口。
@@ -131,11 +143,9 @@ public class PaperItemServiceImpl extends BaseDataServiceImpl<StructureItem,Stru
 			logger.error(msg = String.format("试卷结构［structureId = %s］不存在！", info.getStructureId()));
 			throw new RuntimeException(msg);
 		}
-		if((structure.getPaper() == null) || (structure.getPaper().getStatus() != PaperStatus.NONE.getValue())){
-			logger.error(msg =  (structure.getPaper() == null ? "试卷不存在！" : String.format("试卷［%1$s］状态［%2$s］不允许更新！", 
-																																			structure.getPaper().getName(),
-																																			PaperStatus.convert(structure.getPaper().getStatus()))));
-			
+		Paper paper = this.paperDao.load(Paper.class,info.getPaperId());
+		if((paper == null) || (paper.getStatus() != PaperStatus.NONE.getValue())){
+			logger.error(msg =  (paper == null ? "试卷不存在！" : String.format("试卷［%1$s］状态［%2$s］不允许更新！",paper.getName(),PaperStatus.convert(paper.getStatus()))));
 			throw new RuntimeException(msg);
 		}
 		if (StringUtils.isEmpty(info.getId()) && structure.getTotal() > 0) {
@@ -144,29 +154,36 @@ public class PaperItemServiceImpl extends BaseDataServiceImpl<StructureItem,Stru
 			Long count =  (has_count == null ? 0 : has_count)  + (item_count == null ?  0 : item_count);
 			if (count != null && count > structure.getTotal()) {
 				msg = String.format("试卷［%1$s］结构下［structureId = %2$s］题目数量已满［total = %3$d］［count = %4$d］！",
-						structure.getPaper().getName(), info.getStructureId(), structure.getTotal(), count);
+						paper.getName(), info.getStructureId(), structure.getTotal(), count);
 				logger.error(msg);
 				throw new RuntimeException(msg);
 			}
 		}
-		if(structure.getPaper() != null){
+		if(paper != null){
 			info.setType(structure.getType());//题型。
-			info.setOpt(structure.getPaper().getType());//试卷类型。
-			info.setYear(structure.getPaper().getYear());//使用年份。
+			info.setOpt(paper.getType());//试卷类型。
+			info.setYear(paper.getYear());//使用年份。
 			//设置考试科目
-			if(structure.getPaper().getSubject() != null){
-				info.setSubjectId(structure.getPaper().getSubject().getId());
-				if(structure.getPaper().getSubject().getExam() != null){
-					info.setExamId(structure.getPaper().getSubject().getExam().getId());
-				}
+			Structure parent = structure;
+			while(parent.getSubject()==null){
+				parent = parent.getParent();
+			}
+			if(parent.getSubject() != null){
+				//modify by FW. 题目需要落到子科目上 
+				info.setSubjectId(parent.getSubject().getId());
+			}else{
+				info.setSubjectId(paper.getSubject().getId());
+			}
+			if(paper.getSubject().getExam() != null){
+				info.setExamId(paper.getSubject().getExam().getId());
 			}
 			//试卷来源
-			if(structure.getPaper().getSource() != null){
-				info.setSourceId(structure.getPaper().getSource().getId());
+			if(paper.getSource() != null){
+				info.setSourceId(paper.getSource().getId());
 			}
 			//所属地区
-			if(structure.getPaper().getArea() != null){
-				info.setAreaId(structure.getPaper().getArea().getId());
+			if(paper.getArea() != null){
+				info.setAreaId(paper.getArea().getId());
 			}
 		}
 		

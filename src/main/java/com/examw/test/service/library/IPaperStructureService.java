@@ -2,6 +2,7 @@ package com.examw.test.service.library;
 
 import java.util.List;
 
+import com.examw.model.TreeNode;
 import com.examw.test.domain.library.Structure;
 import com.examw.test.model.library.StructureInfo;
 
@@ -27,6 +28,17 @@ public interface IPaperStructureService {
 	 * 结构集合。
 	 */
 	List<StructureInfo> loadStructures(String paperId);
+	/**
+	 * 加载试卷结构集合。
+	 * @param paperId
+	 * 所属试卷ID。
+	 * @param ignoreStructureId
+	 * 需要排除的结构
+	 * @return
+	 * 结构树。
+	 */
+	List<TreeNode> loadStructureTree(String paperId);
+	List<TreeNode> loadStructureTree(String paperId,String ignoreStructureId,boolean checkHasItem);
 	/**
 	 * 数据模型转换。
 	 * @param structure

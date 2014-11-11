@@ -33,6 +33,7 @@ public interface ISubjectService extends IBaseDataService<SubjectInfo>{
 	 * 树结构数据。
 	 */
 	List<TreeNode> loadSubjectTree(String examId,String ignoreCategoryId);
+	List<TreeNode> loadSubjectTree(String pid);
 	/**
 	 * 加载考试科目所在地区集合。
 	 * @param examId

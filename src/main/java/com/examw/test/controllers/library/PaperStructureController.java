@@ -1,6 +1,6 @@
 package com.examw.test.controllers.library;
  
-import java.util.List; 
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.model.Json;
+import com.examw.model.TreeNode;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.library.StructureInfo;
 import com.examw.test.service.library.IItemService;
@@ -43,9 +44,15 @@ public class PaperStructureController {
 	 */
 	@RequestMapping(value="/all/{paperId}", method = {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
-	public List<StructureInfo> loadStructures(@PathVariable String paperId){
+	public List<TreeNode> loadStructures(@PathVariable String paperId){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［paperId = %s］结构数据...", paperId));
-		return this.paperStructureService.loadStructures(paperId);
+		return this.paperStructureService.loadStructureTree(paperId,null,false);
+	}
+	@RequestMapping(value="/tree/{paperId}", method = {RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public List<TreeNode> loadStructures(@PathVariable String paperId,String ignoreStructureId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［paperId = %s］结构数据...", paperId));
+		return this.paperStructureService.loadStructureTree(paperId,ignoreStructureId,true);
 	}
 	/**
 	 * 加载试卷结构列表页面。
@@ -54,10 +61,11 @@ public class PaperStructureController {
 	 */
 	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.VIEW})
 	@RequestMapping(value="/list/{paperId}", method = RequestMethod.GET)
-	public String structureList(@PathVariable String paperId,Model model){
+	public String structureList(@PathVariable String paperId,String subjectId,Model model){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［paperId = %s］结构列表页面...", paperId));
 
 		model.addAttribute("current_paper_id", paperId);
+		model.addAttribute("current_subject_id", subjectId);
 		
 		model.addAttribute("PER_UPDATE", ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE);
 		model.addAttribute("PER_DELETE", ModuleConstant.LIBRARY_PAPER + ":" + Right.DELETE);
@@ -84,11 +92,13 @@ public class PaperStructureController {
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE})
-	@RequestMapping(value="/edit", method = RequestMethod.GET)
-	public String structureEdit(Model model){
+	@RequestMapping(value="/edit/{paperId}", method = RequestMethod.GET)
+	public String structureEdit(@PathVariable String paperId,String subjectId,String structureId,Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载试卷结构编辑页面...");
 		PaperItemUtils.addAllItemType(this.itemService, model);
-		
+		model.addAttribute("current_paper_id", paperId);
+		model.addAttribute("current_subject_id",subjectId);
+		model.addAttribute("current_structure_id",structureId);
 		return "library/paper_structure_edit";
 	}
 
