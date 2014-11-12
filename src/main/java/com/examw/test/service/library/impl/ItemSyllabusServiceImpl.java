@@ -77,10 +77,24 @@ public class ItemSyllabusServiceImpl implements IItemSyllabusService {
 		if(data == null) return null;
 		BaseSyllabusInfo info = new BaseSyllabusInfo();
 		BeanUtils.copyProperties(data, info);
-		info.setPid(data.getParent().getId());
+		if(data.getParent()!=null)
+		{
+			info.setPid(data.getParent().getId());
+		}
+		info.setFullTitle(this.loadFullTitle(data));
 		return info;
 	}
-	
+	/*
+	 * 加载完整的要点标题
+	 */
+	private String loadFullTitle(Syllabus data)
+	{
+		if(data == null) return null;
+		if(data.getParent() == null) return data.getTitle();
+		StringBuilder builder = new StringBuilder(data.getTitle());
+		builder.insert(0, this.loadFullTitle(data.getParent()) + " >> ");
+		return builder.toString();
+	}
 	/*
 	 * 更改试题大纲要点
 	 * @see com.examw.test.service.library.IItemSyllabusService#updateItemSyllabus(java.lang.String, java.lang.String[])

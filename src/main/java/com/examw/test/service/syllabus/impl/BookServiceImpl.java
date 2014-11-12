@@ -90,6 +90,11 @@ public class BookServiceImpl extends BaseDataServiceImpl<Book, BookInfo> impleme
 		if(StringUtils.isEmpty(bookId)) return null;
 		return this.changeModel(this.bookDao.load(Book.class, bookId));
 	}
+	@Override
+	public List<BookInfo> loadBookList(String subjectId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载科目［bookId = %s］下教材信息...", subjectId));
+		return this.changeModel(this.bookDao.loadBookList(subjectId));
+	}
 	/*
 	 * 加载状态名称。
 	 * @see com.examw.test.service.syllabus.IBookService#loadStatusName(java.lang.Integer)

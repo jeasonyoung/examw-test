@@ -1,4 +1,6 @@
 package com.examw.test.service.syllabus;
+import java.util.List;
+
 import com.examw.test.model.syllabus.BookInfo;
 import com.examw.test.service.IBaseDataService;
 /**
@@ -26,4 +28,10 @@ public interface IBookService extends IBaseDataService<BookInfo> {
 	 * @return
 	 */
 	Integer loadMaxOrder();
+	/**
+	 * 加载科目下所有教材信息
+	 * @param subjectId
+	 * @return
+	 */
+	List<BookInfo> loadBookList(String subjectId);
 }

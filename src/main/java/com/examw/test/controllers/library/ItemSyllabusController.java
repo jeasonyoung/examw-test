@@ -18,6 +18,7 @@ import com.examw.model.Json;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.syllabus.BaseSyllabusInfo;
 import com.examw.test.service.library.IItemSyllabusService;
+import com.examw.test.service.syllabus.IBookService;
 import com.examw.test.service.syllabus.ISyllabusService;
 
 /**
@@ -34,6 +35,8 @@ public class ItemSyllabusController {
 	private IItemSyllabusService itemSyllabusService;
 	@Resource
 	private ISyllabusService syllabusService;
+	@Resource
+	private IBookService bookService;
 	/**
 	 * 列出与该试题关联的考试大纲列表
 	 * @param itemId
@@ -66,12 +69,30 @@ public class ItemSyllabusController {
 		dataGrid.setTotal((long) rows.size());
 		return dataGrid;
 	}
-	
+	/**
+	 * 选取要点加大纲关联
+	 * @param subjectId
+	 * @param model
+	 * @return
+	 */
 	@RequiresPermissions({ ModuleConstant.LIBRARY_ITEM + ":" + Right.VIEW })
 	@RequestMapping(value = "/{subjectId}/syllabus/list", method = RequestMethod.GET)
 	public String subjectSyllabusList(@PathVariable String subjectId, Model model){
 		model.addAttribute("SYLLABUSLIST", this.syllabusService.loadEnableSyllabuses(subjectId));
 		return "library/item_syllabus_choose_syllabus";
+	}
+	
+	/**
+	 * 搜索知识点加大纲关联
+	 * @param subjectId
+	 * @param model
+	 * @return
+	 */
+	@RequiresPermissions({ ModuleConstant.LIBRARY_ITEM + ":" + Right.VIEW })
+	@RequestMapping(value = "/{subjectId}/book/list", method = RequestMethod.GET)
+	public String subjectBookList(@PathVariable String subjectId, Model model){
+		model.addAttribute("BOOKLIST", this.bookService.loadBookList(subjectId));
+		return "library/item_syllabus_choose_knowledge";
 	}
 	
 	/**
@@ -92,6 +113,27 @@ public class ItemSyllabusController {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
 			logger.error("更新数据发生异常", e);
+		}
+		return result;
+	}
+	/**
+	 * 删除数据。
+	 * @param id
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_SOURCE + ":" + Right.DELETE})
+	@RequestMapping(value="/{itemId}/delete", method = RequestMethod.POST)
+	@ResponseBody
+	public Json delete(@PathVariable String itemId,String id){
+		if(logger.isDebugEnabled()) logger.debug("删除数据［"+ id +"］...");
+		Json result = new Json();
+		try {
+			this.itemSyllabusService.deleteItemSyllabus(itemId, id);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("删除数据["+id+"]时发生异常:", e);
 		}
 		return result;
 	}

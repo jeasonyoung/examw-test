@@ -28,7 +28,7 @@ $(function(){
 			buttons:[{
 				text:"确定",iconCls:"icon-save",
 				handler:function(){
-					var ids = ${module}_getChecked();
+					var ids = ${module}_getIds();
 					$.ajax({
 						url:"<@s.url '/library/item/syllabus/${ITEMID}/update/'/>",
 						type:"POST",data:{"syllabusIds":ids},dataType:"json",
@@ -51,6 +51,38 @@ $(function(){
 			onClose:function(){$(this).dialog("destroy");}
 		});
 	}
+	function add_sysllabus_from_knowledge(subjectId)
+	{
+		var d = $("<div/>").dialog({
+			title:"搜索知识点选取要点",width:800,height:400,modal:true,
+			href:"<@s.url '/library/item/syllabus/'/>" +subjectId+"/book/list",
+			buttons:[{
+				text:"确定",iconCls:"icon-save",
+				handler:function(){
+					var ids = ${module}_getIds();
+					$.ajax({
+						url:"<@s.url '/library/item/syllabus/${ITEMID}/update/'/>",
+						type:"POST",data:{"syllabusIds":ids},dataType:"json",
+						error:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
+						success:function(callback,textStatus){
+							$.messager.progress("close");
+							if(callback.success){
+								$("#${dg}").datagrid("load");$("#${dg}").datagrid("unselectAll");
+							}else{
+								$.messager.show({title:"提示", msg:callback.msg });
+							}
+							d.dialog("close");
+						}
+					});
+				}
+			},{
+				text:"关闭",iconCls:"icon-cancel",
+				handler:function(){ d.dialog("close");}
+			}],
+			onClose:function(){$(this).dialog("destroy");}
+		});
+	}
+	//获取已经选取的ID号
 	${module}_getHad = function(){
 		var rows = $("#${dg}").datagrid("getRows");
 		var s = '';
@@ -117,7 +149,7 @@ $(function(){
 				var ids = [];
 				for(var i = 0; i < rows.length; i++){ ids.push(rows[i].id); }
 				$.ajax({
-					url:"<@s.url '/library/source/delete'/>",
+					url:"<@s.url '/library/item/syllabus/${ITEMID}/delete'/>",
 					type:"POST",data:{ id:ids.join("|") },dataType:"json",
 					error:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
 					success:function(data,textStatus){
@@ -144,7 +176,7 @@ $(function(){
 		<thead>
 			<tr>
 				<th data-options="field:'id',checkbox:true"></th>
-				<th data-options="field:'title',width:120,align:'left',sortable:true">要点名称</th>
+				<th data-options="field:'fullTitle',width:120,align:'left',sortable:true">要点名称</th>
 			</tr>
 		</thead>
 </table>

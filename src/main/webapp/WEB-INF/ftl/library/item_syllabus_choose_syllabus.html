@@ -4,14 +4,22 @@
 <script type="text/javascript">
 <!--
 $(function(){
-	 ${module}_getChecked = function(){
-		 var nodes = $('#${module}_tree').tree('getChecked');
-		 var s = '';
-		 for(var i=0; i<nodes.length; i++){
-		 	if (s != '') s += ',';
-		 	s += nodes[i].id;
+	 var ids = ${module}_getHad();
+	 ${module}_getIds = function(){
+		 return ids;
+	 }
+	 ${module}_getChecked = function(node,checked){
+		 if(checked == true){
+			 if(ids.indexOf(node.id)!=-1) return;
+			 if (ids != '') ids += ',';
+			 ids += node.id;
+		 }else{
+			 var front = ids.substring(0,ids.indexOf(node.id));
+			 var after = ids.substring(ids.indexOf(node.id)+node.id.length+1);
+			 if(after!="") ids = front + after.substring(1);
+			 else ids = front;
+			 if(ids.indexOf(",")==ids.length-1) ids = ids.substring(0,ids.length-1);
 		 }
-		 return s;
 	}
 	$("#${module}_syllabus_list").combobox({onSelect:function(rec){
 		$("#${module}_tree").tree({url:"<@s.url '/syllabus/syllabus/'/>"+rec.value+"/tree"});
@@ -21,6 +29,7 @@ $(function(){
 </script>
 <div class="easyui-panel" style="padding:5px;">
 	 <select class="easyui-combobox" name="state" style="width:350px;" id="${module}_syllabus_list">
+	 	<option value=""></option>
 	 	<#list SYLLABUSLIST as syllabus>
 		<option value="${syllabus.id}">${syllabus.title}</option>
 		</#list>
@@ -30,13 +39,12 @@ $(function(){
 <div class="easyui-panel" style="padding:5px;height:280px">
 	<ul id="${module}_tree" class="easyui-tree" 
 		data-options="
-			url:'<@s.url '/syllabus/syllabus/'/>'+'${SYLLABUSLIST[0].id}'+'/tree',
 			method:'get',
 			animate:true,
 			onlyLeafCheck:true,
 			checkbox:true,
 			onLoadSuccess:function(node,data){
-				var ids = ${module}_getHad();
+				var ids = ${module}_getIds();
 				if(ids =='') return;
 				ids = ids.split(',');
 				for(var i=0;i<ids.length;i++){
@@ -44,7 +52,8 @@ $(function(){
 					if(node)
 						$('#${module}_tree').tree('check', node.target);
 				}
-			}"
+			},
+			onCheck:${module}_getChecked"
 		>
 	</ul>
 </div>

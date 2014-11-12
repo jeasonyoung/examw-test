@@ -103,6 +103,16 @@ public class BookDaoImpl extends BaseDaoImpl<Book> implements IBookDao {
 		List<Book> list = this.find(hql, parameters, 0, 0);
 		return (list == null || list.size() == 0) ? null : list.get(0);
 	}
+	
+	@Override
+	public List<Book> loadBookList(String subjectId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载科目［subjectId = %1$s］下所有教材...", subjectId));
+		final String hql = "select b from Book b where (b.status = :status) and (b.subject.id = :subjectId) order by b.orderNo desc";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("status", BookStatus.ENABLE.getValue());
+		parameters.put("subjectId", subjectId);
+		return this.find(hql, parameters, 0, 0);
+	}
 	/*
 	 * 删除数据。
 	 * @see com.examw.test.dao.impl.BaseDaoImpl#delete(java.lang.Object)

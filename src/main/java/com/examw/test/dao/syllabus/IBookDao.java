@@ -42,4 +42,10 @@ public interface IBookDao extends IBaseDao<Book> {
 	 * 教材。
 	 */
 	Book loadBookLast(String subjectId,String areaId);
+	/**
+	 * 加载科目下的所有教材
+	 * @param subjectId
+	 * @return
+	 */
+	List<Book> loadBookList(String subjectId);
 }

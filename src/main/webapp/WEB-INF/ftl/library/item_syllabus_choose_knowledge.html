@@ -1,0 +1,150 @@
+<#--选择关联知识点页面-->
+<#include "comm.ftl"/>
+<#assign module="library_item_syllabus"/>
+<#assign dg = "${module}_book_list" />
+<script type="text/javascript">
+<!--
+$(function(){
+	 var ids = ${module}_getHad();
+	 ${module}_getIds = function(){
+		 return ids;
+	 }
+	 ${module}_getChecked = function(node,checked){
+		 if(checked == true){
+			 if(ids.indexOf(node.syllabusId)!=-1) return;
+			 if (ids != '') ids += ',';
+			 ids += node.syllabusId;
+		 }else{
+			 if(ids.indexOf(node.syllabusId)==-1) return;
+			 var front = ids.substring(0,ids.indexOf(node.syllabusId));
+			 var after = ids.substring(ids.indexOf(node.syllabusId)+node.syllabusId.length+1);
+			 if(after!="") ids = front + after.substring(1);
+			 else ids = front;
+			 if(ids.indexOf(",")==ids.length-1) ids = ids.substring(0,ids.length-1);
+		 }
+	}
+	 //查询知识点关联的
+	 var dg;
+	 ${dg}_search = function(){
+		var bookId = $("#${module}_books").combobox("getValue");
+		if(!bookId){
+			$.messager.alert("提示","未选中教材！");	
+			return;
+		}
+		//dg
+		if(dg){
+			dg.datagrid({
+				url:"<@s.url '/syllabus/book/'/>"+bookId+"/knowledges",
+				queryParams: {
+					"title":$("#${dg}_toobar input[name='title']").val()
+				}
+			});
+			return;
+		}
+		dg=$("#${dg}").datagrid({
+			url:"<@s.url '/syllabus/book/'/>"+bookId+"/knowledges",
+			fit:true,
+			fitColumns:true,
+			rownumbers:true,
+			pagination:true,
+			pagePosition:"bottom",
+			queryParams: {"title":$("#${dg}_toobar input[name='title']").val()},
+			pageSize:20,
+			pageList:[20,30,40],
+			border:true,
+			striped:true,
+			idField:"id",
+			sortName:"orderNo",
+			sortOrder:'desc',
+			columns:[[{
+				field:"id",
+				checkbox:true
+			},{
+				title:"所属大纲要点",
+				field:"syllabusName",
+				width:30,
+				align:"left",
+				sortable:true,
+				formatter:function(value,row,index){
+					if(row.topSyllabusName != value)
+						return row.topSyllabusName+" ··>> "+value;
+					return value;
+				}
+			},{
+				title:"知识点",
+				field:"title",
+				width:40,
+				align:"left",
+				sortable:true
+			}]],
+			toolbar:"#${dg}_toobar",
+			onLoadError:function(e){
+				<@error_dialog "e"/>
+			},
+			onDblClickRow:function(rowIndex,rowData){
+				knowledges_show_window("查看知识点",rowIndex,rowData,null);
+			},
+			onLoadSuccess:function(data){
+				var ids = ${module}_getIds();
+				if(ids =='') return;
+				var rows = dg.datagrid("getRows");
+				if(!rows || rows.length==0) return;
+				ids = ids.split(',');
+				for(var i=0;i<ids.length;i++){
+					for(var j=0;j<rows.length;j++)
+					{
+						if(ids[i] == rows[j].syllabusId)
+						{
+							var rowIndex = dg.datagrid('getRowIndex', rows[j]);
+							if(rowIndex>=0)
+								 dg.datagrid('checkRow', rowIndex);
+						}
+					}
+				}
+			},
+			onSelect:function(index,row){
+				${module}_getChecked(row,true);
+			},
+			onUnselect:function(index,row){
+				${module}_getChecked(row,false);
+			}
+		});
+	 }
+	 //知识点查看窗口
+	 function knowledges_show_window(title,index,row,order){
+			var syllabus_id = "";
+			var bookId = $("#${module}_books").combobox("getValue");
+			if(row && row.topSyllabusId){
+				syllabus_id = row.topSyllabusId;
+			}
+			var d = $("<div/>").dialog({
+				title:title,width:600,height:400,modal:true,
+				href:"<@s.url '/syllabus/book/'/>"+bookId+"/knowledge/edit"+"?syllabusId=" + syllabus_id,
+				buttons:[
+				{
+					text:"关闭",iconCls:"icon-cancel",
+					handler:function(){d.dialog("close"); }
+				}],
+				onClose:function(){ $(this).dialog("destroy"); },
+				onLoad:function(){
+					var _data = row
+					$("#syllabus_book_chapter_knowledges_edit_form").form("load",_data);
+				}
+			});
+		};
+});
+//-->
+</script>
+	<table id="${dg}"></table>
+	<div id="${dg}_toobar">
+		<label>教材：
+			<select class="easyui-combobox" name="book" style="width:198px;" id="${module}_books">
+	 			<option value=""> </option>
+	 			<#list BOOKLIST as book>
+					<option value="${book.id}">${book.name}</option>
+				</#list>
+			</select>
+		</label>
+		<label>知识点：<input name="title" type="text" style="width:198px;"/></label>
+		<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="${dg}_search()" style="margin-left:10px;">查询</a>
+	</div>
