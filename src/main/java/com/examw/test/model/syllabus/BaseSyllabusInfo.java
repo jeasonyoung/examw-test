@@ -15,7 +15,7 @@ import com.examw.model.Paging;
 @JsonSerialize(include =Inclusion.NON_NULL)
 public class BaseSyllabusInfo  extends Paging implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String pid,id,title;
+	private String pid,id,title,fullTitle;
 	/**
 	 * 获取 父ID
 	 * @return pid
@@ -63,6 +63,22 @@ public class BaseSyllabusInfo  extends Paging implements Serializable {
 	 */
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	/**
+	 * 获取  完整的要点
+	 * @return fullTitle
+	 * 完整的要点
+	 */
+	public String getFullTitle() {
+		return fullTitle;
+	}
+	/**
+	 * 设置 完整的要点
+	 * @param fullTitle
+	 * 完整的要点
+	 */
+	public void setFullTitle(String fullTitle) {
+		this.fullTitle = fullTitle;
 	}
 	
 }

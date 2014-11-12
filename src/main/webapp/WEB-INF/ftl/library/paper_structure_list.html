@@ -22,8 +22,8 @@ $(function(){
 		var subjectId = '${current_subject_id}',structureId='';
 		if(row){
 			structureId = row.id;
-			if(row.pid)
-				subjectId = row.subjectId;
+			//if(row.pid)
+			//	subjectId = row.subjectId;
 		}
 		var d = $("<div/>").dialog({
 			title:title,width:420,height:420,modal:true,

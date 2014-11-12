@@ -169,7 +169,7 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 		if(structures != null && structures.size() > 0){
 			for(Structure structure : structures){
 				if(structure == null) continue;
-				StructureInfo info = this.changeModel(structure,false);
+				StructureInfo info = this.changeModel(structure,true);
 				if(info != null){
 					list.add(info);
 				}
@@ -201,6 +201,7 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 				if(child!=null) children.add(child);
 			}
 			if(children.size() > 0) Collections.sort(children);
+			info.setChildren(children);
 		}
 		return info;
 	}
