@@ -135,7 +135,7 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 	private TreeNode createTreeNode(Structure data, String ignoreStructureId,boolean checkHasItem,boolean isChildren) {
 		if(data == null || data.getId().equals(ignoreStructureId)) return null;
 		//TODO 这里如果是子类也与试卷关联的话就要进行一次判断
-		//if(!isChildren && data.getParent()!=null) return null;
+		if(!isChildren && data.getParent()!=null) return null;
 		if(checkHasItem){
 			Long totalItems = this.structureDao.totalStructureItems(data.getId());	
 			if(totalItems!=null && totalItems.longValue()>0)	//如果已经加题则不能再作为上级结构
@@ -169,6 +169,7 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 		if(structures != null && structures.size() > 0){
 			for(Structure structure : structures){
 				if(structure == null) continue;
+				if(structure.getParent()!=null) continue;	//如果是子类不加载
 				StructureInfo info = this.changeModel(structure,true);
 				if(info != null){
 					list.add(info);
@@ -253,7 +254,7 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 			if(parent!=null)
 			{
 				data.setParent(parent);
-				data.setPaper(null); //子结构不加试卷关联
+				//data.setPaper(null); //子结构还是加试卷关联[不然关联不出试题,排序号也不好算]
 			}
 		}
 		//加科目 [如果是子类,所选科目不能是非父类及父类下子类的科目]

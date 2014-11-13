@@ -67,7 +67,7 @@
                <div class="zhankai-bg" item_id="${(i.id)}" ></div>
                <div class="f-l fl"><i>参考答案：</i>
                			<em class="dui">
-               			<#if i.answer == ANSWER_JUDGE_RIGTH>
+               			<#if i.answer == 1>
                			对
                			<#else>
                			错

@@ -26,5 +26,9 @@ public class Test01 {
 		StructureItemInfo info = new StructureItemInfo();
 		info.setType(1);
 		System.out.println(info.getType() == ItemType.SINGLE.getValue());
+		
+		String content = "";
+		content = content.replaceAll("</[p|P]><[p|P](.+?)>", "<br/>");
+		content = content.replaceAll("<(?!/?(?i)(img|br)).*?>", "");
 	}
 }

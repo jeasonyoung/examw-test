@@ -1,6 +1,5 @@
 package com.examw.test.junittest;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,8 +9,6 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -25,8 +22,9 @@ import org.springframework.util.StringUtils;
 
 import com.examw.model.Json;
 import com.examw.test.dao.library.IItemDao;
-import com.examw.test.junittest.ClientUploadItem.ItemScoreInfo;
+import com.examw.test.model.library.StructureItemInfo;
 import com.examw.test.service.library.IItemService;
+import com.examw.test.service.library.IPaperItemService;
 import com.examw.test.service.library.ItemType;
 import com.examw.utils.HttpUtil;
 
@@ -40,28 +38,61 @@ import com.examw.utils.HttpUtil;
 		"classpath:spring-examw-test-hibernate-2.xml",
 		"classpath:spring-examw-test.xml" })
 @Transactional
-@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
+@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
 public class MainTest {
 	@Resource
 	private IItemDao itemDao;
 	@Resource
 	private IItemService itemService;
 	@Resource
+	private IPaperItemService paperItemService;
+	@Resource
 	private SessionFactory sessionFactorySql;
 	
 	private ObjectMapper mapper = new ObjectMapper();
-	private static final String serverUrl = "http://localhost:8080/examw-test/api/imports";
+	private static final String serverUrl = "http://tiku.examw.com/examw-test/api/imports";
 	
 	@Test
-	public void ShiTis() throws JsonGenerationException, JsonMappingException,
-			IOException {
+	public void ShiTis() throws Exception {
 		Session session = sessionFactorySql.openSession();
 		session.beginTransaction();
+//		String kuaijiClassId = "1";
+//		String caijingClassId = "2";
+//		String diansuanhuaClassId = "3";
+		// 会计基础的考试代码
+				String paperId = //"b68bbc88-660f-44ee-b4de-35bdc11bf972";
+				 "5d78c902-e13a-4bee-972a-fb870a5faeab";
+				String danxuanStructureId = //"1e8a24aa-d6c7-461e-8a96-4c58052c9f55";
+				 "a70edc9f-e813-4b96-bd4d-b7d18862c07e";
+				String duoxuanStructureId = //"905a99c6-30a2-49ae-9a22-c1e52ae74466";
+				 "d108859b-38d7-4e5f-a5d7-06b92a88a834";
+				String budingxiangStructureId = //"3443b599-e5e6-4d4b-b582-eda8a0306f4b";
+				 "7655a8ce-92a1-4e57-9904-978f023a6836";
+				String cailiaoStructureId = //"b65113e9-7741-40e7-99d3-7f7841abe37b";
+				 "0b601e25-8a8c-47ea-89fa-7fd01e26d867";
+				String panduanStructureId = //"36539f8a-08f8-4101-9382-b4ca34788765";
+				 "3d1bfeda-256f-47c8-8b14-166a53e5bdab";
+				String[] structures = {"",danxuanStructureId,duoxuanStructureId,budingxiangStructureId,cailiaoStructureId};
+
 		// transaction.begin();
 		@SuppressWarnings("unchecked")
 		// 会计基础的单选试题
-		List<ShiTi> shiTiList = session.createQuery("from ShiTi where ClassID = 1").list();
-		System.out.println(shiTiList.size());
+		List<ShiTi> shiTiList = session.createQuery("from ShiTi where ClassID = 1 and type = 4 and (analyId = 0 or analyId is null)").list();
+		if(shiTiList!=null && shiTiList.size()>0)
+		{
+			for(int i=0;i<shiTiList.size();i++){
+				ClientUploadItem data = this.parse(shiTiList.get(i),i+1);
+				if(data != null){
+					try{
+						this.upload(paperId,panduanStructureId, data);
+						Thread.sleep(1000);;
+					}catch(Exception e)
+					{
+						continue;
+					}
+				}
+			}
+		}
 		session.getTransaction().commit();
 		// transaction.commit();
 		session.close();
@@ -73,92 +104,139 @@ public class MainTest {
 		// this.itemService.update(info);
 		// }
 		// this.itemService.insertItemList(list);
-
-		// 会计基础的考试代码
-		String paperId = "b68bbc88-660f-44ee-b4de-35bdc11bf972";
-		// "5d78c902-e13a-4bee-972a-fb870a5faeab";
-		String danxuanStructureId = "1e8a24aa-d6c7-461e-8a96-4c58052c9f55";
-		// "a70edc9f-e813-4b96-bd4d-b7d18862c07e";
-		String duoxuanStructureId = "905a99c6-30a2-49ae-9a22-c1e52ae74466";
-		// "d108859b-38d7-4e5f-a5d7-06b92a88a834";
-		String budingxiangStructureId = "3443b599-e5e6-4d4b-b582-eda8a0306f4b";
-		// "7655a8ce-92a1-4e57-9904-978f023a6836";
-		String cailiaoStructureId = "b65113e9-7741-40e7-99d3-7f7841abe37b";
-		// "0b601e25-8a8c-47ea-89fa-7fd01e26d867";
-		String[] structures = {danxuanStructureId,duoxuanStructureId,budingxiangStructureId,cailiaoStructureId};
-		String kuaijiClassId = "1";
-		String caijingClassId = "2";
-		String diansuanhuaClassId = "3";
 	}
 
 	// //单选
-	public ClientUploadItem parse(ShiTi st,String[] structures) {
+	public ClientUploadItem parse(ShiTi st,Integer index)throws Exception {
 		ClientUploadItem info = new ClientUploadItem();
+		info.setOrderNo(index);
 		switch (st.getType()) {
 		case 1: // 单选
+			info.setType(ItemType.SINGLE.getValue());
 			return parseSingle(info,st);
 		case 2: // 多选
+			info.setType(ItemType.MULTY.getValue());
 			return parseMulti(info,st);
 		case 3: // 不定项
-			return parseUnCertain(info,st);
-		case 4: // 材料题
-			return parseShareTitle(info,st);
+			info.setType(ItemType.UNCERTAIN.getValue());
+			return parseMulti(info,st);
+		case 4: // 判断题
+			info.setType(ItemType.JUDGE.getValue());
+			return parseJudge(info,st);
 		default:
 			return null;
 		}
 	}
 
-	private ClientUploadItem parseShareTitle(ClientUploadItem info, ShiTi st) {
-		
-		return null;
+	private ClientUploadItem parseJudge(ClientUploadItem info, ShiTi st) {
+		info.setAnalysis(st.getAnalysis());
+		info.setContent(st.getContent());
+		info.setAnswer(st.getAnswer());
+		return info;
 	}
 
-	private ClientUploadItem parseUnCertain(ClientUploadItem info, ShiTi st) {
-		
-		return null;
-	}
-
-	private ClientUploadItem parseMulti(ClientUploadItem info, ShiTi st) {
-		
-		return null;
-	}
-	//解析单选题
-	private ClientUploadItem parseSingle(ClientUploadItem info, ShiTi st) {
+	private ClientUploadItem parseMulti(ClientUploadItem info, ShiTi st) throws Exception {
 		String content = st.getContent();
 		String answer = st.getAnswer().toUpperCase();
 		String[] arr = content.split("###");
-		ItemScoreInfo item = new ItemScoreInfo();
-		item.setContent(arr[0]);	//题目
-		Set<ItemScoreInfo> set = new HashSet<ItemScoreInfo>();
-		if(answer.contains(",")) return null;	//单选题不能多选
+		info.setContent(arr[0]);	//题目
+		//if(answer.length()==1) return null;	//多选题不能单选
+		if(arr.length<2) return null; //没有选项
+		Set<ClientUploadItem> set = new HashSet<ClientUploadItem>();
+		String itemAnswer = "";
 		for (int i = 1; i < arr.length; i++) {
 			char abcd = (char)(i+64);
-			ItemScoreInfo child = new ItemScoreInfo();
+			ClientUploadItem child = new ClientUploadItem();
+			child.setOrderNo(i);
+			child.setId(UUID.randomUUID().toString());
+			child.setContent(abcd+"."+arr[i]);
+			if(answer.contains(String.valueOf(abcd)))
+			{
+				itemAnswer += child.getId()+",";
+			}
+			child.setOrderNo(i);
+			set.add(child);
+		}
+		if(set.size()>0)
+			info.setChildren(set);
+		if(answer.length()>0)
+			info.setAnswer(itemAnswer.substring(0, itemAnswer.length()-1));
+		info.setAnalysis(st.getAnalysis());
+		System.out.println(this.mapper.writeValueAsString(info));
+		return info;
+	}
+	//解析单选题
+	private ClientUploadItem parseSingle(ClientUploadItem info, ShiTi st) throws Exception {
+		String content = st.getContent();
+		String answer = st.getAnswer().toUpperCase();
+		String[] arr = content.split("###");
+		info.setContent(arr[0]);	//题目
+		Set<ClientUploadItem> set = new HashSet<ClientUploadItem>();
+		if(answer.length()>1) return null;	//单选题不能多选
+		if(arr.length<2) return null; //没有选项
+		String itemAnswer = null;
+		for (int i = 1; i < arr.length; i++) {
+			char abcd = (char)(i+64);
+			ClientUploadItem child = new ClientUploadItem();
 			child.setOrderNo(i);
 			child.setId(UUID.randomUUID().toString());
 			child.setContent(abcd+"."+arr[i]);
 			if(String.valueOf(abcd).equals(answer))
 			{
-				item.setAnalysis(child.getId());
+				itemAnswer = child.getId();
 			}
 			child.setOrderNo(i);
 			set.add(child);
 		}
-		item.setChildren(set);
-		item.setAnswer(answer);
-		item.setAnalysis(st.getAnalysis());
-		item.setType(ItemType.SINGLE.getValue());
+		if(set.size()>0)
+			info.setChildren(set);
+		info.setAnswer(itemAnswer);
+		info.setAnalysis(st.getAnalysis());
+		System.out.println(this.mapper.writeValueAsString(info));
 		return info;
 	}
+	//解析单选题
+		private StructureItemInfo parseSingle(ShiTi st) throws Exception {
+			StructureItemInfo info = new StructureItemInfo();
+			String content = st.getContent();
+			String answer = st.getAnswer().toUpperCase();
+			String[] arr = content.split("###");
+			info.setContent(arr[0]);	//题目
+			Set<StructureItemInfo> set = new HashSet<StructureItemInfo>();
+			if(answer.length()>1) return null;	//单选题不能多选
+			if(arr.length<2) return null; //没有选项
+			String itemAnswer = null;
+			for (int i = 1; i < arr.length; i++) {
+				char abcd = (char)(i+64);
+				StructureItemInfo child = new StructureItemInfo();
+				child.setOrderNo(i);
+				child.setId(UUID.randomUUID().toString());
+				child.setContent(abcd+"."+arr[i]);
+				if(String.valueOf(abcd).equals(answer))
+				{
+					itemAnswer = child.getId();
+				}
+				child.setOrderNo(i);
+				set.add(child);
+			}
+			if(set.size()>0)
+				info.setChildren(set);
+			info.setAnswer(itemAnswer);
+			info.setAnalysis(st.getAnalysis());
+			info.setType(ItemType.SINGLE.getValue());
+			System.out.println(this.mapper.writeValueAsString(info));
+			return info;
+		}
 	
-	public boolean upload(String paperId, ClientUploadItem data) throws Exception {
+	public boolean upload(String paperId,String structureId,ClientUploadItem data) throws Exception {
 		//if(logger.isDebugEnabled()) logger.debug(String.format("上传试题数据到试卷［paperId=%1$s］...", paperId));
 		if(StringUtils.isEmpty(paperId)) throw new Exception("所属试卷ID为空！");
 		if(data == null) throw new Exception("试题数据为NULL！");
 		String post = this.mapper.writeValueAsString(data);
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Content-type","application/json;charset=UTF-8");
-		String callback = HttpUtil.sendRequest(String.format("%1$s/update/%2$s", serverUrl, paperId),headers, "POST", post);
+		String callback = HttpUtil.sendRequest(String.format("%1$s/update/%2$s/%3$s", serverUrl, paperId,structureId),headers, "POST", post);
+		System.out.println("callback ==== "+callback);
 		Json json = this.mapper.readValue(callback, Json.class);
 		if(json == null){
 			throw new Exception("反馈收据转换失败！callback=>" + callback);

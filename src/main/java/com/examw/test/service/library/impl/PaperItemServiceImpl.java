@@ -166,6 +166,7 @@ public class PaperItemServiceImpl extends BaseDataServiceImpl<StructureItem,Stru
 			//设置考试科目
 			Structure parent = structure;
 			while(parent.getSubject()==null){
+				if(parent.getParent()==null) break;
 				parent = parent.getParent();
 			}
 			if(parent.getSubject() != null){
