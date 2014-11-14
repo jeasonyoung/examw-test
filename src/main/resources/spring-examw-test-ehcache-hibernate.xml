@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ehcache name="hibernate-ehcache" updateCheck="false">
-	<diskStore path="java.io.tmpdir" />
+	<diskStore path="D:/ehcache" />
 	<!-- 默认配置 -->
 	 <defaultCache
             	maxEntriesLocalHeap="2000"

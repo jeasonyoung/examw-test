@@ -272,7 +272,20 @@ public class PaperItemController implements IUserAware {
 		if(structure == null) throw new RuntimeException(String.format("试卷结构［%s］不存在！", structureId));
 		if(structure.getPaper() == null) throw new RuntimeException(String.format("试卷结构［%1$s,%2$s］所属试卷不存在！", structure.getId(), structure.getTitle()));
 		model.addAttribute("current_type_value", structure.getType());
-		model.addAttribute("current_subject_id", structure.getPaper().getSubject() == null ? "" : structure.getPaper().getSubject().getId());
+		//Add by FW 2014.11.14 修改试卷结构科目ID
+		String subjectId = "";
+		Structure parent = structure;
+		while(parent.getSubject()==null){
+			if(parent.getParent()==null) break;
+			parent = parent.getParent();
+		}
+		if(parent.getSubject() != null){
+			//modify by FW. 题目需要落到子科目上 
+			subjectId = (parent.getSubject().getId());
+		}else if(structure.getPaper().getSubject()!=null){
+			subjectId = structure.getPaper().getSubject().getId();
+		}
+		model.addAttribute("current_subject_id", subjectId);
 		model.addAttribute("current_opt_value", structure.getPaper().getType());
 		model.addAttribute("current_year_value", structure.getPaper().getYear());
 		model.addAttribute("current_area_id", (structure.getPaper().getArea() == null) ? "" : structure.getPaper().getArea().getId());

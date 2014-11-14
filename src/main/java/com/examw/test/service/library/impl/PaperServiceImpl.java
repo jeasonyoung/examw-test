@@ -267,6 +267,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 				throw new RuntimeException(msg);
 			}
 			for (Structure structure : structures) {
+				if(structure.getParent()!=null) continue;
 				this.auditPaperItems(structure);
 			} 
 		}else if(status == PaperStatus.NONE){
@@ -299,24 +300,88 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	private void auditPaperItems(Structure structure) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("审核试卷结构［%s］...", structure));
 		String msg = null;
-		if(structure == null || structure.getItems() == null || structure.getItems().size() == 0){
-			msg = (structure == null ? "试卷结构不存在！" : String.format("试卷结构［%s］下没有试题！", structure.getTitle()));
+		if(structure == null){
+			msg = "试卷结构不存在！";
 			if(logger.isDebugEnabled()) logger.error(msg);
 			throw new RuntimeException(msg);
 		}
-		int total = 0;
-		for(StructureItem structureItem : structure.getItems()){
-			if(structureItem == null || structureItem.getItem() == null) continue;
-			total += structureItem.getItem().getCount();
-			if(structureItem.getItem().getStatus() != ItemStatus.AUDIT.getValue()){
-				structureItem.getItem().setStatus(ItemStatus.AUDIT.getValue());
-			}
+		if(!structure.getTotal().equals(this.calculateStructureChildrenTotal(structure))){
+			msg = String.format("试卷结构［%s］下试题总数与子题总数设置不一致！", structure.getTitle());
+			if(logger.isDebugEnabled()) logger.error(msg);
+			throw new RuntimeException(msg);
 		}
-		if(structure.getTotal() != total){
+		if(!this.isStructureHasItems(structure, msg, structure.getTitle()))
+		{
+			if(logger.isDebugEnabled()) logger.error(msg);
+			throw new RuntimeException(msg);
+		}
+		int total = this.calculateStructureItemTotal(structure);
+		if(!structure.getTotal().equals(total)){
 			msg = String.format("试卷结构［%1$s］下试题设置数目［%2$d］与实际试题［%3$d］不一致！", structure.getTitle(), structure.getTotal(),total);
 			if(logger.isDebugEnabled()) logger.error(msg);
 			throw new RuntimeException(msg);
 		}
+	}
+	//Add by FW 2014.11.14  判断父结构设置的题目是不是与子结构设置的和一致
+	private Integer calculateStructureChildrenTotal(Structure structure)
+	{
+		if(structure.getChildren()!=null && structure.getChildren().size() >0)
+		{
+			Integer sum = 0;
+			for(Structure s:structure.getChildren()){
+				if(s == null) continue;
+				sum += calculateStructureChildrenTotal(s);
+			}
+			return sum;
+		}else{
+			return structure.getTotal();
+		}
+	}
+	
+	//Add by FW 2014.11.14 判断结构下面是不是有试题 
+	private boolean isStructureHasItems(Structure structure,String msg,String structureTitle){
+		if(structure.getChildren()!=null && structure.getChildren().size() >0)
+		{
+			for(Structure s:structure.getChildren()){
+				if(s == null) continue;
+				if(!isStructureHasItems(s,msg,structureTitle+" >> "+s.getTitle()))
+				{
+					return false;
+				}
+			}
+			return true;
+		}else{
+			if(structure.getItems() == null || structure.getItems().size() == 0)
+			{
+				msg = String.format("试卷结构［%s］下没有试题！", structureTitle);
+				return false;
+			}
+			return true;
+		}
+	}
+	
+	//Add by FW 2014.11.14 判断设置的题目数与实际试题数是否一致
+	private Integer calculateStructureItemTotal(Structure structure){
+		if(structure.getChildren()!=null && structure.getChildren().size() >0)
+		{
+			int sum = 0;
+			for(Structure s:structure.getChildren()){
+				sum += calculateStructureItemTotal(s);
+			}
+			return sum;
+		}else{
+			int total = 0;
+			if(structure.getItems()==null || structure.getItems().size() == 0) return total;
+			for(StructureItem structureItem : structure.getItems()){
+				if(structureItem == null || structureItem.getItem() == null) continue;
+				total += structureItem.getItem().getCount();
+				if(structureItem.getItem().getStatus() != ItemStatus.AUDIT.getValue()){
+					structureItem.getItem().setStatus(ItemStatus.AUDIT.getValue());
+				}
+			}
+			return total;
+		}
+		
 	}
 	//反审核试卷下试题。
 	private void unAuditPaperItems(Structure structure){

@@ -43,21 +43,23 @@ public class FenXiTest {
 	private SessionFactory sessionFactorySql;
 	
 	private ObjectMapper mapper = new ObjectMapper();
-	private static final String serverUrl = "http://localhost:8080/examw-test/api/imports";
+	private static final String serverUrl = "http://tiku.examw.com/examw-test/api/imports";
 	
 	@Test
 	public void fenXi() throws Exception{
 		
-		import_JiChu();
+//		import_JiChu();
 		
 		import_CaiJing();
 		
-		import_DianSuan();
+//		import_DianSuan();
 		
 	}
 	private void import_JiChu() throws Exception{
 		String paperId = "5d78c902-e13a-4bee-972a-fb870a5faeab";
 		String structureId = "0b601e25-8a8c-47ea-89fa-7fd01e26d867";
+//		String paperId = "b68bbc88-660f-44ee-b4de-35bdc11bf972";
+//		String structureId = "b65113e9-7741-40e7-99d3-7f7841abe37b";
 		import_common(paperId,structureId,"from CaiLianFenXi where classId = 1");
 	}
 	
@@ -66,13 +68,6 @@ public class FenXiTest {
 		String structureId ="d325f055-e3f5-4ecc-ba4c-816a12097b1c";
 		import_common(paperId,structureId,"from CaiLianFenXi where classId = 2");
 	}
-	
-	private void import_DianSuan() throws Exception{
-		String paperId = "bcf21dc6-87f3-4968-9b02-7a183330c90c";
-		String structureId ="d325f055-e3f5-4ecc-ba4c-816a12097b1c";
-		import_common(paperId,structureId,"from CaiLianFenXi where classId = 3");
-	}
-	
 	
 	private void import_common(String paperId,String structureId,String sql) throws Exception{
 		Session session = sessionFactorySql.openSession();

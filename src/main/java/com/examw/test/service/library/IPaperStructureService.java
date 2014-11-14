@@ -45,6 +45,7 @@ public interface IPaperStructureService {
 	 * @return
 	 */
 	StructureInfo conversion(Structure structure);
+	StructureInfo conversion(Structure structure,boolean changeChild);
 	/**
 	 * 更新试卷结构。
 	 * @param paperId

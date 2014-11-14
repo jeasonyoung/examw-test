@@ -122,7 +122,19 @@ public class RandomItemServiceImpl implements IRandomItemService {
 			logger.error(msg = String.format("试卷结构的试题类型［%d］不存在或不能被解析！", structure.getType()));
 			throw new Exception(msg);
 		}
-		Subject subject = (structure.getPaper() == null || structure.getPaper().getSubject() == null) ? null : structure.getPaper().getSubject();
+		//Add by FW 2014.11.14  修改试卷结构科目
+		Subject subject = null;
+		Structure parent = structure;
+		while(parent.getSubject()==null){
+			if(parent.getParent()==null) break;
+			parent = parent.getParent();
+		}
+		if(parent.getSubject() != null){
+			//modify by FW. 题目需要落到子科目上 
+			subject = (parent.getSubject());
+		}else if(structure.getPaper().getSubject()!=null){
+			subject = structure.getPaper().getSubject();
+		}
 		if(subject == null){
 			logger.error(msg =  "试卷所属科目未设置！");
 			throw new Exception(msg);

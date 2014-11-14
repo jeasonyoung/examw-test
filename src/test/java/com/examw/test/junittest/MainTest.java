@@ -54,24 +54,24 @@ public class MainTest {
 	@Test
 	public void ShiTis() throws Exception {
 		//会计基础
-		import_JiChu_Single();
+//		import_JiChu_Single();
 		
-		import_JiChu_Multi();
-		
-		import_JiChu_Uncentern();
-		
-		import_JiChu_Judge();
-		
-		//财经法规
-		import_CaiJing_Single();
-		import_CaiJing_Multi();
-		import_CaiJing_Uncentern();
-		import_CaiJing_Judge();
-		
-		//会计电算化
-		import_DianSuan_Single();
-		import_DianSuan_Multi();
-		import_DianSuan_Uncentern();
+//		import_JiChu_Multi();
+//		
+//		import_JiChu_Uncentern();
+//		
+//		import_JiChu_Judge();
+//		
+//		//财经法规
+//		import_CaiJing_Single();
+//		import_CaiJing_Multi();
+//		import_CaiJing_Uncentern();
+//		import_CaiJing_Judge();
+//		
+//		//会计电算化
+//		import_DianSuan_Single();
+//		import_DianSuan_Multi();
+//		import_DianSuan_Uncentern();
 		import_DianSuan_Judge();
 	}
 
@@ -131,7 +131,7 @@ public class MainTest {
 		if(answer.length()>0)
 			info.setAnswer(itemAnswer.substring(0, itemAnswer.length()-1));
 		info.setAnalysis(st.getAnalysis());
-		System.out.println(this.mapper.writeValueAsString(info));
+//		System.out.println(this.mapper.writeValueAsString(info));
 		return info;
 	}
 	//解析单选题
@@ -161,7 +161,7 @@ public class MainTest {
 			info.setChildren(set);
 		info.setAnswer(itemAnswer);
 		info.setAnalysis(st.getAnalysis());
-		System.out.println(this.mapper.writeValueAsString(info));
+//		System.out.println(this.mapper.writeValueAsString(info));
 		return info;
 	}
 	//上传
@@ -193,7 +193,7 @@ public class MainTest {
 	{
 		String paperId = "5d78c902-e13a-4bee-972a-fb870a5faeab";	//数据库会计基础试卷的ID
 		String structureId = "d108859b-38d7-4e5f-a5d7-06b92a88a834";//多选题结构ID
-		import_common(paperId,structureId,"from ShiTi where ClassID = 1 and type = 2 and (analyId = 0 or analyId is null)");
+		import_common(paperId,structureId,"from ShiTi where ClassID = 1 and type = 2 and (analyId = 0 or analyId is null) and ID >= 1887");
 	}
 	private void import_JiChu_Uncentern() throws Exception
 	{
@@ -221,7 +221,8 @@ public class MainTest {
 				if(data != null){
 					try{
 						this.upload(paperId,structureId, data);
-						Thread.sleep(1000);;
+						Thread.sleep(1000);
+//						break;
 					}catch(Exception e)
 					{
 						e.printStackTrace();
@@ -240,7 +241,7 @@ public class MainTest {
 	{
 		String paperId = "bcf21dc6-87f3-4968-9b02-7a183330c90c";	//数据库财经法规试卷的ID
 		String structureId = "fa90e6ba-1e43-41be-85b3-ad5cdf68ceb4";//单选题结构ID
-		import_common(paperId,structureId,"from ShiTi where ClassID = 2 and type = 1 and (analyId = 0 or analyId is null)");
+		import_common(paperId,structureId,"from ShiTi where ClassID = 2 and type = 1 and (analyId = 0 or analyId is null)  and ID >= 5277");
 	}
 	private void import_CaiJing_Multi() throws Exception
 	{
@@ -258,32 +259,32 @@ public class MainTest {
 	{
 		String paperId = "bcf21dc6-87f3-4968-9b02-7a183330c90c";	//数据库财经法规试卷的ID
 		String structureId = "ef429691-1aee-454c-854a-f9d30cad2581";;//判断题结构ID
-		import_common(paperId,structureId,"from ShiTi where ClassID = 2 and type = 4 and (analyId = 0 or analyId is null)");
+		import_common(paperId,structureId,"from ShiTi where ClassID = 2 and type = 4 and (analyId = 0 or analyId is null) and id >= 5106");
 	}
 	
 	//电算化
 	private void import_DianSuan_Single() throws Exception
 	{
-		String paperId = "5d78c902-e13a-4bee-972a-fb870a5faeab";	//数据库电算化试卷的ID
-		String structureId = "a70edc9f-e813-4b96-bd4d-b7d18862c07e";//单选题结构ID
+		String paperId = "f4d56592-2a37-420a-9902-771532d2a645";	//数据库电算化试卷的ID
+		String structureId = "3f3caeab-3e7c-45d0-bc6c-40e0bc17be9a";//单选题结构ID
 		import_common(paperId,structureId,"from ShiTi where ClassID = 3 and type = 1 and (analyId = 0 or analyId is null)");
 	}
 	private void import_DianSuan_Multi() throws Exception
 	{
-		String paperId = "5d78c902-e13a-4bee-972a-fb870a5faeab";	//数据库电算化试卷的ID
-		String structureId = "d108859b-38d7-4e5f-a5d7-06b92a88a834";//多选题结构ID
+		String paperId = "f4d56592-2a37-420a-9902-771532d2a645";	//数据库电算化试卷的ID
+		String structureId = "e9ea4d2d-ba55-4c53-a453-340e78b8a2ce";//多选题结构ID
 		import_common(paperId,structureId,"from ShiTi where ClassID = 3 and type = 2 and (analyId = 0 or analyId is null)");
 	}
 	private void import_DianSuan_Uncentern() throws Exception
 	{
-		String paperId = "5d78c902-e13a-4bee-972a-fb870a5faeab";	//数据库电算化试卷的ID
+		String paperId = "f4d56592-2a37-420a-9902-771532d2a645";	//数据库电算化试卷的ID
 		String structureId = "7655a8ce-92a1-4e57-9904-978f023a6836";//不定项选题结构ID
 		import_common(paperId,structureId,"from ShiTi where ClassID = 3 and type = 3 and (analyId = 0 or analyId is null)");
 	}
 	private void import_DianSuan_Judge() throws Exception
 	{
-		String paperId = "5d78c902-e13a-4bee-972a-fb870a5faeab";	//数据库电算化试卷的ID
-		String structureId = "3d1bfeda-256f-47c8-8b14-166a53e5bdab";;//判断题结构ID
+		String paperId = "f4d56592-2a37-420a-9902-771532d2a645";	//数据库电算化试卷的ID
+		String structureId = "d2386b5d-6658-4d86-8ae1-5532e1e66180";;//判断题结构ID
 		import_common(paperId,structureId,"from ShiTi where ClassID = 3 and type = 4 and (analyId = 0 or analyId is null)");
 	}
 }

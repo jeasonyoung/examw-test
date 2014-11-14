@@ -93,6 +93,7 @@ public class PaperPreviewServiceImpl implements IPaperPreviewService {
 		List<StructureInfo> list = new ArrayList<>();
 		for(Structure structure : structures){
 			if(structure == null)continue;
+			if(structure.getParent()!=null) continue; //子节点跳过
 			StructureInfo info = this.changeModel(structure);
 			if(info != null){
 				list.add(info);
@@ -104,16 +105,39 @@ public class PaperPreviewServiceImpl implements IPaperPreviewService {
 		return list;
 	}
 	//数据模型转换 Structure => StructureInfo。
+//	private StructureInfo changeModel(Structure structure){
+//		if(logger.isDebugEnabled()) logger.debug("数据模型转换[Structure => StructureInfo]...");
+//		if(structure == null) return null;
+//		StructureInfo structureInfo =  this.paperStructureService.conversion(structure);
+//		if(structureInfo == null) return null;
+//		structureInfo.setItems(this.changeModelItems(structure.getItems()));
+//		return structureInfo;
+//	}
+	
+	//数据模型转换 Structure => StructureInfo。
 	private StructureInfo changeModel(Structure structure){
 		if(logger.isDebugEnabled()) logger.debug("数据模型转换[Structure => StructureInfo]...");
 		if(structure == null) return null;
-		StructureInfo structureInfo =  this.paperStructureService.conversion(structure);
-		if(structureInfo == null) return null;
-		structureInfo.setItems(this.changeModelItems(structure.getItems()));
+		if(structure.getChildren()==null || structure.getChildren().size() == 0)
+		{
+			StructureInfo structureInfo =  this.paperStructureService.conversion(structure,false);
+			if(structureInfo == null) return null;
+			structureInfo.setItems(this.changeModelItems(structure.getItems()));
+			return structureInfo;
+		}
+		StructureInfo structureInfo =  this.paperStructureService.conversion(structure,false);
+		List<StructureInfo> infoChildren = new ArrayList<StructureInfo>();
+		for(Structure child : structure.getChildren())
+		{
+			StructureInfo infoChild = this.changeModel(child);
+			if(infoChild!=null) infoChildren.add(infoChild);
+		}
+		if(infoChildren.size()>0) structureInfo.setChildren(infoChildren);
 		return structureInfo;
 	}
 	//数据模型转换 Set<StructureItem> => Set<StructureItemInfo>。
 	private Set<StructureItemInfo> changeModelItems(Set<StructureItem> structureItems){
+		if(structureItems == null || structureItems.size() == 0) return null;
 		if(logger.isDebugEnabled()) logger.debug("数据模型转换 Set<StructureItem> =>  Set<StructureItemInfo>");
 		Set<StructureItemInfo> items = new TreeSet<>();
 		for(StructureItem item : structureItems){

@@ -215,6 +215,11 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 		if(logger.isDebugEnabled()) logger.debug("数据模型转换...");
 		return this.changeModel(structure,true);
 	}
+	@Override
+	public StructureInfo conversion(Structure structure,boolean changeChild) {
+		if(logger.isDebugEnabled()) logger.debug("数据模型转换...");
+		return this.changeModel(structure,changeChild);
+	}
 	/*
 	 * 更新试卷结构。
 	 * @see com.examw.test.service.library.IPaperStructureService#updateStructure(java.lang.String, com.examw.test.model.library.PaperStructureInfo)
