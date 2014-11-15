@@ -12,7 +12,6 @@ import javax.annotation.Resource;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -45,10 +44,10 @@ public class FenXiTest {
 	private ObjectMapper mapper = new ObjectMapper();
 	private static final String serverUrl = "http://tiku.examw.com/examw-test/api/imports";
 	
-	@Test
+//	@Test
 	public void fenXi() throws Exception{
 		
-//		import_JiChu();
+		import_JiChu();
 		
 		import_CaiJing();
 		

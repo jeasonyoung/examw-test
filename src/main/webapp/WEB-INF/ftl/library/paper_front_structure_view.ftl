@@ -1,10 +1,10 @@
 <#macro show_structure structure>
+	<div class="tx-box fl" structure_id="${structure.id}">${structure.title} ${structure.description}</div>
 	<#if structure.children?? && (structure.children?size>0)>
 		<#list structure.children?sort_by(["orderNo"]) as child>
 			<@show_structure child/>
 		</#list>
     <#else>
-    <div class="tx-box fl" structure_id="${structure.id}">${structure.title} ${structure.description}</div>
     <#if structure.items?? && (structure.items?size>0)>
     <#assign total = total + structure.total/> 
     <#assign xuhao = total-structure.total + 1 />

@@ -1,7 +1,6 @@
 package com.examw.test.controllers.library;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -75,16 +74,23 @@ public class PaperPreviewController {
 		List<StructureInfo> structures = paper.getStructures();
 		if(structures == null || structures.size()==0) return result;
 		for(StructureInfo s:structures){
-			TreeSet<StructureItemInfo> items = new TreeSet<StructureItemInfo>(
-					new Comparator<StructureItemInfo>() {
-						@Override
-						public int compare(StructureItemInfo o1,
-								StructureItemInfo o2) {
-							return o1.getOrderNo() - o2.getOrderNo();
-						}
-					});
-			items.addAll(s.getItems());
-			if(items == null || items.size()==0) continue;
+			if(s == null) continue;
+			this.getStructureItems(result, s);
+		}
+		return result;
+	};
+	private void getStructureItems(List<StructureItemInfo> result,StructureInfo info)
+	{
+		if(info.getChildren()!=null && info.getChildren().size()>0)
+		{
+			for(StructureInfo child:info.getChildren())
+			{
+				getStructureItems(result, child);
+			}
+		}else{
+			TreeSet<StructureItemInfo> items = new TreeSet<StructureItemInfo>();
+			if(info.getItems() == null || info.getItems().size()==0) return;
+			items.addAll(info.getItems());
 			for(StructureItemInfo item : items){
 				if(item.getType().equals(ItemType.SHARE_TITLE.getValue())){
 					result.addAll(getShareTitleSortedChildrenList(item)); 
@@ -97,8 +103,7 @@ public class PaperPreviewController {
 				}
 			}
 		}
-		return result;
-	};
+	}
 	/*
 	 * 获取共享题干题按序子题集合
 	 */

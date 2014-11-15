@@ -254,12 +254,27 @@ public class RandomItemServiceImpl implements IRandomItemService {
 		}
 		int index = 0;
 		for(Structure structure : paper.getStructures()){
-			if(structure == null || structure.getItems() == null || structure.getItems().size() == 0) continue;
+			if(structure.getParent()!=null) continue;
+			index = this.updateItemOrder(structure, index);
+		}
+	}
+	//设置排序
+	private int updateItemOrder(Structure structure,int index)
+	{
+		if(structure.getChildren()!=null && structure.getChildren().size()>0)
+		{
+			for(Structure s:structure.getChildren())
+			{
+				index = this.updateItemOrder(s, index);
+			}
+		}else{
+			if(structure == null || structure.getItems() == null || structure.getItems().size() == 0) return index;
 			for(StructureItem item : structure.getItems()){
 				if(item == null || item.getItem() == null) continue;
 				item.setOrderNo(index + 1);
 				index +=  item.getItem().getCount();
 			}
 		}
+		return index;
 	}
 }

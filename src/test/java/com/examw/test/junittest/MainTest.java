@@ -12,7 +12,6 @@ import javax.annotation.Resource;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -51,27 +50,27 @@ public class MainTest {
 	private ObjectMapper mapper = new ObjectMapper();
 	private static final String serverUrl = "http://tiku.examw.com/examw-test/api/imports";
 	
-	@Test
+//	@Test
 	public void ShiTis() throws Exception {
 		//会计基础
-//		import_JiChu_Single();
+		import_JiChu_Single();
 		
-//		import_JiChu_Multi();
+		import_JiChu_Multi();
 //		
-//		import_JiChu_Uncentern();
+		import_JiChu_Uncentern();
 //		
-//		import_JiChu_Judge();
+		import_JiChu_Judge();
 //		
 //		//财经法规
-//		import_CaiJing_Single();
-//		import_CaiJing_Multi();
-//		import_CaiJing_Uncentern();
-//		import_CaiJing_Judge();
+		import_CaiJing_Single();
+		import_CaiJing_Multi();
+		import_CaiJing_Uncentern();
+		import_CaiJing_Judge();
 //		
 //		//会计电算化
-//		import_DianSuan_Single();
-//		import_DianSuan_Multi();
-//		import_DianSuan_Uncentern();
+		import_DianSuan_Single();
+		import_DianSuan_Multi();
+		import_DianSuan_Uncentern();
 		import_DianSuan_Judge();
 	}
 

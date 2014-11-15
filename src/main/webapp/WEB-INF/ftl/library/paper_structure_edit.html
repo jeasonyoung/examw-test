@@ -5,7 +5,11 @@
 <script type="text/javascript">
 <!--
 	$(function(){
-		
+		$("input[name='type']").change(function(){
+			 if(this.checked){
+		          $(this).parent().siblings().children("input").attr("checked",false);
+		       }
+		});
 	})
 //-->
 </script>
@@ -37,7 +41,7 @@
 		<label style="margin-top:5px;width:50px;">题型：</label>
 		<div style="float:left;width:280px;">
 			<#list ItemTypeMaps?keys as key>
-				<label style="padding-top:0px;margin-left:5px;"><input type="radio" name="type" value="${key}" />${ItemTypeMaps[key]}</label>
+				<label style="padding-top:0px;margin-left:5px;"><input type="checkbox" name="type" value="${key}" />${ItemTypeMaps[key]}</label>
 			</#list>
 		</div>
 	</div>
@@ -59,7 +63,7 @@
 		</div>
 		<div style="float:right;">
 			<label style="width:60px;">所占比例：</label>
-			<input name="min" class="easyui-numberbox" data-options="min:0,value:100,max:100,suffix:'%'" style="width:60px;text-align:right;">
+			<input name="ratio" class="easyui-numberbox" data-options="min:0,value:100,max:100,suffix:'%'" style="width:60px;text-align:right;">
 			<span>(复杂结构有用)</span>
 		</div>
 	</div>
