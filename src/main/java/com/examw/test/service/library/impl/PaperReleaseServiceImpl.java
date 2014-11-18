@@ -186,7 +186,7 @@ public class PaperReleaseServiceImpl implements IPaperReleaseService {
 			public String getSort() { return "lastTime";}
 			@Override
 			public String getOrder() {return "desc";}
-		});
+		},null);
 		if(papers == null || papers.size() == 0){
 			if(logger.isDebugEnabled()) logger.debug("未找到状态为［已发布］的试卷数据！");
 			return;
@@ -215,7 +215,7 @@ public class PaperReleaseServiceImpl implements IPaperReleaseService {
 			public String getSort() { return "lastTime";}
 			@Override
 			public String getOrder() {return "desc";}
-		});
+		},null);
 		if(papers == null || papers.size() == 0){
 			if(logger.isDebugEnabled()) logger.debug("未找到状态为［未审核］的试卷数据！");
 			return;

@@ -47,7 +47,7 @@
                 <div class="h20"></div>
                 <#if PAPER.score??>
                 <div class="shuoming" >
-                	<p>&gt; 本卷共分为${PAPER.structures?size}大题 ${PAPER.total}小题，作答时间为${PAPER.time}分钟，总分${PAPER.score}分</p>
+                	<p>&gt; 本卷共分为<#if PAPER.structures?? && (PAPER.structures?size>0)>${PAPER.structures?size}<#else>0</#if>大题 ${PAPER.total}小题，作答时间为${PAPER.time}分钟，总分${PAPER.score}分</p>
                     <#if paper.year??>
 					<p>&gt; 使用年份：${PAPER.year?string("####")}</p>
 					</#if>
@@ -67,6 +67,7 @@
                 </#if>
                 <div class="tixing fl">
                 	<div class="list">
+                		<#if PAPER.structures?? && (PAPER.structures?size>0)>
                     	<ul>
                     		<#list PAPER.structures as structure>
                     		<#if structure_index == 0>
@@ -76,6 +77,9 @@
                         	</#if>
                         	</#list>
                         </ul>
+                        <#else>
+                		 暂时没有试卷结构
+                		</#if>
                     </div>
                 </div>
             </div><a name="danxiang" id="danxiang"></a>

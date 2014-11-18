@@ -26,11 +26,11 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 	 * @see com.examw.test.dao.library.IPaperDao#findPapers(com.examw.test.model.library.PaperInfo)
 	 */
 	@Override
-	public List<Paper> findPapers(PaperInfo info) {
+	public List<Paper> findPapers(PaperInfo info,Integer[] paperTypes) {
 		if(logger.isDebugEnabled()) logger.debug("查询数据...");
 		String hql = "from Paper p where 1=1 "; 
 		Map<String, Object> parameters = new HashMap<>();
-		hql = this.addWhere(info, hql, parameters);
+		hql = this.addWhere(info, hql, parameters,paperTypes);
 		if(!StringUtils.isEmpty(info.getSort())){
 			if(info.getSort().equalsIgnoreCase("examName")){
 				info.setSort("subject.exam.name");
@@ -55,16 +55,16 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 	 * @see com.examw.test.dao.library.IPaperDao#total(com.examw.test.model.library.PaperInfo)
 	 */
 	@Override
-	public Long total(PaperInfo info) {
+	public Long total(PaperInfo info,Integer[] paperTypes) {
 		if(logger.isDebugEnabled()) logger.debug("查询数据统计...");
 		String hql = "select count(*) from Paper p where 1=1 "; 
 		Map<String, Object> parameters = new HashMap<>();
-		hql = this.addWhere(info, hql, parameters);
+		hql = this.addWhere(info, hql, parameters,paperTypes);
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.count(hql, parameters);
 	}
 	//添加查询条件。
-	private String addWhere(PaperInfo info,String hql,Map<String, Object> parameters){
+	private String addWhere(PaperInfo info,String hql,Map<String, Object> parameters,Integer[] paperTypes){
 		if(!StringUtils.isEmpty(info.getName())){
 			hql += " and (p.name like :name) ";
 			parameters.put("name", "%"+ info.getName() +"%");
@@ -90,6 +90,12 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 		if(info.getType()!=null){
 			hql += " and (p.type = :type) ";
 			parameters.put("type", info.getType());
+		}else{
+			if(paperTypes!=null && paperTypes.length>0)
+			{
+				hql += " and (p.type in (:type)) ";
+				parameters.put("type", paperTypes);
+			}
 		}
 		//年份
 		if(info.getYear()!=null){

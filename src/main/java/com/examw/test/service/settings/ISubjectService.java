@@ -46,4 +46,5 @@ public interface ISubjectService extends IBaseDataService<SubjectInfo>{
 	 * @return
 	 */
 	SubjectInfo conversion(Subject subject);
+	SubjectInfo conversion(Subject subject,boolean isLoadChildren);
 }

@@ -133,6 +133,10 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 	 */
 	@Override
 	protected SubjectInfo changeModel(Subject data) {
+		if(logger.isDebugEnabled())logger.debug("数据模型转换[不带子类]...");
+		return this.changeModel(data, false);
+	}
+	protected SubjectInfo changeModel(Subject data,boolean isLoadChildren) {
 		if(logger.isDebugEnabled())logger.debug("数据模型转换...");
 		if(data == null) return null;
 		SubjectInfo info = new SubjectInfo();
@@ -155,10 +159,25 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 			info.setAreaId(list_ids.toArray(new String[0]));
 			info.setAreaName(list_names.toArray(new String[0]));
 		}
-		if(data.getParent() != null){
-			info.setPid(data.getParent().getId());
+		if(isLoadChildren)
+		{
+			if(data.getChildren()!=null && data.getChildren().size()>0)
+			{
+				List<SubjectInfo> childrenInfo = new ArrayList<SubjectInfo>();
+				for(Subject child:data.getChildren())
+				{
+					SubjectInfo childInfo = this.changeModel(child,true);
+					if(childInfo!=null) childrenInfo.add(childInfo);
+				}
+				if(childrenInfo.size()>0) info.setChildren(childrenInfo);
+			}
+		}else
+		{
+			if(data.getParent() != null){
+				info.setPid(data.getParent().getId());
+			}
+			info.setFullName(this.loadFullName(data));
 		}
-		info.setFullName(this.loadFullName(data));
 		return info;
 	}
 	//加载科目全称。
@@ -177,6 +196,11 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 	public SubjectInfo conversion(Subject subject) {
 		if(logger.isDebugEnabled())logger.debug("数据模型集合转换...");
 		return this.changeModel(subject);
+	}
+	@Override
+	public SubjectInfo conversion(Subject subject,boolean isLoadChildren) {
+		if(logger.isDebugEnabled())logger.debug("数据模型集合转换...");
+		return this.changeModel(subject,isLoadChildren);
 	}
 	/*
 	 * 查询统计。

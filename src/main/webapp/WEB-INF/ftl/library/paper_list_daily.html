@@ -1,0 +1,243 @@
+<#--试卷列表页面-->
+<#include "comm.ftl"/>
+<#assign module="library_paper"/>
+<#assign dg="${module}_daily_list_dg"/>
+<script type="text/javascript">
+<!--
+$(function(){
+	//paper structures
+	${dg}_paper_structure = function(paperId,subjectId,paperName,status){
+		var title = "试卷[" + paperName +  "]结构";
+		var btns = [];
+		<@shiro.hasPermission name="${PER_UPDATE}">
+		 if(status == ${paper_status_none_value}){
+			 btns.push({
+				text:"重置试题排序号",iconCls:"icon-save",
+				handler:function(){
+					$.messager.confirm("警告","确认重置试卷中试题的排序号？",function(r){
+						if(r){
+							$.messager.progress({ text:"正在重置试题排序号，请稍后..." });
+							$.post("<@s.url '/library/paper/items/update/'/>" + paperId + "/order" ,function(callback){
+								$.messager.progress('close');
+								if(callback.success){  d.dialog("refresh"); }else{ $.messager.show({title:"提示", msg:callback.msg });}
+							},"json");
+						}
+					});
+				}
+			 });
+		 }
+		</@shiro.hasPermission>
+		btns.push({
+			text:"关闭",iconCls:"icon-cancel",
+			handler:function(){ d.dialog("close");}
+		});
+		var d = $("<div/>").dialog({title:title,width:800,height:600,modal:true,href:"<@s.url '/library/paper/structure/list/'/>" + paperId+"?subjectId="+subjectId,buttons:btns, onClose:function(){ $(this).dialog("destroy");} });
+	};
+	//paper preview
+	${dg}_paper_preview = function(paperId,status){
+		var isAudit = (status == ${paper_status_none_value});
+		var d = $("<div/>").dialog({
+			title:"试题预览",width:800,height:600,
+			href:"<@s.url '/library/paper/preview/'/>" +paperId,
+			modal:true,
+			buttons:[
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			{
+				text:(isAudit ? "审核":"反审核"),
+				iconCls:"icon-save",
+				handler:function(){
+					$.messager.confirm("确认","您是否确认进行［"+$(this).text() +"］?",function(r){
+						if(!r)return;
+						$.messager.progress();
+						$.ajax({
+							url:"<@s.url '/library/paper/'/>" + (isAudit?"audit" :"unaudit") + "/" +paperId,
+							type:"GET",dataType:"json",
+							error:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
+							success:function(data,textStatus){
+								$.messager.progress("close");
+								if(data.success){
+									$("#${dg}").datagrid("load");$("#${dg}").datagrid("unselectAll");
+									d.dialog("close");
+								}else{
+									$.messager.show({ title:"提示", msg:data.msg});
+								}
+							}
+						});
+					});
+				}
+			},
+			</@shiro.hasPermission>
+			{
+				text:"关闭", iconCls:"icon-cancel",
+				handler:function(){ d.dialog("close");}
+			}],
+			onClose:function(){ $(this).dialog("destroy");}
+		});
+	};
+	${dg}_paper_front_preview = function(paperId){
+		window.open("<@s.url '/library/paper/preview/front/'/>" +paperId);    
+	}
+
+	//edit paper
+	${module}_edit_window = function(title,index,row){
+		var exam_id ="",subject_id = "";
+		if(row){
+			if(row.examId) exam_id = row.examId;
+			if(row.subjectId) subject_id = row.subjectId;
+		}else{
+			var node = $("#${module}_exam_tree").tree("getSelected");
+			if(node){
+				if(node.attributes.type =="subject"){
+					subject_id = node["id"];
+					var parent = $("#${module}_exam_tree").tree("getParent",node.target);
+					if(parent) exam_id = parent["id"];
+				}else{
+					exam_id = node["id"];
+				}
+			}
+		}
+		var btns = [];
+		<@shiro.hasPermission name="${PER_UPDATE}">
+		if((!row) || (row && (row.status == ${paper_status_none_value}))){
+			btns.push({
+				text:"保存",
+				iconCls:"icon-save",
+				handler:function(){
+					$.messager.progress();
+					//试卷名称去掉空格
+					$("#${module}_edit_form input[name='name']").val($.trim($("#${module}_edit_form input[name='name']").val()));
+					var valid = $("#${module}_edit_form").form("validate");
+					if(!valid){
+						$.messager.progress("close");
+						return;
+					}
+					$.ajax({
+						url:"<@s.url '/library/paper/update'/>",
+						type:"POST",
+						data:$("#${module}_edit_form").form("serialize"),
+						dataType:"json",
+						error:function(e){
+							$.messager.progress("close");
+							<@error_dialog "e"/>
+						},
+						success:function(data,textStatus){
+							$.messager.progress("close");
+							if(data.success){
+								$("#${dg}").datagrid(row ? "updateRow" : "insertRow",{index:index, row:data.data});
+								d.dialog("close");
+							}else{
+								$.messager.show({ title:"保存异常", msg:data.msg});
+							}
+						}
+					});
+				}
+			});
+		}
+		</@shiro.hasPermission>
+		btns.push({
+			text:"关闭",iconCls:"icon-cancel",
+			handler:function(){ d.dialog("close");}
+		});
+		var d = $("<div/>").dialog({
+			title:title,width:600,height:430,
+			href:"<@s.url '/library/paper/edit'/>?examId="+exam_id + "&subjectId=" + subject_id,
+			modal:true,
+			buttons:btns,
+			onClose:function(){ $(this).dialog("destroy");},
+			onLoad:function(){
+				$("#${module}_edit_form").form("load",(row ? row : {"examId":exam_id,"subjectId":subject_id}));
+			}
+		});
+	};
+	//search papers
+	${dg}_search = function(){
+		var exam_id = "",subject_id = "";
+		var node = $("#${module}_exam_tree").tree("getSelected");
+		if(node){
+			if(node.attributes.type =="subject"){
+				subject_id = node["id"];
+				var parent = $("#${module}_exam_tree").tree("getParent",node.target);
+				if(parent) exam_id = parent["id"];
+			}else{
+				exam_id = node["id"];
+			}
+		}
+		$("#${dg}").datagrid("load",{"type":"${TYPE_DAILY}","examId":exam_id, "subjectId":subject_id,"name":$("#${dg}_toobar input[name='name']").val() });
+	};
+	<@shiro.hasPermission name="${PER_DELETE}">
+	//detele paper
+	${dg}_delete = function(){
+		var rows = $("#${dg}").datagrid("getChecked");
+		if(rows && rows.length > 0){
+			$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
+				if(!r)return;
+				$.messager.progress();
+				var ids = [];
+				for(var i = 0; i < rows.length; i++){
+					ids.push(rows[i].id);
+				}
+				$.ajax({
+					url:"<@s.url '/library/paper/delete'/>",
+					type:"POST",
+					data:{
+						id:ids.join("|")
+					},
+					dataType:"json",
+					error:function(e){
+						$.messager.progress("close");
+						<@error_dialog "e"/>
+					},
+					success:function(data,textStatus){
+						$.messager.progress("close");
+						if(data.success){
+							$("#${dg}").datagrid("load");$("#${dg}").datagrid("unselectAll");
+						}else{
+							$.messager.show({ title:"提示", msg:data.msg});
+						}
+					}
+				});
+			});
+		}else{
+			$.messager.alert("提示","未选中须删除的数据！");
+		}
+	};
+	</@shiro.hasPermission>
+});
+//-->
+</script>
+<div class="easyui-layout" data-options="fit:true,border:false">
+	<div data-options="region:'west',title:'所属考试',split:true,tools:[{iconCls:'icon-reload', handler:function(){ $('#${module}_exam_tree').tree('reload');${dg}_search(); } }]"  style="padding:5px;width:190px;">
+		<ul id="${module}_exam_tree" class="easyui-tree" data-options="url:'<@s.url '/settings/category/exams/subject/tree'/>',lines:true,
+			onLoadError:function(e){<@error_dialog 'e'/>},onClick:function(node){ ${dg}_search(); }"></ul>
+	</div>
+	<div data-options="region:'center',border:false">
+		<table id="${dg}" class="easyui-datagrid" data-options="url:'<@s.url '/library/paper/datagrid'/>',fit:true,fitColumns:false,rownumbers:true,border:true,striped:true,resizable:true,queryParams:{type:'${TYPE_DAILY}'},
+			pagination:true,pagePosition:'bottom',pageSize:20,pageList:[20,30,40],idField:'id',sortName:'createTime',sortOrder:'desc',toolbar:'#${dg}_toobar',
+			onLoadError:function(e){<@error_dialog 'e'/> },onDblClickRow:function(rowIndex,rowData){ ${module}_edit_window('编辑试卷',rowIndex,rowData); }">
+			<thead>
+				<tr>
+					<th data-options="field:'id',checkbox:true"></th>
+					<th data-options="field:'examName',width:98,align:'left',sortable:true,formatter:function(value,row,index){ return '<span title=\''+value+'\'>'+value+'</span>';}">所属考试</th>
+					<th data-options="field:'subjectName',width:100,align:'left',sortable:true">所属科目</th>
+					<th data-options="field:'name',width:368,align:'left',sortable:true,formatter:function(value,row,index){ return '<span title=\''+value+'\'>'+value+'</span>';}">试卷名称</th>
+					<th data-options="field:'areaName',width:80,align:'left',sortable:true,formatter:function(value,row,index){ return (!value) ? ' ' : '<span title=\''+value+'\'>'+value+'</span>';}">所属地区</th>
+					<th data-options="field:'createTime',width:70,align:'center',sortable:true,formatter:function(value,row,index){ return '<span title=\''+value+'\'>'+value+'</span>'}">创建时间</th>
+					<th data-options="field:'typeName',width:70,align:'center',sortable:true">类型</th>
+					<th data-options="field:'statusName',width:50,align:'center',sortable:true">状态</th>
+					<th data-options="field:'opt',width:60,align:'center',formatter:function(value,row,index){ return '<a href=\'#\' onclick=${dg}_paper_structure(\''+row['id'] +'\',\''+row['subjectId'] +'\',\'' + $.trim(row['name']) +'\',\''+ row['status']+'\');>试卷内容</a>';}">操作</th>
+					<th data-options="field:'preview',width:40,align:'center',formatter:function(value,row,index){return '<a href=\'#\' onclick=${dg}_paper_front_preview(\''+row['id'] +'\',\'' +row['status']+ '\');>预览</a>';}">预览</th>
+					<th data-options="field:'userName',width:60,align:'left',sortable:true,formatter:function(value,row,index){ return (!value) ? ' ' : '<span title=\''+value+'\'>'+value+'</span>'}">操作者</th>
+				</tr>
+			</thead>
+		</table>
+		<div id="${dg}_toobar">
+			<@shiro.hasPermission name="${PER_DELETE}">
+			<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
+			</@shiro.hasPermission>
+			
+			<label>试卷名称：<input name="name" type="text" style="width:268px;"/></label>
+	
+			<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
+		</div>
+	</div>
+</div>

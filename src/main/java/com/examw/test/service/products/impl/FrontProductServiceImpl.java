@@ -149,7 +149,7 @@ public class FrontProductServiceImpl implements IFrontProductService {
 		if(subjects != null && subjects.size() > 0){
 			for(Subject subject : subjects){
 				if(subject == null) continue;
-				SubjectInfo info = this.subjectService.conversion(subject);
+				SubjectInfo info = this.subjectService.conversion(subject,false); //TODO 暂时不加载子类
 				if(info != null) list.add(info);
 			}
 		}

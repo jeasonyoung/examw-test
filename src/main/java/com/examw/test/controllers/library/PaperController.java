@@ -23,6 +23,7 @@ import com.examw.test.model.library.PaperInfo;
 import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperService;
 import com.examw.test.service.library.PaperStatus;
+import com.examw.test.service.library.PaperType;
 import com.examw.test.support.PaperItemUtils;
 /**
  * 试卷控制器。
@@ -80,6 +81,22 @@ public class PaperController implements IUserAware {
 		model.addAttribute("paper_status_none_value", PaperStatus.NONE.getValue());
 		
 		return "library/paper_list";
+	}
+	/**
+	 * 每日一练列表页面。
+	 * @param model
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.VIEW})
+	@RequestMapping(value={"/daily","/daily/list"}, method = RequestMethod.GET)
+	public String dailyList(Model model){
+		if(logger.isDebugEnabled()) logger.debug("加载每日一练列表页面...");
+		model.addAttribute("PER_UPDATE", ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE);
+		model.addAttribute("PER_DELETE", ModuleConstant.LIBRARY_PAPER + ":" + Right.DELETE);
+		model.addAttribute("TYPE_DAILY", PaperType.DAILY.getValue());
+		model.addAttribute("paper_status_none_value", PaperStatus.NONE.getValue());
+		
+		return "library/paper_list_daily";
 	}
 	/**
 	 * 加载列表页面数据。

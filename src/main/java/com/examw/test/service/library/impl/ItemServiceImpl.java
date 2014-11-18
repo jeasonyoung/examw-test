@@ -287,7 +287,7 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 				throw new RuntimeException("试题修改后与题库中已存在的试题一致，不能重复添加！");
 			}
 		}
-		if(data != null && data.getStatus() == ItemStatus.AUDIT.getValue()){
+		if(data != null && ItemStatus.AUDIT.getValue().equals(data.getStatus())){
 			throw new RuntimeException(String.format("试题状态为［%s］,暂不能修改！", this.loadStatusName(data.getStatus())));
 		}
 		if(data == null){

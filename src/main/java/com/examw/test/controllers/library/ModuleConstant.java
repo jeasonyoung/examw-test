@@ -25,4 +25,8 @@ public final class ModuleConstant {
 	 * 试卷发布ID。
 	 */
 	public static final String LIBRARY_ITEM_RECORVERY = "ETS0000503";
+	/**
+	 * 每日一练ID。
+	 */
+	public static final String LIBRARY_PAPER_DAILY = "ETS0000503";
 }

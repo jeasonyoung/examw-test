@@ -19,7 +19,7 @@ public interface IPaperDao extends IBaseDao<Paper> {
 	 * @return
 	 * 结果数据。
 	 */
-	List<Paper> findPapers(PaperInfo info);
+	List<Paper> findPapers(PaperInfo info,Integer[] paperTypes);
 	/**
 	 * 查询数据统计。
 	 * @param info
@@ -27,7 +27,7 @@ public interface IPaperDao extends IBaseDao<Paper> {
 	 * @return
 	 * 结果数据。
 	 */
-	Long total(PaperInfo info);
+	Long total(PaperInfo info,Integer[] paperTypes);
 	/**
 	 * 加载已审核的全部试卷总数。
 	 * @return

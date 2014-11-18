@@ -76,13 +76,15 @@
                	</div>
                <div class="fr" id="font14">
                     <div class="f-r fr"><i><a href="javascript:void(0)" onclick="toggleAnalysis(this,'${i.id}')">收起解析</a></i><em class="jiexi-h"></em></div>
+               </div>
          </div>
          <@item_analysis i index/>
-    </div>
+         
+</div>
 </#macro>
 <#-- 问答题 -->
 <#macro item_qanda i index>
-	<div class="box fl">
+	<div class="box fl" name="item_whole" item_id="${(i.id)}">
        <div class="timu fl"></a>
            <i>${index}.</i>
            <em><span id="cailiao14">[${i.typeName}]</span><#if i.pid??><span onclick="showCommonTitle('${i.pid}')" style="cursor:pointer">[查看材料]</span></#if>${i.content}</em>
@@ -101,13 +103,13 @@
                    <i>参考答案：</i>${i.answer}
               </div>
               </#if>
-              <#if i.analysis??>
+              <#if i.analysis?? && i.analysis != "">
               <div class="cankaobox fl">
                    <i>参考解析：</i>${i.analysis}
               </div>
               </#if>
               <div class="h10"></div>
-         <div>
+         </div>
     </div>
 </#macro>
 <#-- 共享题干题  -->

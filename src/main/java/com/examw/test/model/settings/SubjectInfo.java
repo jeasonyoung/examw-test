@@ -1,5 +1,7 @@
 package com.examw.test.model.settings;
 
+import java.util.List;
+
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.examw.model.Paging;
@@ -15,6 +17,7 @@ public class SubjectInfo extends Paging implements Comparable<SubjectInfo>{
 	private String pid,id,name,examId,examName,categoryId,categoryName,fullName;
 	private Integer code;
 	private String[] areaId,areaName;
+	private List<SubjectInfo> children;
 	/**
 	 * 获取科目ID。
 	 * @return 科目ID。
@@ -190,6 +193,22 @@ public class SubjectInfo extends Paging implements Comparable<SubjectInfo>{
 		this.fullName = fullName;
 	}
 	
+	/**
+	 * 获取 子科目
+	 * @return children
+	 * 子科目
+	 */
+	public List<SubjectInfo> getChildren() {
+		return children;
+	}
+	/**
+	 * 设置 子科目
+	 * @param children
+	 * 子科目
+	 */
+	public void setChildren(List<SubjectInfo> children) {
+		this.children = children;
+	}
 	/*
 	 * 排序比较。
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)

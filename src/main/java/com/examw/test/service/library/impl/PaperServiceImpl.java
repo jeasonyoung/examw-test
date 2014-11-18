@@ -26,6 +26,7 @@ import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.library.IPaperService;
 import com.examw.test.service.library.ItemStatus;
 import com.examw.test.service.library.PaperStatus;
+import com.examw.test.service.library.PaperType;
 /**
  * 试卷服务接口实现类。
  * 
@@ -40,6 +41,10 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	private IAreaDao areaDao;
 	private Map<Integer, String> statusMap;
 	private Map<String, String> typeMap;	//修改为Map<String,String>
+	private static final Integer[] default_paper_types = {PaperType.REAL.getValue(), 
+ 		PaperType.SIMU.getValue(), 
+ 		PaperType.FORECAS.getValue(), 
+ 		PaperType.PRACTICE.getValue()};
 	/**
 	 * 设置试卷数据接口。
 	 * @param paperDao
@@ -120,7 +125,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	@Override
 	protected List<Paper> find(PaperInfo info) {
 		if (logger.isDebugEnabled())logger.debug("查询数据...");
-		return this.paperDao.findPapers(info);
+		return this.paperDao.findPapers(info,default_paper_types);
 	}
 	/*
 	 * 试卷模型类型转换。
@@ -168,7 +173,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	@Override
 	protected Long total(PaperInfo info) {
 		if (logger.isDebugEnabled()) logger.debug("查询数据统计...");
-		return this.paperDao.total(info);
+		return this.paperDao.total(info,default_paper_types);
 	}
 	/*
 	 * 加载试卷基本数据。
@@ -306,15 +311,11 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 			throw new RuntimeException(msg);
 		}
 		if(!structure.getTotal().equals(this.calculateStructureChildrenTotal(structure))){
-			msg = String.format("试卷结构［%s］下试题总数与子题总数设置不一致！", structure.getTitle());
+			msg = String.format("试卷结构［%s］下试题总数与子结构试题总数设置不一致！", structure.getTitle());
 			if(logger.isDebugEnabled()) logger.error(msg);
 			throw new RuntimeException(msg);
 		}
-		if(!this.isStructureHasItems(structure, msg, structure.getTitle()))
-		{
-			if(logger.isDebugEnabled()) logger.error(msg);
-			throw new RuntimeException(msg);
-		}
+		this.isStructureHasItems(structure, structure.getTitle());
 		int total = this.calculateStructureItemTotal(structure);
 		if(!structure.getTotal().equals(total)){
 			msg = String.format("试卷结构［%1$s］下试题设置数目［%2$d］与实际试题［%3$d］不一致！", structure.getTitle(), structure.getTotal(),total);
@@ -339,12 +340,13 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	}
 	
 	//Add by FW 2014.11.14 判断结构下面是不是有试题 
-	private boolean isStructureHasItems(Structure structure,String msg,String structureTitle){
+	private boolean isStructureHasItems(Structure structure,String structureTitle){
+		String msg = null;
 		if(structure.getChildren()!=null && structure.getChildren().size() >0)
 		{
 			for(Structure s:structure.getChildren()){
 				if(s == null) continue;
-				if(!isStructureHasItems(s,msg,structureTitle+" >> "+s.getTitle()))
+				if(!isStructureHasItems(s,structureTitle+" >> "+s.getTitle()))
 				{
 					return false;
 				}
@@ -354,7 +356,8 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 			if(structure.getItems() == null || structure.getItems().size() == 0)
 			{
 				msg = String.format("试卷结构［%s］下没有试题！", structureTitle);
-				return false;
+				if(logger.isDebugEnabled()) logger.error(msg);
+				throw new RuntimeException(msg);
 			}
 			return true;
 		}

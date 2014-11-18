@@ -37,18 +37,19 @@
                     <!-- 触发时间 -->
                     <property name="cronExpression" value="0 0/10 * * * ?" />
                 </bean>
-                <!-- 自动创建每日一练任务 -->
+                <!-- 自动创建每日一练任务 
                 <bean class="org.springframework.scheduling.quartz.CronTriggerBean">
-                    <!-- 任务明细 -->
+                    	 任务明细 
                     <property name="jobDetail">
                         <bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
                             <property name="targetObject" ref="exercisesDailyService" />
                             <property name="targetMethod" value="addAutoDailyPapers" />
                         </bean>
                     </property>
-                    <!-- 触发时间 -->
+                    	触发时间 
                     <property name="cronExpression" value="0 0 2 * * ?" />
                 </bean>
+                -->
             </list>
         </property>
     </bean>
