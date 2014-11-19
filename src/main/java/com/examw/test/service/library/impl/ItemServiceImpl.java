@@ -213,6 +213,8 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		if(data == null) return null;
 		ItemInfo info = new ItemInfo();
 		this.conversion(data, info, false);
+		//设置是否已经关联大纲 [2014.11.19]
+		info.setHasSyllabus(data.getSyllabuses()!=null&&data.getSyllabuses().size()>0);
 		return info;
 	}
 	/*

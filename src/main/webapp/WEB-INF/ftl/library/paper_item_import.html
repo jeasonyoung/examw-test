@@ -18,14 +18,24 @@ $(function(){
 	};
 	//查询试题。
 	${dg}_search = function(){
-		$("#${dg}").datagrid("load",{
-			"content":$("#${dg}_toobar input[name='content']").val(),
-			"subjectId":"${current_subject_id}",
-			"type":${current_type_value}
-			<#if current_opt_value??> ,"opt":${current_opt_value} </#if>
-			<#if current_year_value??> ,"year":${current_year_value?string("####")}</#if>
-			<#if current_area_id??>,"areaId":"${current_area_id}"</#if>
-		});
+		//2014.11.19 修改试题查询,让不同科目,年份的真题也能关联上
+		var content = $("#${dg}_toobar input[name='content']").val();
+		if($.trim(content)==""){
+			$("#${dg}").datagrid("load",{
+				"content":$("#${dg}_toobar input[name='content']").val(),
+				"subjectId":"${current_subject_id}",
+				"type":${current_type_value}
+				<#if current_opt_value??> ,"opt":${current_opt_value} </#if>
+				<#if current_year_value??> ,"year":${current_year_value?string("####")}</#if>
+				<#if current_area_id??>,"areaId":"${current_area_id}"</#if>
+			});
+		}else{
+			$("#${dg}").datagrid("load",{
+				"content":$("#${dg}_toobar input[name='content']").val(),
+				"type":${current_type_value}
+				<#if current_opt_value??> ,"opt":${current_opt_value} </#if>
+			});
+		}
 	};
 	//查看试题
 	${module}_view_item_window = function(row){

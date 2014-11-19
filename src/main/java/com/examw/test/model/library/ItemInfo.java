@@ -83,4 +83,24 @@ public class ItemInfo extends BaseItemInfo<ItemInfo> {
 	public void setSyllabuses(Set<SyllabusInfo> syllabuses) {
 		this.syllabuses = syllabuses;
 	}
+	
+	//是否关联大纲 Add by FW 2014.11.19
+	private boolean hasSyllabus;
+	/**
+	 * 获取 是否关联大纲
+	 * @return hasSyllabus
+	 * 是否关联大纲
+	 */
+	public boolean isHasSyllabus() {
+		return hasSyllabus;
+	}
+	/**
+	 * 设置 是否关联大纲
+	 * @param hasSyllabus
+	 * 是否关联大纲
+	 */
+	public void setHasSyllabus(boolean hasSyllabus) {
+		this.hasSyllabus = hasSyllabus;
+	}
+	
 }
