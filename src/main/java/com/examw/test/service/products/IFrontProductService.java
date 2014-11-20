@@ -20,7 +20,8 @@ public interface IFrontProductService {
 	 * @return
 	 * 产品集合。
 	 */
-	List<FrontProductInfo> loadProducts(String examId);
+	List<FrontProductInfo> loadProductsByExam(String examId);
+	List<FrontProductInfo> loadProductsByCategory(String categoryId);
 	/**
 	 * 加载产品信息。
 	 * @param productId

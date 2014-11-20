@@ -49,7 +49,8 @@ $(function(){
 							$.messager.progress("close");
 							var data = $.parseJSON(data);
 							if(data.success){
-								d.dialog("close"); ${module}_reload();
+								d.dialog("close"); 
+								${module}_reload(data.data.id);
 							}else{
 								$.messager.show({ title:"保存异常", msg:data.msg });
 							}
@@ -86,7 +87,7 @@ $(function(){
 				success:function(data,textStatus){
 					$.messager.progress("close");
 					if(data.success){
-						${module}_reload();
+						${module}_reload(p.id);
 					}else{
 						$.messager.show({ title:"提示", msg:data.msg });
 					}
@@ -96,16 +97,32 @@ $(function(){
 	};
 	</@shiro.hasPermission>
 	//reload
-	${module}_reload = function(){
-		$("#${module}_tree").tree("reload");
+	${module}_reload = function(id){
+		$("#${module}_tree").tree({onLoadSuccess:function(node,data){
+			//$("#${module}_tree").tree("collapseAll");
+			console.info(id);
+			if(id){
+				var node1 = $("#${module}_tree").tree("find",id);
+				$("#${module}_tree").tree("scrollTo",node1.target);
+				return;
+			}
+		}});
 	};
 });
 //-->
 </script>
-<ul id="${module}_tree" class="easyui-tree" data-options="url:'<@s.url '/syllabus/syllabus/${current_syllabus_id}/tree'/>', onContextMenu:function(e,node){
-		 	e.preventDefault();$('#${module}_tree').tree('select',node.target); $('#${module}_menus').menu('show',{ left: e.pageX,top: e.pageY  }); },
-		 	onDblClick:function(node){ var p = $('#${module}_tree').tree('getParent',node.target); if(p == null) return;  if(node.attributes){
-				${module}_points_edit_window('编辑大纲要点',node.attributes); }}"></ul>
+<ul id="${module}_tree" class="easyui-tree" data-options="
+			url:'<@s.url '/syllabus/syllabus/${current_syllabus_id}/tree'/>', 
+			onContextMenu:function(e,node){
+		 		e.preventDefault();
+		 		$('#${module}_tree').tree('select',node.target);
+		 		$('#${module}_menus').menu('show',{ left: e.pageX,top: e.pageY  }); },
+		 	onDblClick:function(node){ 
+		 		var p = $('#${module}_tree').tree('getParent',node.target); 
+		 		if(p == null) return;  
+		 		if(node.attributes){
+				${module}_points_edit_window('编辑大纲要点',node.attributes); }}
+			"></ul>
 <div id="${module}_menus" class="easyui-menu" style="width:120px;">
 	<@shiro.hasPermission name="${PER_UPDATE}">
 	<div onclick="${module}_add()" data-options="iconCls:'icon-add'">新增大纲要点</div>

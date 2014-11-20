@@ -23,6 +23,8 @@ public class Book implements Serializable {
 	private Set<BookChapter> chapters;
 	private Integer status,orderNo;
 	private Date createTime,lastTime;
+	//所采用的考试大纲 Add by FW 2014.11.20 
+	private Syllabus syllabus;
 	/**
 	 * 获取教材ID。
 	 * @return 教材ID。
@@ -248,4 +250,22 @@ public class Book implements Serializable {
 	public void setOrderNo(Integer orderNo) {
 		this.orderNo = orderNo;
 	}
+	/**
+	 * 获取 所采用的考试大纲
+	 * @return syllabus
+	 * 所采用的考试大纲
+	 */
+	public Syllabus getSyllabus() {
+		return syllabus;
+	}
+	/**
+	 * 设置 所采用的考试大纲
+	 * @param syllabus
+	 * 所采用的考试大纲
+	 */
+	public void setSyllabus(Syllabus syllabus) {
+		this.syllabus = syllabus;
+	}
+	
+	
 }

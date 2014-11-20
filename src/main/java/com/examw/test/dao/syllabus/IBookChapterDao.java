@@ -26,4 +26,11 @@ public interface IBookChapterDao extends IBaseDao<BookChapter> {
 	 * @return
 	 */
 	Integer loadMaxOrder(String parentChapterId);
+	/**
+	 * 判断是否已经创建了章节
+	 * @param bookId
+	 * @param syllabusId
+	 * @return
+	 */
+	BookChapter hasCreated(String bookId,String syllabusId);
 }

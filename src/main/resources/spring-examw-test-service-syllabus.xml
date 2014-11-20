@@ -32,6 +32,8 @@
 		<property name="subjectDao" ref="subjectDao"/>
 		<!-- 地区数据接口 -->
 		<property name="areaDao" ref="areaDao" />
+		<!-- 大纲数据接口 -->
+		<property name="syllabusDao" ref="syllabusDao"/>
 		<!-- 教材状态 -->
 		<property name="statusMap">
 		    <map>
@@ -46,6 +48,8 @@
 	    <property name="bookChapterDao" ref="bookChapterDao" />
 	    <!-- 教材数据接口 -->
 	    <property name="bookDao" ref="bookDao" />
+	    <!-- 大纲数据接口 -->
+		<property name="syllabusDao" ref="syllabusDao"/>
 	</bean>
 	<!-- 知识点服务 -->
 	<bean id="chapterKnowledgeService" class="com.examw.test.service.syllabus.impl.ChapterKnowledgeServiceImpl">

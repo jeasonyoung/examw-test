@@ -4,33 +4,15 @@
 <#assign form="${module}_edit_form" />
 <form id="${form}" method="POST">
 	<div style="float:left; margin-top:12px; width:100%;">
-		<div style="float:left;">
-			<label style="width:75px;">知识点标题：</label>
-			<input type="text" name="title" class="easyui-textbox"  data-options="required:true" style="width:368px;"/>
-			<input type="hidden" name="id" />
-		</div>
-		<div style="float:left;">
-			<label style="width:60px;">排序号：</label>
-			<input type="text" name="orderNo" class="easyui-numberbox"  data-options="required:true" style="width:50px;"/>
-		</div>
-	</div>
-	<div style="float:left;margin-top:12px;width:100%;">
-		<label style="width:75px;">所属章节：</label>
-		<input name="chapterId" class="easyui-combotree" data-options="url:'<@s.url '/syllabus/book/${current_book_id}/chapters'/>',required:true" style="width:485px;" />
-	</div>
-	<div style="float:left; margin-top:12px; width:100%;">
-			<label style="width:75px;">考试大纲：</label>
-			<input name="topSyllabusId" class="easyui-combobox" data-options="url:'<@s.url '/syllabus/syllabus/all/subjects/${current_subject_id}'/>',
-					required:true,valueField:'id',textField:'title',
-					onSelect:function(record){
-						  $('#${form}_syllabusId').combotree('clear');
-						  $('#${form}_syllabusId').combotree('reload','<@s.url '/syllabus/syllabus/tree?syllabusId='/>' + record.id);
-					}" style="width:228px;"/>	
-			<input id="${form}_syllabusId" name="syllabusId" class="easyui-combotree"  data-options="url:'<@s.url '/syllabus/syllabus/tree?syllabusId=${current_syllabus_id}'/>',required:true"  style="width:254px;"/>
+		<label style="width:75px;">标题：</label>
+		<input type="text" name="title" class="easyui-textbox"  data-options="readonly:true" style="width:368px;"/>
+		<input type="hidden" name="id" value="${KNOWLEDGE.id}"/>
+		<input type="hidden" name="syllabusId" value="${current_syllabus_id}"/>
+		<input type="hidden" name="chapterId" value="${current_chapter_id}"/>
 	</div>
 	<div style="float:left; margin-top:12px; width:100%;">
 		<div style="float:left;margin-left:12px;">
-			<textarea name="description" class="easyui-ueditor" data-options="width:550,height:140"></textarea>
+			<textarea name="description" class="easyui-ueditor" data-options="width:550,height:140">${KNOWLEDGE.description}</textarea>
 		</div>
     </div>
 </form>

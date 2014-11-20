@@ -116,11 +116,17 @@ public class FrontController {
 	 * 考试ID。
 	 * @return
 	 */
-	@RequestMapping(value = {"/products/{examId}"}, method = {RequestMethod.GET})
+	@RequestMapping(value = {"/products/exam/{examId}"}, method = {RequestMethod.GET})
 	@ResponseBody
 	public List<FrontProductInfo> loadProducts(@PathVariable String examId){
 		if(logger.isDebugEnabled()) logger.debug("考试下产品数据...");
-		return this.frontProductService.loadProducts(examId);
+		return this.frontProductService.loadProductsByExam(examId);
+	}
+	@RequestMapping(value = {"/products/category/{categoryId}"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public List<FrontProductInfo> loadProductsByCategory(@PathVariable String categoryId){
+		if(logger.isDebugEnabled()) logger.debug("考试分类下产品数据...");
+		return this.frontProductService.loadProductsByCategory(categoryId);
 	}
 	/**
 	 * 加载产品信息。

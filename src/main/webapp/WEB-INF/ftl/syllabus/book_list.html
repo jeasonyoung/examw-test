@@ -6,11 +6,11 @@
 <!--
 $(function(){
 	//chapters
-	${dg}_book_chapters = function(id,title){
+	${dg}_book_chapters = function(id,title,syllabusId){
 		title = "教材［"+title+"］章节/知识点管理";
 		var d = $("<div/>").dialog({
 			title:title,width:800,height:600,modal:true,
-			href:"<@s.url '/syllabus/book/'/>"+id + "/chapters/list",
+			href:"<@s.url '/syllabus/book/'/>"+ syllabusId +"/"+ id + "/chapters/list",
 			buttons:[{
 				text:"关闭",iconCls:"icon-cancel",
 				handler:function(){d.dialog("close"); }
@@ -49,7 +49,7 @@ $(function(){
 			}
 		}
 		var d = $("<div/>").dialog({
-			title:title,width:600,height:400,modal:true,
+			title:title,width:600,height:430,modal:true,
 			href:"<@s.url '/syllabus/book/edit'/>?examId="+exam_id + "&subjectId="+subject_id,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">      
@@ -152,11 +152,12 @@ $(function(){
 					<th data-options="field:'subjectName',width:30,align:'left',sortable:true">所属科目</th>
 					<th data-options="field:'name',width:25,align:'left',sortable:true">教材名称</th>
 					<th data-options="field:'pressName',width:30,align:'left',sortable:true">所属出版社</th>
+					<th data-options="field:'syllabusName',width:30,align:'left'">采用大纲</th>
 					<th data-options="field:'price',width:10,align:'right',sortable:true">价格</th>
 					<th data-options="field:'discount',width:10,align:'right',sortable:true">优惠价格</th>
 					<th data-options="field:'areaName',width:20,align:'center',sortable:true">所属地区</th>
 					<th data-options="field:'statusName',width:8,align:'center',sortable:true">状态</th>
-					<th data-options="field:'opt',width:15,align:'center',formatter:function(value,row,index){return '<a href=\'#\' onclick=${dg}_book_chapters(\''+row['id'] +'\',\'' +row['name']+ '\'); title=\'教材章节/知识点管理\'>[章节/知识点]</a>'; }">操作</th>
+					<th data-options="field:'opt',width:15,align:'center',formatter:function(value,row,index){return '<a href=\'#\' onclick=${dg}_book_chapters(\''+row['id'] +'\',\'' +row['name']+ '\',\'' +row['syllabusId']+ '\'); title=\'教材章节/知识点管理\'>[章节/知识点]</a>'; }">操作</th>
 				</tr>
 			</thead>
 		</table>

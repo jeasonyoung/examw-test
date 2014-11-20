@@ -4,30 +4,35 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model; 
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod; 
- 
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.model.DataGrid;
 import com.examw.model.Json;
 import com.examw.model.TreeNode;
-import com.examw.test.domain.security.Right; 
+import com.examw.test.domain.security.Right;
+import com.examw.test.domain.syllabus.BookChapter;
+import com.examw.test.domain.syllabus.ChapterKnowledge;
+import com.examw.test.domain.syllabus.Syllabus;
 import com.examw.test.model.syllabus.BookChapterInfo;
 import com.examw.test.model.syllabus.BookInfo;
 import com.examw.test.model.syllabus.ChapterKnowledgeInfo;
+import com.examw.test.model.syllabus.SyllabusInfo;
 import com.examw.test.service.syllabus.BookStatus;
 import com.examw.test.service.syllabus.IBookChapterService;
 import com.examw.test.service.syllabus.IBookService;
 import com.examw.test.service.syllabus.IChapterKnowledgeService;
+import com.examw.test.service.syllabus.ISyllabusService;
 import com.examw.test.support.PaperItemUtils;
 /**
  * 教材控制器。
@@ -47,6 +52,8 @@ public class BookController {
 	//章节知识点服务接口。
 	@Resource
 	private IChapterKnowledgeService chapterKnowledgeService;
+	@Resource
+	private ISyllabusService syllabusService;
 	/**
 	 * 获取列表页面。
 	 * @return
@@ -153,14 +160,57 @@ public class BookController {
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.SYLLABUS_BOOK + ":" + Right.VIEW})
-	@RequestMapping(value="/{bookId}/chapters/list", method = RequestMethod.GET)
-	public String loadChapterList(@PathVariable String bookId,Model model){
+	@RequestMapping(value="/{syllabusId}/{bookId}/chapters/list", method = RequestMethod.GET)
+	public String loadChapterList(@PathVariable String syllabusId,@PathVariable String bookId,Model model){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载教材［bookId = %s］章节管理列表页面...", bookId));
 		model.addAttribute("PER_UPDATE",ModuleConstant.SYLLABUS_BOOK + ":" + Right.UPDATE);
 		model.addAttribute("PER_DELETE",ModuleConstant.SYLLABUS_BOOK + ":" + Right.DELETE);
-		
+		model.addAttribute("current_syllabus_id", syllabusId);
 		model.addAttribute("current_book_id", bookId);
 		return "syllabus/book_chapters_list";
+	}
+	@RequiresPermissions({ModuleConstant.SYLLABUS_BOOK + ":" + Right.VIEW})
+	@RequestMapping(value = {"/{syllabusId}/{bookId}/syllabus/tree"}, method = {RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public List<TreeNode> loadSyllabus(@PathVariable String syllabusId,@PathVariable String bookId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试大纲［syllabusId = %s］树数据...", syllabusId));
+		List<TreeNode> nodes = new ArrayList<>();
+		Syllabus root = this.syllabusService.loadSyllabus(syllabusId);
+		if(root == null) return nodes;
+		TreeNode e = this.createSyllabusNode(this.syllabusService.conversion(root),bookId);
+		if(e != null) nodes.add(e);
+		return nodes;
+	}
+	//创建考试大纲树结构。
+	private TreeNode createSyllabusNode(SyllabusInfo root,String bookId){
+		if(root == null) return null;
+		TreeNode node = new TreeNode();
+		node.setId(root.getId());
+		BookChapter chapter = this.bookChapterService.loadChapters(bookId,root.getId());
+		if(chapter!=null && chapter.getKnowledges()!=null && chapter.getKnowledges().size()>0)
+			node.setText(root.getTitle()+" [已加]");
+		else
+			node.setText(root.getTitle());
+		Map<String, Object> attributes = new HashMap<String, Object>();
+		attributes.put("pid", root.getPid());
+		attributes.put("id", root.getId());
+		attributes.put("title", root.getTitle());
+		attributes.put("orderNo", root.getOrderNo());
+		node.setAttributes(attributes);
+		if(root.getChildren() != null && root.getChildren().size() > 0){
+			List<TreeNode> childrenNodes = new ArrayList<>();
+			for(SyllabusInfo child : root.getChildren()){
+				if(child == null) continue;
+				TreeNode e = this.createSyllabusNode(child,bookId);
+				if(e != null){
+					childrenNodes.add(e);
+				}
+			}
+			if(childrenNodes.size() > 0){
+				node.setChildren(childrenNodes);
+			}
+		}
+		return node;
 	}
 	/**
 	 * 加载章节管理编辑页面。
@@ -308,7 +358,16 @@ public class BookController {
 		model.addAttribute("current_book_id", bookId);
 		model.addAttribute("current_syllabus_id", syllabusId);
 		BookInfo info = this.bookService.loadBook(bookId);
-		if(info == null) throw new RuntimeException(String.format("教材［bookId ＝ ％s］不存在！", bookId));
+		if(info == null) throw new RuntimeException(String.format("教材［bookId ＝%s］不存在！", bookId));
+		BookChapter chapter = this.bookChapterService.createChapters(bookId,syllabusId);
+		if(chapter!=null){
+			model.addAttribute("current_chapter_id", chapter.getId());
+			Set<ChapterKnowledge> knowledges = chapter.getKnowledges();
+			if(knowledges!=null && knowledges.size()>0)
+			{
+				model.addAttribute("KNOWLEDGE",knowledges.iterator().next());
+			}
+		}
 		model.addAttribute("current_subject_id", info.getSubjectId());
 		return "syllabus/book_knowledges_edit"; 
 	}

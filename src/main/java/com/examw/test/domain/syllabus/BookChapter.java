@@ -11,7 +11,7 @@ import java.util.Set;
  */
 public class BookChapter implements Serializable,Comparable<BookChapter> {
 	private static final long serialVersionUID = 1L;
-	private String id,title,content;
+	private String id,title,content,syllabusId;
 	private Book book;
 	private Set<ChapterKnowledge> knowledges;
 	private BookChapter parent;
@@ -154,5 +154,21 @@ public class BookChapter implements Serializable,Comparable<BookChapter> {
 			}
 		}
 		return index;
+	}
+	/**
+	 * 获取 大纲ID
+	 * @return syllabusId
+	 * 大纲ID
+	 */
+	public String getSyllabusId() {
+		return syllabusId;
+	}
+	/**
+	 * 设置 大纲ID
+	 * @param syllabusId
+	 * 大纲ID
+	 */
+	public void setSyllabusId(String syllabusId) {
+		this.syllabusId = syllabusId;
 	}
 }

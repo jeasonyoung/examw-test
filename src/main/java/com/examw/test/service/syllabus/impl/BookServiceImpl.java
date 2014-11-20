@@ -14,12 +14,14 @@ import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.settings.IAreaDao;
 import com.examw.test.dao.settings.ISubjectDao;
-import com.examw.test.dao.syllabus.IPressDao;
 import com.examw.test.dao.syllabus.IBookDao;
+import com.examw.test.dao.syllabus.IPressDao;
+import com.examw.test.dao.syllabus.ISyllabusDao;
 import com.examw.test.domain.settings.Area;
 import com.examw.test.domain.settings.Subject;
-import com.examw.test.domain.syllabus.Press;
 import com.examw.test.domain.syllabus.Book;
+import com.examw.test.domain.syllabus.Press;
+import com.examw.test.domain.syllabus.Syllabus;
 import com.examw.test.model.syllabus.BookInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.syllabus.IBookService;
@@ -33,6 +35,7 @@ public class BookServiceImpl extends BaseDataServiceImpl<Book, BookInfo> impleme
 	private IBookDao bookDao;
 	private IPressDao pressDao;
 	private ISubjectDao subjectDao;
+	private ISyllabusDao syllabusDao;
 	private IAreaDao areaDao;
 	private Map<Integer, String> statusMap;
 	/**
@@ -70,6 +73,15 @@ public class BookServiceImpl extends BaseDataServiceImpl<Book, BookInfo> impleme
 	public void setAreaDao(IAreaDao areaDao) {
 		if(logger.isDebugEnabled()) logger.debug("地区数据接口...");
 		this.areaDao = areaDao;
+	}
+	
+	/**
+	 * 设置 大纲数据接口
+	 * @param syllabusDao
+	 * 大纲数据接口
+	 */
+	public void setSyllabusDao(ISyllabusDao syllabusDao) {
+		this.syllabusDao = syllabusDao;
 	}
 	/**
 	 * 设置状态值和名称集合。
@@ -145,6 +157,10 @@ public class BookServiceImpl extends BaseDataServiceImpl<Book, BookInfo> impleme
 				info.setExamName(data.getSubject().getExam().getName());
 			}
 		}
+		if(data.getSyllabus()!=null){
+			info.setSyllabusId(data.getSyllabus().getId());
+			info.setSyllabusName(data.getSyllabus().getTitle());
+		}
 		if(data.getAreas() != null && data.getAreas().size() > 0){
 			List<String> areaIdList = new ArrayList<>(),areaNameList = new ArrayList<>();
 			for(Area area : data.getAreas()){
@@ -183,6 +199,14 @@ public class BookServiceImpl extends BaseDataServiceImpl<Book, BookInfo> impleme
 		data.setPress(StringUtils.isEmpty(info.getPressId()) ?  null  : this.pressDao.load(Press.class, info.getPressId()));
 		//科目
 		data.setSubject(StringUtils.isEmpty(info.getSubjectId()) ? null  : this.subjectDao.load(Subject.class, info.getSubjectId()));
+		//大纲
+		if(StringUtils.isEmpty(info.getSyllabusId()))
+		{
+			throw new RuntimeException("教材所采用的大纲不能为空");
+		}
+		Syllabus syllabus = this.syllabusDao.load(Syllabus.class, info.getSyllabusId());
+		if(syllabus==null) throw new RuntimeException("所选大纲不存在");
+		data.setSyllabus(syllabus);
 		//地区
 		Set<Area> areas = new HashSet<>();
 		if(info.getAreaId() != null && info.getAreaId().length > 0){

@@ -76,12 +76,28 @@ public class FrontProductServiceImpl implements IFrontProductService {
 	 * @see com.examw.test.service.products.IFrontProductService#loadProducts(java.lang.String)
 	 */
 	@Override
-	public List<FrontProductInfo> loadProducts(final String examId) {
+	public List<FrontProductInfo> loadProductsByExam(final String examId) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试[examId = %s]下的全部产品...", examId));
 		List<ProductInfo> rows = this.productService.datagrid(new ProductInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public String getExamId() { return examId;}
+			@Override
+			public Integer getStatus() {return ProductStatus.ENABLE.getValue();}	//状态必须正常
+			@Override
+			public String getSort() {return "orderNo"; }
+			@Override
+			public String getOrder() {return "desc"; }
+		}).getRows();
+		return this.changeModel(rows);
+	}
+	@Override
+	public List<FrontProductInfo> loadProductsByCategory(final String categoryId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试分类[categoryId = %s]下的全部产品...", categoryId));
+		List<ProductInfo> rows = this.productService.datagrid(new ProductInfo(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public String getCategoryId() { return categoryId;}
 			@Override
 			public Integer getStatus() {return ProductStatus.ENABLE.getValue();}	//状态必须正常
 			@Override

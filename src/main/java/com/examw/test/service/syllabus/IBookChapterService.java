@@ -21,6 +21,7 @@ public interface IBookChapterService extends IBaseDataService<BookChapterInfo> {
 	 * 章节集合。
 	 */
 	List<BookChapterInfo> loadChapters(String bookId);
+	BookChapter loadChapters(String bookId,String syllabusId);
 	/**
 	 * 加载最大排序号。
 	 * @param parentChapterId
@@ -34,4 +35,10 @@ public interface IBookChapterService extends IBaseDataService<BookChapterInfo> {
 	 * @return
 	 */
 	BookChapterInfo conversion(BookChapter chapter);
+	/**
+	 * 根据大纲创建章节
+	 * @param bookId
+	 * @param syllabusId
+	 */
+	BookChapter createChapters(String bookId,String syllabusId);
 }

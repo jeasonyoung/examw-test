@@ -22,6 +22,8 @@ public class BookInfo extends Paging {
 	private Integer status,orderNo;
 	private Date createTime,lastTime;
 	private Set<BookChapterInfo> chapters;
+	//所属大纲信息 [2014.11.20]
+	private String syllabusId,syllabusName;
 	/**
 	 * 获取教材ID。
 	 * @return 教材ID。
@@ -337,4 +339,37 @@ public class BookInfo extends Paging {
 	public void setChapters(Set<BookChapterInfo> chapters) {
 		this.chapters = chapters;
 	}
+	/**
+	 * 获取 大纲ID
+	 * @return syllabusId
+	 * 大纲ID
+	 */
+	public String getSyllabusId() {
+		return syllabusId;
+	}
+	/**
+	 * 设置 大纲ID
+	 * @param syllabusId
+	 * 大纲ID
+	 */
+	public void setSyllabusId(String syllabusId) {
+		this.syllabusId = syllabusId;
+	}
+	/**
+	 * 获取 大纲名称
+	 * @return syllabusName
+	 * 大纲名称
+	 */
+	public String getSyllabusName() {
+		return syllabusName;
+	}
+	/**
+	 * 设置 大纲名称
+	 * @param syllabusName
+	 * 大纲名称
+	 */
+	public void setSyllabusName(String syllabusName) {
+		this.syllabusName = syllabusName;
+	}
+	
 }

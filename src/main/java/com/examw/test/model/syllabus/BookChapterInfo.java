@@ -15,7 +15,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class BookChapterInfo implements Serializable,Comparable<BookChapterInfo> {
 	private static final long serialVersionUID = 1L;
-	private String pid,id,title,content,bookId,bookName;
+	private String pid,id,title,content,bookId,bookName,syllabusId;
 	private Integer orderNo;
 	private Set<BookChapterInfo> children;
 	/**
@@ -154,5 +154,21 @@ public class BookChapterInfo implements Serializable,Comparable<BookChapterInfo>
 			 }
 		}
 		return index;
+	}
+	/**
+	 * 获取 大纲ID
+	 * @return syllabusId
+	 * 大纲ID
+	 */
+	public String getSyllabusId() {
+		return syllabusId;
+	}
+	/**
+	 * 设置 大纲ID
+	 * @param syllabusId
+	 * 大纲ID
+	 */
+	public void setSyllabusId(String syllabusId) {
+		this.syllabusId = syllabusId;
 	}
 }

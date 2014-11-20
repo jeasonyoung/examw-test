@@ -20,6 +20,7 @@
 				required:true,valueField:'id',textField:'name',onLoadError:function(e){ <@error_dialog 'e'/> },
 				onSelect:function(record){
 					$('#${form}_areaId').combobox('clear'); $('#${form}_areaId').combobox('reload','<@s.url '/settings/subject/areas'/>?subjectId=' + record.id);
+					$('#${form}_syllabusId').combobox('clear'); $('#${form}_syllabusId').combobox('reload','<@s.url '/syllabus/syllabus/all/subjects/'/>' + record.id)
 				}" style="width:180px;"/>
 		<input type="hidden" name="id">
 	</div> 
@@ -39,6 +40,11 @@
 								$(e.data.target).combobox('setValues', opts);
 						}
 					},{iconCls:'icon-clear',handler:function(e){ $(e.data.target).combobox('clear');}}]" style="width:464px;"/>
+	</div>
+	<div style="float:left;margin-top:8px;width:100%;">
+		<label style="width:75px;">所采用大纲：</label>
+		<input id="${form}_syllabusId" type="text" name="syllabusId" class="easyui-combobox" data-options="<#if current_subject_id??&&current_subject_id!=''>url:'<@s.url '/syllabus/syllabus/all/subjects/${current_subject_id}'/>',</#if>required:true,multiple:false,
+			valueField:'id',textField:'title',onLoadError:function(e){ <@error_dialog 'e'/> }" style="width:464px;">
 	</div>
 	<div style="float:left; margin-top:5px; width:100%;">
 		<textarea name="description" class="easyui-ueditor" data-options="width:550,height:100"></textarea>

@@ -38,7 +38,8 @@ $(function(){
 		striped:true,idField:"id",sortName:"orderNo",sortOrder:"desc",
 		queryParams:{
 			"name":$("#${dg}_toobar input[name='name']").val(),
-			 "examId":current_exam_id
+			"examId":current_exam_id,
+			"categoryId":current_category_id
 		},
 		columns:[[{
 			field:"id",checkbox:true
@@ -67,7 +68,8 @@ $(function(){
 	${dg}_search = function(){
 		dg.datagrid("load",{
 			  "name":$("#${dg}_toobar input[name='name']").val(),
-			  "examId":current_exam_id
+			  "examId":current_exam_id,
+			  "categoryId":current_category_id
 		});
 	};
 	<@shiro.hasPermission name="${PER_UPDATE}">

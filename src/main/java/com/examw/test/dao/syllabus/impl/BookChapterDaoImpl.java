@@ -71,4 +71,20 @@ public class BookChapterDaoImpl extends BaseDaoImpl<BookChapter> implements IBoo
 		}
 		super.delete(data);
 	}
+	/*
+	 * 判断是否已经创建章节
+	 * @see com.examw.test.dao.syllabus.IBookChapterDao#hasCreated(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public BookChapter hasCreated(String bookId, String syllabusId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("查询教材［bookId = %s］章节是否已经创建...", bookId));
+		final String hql = "from BookChapter b where (b.book.id = :bookId) and (b.syllabusId = :syllabusId)";
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("bookId", bookId);
+		parameters.put("syllabusId", syllabusId);
+		List<BookChapter> list = this.find(hql, parameters, null, null);
+		if(list != null && list.size()>0)
+			return list.get(0);
+		return null;
+	}
 }

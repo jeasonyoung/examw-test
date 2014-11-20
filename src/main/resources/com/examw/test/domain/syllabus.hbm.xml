@@ -71,6 +71,8 @@
 		    <key column="book_id" />
 		    <one-to-many class="BookChapter" />
 		</set>
+		<!-- 所采用的大纲 -->
+		<many-to-one name="syllabus" column="syllabus_id" class="com.examw.test.domain.syllabus.Syllabus"/>
 		<!-- 排序号 -->
 		<property name="orderNo" type="integer" />
 		<!-- 最后修改用户ID -->
@@ -98,6 +100,8 @@
 	        <key column="chapter_id" />
 	        <one-to-many class="ChapterKnowledge" />
 	    </set>
+	    <!-- 所对应大纲要点ID[2014.11.20] -->
+		<property name="syllabusId" column="syllabus_id" length="64" />
 	    <!-- 排序号 -->
 	    <property name="orderNo" type="integer" />
 	    <!-- 父章节 -->
