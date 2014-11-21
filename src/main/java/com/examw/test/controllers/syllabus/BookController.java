@@ -212,6 +212,15 @@ public class BookController {
 		}
 		return node;
 	}
+	@RequiresPermissions({ModuleConstant.SYLLABUS_BOOK + ":" + Right.VIEW})
+	@RequestMapping(value="/{bookId}/chapters/manager", method = RequestMethod.GET)
+	public String loadChapterList(@PathVariable String bookId,Model model){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载教材［bookId = %s］章节管理列表页面...", bookId));
+		model.addAttribute("PER_UPDATE",ModuleConstant.SYLLABUS_BOOK + ":" + Right.UPDATE);
+		model.addAttribute("PER_DELETE",ModuleConstant.SYLLABUS_BOOK + ":" + Right.DELETE);
+		model.addAttribute("current_book_id", bookId);
+		return "syllabus/book_chapters_manager";
+	}
 	/**
 	 * 加载章节管理编辑页面。
 	 * @param bookId

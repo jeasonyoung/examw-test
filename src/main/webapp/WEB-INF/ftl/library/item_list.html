@@ -98,7 +98,8 @@ $(function(){
 		$("#${dg}").datagrid("load",{
 			"examId":exam_id,
 			"subjectId":subject_id,
-			"content":$("#${dg}_toobar input[name='content']").val()
+			"content":$("#${dg}_toobar input[name='content']").val(),
+			"type":$("#${module}_itemtype_combo").combobox("getValue")
 		});
 	};
 	//获取第一层的考试节点
@@ -273,8 +274,15 @@ $(function(){
 			<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
 			</@shiro.hasPermission>
 			
-			<label>试题：<input name="content" type="text" style="width:368px;"/></label>
-	
+			<label>试题：<input name="content" type="text" style="width:240px;"/></label>
+			<label>题型:
+			<select id="${module}_itemtype_combo" class="easyui-combobox" name="dept" style="width:100px; margin-left:5px">   
+    			<option value="">全部</option>   
+    			<#list ItemTypeMaps?keys as key>
+    				<option value="${key}">${ItemTypeMaps[key]}</option>  
+    			</#list>
+			</select>
+			</label>  
 			<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
 		</div>
 	</div>

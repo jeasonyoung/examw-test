@@ -1,6 +1,8 @@
 package com.examw.test.controllers.syllabus;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +69,7 @@ public class SyllabusController {
 			if(status == null) continue;
 			syllabusStatusMap.put(String.format("%d", status.getValue()), this.syllabusService.loadStatusName(status.getValue()));
 		}
+		model.addAttribute("current_year", new SimpleDateFormat("yyyy").format(new Date()));
 		model.addAttribute("SyllabusStatusMap", syllabusStatusMap);
 		
 		return "syllabus/syllabus_edit";

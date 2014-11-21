@@ -327,7 +327,7 @@ $(function(){
 	<div data-options="region:'west',title:'试卷结构',split:true,tools:[{ iconCls:'icon-reload',handler:function(){ $('#${module}_tree').tree('reload'); ${dg}_search();}}
 		<@shiro.hasPermission name='${PER_UPDATE}'> ,{ iconCls:'icon-add', handler:function(){ ${module}_add(0); } }</@shiro.hasPermission>]" style="width:190px;">
 		<ul id="${module}_tree" class="easyui-tree" data-options="url:'<@s.url '/library/paper/structure/all/${current_paper_id}'/>',lines:true,onContextMenu:function(e, node){
-			e.preventDefault();$('#${module}_tree_menu').menu('show', {left: e.pageX,top: e.pageY }); },onLoadError:function(e){ <@error_dialog 'e'/> },
+			e.preventDefault(); $('#${module}_tree').tree('select',node.target); $('#${module}_tree_menu').menu('show', {left: e.pageX,top: e.pageY }); },onLoadError:function(e){ <@error_dialog 'e'/> },
 			onClick:function(node){ ${dg}_search(); }, onDblClick:function(node){ ${module}_structure_edit_window('编辑试卷结构',node.attributes.info,null); } "></ul>
 		<div id="${module}_tree_menu" class="easyui-menu" style="width:120px;">
 			<@shiro.hasPermission name="${PER_UPDATE}">
@@ -358,6 +358,7 @@ $(function(){
 					<th data-options="field:'orderNo',width:10,align:'right',sortable:true">序号</th>
 					<th data-options="field:'typeName',width:18,align:'center',sortable:true">题型</th>
 					<th data-options="field:'content',width:100,align:'left',formatter:function(value,row,index){ value= value.replace(/<[^>]*>/g,''); return '<span title=\''+value+'\'>'+value+'</span>'; }">试题内容</th>
+					<th data-options="field:'count',width:10,align:'center'">题量</th>
 					<th data-options="field:'preview',width:10,align:'center',formatter:function(value,row,index){ return '<a href=\'#\' onclick=${module}_paper_item_preview(\''+row['structureId']+'\',\'' +row['id']+ '\');>预览</a>';}">预览</th>
 				</tr>
 			</thead>

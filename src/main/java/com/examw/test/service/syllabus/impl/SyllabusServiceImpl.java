@@ -2,6 +2,7 @@ package com.examw.test.service.syllabus.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,8 +13,10 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
+import com.examw.test.dao.settings.IAreaDao;
 import com.examw.test.dao.settings.ISubjectDao;
 import com.examw.test.dao.syllabus.ISyllabusDao;
+import com.examw.test.domain.settings.Area;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.domain.syllabus.Syllabus;
 import com.examw.test.model.syllabus.SyllabusInfo;
@@ -28,6 +31,7 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 	private static final Logger logger = Logger.getLogger(SyllabusServiceImpl.class);
 	private ISyllabusDao syllabusDao;
 	private ISubjectDao subjectDao;
+	private IAreaDao areaDao;
 	private Map<Integer, String> statusMap;
 	/**
 	 * 设置大纲数据接口。
@@ -46,6 +50,14 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 	public void setSubjectDao(ISubjectDao subjectDao) {
 		if(logger.isDebugEnabled()) logger.debug("注入科目数据接口...");
 		this.subjectDao = subjectDao;
+	}
+	/**
+	 * 设置 地区数据接口
+	 * @param areaDao
+	 * 
+	 */
+	public void setAreaDao(IAreaDao areaDao) {
+		this.areaDao = areaDao;
 	}
 	/**
 	 * 设置状态值和名称集合。
@@ -118,6 +130,18 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 				target.setExamName(source.getSubject().getExam().getName());
 			}
 		}
+		if(!hasChild){	//不查子类就是顶级
+			if(source.getAreas() != null && source.getAreas().size() > 0){
+				List<String> list_ids = new ArrayList<>(), list_names = new ArrayList<>();
+				for(Area area : source.getAreas()){
+					if(area == null) continue;
+					list_ids.add(area.getId());
+					list_names.add(area.getName());
+				}
+				target.setAreaId(list_ids.toArray(new String[0]));
+				target.setAreaName(list_names.toArray(new String[0]));
+			}
+		}
 		if(hasChild && (source.getChildren() != null && source.getChildren().size() > 0)){
 			Set<SyllabusInfo> children = new TreeSet<>();
 			for(Syllabus syllabus : source.getChildren()){
@@ -151,6 +175,18 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 		BeanUtils.copyProperties(info, data, new String[]{"children"});
 		if(StringUtils.isEmpty(info.getPid())) {
 			data.setParent(null);
+			Set<Area> areas = null;
+			if(info.getAreaId() != null && info.getAreaId().length > 0){
+				areas = new HashSet<>();
+				for(String areaId : info.getAreaId()){
+					if(StringUtils.isEmpty(areaId)) continue;
+					Area area = this.areaDao.load(Area.class, areaId);
+					if(area != null){
+						areas.add(area);
+					}
+				}
+			}
+			data.setAreas(areas);
 		}else if (data.getParent() == null || !data.getParent().getId().equalsIgnoreCase(info.getPid())) {
 			Syllabus parent = this.syllabusDao.load(Syllabus.class, info.getPid());
 			if(parent != null && !parent.getId().equalsIgnoreCase(data.getId())) {

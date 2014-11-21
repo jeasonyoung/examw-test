@@ -90,15 +90,31 @@ $(function(){
 		}
 	};
 	</@shiro.hasPermission>
+	${module}_reload = function(){
+		$("#${module}_tree").tree("reload");
+	}
 });
 //-->
 </script>
+<div id="${module}_tabs" class="easyui-tabs" data-options="tabWidth:112, onSelect:function(title){    
+        if(title == '管理'){
+        	var tab = $('#${module}_tabs').tabs('getSelected');  // 获取选择的面板
+        	if(!tab.panel('options').href)
+			$('#${module}_tabs').tabs('update', {
+			tab: tab,
+			options: {
+				href: '<@s.url '/syllabus/book/${current_book_id}/chapters/manager'/>'  //
+			}
+		});
+      } 
+    }">
+<div title="添加">
 <div id="${module}_loading" class="panel-loading">Loading...</div>
 <ul id="${module}_tree" class="easyui-tree" data-options="
 		url:'<@s.url '/syllabus/book/${current_syllabus_id}/${current_book_id}/syllabus/tree'/>', 
 		onContextMenu:function(e,node){
 		 	e.preventDefault();
-		 	$('#${module}_tree').tree('select',node.target); 
+		 	$('#${module}_menus').menu('show',{ left: e.pageX,top: e.pageY  });
 		 },
 		 onBeforeLoad:function(){ $('#${module}_loading').show();},
 		 onLoadSuccess:function(){ $('#${module}_loading').hide();},
@@ -109,3 +125,10 @@ $(function(){
 					${module}_knowledge_edit_window('编辑知识点内容',node.attributes); 
 				}
 			}"></ul>
+<div id="${module}_menus" class="easyui-menu" style="width:120px;">
+	<div onclick="${module}_reload()" data-options="iconCls:'icon-reload'">刷新</div>
+</div>
+</div>
+<div title="管理" >
+
+</div>

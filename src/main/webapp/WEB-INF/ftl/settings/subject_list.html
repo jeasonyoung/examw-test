@@ -79,7 +79,7 @@ $(function(){
 			onClose:function(){ $(this).dialog("destroy"); },
 			onLoad:function(){
 				$("#${module}_edit_form").form("load",row ? row : {"categoryId":catalog_id,"examId":exam_id,"code":code});
-				if(row.pid) $("#${module}_edit_form_area_part").hide();
+				if(row&&row.pid) $("#${module}_edit_form_area_part").hide();
 			}
 	  });
 	};

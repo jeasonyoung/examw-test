@@ -156,6 +156,13 @@ public class ChapterKnowledgeServiceImpl extends BaseDataServiceImpl<ChapterKnow
 			info.setCreateTime(new Date());
 			data = new ChapterKnowledge();
 		}else {
+			//内容为空,删除这个知识点
+			if(StringUtils.isEmpty(info.getDescription()))
+			{
+				if(logger.isDebugEnabled()) logger.debug(String.format("知识点内容为空,删除数据［id = %s］...", data.getId()));
+				this.chapterKnowledgeDao.delete(data);
+				return info;
+			}
 			info.setCreateTime(data.getCreateTime());
 			if(info.getCreateTime() == null){
 				info.setCreateTime(new Date());

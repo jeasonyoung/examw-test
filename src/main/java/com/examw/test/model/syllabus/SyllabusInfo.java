@@ -15,6 +15,8 @@ public class SyllabusInfo extends BaseSyllabusInfo implements Comparable<Syllabu
 	private String pid,id,title,subjectId,subjectName,examId,examName,statusName;
 	private Set<SyllabusInfo> children;
 	private Integer status, orderNo;
+	private Integer year;
+	private String[] areaId,areaName;
 	/**
 	 * 获取上级要点ID。
 	 * @return 上级要点ID。
@@ -196,4 +198,53 @@ public class SyllabusInfo extends BaseSyllabusInfo implements Comparable<Syllabu
 		}
 		return index;
 	}
+	/**
+	 * 获取 年份
+	 * @return year
+	 * 年份
+	 */
+	public Integer getYear() {
+		return year;
+	}
+	/**
+	 * 设置 年份
+	 * @param year
+	 * 年份
+	 */
+	public void setYear(Integer year) {
+		this.year = year;
+	}
+	/**
+	 * 获取 地区ID
+	 * @return areaId
+	 * 地区ID
+	 */
+	public String[] getAreaId() {
+		return areaId;
+	}
+	/**
+	 * 设置  地区ID
+	 * @param areaId
+	 *  地区ID
+	 */
+	public void setAreaId(String[] areaId) {
+		this.areaId = areaId;
+	}
+	/**
+	 * 获取  地区名称
+	 * @return areaName
+	 *  地区名称
+	 */
+	public String[] getAreaName() {
+		return areaName;
+	}
+	/**
+	 * 设置 地区名称
+	 * @param areaName
+	 *  地区名称
+	 */
+	public void setAreaName(String[] areaName) {
+		this.areaName = areaName;
+	}
+	
 }

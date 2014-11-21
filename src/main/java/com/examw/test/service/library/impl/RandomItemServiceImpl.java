@@ -145,7 +145,9 @@ public class RandomItemServiceImpl implements IRandomItemService {
 			logger.error(msg = String.format("题库中没有满足条件［%1$s］［%2$s］［%3$s］的试题！",subject.getName(), itemType, (area == null ? "" : area.getName())));
 			throw new Exception(msg);
 		}
-		if(pools.size() < total){
+		Map<Integer,Integer> eachCount  = new HashMap<Integer,Integer>();
+		Integer pool_size = this.calculatePoolSize(pools,itemType,eachCount);	//计算试题池里试题的数量
+		if(pool_size < total){
 			logger.error(msg = String.format("从题库中只能查找出符合条件的试题［%1$d］，不满足试卷结构［%2$d］的要求！", pools.size(), total));
 			throw new Exception(msg);
 		}
@@ -168,7 +170,8 @@ public class RandomItemServiceImpl implements IRandomItemService {
 			pools.remove(item);//从随机池移除被选中的试题。
 		}
 		if(checkItemCount && total_index != 0){
-			logger.error(msg = String.format("随机抽取的试题尾数为［%d］，请再次随机抽取！ ", total_index));
+			//计算分别有多少题目数量,以及总题数
+			logger.error(msg = String.format("题量只能是%1$s的组合,题库总题量为%2$d,抽取尾数为%3$d,请检查结构题量或者重抽",eachCount.toString(),pool_size,total_index));
 			throw new Exception(msg);
 		}
 		//添加题目到结构
@@ -180,6 +183,24 @@ public class RandomItemServiceImpl implements IRandomItemService {
 			order += item.getCount();
 		}
 		return order;
+	}
+	//计算试题池里试题的数量
+	private Integer calculatePoolSize(List<Item> pools,ItemType itemType,Map<Integer,Integer> eachCount) {
+		//如果是共享题干 或者 共享答案题,要分开算题目总数
+		if(itemType.equals(ItemType.SHARE_ANSWER) || itemType.equals(ItemType.SHARE_TITLE))
+		{
+			int sum = 0;
+			for(Item item:pools)
+			{
+				sum += item.getCount();
+				if(eachCount.get(item.getCount())==null)
+					eachCount.put(item.getCount(), 1);
+				else
+					eachCount.put(item.getCount(), eachCount.get(item.getCount())+1);
+			}
+			return sum;
+		}
+		return pools.size();
 	}
 	//抽题处理。
 	private Item pushItemHandler(List<Item> sources){

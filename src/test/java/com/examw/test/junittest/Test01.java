@@ -1,6 +1,8 @@
 package com.examw.test.junittest;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -30,5 +32,11 @@ public class Test01 {
 		String content = "";
 		content = content.replaceAll("</[p|P]><[p|P](.+?)>", "<br/>");
 		content = content.replaceAll("<(?!/?(?i)(img|br)).*?>", "");
+		ItemType type = ItemType.convert(6);
+		System.out.println(type.equals(ItemType.SHARE_TITLE));
+		Map<Integer,Integer> map  = new HashMap<Integer,Integer>();
+		map.put(1, 1);
+		map.put(2, 2);
+		System.out.println(map);
 	}
 }

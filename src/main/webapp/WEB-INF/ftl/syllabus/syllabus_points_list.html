@@ -100,7 +100,6 @@ $(function(){
 	${module}_reload = function(id){
 		$("#${module}_tree").tree({onLoadSuccess:function(node,data){
 			//$("#${module}_tree").tree("collapseAll");
-			console.info(id);
 			if(id){
 				var node1 = $("#${module}_tree").tree("find",id);
 				$("#${module}_tree").tree("scrollTo",node1.target);

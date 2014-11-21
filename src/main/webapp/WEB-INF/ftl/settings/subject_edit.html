@@ -33,8 +33,9 @@
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;" id="${form}_area_part">
 		<label style="width:75px;">地区：</label>
-		<input id="${form}_areaId" name="areaId" class="easyui-combobox" data-options="url:'<@s.url '/settings/exam/areas?examId=${current_exam_id}'/>',
-			multiple:true,valueField:'id',textField:'name',onLoadError:function(e){<@error_dialog 'e'/> },icons:[{iconCls:'icon-sum', 
+		<input id="${form}_areaId" name="areaId" class="easyui-combobox" data-options="required:true,url:'<@s.url '/settings/exam/areas?examId=${current_exam_id}'/>',
+			multiple:true,valueField:'id',textField:'name',onLoadSuccess:function(){var data = $('#${form}_areaId').combobox('getData'); if(!data||data.length==0){$('#${form}_areaId').combobox('disableValidation');} else {$('#${form}_areaId').combobox('enableValidation');}},
+			onLoadError:function(e){<@error_dialog 'e'/> },icons:[{iconCls:'icon-sum', 
 				handler:function(e){var rows = $(e.data.target).combobox('getData');if(rows && $.isArray(rows)){ var opts = [];$.each(rows,function(i,n){ opts.push(n['id']); });$(e.data.target).combobox('setValues', opts);
 			}}},{ iconCls:'icon-clear', handler:function(e){ $(e.data.target).combobox('clear'); }}]" style="width:372px;"/>
 	</div>

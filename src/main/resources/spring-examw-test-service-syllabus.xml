@@ -14,6 +14,8 @@
 		<property name="syllabusDao" ref="syllabusDao"/>
 		<!-- 科目数据接口 -->
 		<property name="subjectDao" ref="subjectDao"/>
+		<!-- 地区数据接口 -->
+		<property name="areaDao" ref="areaDao" />
 		<!-- 大纲状态 -->
 		<property name="statusMap">
 		    <map>

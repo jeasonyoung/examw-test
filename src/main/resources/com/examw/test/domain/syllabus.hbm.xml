@@ -27,6 +27,8 @@
 		<property name="status" type="integer" />
 		<!-- 排序号 -->
 		<property name="orderNo" type="integer"/>
+		<!-- 年份 -->
+		<property name="year" type="integer" />
 		<!-- 上级要点 -->
 		<many-to-one name="parent" column="pid" class="Syllabus" />
 		<!-- 子要点集合 -->
@@ -38,6 +40,13 @@
 		<set name="knowledges" inverse="true" cascade="save-update" order-by="orderNo asc">
 		    <key column="syllabus_id" />
 		    <one-to-many class="ChapterKnowledge"/>
+		</set>
+		<!-- 所属地区集合 -->
+		<set name="areas" inverse="false" cascade="save-update"  table="tbl_Examw_Test_Syllabus_SyllabusAreas">
+		    <!-- 考试ID -->
+			<key column="syllabus_id" />
+			<!-- 所属地区ID -->
+			<many-to-many class="com.examw.test.domain.settings.Area"  column="area_id" />
 		</set>
 	</class>
 	<!-- 教材 -->

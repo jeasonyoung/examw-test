@@ -3,6 +3,7 @@ package com.examw.test.domain.syllabus;
 import java.io.Serializable;
 import java.util.Set;
 
+import com.examw.test.domain.settings.Area;
 import com.examw.test.domain.settings.Subject;
 /**
  * 考试大纲。
@@ -17,6 +18,9 @@ public class Syllabus implements Serializable {
 	private Set<Syllabus> children;
 	private Integer status,orderNo;
 	private Set<ChapterKnowledge> knowledges;
+	//Add by FW 增加两个字段
+	private Integer year;
+	private Set<Area> areas;
 	/**
 	 * 获取要点ID。
 	 * @return 要点ID。
@@ -136,5 +140,37 @@ public class Syllabus implements Serializable {
 	 */
 	public void setKnowledges(Set<ChapterKnowledge> knowledges) {
 		this.knowledges = knowledges;
+	}
+	/**
+	 * 获取 年份
+	 * @return year
+	 * 年份
+	 */
+	public Integer getYear() {
+		return year;
+	}
+	/**
+	 * 设置 年份
+	 * @param year
+	 * 年份
+	 */
+	public void setYear(Integer year) {
+		this.year = year;
+	}
+	/**
+	 * 获取 地区
+	 * @return areas
+	 * 地区
+	 */
+	public Set<Area> getAreas() {
+		return areas;
+	}
+	/**
+	 * 设置 地区
+	 * @param areas
+	 * 地区
+	 */
+	public void setAreas(Set<Area> areas) {
+		this.areas = areas;
 	}
 }
