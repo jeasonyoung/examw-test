@@ -56,7 +56,7 @@
 		</div>
 		<div style="float:left;margin-left:5px;">
 			<label style="width:75px;">所属地区：</label>
-			<input id="${form}_areaId" name="areaId" class="easyui-combobox" data-options="required:true,url:'<@s.url '/settings/subject/areas?subjectId=${current_subject_id}'/>',
+			<input id="${form}_areaId" name="areaId" class="easyui-combobox" data-options="url:'<@s.url '/settings/subject/areas?subjectId=${current_subject_id}'/>',
 					valueField:'id',textField:'name',onLoadError:function(e){ <@error_dialog 'e'/> },onLoadSuccess:function(){var data = $('#${form}_areaId').combobox('getData'); if(!data||data.length==0){$('#${form}_areaId').combobox('disableValidation');} else {$('#${form}_areaId').combobox('enableValidation');}},
 					icons:[{iconCls:'icon-clear',handler:function(e){ $(e.data.target).combobox('clear');}}]" style="width:168px;" />
 		</div>

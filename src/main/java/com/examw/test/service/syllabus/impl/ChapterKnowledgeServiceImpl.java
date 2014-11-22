@@ -63,13 +63,18 @@ public class ChapterKnowledgeServiceImpl extends BaseDataServiceImpl<ChapterKnow
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载大纲要点［syllabusId = %1$s］和章节［chapterId = %2$s］下的知识点集合..", syllabusId, chapterId));
 		return this.changeModel(this.chapterKnowledgeDao.loadSyllabusKnowledge(syllabusId, chapterId));
 	}
+	@Override
+	public List<ChapterKnowledgeInfo> loadKnowledges(String syllabusId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载大纲要点［syllabusId = %1$s］下的知识点集合..", syllabusId));
+		return this.changeModel(this.chapterKnowledgeDao.loadSyllabusKnowledge(syllabusId));
+	}
 	/*
 	 * 加载知识点数据。
 	 * @see com.examw.test.service.syllabus.IChapterKnowledgeService#loadKnowledge(java.lang.String)
 	 */
 	@Override
 	public ChapterKnowledge loadKnowledge(String knowledgeId) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("加载知识点［knowledgeId ＝％s］数据...", knowledgeId));
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载知识点［knowledgeId ＝%s］数据...", knowledgeId));
 		if(StringUtils.isEmpty(knowledgeId)) return null;
 		return this.chapterKnowledgeDao.load(ChapterKnowledge.class, knowledgeId);
 	}
@@ -126,19 +131,24 @@ public class ChapterKnowledgeServiceImpl extends BaseDataServiceImpl<ChapterKnow
 		if(data.getSyllabus() != null){
 			info.setSyllabusId(data.getSyllabus().getId());
 			info.setSyllabusName(data.getSyllabus().getTitle());
-			this.buildTopSyllabus(data.getSyllabus(), info);
+			StringBuilder builder = new StringBuilder();
+			this.buildTopSyllabus(data.getSyllabus(), info,builder);
+			builder = null;
 		}
 		return info;
 	}
 	//构建所属考试大纲版本。
-	private void buildTopSyllabus(Syllabus syllabus, ChapterKnowledgeInfo info){
+	private void buildTopSyllabus(Syllabus syllabus, ChapterKnowledgeInfo info,StringBuilder builder){
 		if(syllabus == null || info == null) return;
 		if(syllabus.getParent() == null){
 			info.setTopSyllabusId(syllabus.getId());
-			info.setTopSyllabusName(syllabus.getTitle());
+			builder.append(syllabus.getTitle());
+			info.setTopSyllabusName(builder.toString());
 			return;
 		}
-		this.buildTopSyllabus(syllabus.getParent(), info);
+		if(builder.length() == 0) builder.append(syllabus.getTitle());
+		else builder.insert(0,syllabus.getTitle() + " > ");
+		this.buildTopSyllabus(syllabus.getParent(), info,builder);
 	}
 	/*
 	 * 数据更新。

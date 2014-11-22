@@ -21,6 +21,7 @@ public interface IChapterKnowledgeService extends IBaseDataService<ChapterKnowle
 	 * 知识点集合。
 	 */
 	List<ChapterKnowledgeInfo> loadKnowledges(String syllabusId,String chapterId);
+	List<ChapterKnowledgeInfo> loadKnowledges(String syllabusId);
 	/**
 	 * 加载知识点数据。
 	 * @param knowledgeId

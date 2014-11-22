@@ -84,6 +84,14 @@ public class ChapterKnowledgeDaoImpl extends BaseDaoImpl<ChapterKnowledge> imple
 		parameters.put("syllabusId", syllabusId); 
 		return this.find(hql, parameters, null, null);
 	}
+	@Override
+	public List<ChapterKnowledge> loadSyllabusKnowledge(String syllabusId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载大纲要点［syllabusId = %1$s］下的知识点集合...", syllabusId));
+		final String hql = "from ChapterKnowledge k where (k.syllabus.id = :syllabusId) order by k.orderNo ";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("syllabusId", syllabusId); 
+		return this.find(hql, parameters, null, null);
+	}
 	/*
 	 * 加载章节下最大代码值。
 	 * @see com.examw.test.dao.syllabus.IKnowledgeDao#loadMaxCode()

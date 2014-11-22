@@ -148,7 +148,7 @@ public class RandomItemServiceImpl implements IRandomItemService {
 		Map<Integer,Integer> eachCount  = new HashMap<Integer,Integer>();
 		Integer pool_size = this.calculatePoolSize(pools,itemType,eachCount);	//计算试题池里试题的数量
 		if(pool_size < total){
-			logger.error(msg = String.format("从题库中只能查找出符合条件的试题［%1$d］，不满足试卷结构［%2$d］的要求！", pools.size(), total));
+			logger.error(msg = String.format("从题库中只能查找出符合条件的试题［%1$d］，不满足试卷结构［%2$d］的要求！", pool_size, total));
 			throw new Exception(msg);
 		}
 		int total_index = total,index = 0;//结构需要的试题总数。

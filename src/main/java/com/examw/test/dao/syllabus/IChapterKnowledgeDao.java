@@ -37,6 +37,7 @@ public interface IChapterKnowledgeDao extends IBaseDao<ChapterKnowledge> {
 	 * 知识点集合。
 	 */
 	List<ChapterKnowledge> loadSyllabusKnowledge(String syllabusId,String chapterId);
+	List<ChapterKnowledge> loadSyllabusKnowledge(String syllabusId);
 	/**
 	 * 获取最大代码值。
 	 * @param chapterId

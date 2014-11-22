@@ -34,6 +34,11 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 	public List<Item> findItems(ItemInfo info) {
 		if(logger.isDebugEnabled()) logger.debug("查询数据...");
 		String hql = "from Item i where (i.parent is null) ";
+		// 2014.11.22 修改查询语句,在试题中若地区为null的话 查询不出试题的问题
+		if(!StringUtils.isEmpty(info.getAreaId()))
+		{
+			hql = "select i from Item i left join i.area a where (i.parent is null) ";
+		}
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
@@ -70,6 +75,11 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 	public Long total(ItemInfo info) {
 		if(logger.isDebugEnabled()) logger.debug("查询数据统计...");
 		String hql = "select count(*) from Item i where (i.parent is null)"; 
+		// 2014.11.22 修改查询语句,在试题中若地区为null的话 查询不出试题的问题
+		if(!StringUtils.isEmpty(info.getAreaId()))
+		{
+			hql = "select count(*) from Item i left join i.area a where (i.parent is null) ";
+		}
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(logger.isDebugEnabled()) logger.debug(hql);
@@ -89,8 +99,9 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 			hql += " and (i.source.id = :sourceId) ";
 			parameters.put("sourceId", info.getSourceId());
 		}
+		// 2014.11.22 修改查询语句,在试题中若地区为null的话 查询不出试题的问题
 		if(!StringUtils.isEmpty(info.getAreaId())){
-			hql += " and ((i.area is null) or (i.area.code = 1) or (i.area.id = :areaId)) ";
+			hql += " and ((a is null) or (a.code = 1) or (a.id = :areaId)) ";
 			parameters.put("areaId", info.getAreaId());
 		}
 		if(!StringUtils.isEmpty(info.getStatus())){
@@ -193,7 +204,8 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 	public List<Item> loadItems(Subject subject, ItemType itemType,Area area) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载试题［subject = %1$s］［itemType = %2$s］［area = %3$s］集合...", subject, itemType, area));
 		StringBuilder hqlBuilder = new StringBuilder();
-		hqlBuilder.append("from Item i where (i.parent is null) ");
+		// 2014.11.22 修改查询语句,在试题中若地区为null的话 查询不出试题的问题
+		hqlBuilder.append("select i from Item i left join i.area a where (i.parent is null) ");
 		Map<String, Object> parameters = new HashMap<>();
 		if(subject != null && !StringUtils.isEmpty(subject.getId())){
 			hqlBuilder.append("and (i.subject.id = :subjectId) ");
@@ -204,7 +216,7 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 			parameters.put("type", itemType.getValue());
 		}
 		if(area != null && !StringUtils.isEmpty(area.getId())){
-			hqlBuilder.append("  and ((i.area is null) or (i.area.code = 1) or (i.area.id = :areaId)) ");
+			hqlBuilder.append("  and ((a is null) or (a.code = 1) or (a.id = :areaId)) ");
 			parameters.put("areaId", area.getId());
 		}
 		if(logger.isDebugEnabled()) logger.debug(hqlBuilder.toString());

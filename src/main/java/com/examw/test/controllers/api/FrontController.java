@@ -221,11 +221,17 @@ public class FrontController {
 	 * @param textBookId
 	 * @return
 	 */
+//	@RequestMapping(value = {"/syllabus/{syllabusId}/knowledges"}, method = {RequestMethod.GET})
+//	@ResponseBody
+//	public List<ChapterKnowledgeInfo> loadKnowledges(@PathVariable String syllabusId,String textBookId){
+//		if(logger.isDebugEnabled()) logger.debug(String.format("加载知识点[subjectId = %1$s，textBookId = %2$s]信息...", syllabusId,textBookId));
+//		return this.knowledgeService.loadKnowledges(syllabusId, textBookId);
+//	}
 	@RequestMapping(value = {"/syllabus/{syllabusId}/knowledges"}, method = {RequestMethod.GET})
 	@ResponseBody
-	public List<ChapterKnowledgeInfo> loadKnowledges(@PathVariable String syllabusId,String textBookId){
-		if(logger.isDebugEnabled()) logger.debug(String.format("加载知识点[subjectId = %1$s，textBookId = %2$s]信息...", syllabusId,textBookId));
-		return this.knowledgeService.loadKnowledges(syllabusId, textBookId);
+	public List<ChapterKnowledgeInfo> loadKnowledges(@PathVariable String syllabusId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载知识点[subjectId = %1$s]信息...", syllabusId));
+		return this.knowledgeService.loadKnowledges(syllabusId);
 	}
 	/**
 	 * 加载知识点信息。
