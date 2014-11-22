@@ -1,5 +1,6 @@
 package com.examw.test.service.library.impl;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -271,10 +272,17 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 				if(logger.isDebugEnabled())logger.debug(msg);
 				throw new RuntimeException(msg);
 			}
+			BigDecimal total = BigDecimal.ZERO;
 			for (Structure structure : structures) {
 				if(structure.getParent()!=null) continue;
 				this.auditPaperItems(structure);
-			} 
+				total = total.add(structure.getScore().multiply(new BigDecimal(structure.getTotal())));
+			}
+			if(!paper.getScore().equals(total)){
+				msg = "试卷各结构总分与试卷总分设置不一致,不能通过审核！";
+				if(logger.isDebugEnabled())logger.debug(msg);
+				throw new RuntimeException(msg);
+			}
 		}else if(status == PaperStatus.NONE){
 			//反审核。
 			Set<Structure> structures = paper.getStructures();
