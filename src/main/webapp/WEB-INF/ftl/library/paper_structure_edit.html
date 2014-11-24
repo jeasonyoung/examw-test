@@ -10,6 +10,22 @@
 		          $(this).parent().siblings().children("input").attr("checked",false);
 		       }
 		});
+		${form}_get_data = function(){
+			var data = {};
+			var inputs = $("#${form} input");
+			var textareas = $("#${form} textarea");
+			create_data(data,inputs);
+			create_data(data,textareas);
+			return data;
+		}
+		function create_data(data,inputs){
+			$.each(inputs,function(i){
+				var name = $(inputs[i]).attr("name");
+				var value = $(inputs[i]).val();
+				if(name && typeof(value) == "string")
+					data[name] = value;
+			});
+		}
 	})
 //-->
 </script>

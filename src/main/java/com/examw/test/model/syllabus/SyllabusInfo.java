@@ -12,56 +12,11 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class SyllabusInfo extends BaseSyllabusInfo implements Comparable<SyllabusInfo> {
 	private static final long serialVersionUID = 1L;
-	private String pid,id,title,subjectId,subjectName,examId,examName,statusName;
+	private String subjectId,subjectName,examId,examName,statusName;
 	private Set<SyllabusInfo> children;
 	private Integer status, orderNo;
 	private Integer year;
 	private String[] areaId,areaName;
-	/**
-	 * 获取上级要点ID。
-	 * @return 上级要点ID。
-	 */
-	public String getPid() {
-		return pid;
-	}
-	/**
-	 * 设置上级要点ID。
-	 * @param pid
-	 * 上级要点ID。
-	 */
-	public void setPid(String pid) {
-		this.pid = pid;
-	}
-	/**
-	 * 获取要点ID。
-	 * @return 要点ID。
-	 */
-	public String getId() {
-		return id;
-	}
-	/**
-	 * 设置要点ID。
-	 * @param id
-	 * 要点ID。
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-	/**
-	 * 获取要点。
-	 * @return 要点。
-	 */
-	public String getTitle() {
-		return title;
-	}
-	/**
-	 * 设置要点。
-	 * @param title
-	 * 要点。
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
 	/**
 	 * 获取所属科目ID。
 	 * @return 所属科目ID。

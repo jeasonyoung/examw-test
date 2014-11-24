@@ -39,54 +39,41 @@ $(function(){
 			{
 				iconCls:"icon-save",text:"保存",
 				handler:function(){
-					if($("#${module}_edit_form input[name='type']:checked").length==0)
+					/* if($("#${module}_edit_form input[name='type']:checked").length==0)
 					{
 						$.messager.confirm("确认","您是否确认不选择题型?",function(r){
 							if(r){
-								$.messager.progress();
-								$("#${module}_edit_form").form("submit",{
-									url:"<@s.url '/library/paper/structure/update/${current_paper_id}'/>",
-									onSubmit: function(){
-										var isValid = $(this).form("validate");
-										if (!isValid)$.messager.progress("close");
-										return isValid;
-									},
-									onLoadError:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
-									success:function(data){
-										$.messager.progress("close");
-										var data = $.parseJSON(data);
-										if(data.success){
-											$("#${module}_tree").tree("reload");
-											d.dialog("close");
-										}else{
-											$.messager.show({ title:"保存异常", msg:data.msg });
-										}
-									}
-								});
+								structureFormSubmit(d);
 							}
 						});
 					}else{
-						$.messager.progress();
-						$("#${module}_edit_form").form("submit",{
-							url:"<@s.url '/library/paper/structure/update/${current_paper_id}'/>",
-							onSubmit: function(){
-								var isValid = $(this).form("validate");
-								if (!isValid)$.messager.progress("close");
-								return isValid;
-							},
-							onLoadError:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
-							success:function(data){
-								$.messager.progress("close");
-								var data = $.parseJSON(data);
-								if(data.success){
-									$("#${module}_tree").tree("reload");
-									d.dialog("close");
-								}else{
-									$.messager.show({ title:"保存异常", msg:data.msg });
-								}
+						structureFormSubmit(d);
+					} */
+					var data = ${module}_edit_form_get_data();
+					//structureFormSubmit(d);
+					$.messager.progress();
+					$.ajax({
+						url:"<@s.url '/library/paper/structure/update/${current_paper_id}'/>",
+						type:"POST",
+						data:data,
+						dataType:'json',
+						success:function(data)
+						{
+							$.messager.progress("close");
+							console.info(data);
+							console.info(typeof data);
+							if(data.success){
+								$("#${module}_tree").tree("reload");
+								d.dialog("close");
+							}else{
+								$.messager.show({ title:"保存异常", msg:data.msg });
 							}
-						});
-					}
+						},
+						error:function(e){
+							$.messager.progress("close"); 
+							<@error_dialog "e"/> 
+						}
+					});
 				}
 			},
 			</@shiro.hasPermission>
@@ -96,6 +83,31 @@ $(function(){
 			}],
 			onClose:function(){ $(this).dialog("destroy"); },
 			onLoad:function(){ $("#${module}_edit_form").form("load",row ? row : {"orderNo" : order}); }
+		});
+	}
+	function structureFormSubmit(d)
+	{
+		$.messager.progress();
+		$("#${module}_edit_form").form("submit",{
+			url:"<@s.url '/library/paper/structure/update/${current_paper_id}'/>",
+			onSubmit: function(){
+				var isValid = $(this).form("validate");
+				if (!isValid)$.messager.progress("close");
+				return isValid;
+			},
+			onLoadError:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
+			success:function(data){
+				$.messager.progress("close");
+				console.info(data);
+				console.info(typeof data);
+				var data = $.parseJSON(data);
+				if(data.success){
+					$("#${module}_tree").tree("reload");
+					d.dialog("close");
+				}else{
+					$.messager.show({ title:"保存异常", msg:data.msg });
+				}
+			}
 		});
 	}
 	<@shiro.hasPermission name="${PER_DELETE}">
