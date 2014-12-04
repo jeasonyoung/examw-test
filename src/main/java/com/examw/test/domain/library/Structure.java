@@ -22,7 +22,7 @@ public class Structure implements Serializable,Comparable<Structure> {
 	//add by fw 2011.11.10
 	private Structure parent;
 	private Set<Structure> children;
-	private Subject subject;
+	private Set<Subject> subjects;
 	/**
 	 * 构造函数。
 	 */
@@ -243,16 +243,16 @@ public class Structure implements Serializable,Comparable<Structure> {
 	 * @return subject
 	 * 所属科目
 	 */
-	public Subject getSubject() {
-		return subject;
+	public Set<Subject> getSubjects() {
+		return subjects;
 	}
 	/**
 	 * 设置 所属科目
 	 * @param subject
 	 * 所属科目
 	 */
-	public void setSubject(Subject subject) {
-		this.subject = subject;
+	public void setSubjects(Set<Subject> subjects) {
+		this.subjects = subjects;
 	}
 	/*
 	 * 比较排序。

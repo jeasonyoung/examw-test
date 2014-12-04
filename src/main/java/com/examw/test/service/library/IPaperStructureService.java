@@ -1,9 +1,11 @@
 package com.examw.test.service.library;
 
 import java.util.List;
+import java.util.Set;
 
 import com.examw.model.TreeNode;
 import com.examw.test.domain.library.Structure;
+import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.library.StructureInfo;
 
 /**
@@ -60,4 +62,10 @@ public interface IPaperStructureService {
 	 * 试卷结构ID。
 	 */
 	void deleteStructure(String[] structureIds);
+	/**
+	 * 获取结构的科目集合
+	 * @param structureId
+	 * @return
+	 */
+	Set<Subject> loadStructureSubjects(String structureId);
 }

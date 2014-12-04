@@ -16,6 +16,7 @@
 			var textareas = $("#${form} textarea");
 			create_data(data,inputs);
 			create_data(data,textareas);
+			data["subjectId"] = $("#${form}_subject").combotree("getValues").toString();
 			return data;
 		}
 		function create_data(data,inputs){
@@ -23,7 +24,9 @@
 				var name = $(inputs[i]).attr("name");
 				var value = $(inputs[i]).val();
 				if(name && typeof(value) == "string")
+				{
 					data[name] = value;
+				}
 			});
 		}
 	})
@@ -37,7 +40,7 @@
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:50px;">子科目：</label>
-		<input id="${form}_subject" name="subjectId"  class="easyui-combotree" data-options="url:'<@s.url '/settings/subject/childTree'/>?subjectPid=${current_subject_id}',valueField:'id',textField:'name',
+		<input id="${form}_subject" name="subjectId"  class="easyui-combotree" data-options="url:'<@s.url '/settings/subject/childTree'/>?subjectPid=${current_subject_id}',valueField:'id',textField:'name',multiple:true,
 			onLoadError:function(e){ <@error_dialog 'e'/> },onChange:function(n,o){$('#${form}_area_part').hide();},icons:[{iconCls:'icon-clear',  handler:function(e){ $(e.data.target).combotree('clear');$('#${form}_area_part').show();} }]" style="width:290px;"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">

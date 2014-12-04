@@ -85,18 +85,18 @@ public class FrontPaperServiceImpl implements IFrontPaperService  {
 	 * @see com.examw.test.service.library.IFrontPaperService#loadPapersCount(java.lang.String[])
 	 */
 	@Override
-	public Integer loadPapersCount(String[] subjetsId) {
+	public Integer loadPapersCount(String[] subjetsId,String areaId) {
 		if(logger.isDebugEnabled()) logger.debug("科目下的试卷数量...");
-		return this.paperReleaseDao.loadPapersCount(default_paper_types,subjetsId);
+		return this.paperReleaseDao.loadPapersCount(default_paper_types,subjetsId,areaId);
 	}
 	/*
 	 * 加载科目下试题数量。
 	 * @see com.examw.test.service.library.IFrontPaperService#loadItemsCount(java.lang.String[])
 	 */
 	@Override
-	public Integer loadItemsCount(String[] subjectsId) {
+	public Integer loadItemsCount(String[] subjectsId,String areaId) {
 		if(logger.isDebugEnabled()) logger.debug("加载科目下试题数量...");
-		return this.paperReleaseDao.loadItemsCount(default_paper_types,subjectsId);
+		return this.paperReleaseDao.loadItemsCount(default_paper_types,subjectsId,areaId);
 	}
 	/*
 	 * 加载科目下是否有真题。

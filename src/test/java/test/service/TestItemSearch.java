@@ -34,7 +34,7 @@ public class TestItemSearch {
 		subject.setId("9b2e789f-edee-4f09-94bb-9e696691b1fa");
 		Area area = new Area();
 		area.setId("1ec32281-3408-4e51-9e5b-0fbaf8f4be56");
-		List<Item> list = itemDao.loadItems(subject, ItemType.convert(6), area);
+		List<Item> list = itemDao.loadItems(new String[]{"9b2e789f-edee-4f09-94bb-9e696691b1fa"}, ItemType.convert(6), area);
 		System.out.println(list.size());
 	}
 }

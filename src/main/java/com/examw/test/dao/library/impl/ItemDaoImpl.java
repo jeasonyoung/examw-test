@@ -92,8 +92,14 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 			parameters.put("examId", info.getExamId());
 		}
 		if(!StringUtils.isEmpty(info.getSubjectId())){
-			hql += " and (i.subject.id = :subjectId) ";
-			parameters.put("subjectId", info.getSubjectId());
+			if(!info.getSubjectId().contains(","))
+			{
+				hql += " and (i.subject.id = :subjectId) ";
+				parameters.put("subjectId", info.getSubjectId());
+			}else{
+				hql += " and (i.subject.id in (:subjectId)) ";
+				parameters.put("subjectId", info.getSubjectId().split(","));
+			}
 		}
 		if(!StringUtils.isEmpty(info.getSourceId())){
 			hql += " and (i.source.id = :sourceId) ";
@@ -201,15 +207,15 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 	 * @see com.examw.test.dao.library.IItemDao#loadItems(com.examw.test.domain.settings.Subject, com.examw.test.service.library.ItemType, com.examw.test.domain.settings.Area)
 	 */
 	@Override
-	public List<Item> loadItems(Subject subject, ItemType itemType,Area area) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("加载试题［subject = %1$s］［itemType = %2$s］［area = %3$s］集合...", subject, itemType, area));
+	public List<Item> loadItems(String[] subjectId, ItemType itemType,Area area) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试题［subject = %1$s］［itemType = %2$s］［area = %3$s］集合...", subjectId, itemType, area));
 		StringBuilder hqlBuilder = new StringBuilder();
 		// 2014.11.22 修改查询语句,在试题中若地区为null的话 查询不出试题的问题
 		hqlBuilder.append("select i from Item i left join i.area a where (i.parent is null) ");
 		Map<String, Object> parameters = new HashMap<>();
-		if(subject != null && !StringUtils.isEmpty(subject.getId())){
-			hqlBuilder.append("and (i.subject.id = :subjectId) ");
-			parameters.put("subjectId", subject.getId());
+		if(subjectId != null && subjectId.length > 0){
+			hqlBuilder.append("and (i.subject.id in (:subjectId)) ");
+			parameters.put("subjectId", subjectId);
 		}
 		if(itemType != null){
 			hqlBuilder.append(" and (i.type = :type) ");

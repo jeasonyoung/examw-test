@@ -1,4 +1,18 @@
 <#--试卷试题通用macro-->
+<#macro item_base_share>
+<#if SUBJECTS?? && (SUBJECTS?size == 1)>
+	<input name = "subjectId" type="hidden" value="${SUBJECTS[0].id}"/>
+<#elseif SUBJECTS?? && (SUBJECTS?size > 1)>
+	<div style="float:left;margin-top:5px;width:100%">
+	<label style="width:75px;">所属科目：</label>
+	<select class="easyui-combobox" name="dept" style="width:200px;">
+		<#list SUBJECTS as subject>   
+    	<option value="${subject.id}">${subject.name}</option>  
+    	</#list> 
+	</select>  
+	</div>
+</#if>
+</#macro>
 <#--选择题选项显示-->
 <#macro paper_item_edit_opts_dg type>
 <div data-options="region:'center',title:'选项',tools:[

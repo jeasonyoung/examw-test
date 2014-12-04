@@ -63,7 +63,7 @@ public interface IItemDao extends IBaseDao<Item> {
 	 * @return
 	 * 试题集合。
 	 */
-	List<Item> loadItems(Subject subject, ItemType itemType,Area area);
+	List<Item> loadItems(String[] subjectId, ItemType itemType,Area area);
 	/**
 	 * 加载科目下的题型集合。
 	 * @param subject

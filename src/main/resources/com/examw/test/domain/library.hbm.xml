@@ -83,7 +83,12 @@
 		<!-- 所属试卷 -->
 		<many-to-one name="paper" column="paper_id" class="Paper" />
 		<!-- 所属科目 -->
-		<many-to-one name="subject" column="subject_id" class="com.examw.test.domain.settings.Subject"/>
+		<!-- <many-to-one name="subject" column="subject_id" class="com.examw.test.domain.settings.Subject"/> -->
+		<!-- 大纲要点集合 -->
+		<set name="subjects" inverse="false" cascade="save-update" table="tbl_Examw_Test_Library_StructureSubject">
+			<key column="structure_id" />
+			<many-to-many class="com.examw.test.domain.settings.Subject" column="subject_id" />
+		</set>
 		<!-- 结构下试题集合 -->
 		<set name="items" inverse="false" cascade="save-update" order-by="orderNo asc">
 		    <!-- 结构ID -->

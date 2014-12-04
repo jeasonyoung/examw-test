@@ -55,7 +55,7 @@ public interface IPaperReleaseDao extends IBaseDao<PaperRelease> {
 	 * @return
 	 * 试卷数量。
 	 */
-	Integer loadPapersCount(Integer[] paperType,String[] subjetsId);
+	Integer loadPapersCount(Integer[] paperType,String[] subjetsId,String areaId);
 	/**
 	 * 加载科目下试题数量。
 	 * @param paperType
@@ -65,7 +65,7 @@ public interface IPaperReleaseDao extends IBaseDao<PaperRelease> {
 	 * @return
 	 * 试题数量。
 	 */
-	Integer loadItemsCount(Integer[] paperType,String[] subjectsId);
+	Integer loadItemsCount(Integer[] paperType,String[] subjectsId,String areaId);
 	/**
 	 * 是否包含真题试卷。
 	 * @param subjectsId

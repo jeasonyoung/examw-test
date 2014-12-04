@@ -130,9 +130,10 @@ public class FrontProductServiceImpl implements IFrontProductService {
 		if(logger.isDebugEnabled()) logger.debug("数据模型转换 ProductInfo => FrontProductInfo ");
 		if(product == null) return null;
 		FrontProductInfo info = new FrontProductInfo();
+		String areaId = product.getAreaId();
 		BeanUtils.copyProperties(product, info);
-		info.setPaperCount(this.frontPaperService.loadPapersCount(info.getSubjectId()));
-		info.setItemCount(this.frontPaperService.loadItemsCount(info.getSubjectId()));
+		info.setPaperCount(this.frontPaperService.loadPapersCount(info.getSubjectId(),areaId));
+		info.setItemCount(this.frontPaperService.loadItemsCount(info.getSubjectId(),areaId));
 		info.setHasRealItem(this.frontPaperService.hasRealItem(info.getSubjectId()));
 		return info;
 	}

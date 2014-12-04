@@ -22,7 +22,7 @@ public class StructureInfo implements Serializable,Comparable<StructureInfo> {
 	private BigDecimal score,min,ratio;
 	private Set<StructureItemInfo> items;
 	private List<StructureInfo> children;
-	private String subjectId;
+	private String[] subjectId;
 	/**
 	 * 获取 结构父ID
 	 * @return pid
@@ -227,7 +227,7 @@ public class StructureInfo implements Serializable,Comparable<StructureInfo> {
 	 * @return subjectId
 	 * 科目ID
 	 */
-	public String getSubjectId() {
+	public String[] getSubjectId() {
 		return subjectId;
 	}
 	/**
@@ -235,7 +235,7 @@ public class StructureInfo implements Serializable,Comparable<StructureInfo> {
 	 * @param subjectId
 	 * 科目ID
 	 */
-	public void setSubjectId(String subjectId) {
+	public void setSubjectId(String[] subjectId) {
 		this.subjectId = subjectId;
 	}
 	/*

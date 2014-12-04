@@ -1,5 +1,6 @@
 package com.examw.test.service.library.impl;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -122,27 +123,16 @@ public class RandomItemServiceImpl implements IRandomItemService {
 			logger.error(msg = String.format("试卷结构的试题类型［%d］不存在或不能被解析！", structure.getType()));
 			throw new Exception(msg);
 		}
-		//Add by FW 2014.11.14  修改试卷结构科目
-		Subject subject = null;
-		Structure parent = structure;
-		while(parent.getSubject()==null){
-			if(parent.getParent()==null) break;
-			parent = parent.getParent();
-		}
-		if(parent.getSubject() != null){
-			//modify by FW. 题目需要落到子科目上 
-			subject = (parent.getSubject());
-		}else if(structure.getPaper().getSubject()!=null){
-			subject = structure.getPaper().getSubject();
-		}
-		if(subject == null){
+		//Add by FW 2014.11.14  修改试卷结构科目 modify by FW 2014.12.04
+		String[] subjectIds = this.getSubjectIds(structure);
+		if(subjectIds == null || subjectIds.length == 0){
 			logger.error(msg =  "试卷所属科目未设置！");
 			throw new Exception(msg);
 		}
 		Area area = (structure.getPaper() == null || structure.getPaper().getArea() == null) ?  null : structure.getPaper().getArea();
-		List<Item> pools = this.itemDao.loadItems(subject, itemType, area);
+		List<Item> pools = this.itemDao.loadItems(subjectIds, itemType, area);
 		if(pools == null || pools.size() == 0){
-			logger.error(msg = String.format("题库中没有满足条件［%1$s］［%2$s］［%3$s］的试题！",subject.getName(), itemType, (area == null ? "" : area.getName())));
+			logger.error(msg = String.format("题库中没有满足条件［%1$s］［%2$s］［%3$s］的试题！",subjectIds, itemType, (area == null ? "" : area.getName())));
 			throw new Exception(msg);
 		}
 		Map<Integer,Integer> eachCount  = new HashMap<Integer,Integer>();
@@ -183,6 +173,25 @@ public class RandomItemServiceImpl implements IRandomItemService {
 			order += item.getCount();
 		}
 		return order;
+	}
+	//计算结构下面包含的科目ID
+	private String[] getSubjectIds(Structure structure)
+	{
+		Structure parent = structure;
+		List<String> listSubjectId = new ArrayList<String>();
+		while(parent.getSubjects() == null || parent.getSubjects().size()==0){
+			if(parent.getParent()==null) break;
+			parent = parent.getParent();
+		}
+		if(parent.getSubjects() != null &&  parent.getSubjects().size() > 0){
+			for(Subject subject : parent.getSubjects()){
+				if(subject == null) continue;
+				listSubjectId.add(subject.getId());
+			}
+		}else{
+			listSubjectId.add(structure.getPaper().getSubject().getId());
+		}
+		return listSubjectId.toArray(new String[0]);
 	}
 	//计算试题池里试题的数量
 	private Integer calculatePoolSize(List<Item> pools,ItemType itemType,Map<Integer,Integer> eachCount) {

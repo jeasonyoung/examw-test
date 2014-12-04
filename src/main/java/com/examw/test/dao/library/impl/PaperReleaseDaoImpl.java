@@ -6,10 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.impl.BaseDaoImpl;
 import com.examw.test.dao.library.IPaperReleaseDao;
 import com.examw.test.domain.library.PaperRelease;
+import com.examw.test.service.library.ItemStatus;
 import com.examw.test.service.library.PaperType;
 
 /**
@@ -90,7 +92,7 @@ public class PaperReleaseDaoImpl extends BaseDaoImpl<PaperRelease> implements IP
 	 * @see com.examw.test.dao.library.IPaperReleaseDao#loadPapersCount(java.lang.Integer[], java.lang.String[])
 	 */
 	@Override
-	public Integer loadPapersCount(Integer[] paperType, String[] subjectsId) {
+	public Integer loadPapersCount(Integer[] paperType, String[] subjectsId,String areaId) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷类型［%1$s］科目［%2$s］下的试卷数量...", paperType, subjectsId));
 		StringBuilder hqlBuilder = new StringBuilder();
 		hqlBuilder.append("select count(*) from PaperRelease p where (1=1) ");
@@ -103,6 +105,10 @@ public class PaperReleaseDaoImpl extends BaseDaoImpl<PaperRelease> implements IP
 			hqlBuilder.append("  and (p.paper.subject.id in (:subjectsId)) ");
 			parameters.put("subjectsId", subjectsId);
 		}
+		if(!StringUtils.isEmpty(areaId)){
+			hqlBuilder.append("  and (p.paper.area.id in (:areaId)) ");
+			parameters.put("areaId", areaId);
+		}
 		Object obj = this.uniqueResult(hqlBuilder.toString(), parameters);
 		return obj == null ? 0 : (int)((long)obj);
 	}
@@ -111,24 +117,26 @@ public class PaperReleaseDaoImpl extends BaseDaoImpl<PaperRelease> implements IP
 	 * @see com.examw.test.dao.library.IPaperReleaseDao#loadItemsCount(java.lang.Integer[], java.lang.String[])
 	 */
 	@Override
-	public Integer loadItemsCount(Integer[] paperType, String[] subjectsId) {
+	public Integer loadItemsCount(Integer[] paperType, String[] subjectsId,String areaId) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［%1$s］科目［%2$s］下的试题数量...",paperType,subjectsId));
 		StringBuilder hqlBuilder = new StringBuilder();
-		hqlBuilder.append("select sum(p.total) from PaperRelease p where (1=1) ");
+		hqlBuilder.append("select sum(i.count) from Item i left join i.area a where (i.parent is null) ");
 		Map<String, Object> parameters = new HashMap<>();
-		if(paperType != null && paperType.length > 0){
-			hqlBuilder.append(" and (p.paper.type in (:paperType)) ");
-			parameters.put("paperType", paperType);
-		}
 		if(subjectsId != null && subjectsId.length > 0){
-			hqlBuilder.append(" and (p.paper.subject.id in (:subjectsId)) ");
+			hqlBuilder.append(" and (i.subject.id in (:subjectsId)) ");
 			parameters.put("subjectsId", subjectsId);
 		}
+		if(!StringUtils.isEmpty(areaId)){
+			hqlBuilder.append("  and ((a is null) or (a.code = 1) or (a.id = :areaId)) ");
+			parameters.put("areaId", areaId);
+		}
+		hqlBuilder.append("  and i.status = :status");
+		parameters.put("status", ItemStatus.AUDIT.getValue());
 		Object obj = this.uniqueResult(hqlBuilder.toString(), parameters);
 		return obj == null ? 0 : (int)((long)obj);
 	}
 	/*
-	 * 加载科目是否有真题。
+	 * 加载科目是否有真题。[前台使用]
 	 * @see com.examw.test.dao.library.IPaperReleaseDao#hasRealItem(java.lang.String[])
 	 */
 	@Override

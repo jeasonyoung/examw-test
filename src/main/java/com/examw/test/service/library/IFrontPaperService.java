@@ -19,7 +19,7 @@ public interface IFrontPaperService {
 	 * @return
 	 * 试卷数量。
 	 */
-	Integer loadPapersCount(String[] subjetsId);
+	Integer loadPapersCount(String[] subjetsId,String areaId);
 	/**
 	 * 加载科目下试题数量。
 	 * @param subjectsId
@@ -27,7 +27,7 @@ public interface IFrontPaperService {
 	 * @return
 	 * 试题数量。
 	 */
-	Integer loadItemsCount(String[] subjectsId);
+	Integer loadItemsCount(String[] subjectsId,String areaId);
 	/**
 	 * 是否包含真题试卷。
 	 * @param subjectsId

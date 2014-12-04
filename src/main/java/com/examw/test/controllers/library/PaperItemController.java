@@ -20,9 +20,11 @@ import com.examw.model.DataGrid;
 import com.examw.model.Json;
 import com.examw.test.domain.library.Structure;
 import com.examw.test.domain.security.Right;
+import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.library.StructureItemInfo;
 import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperItemService;
+import com.examw.test.service.library.IPaperStructureService;
 import com.examw.test.service.library.IRandomItemService;
 import com.examw.test.service.library.ItemType;
 import com.examw.test.support.PaperItemUtils;
@@ -47,6 +49,8 @@ public class PaperItemController implements IUserAware {
 	//注入随机导入试题服务接口。
 	@Resource
 	private IRandomItemService randomItemService;
+	@Resource
+	private IPaperStructureService paperStructureService;
 	/*
 	 * 注入用户ID。
 	 * @see com.examw.aware.IUserAware#setUserId(java.lang.String)
@@ -107,7 +111,7 @@ public class PaperItemController implements IUserAware {
 	 */
 	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE})
 	@RequestMapping(value = "/edit/{type}", method = RequestMethod.GET)
-	public String editPaperItem(@PathVariable Integer type, Boolean child,Model model){
+	public String editPaperItem(@PathVariable Integer type, Boolean child,String structureId,Model model){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷结构下试题［题型：%d］编辑页面...", type));
 		
 		model.addAttribute("PER_UPDATE", ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE);
@@ -118,6 +122,8 @@ public class PaperItemController implements IUserAware {
 		ItemType itemType =  ItemType.convert(type);
 		model.addAttribute("current_item_type_value", itemType.getValue());
 		model.addAttribute("current_item_type_name", this.itemService.loadTypeName(itemType.getValue()));
+		
+		model.addAttribute("SUBJECTS",this.paperStructureService.loadStructureSubjects(structureId));
 		
 		if(itemType == ItemType.SHARE_TITLE){
 			PaperItemUtils.addNormalItemType(this.itemService, model);//添加普通题型。
@@ -272,18 +278,20 @@ public class PaperItemController implements IUserAware {
 		if(structure == null) throw new RuntimeException(String.format("试卷结构［%s］不存在！", structureId));
 		if(structure.getPaper() == null) throw new RuntimeException(String.format("试卷结构［%1$s,%2$s］所属试卷不存在！", structure.getId(), structure.getTitle()));
 		model.addAttribute("current_type_value", structure.getType());
-		//Add by FW 2014.11.14 修改试卷结构科目ID
+		//Add by FW 2014.11.14 修改试卷结构科目ID modify at 2014.12.04
 		String subjectId = "";
 		Structure parent = structure;
-		while(parent.getSubject()==null){
+		while(parent.getSubjects() == null || parent.getSubjects().size()==0){
 			if(parent.getParent()==null) break;
 			parent = parent.getParent();
 		}
-		if(parent.getSubject() != null){
-			//modify by FW. 题目需要落到子科目上 
-			subjectId = (parent.getSubject().getId());
-		}else if(structure.getPaper().getSubject()!=null){
-			subjectId = structure.getPaper().getSubject().getId();
+		if(parent.getSubjects() != null &&  parent.getSubjects().size() > 0){
+			for(Subject subject : parent.getSubjects()){
+				if(subject == null) continue;
+				subjectId += subject.getId()+",";
+			}
+		}else{
+			subjectId = (structure.getPaper().getSubject().getId());
 		}
 		model.addAttribute("current_subject_id", subjectId);
 		model.addAttribute("current_opt_value", structure.getPaper().getType());

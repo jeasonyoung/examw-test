@@ -39,7 +39,7 @@ $(function(){
 			{
 				iconCls:"icon-save",text:"保存",
 				handler:function(){
-					/* if($("#${module}_edit_form input[name='type']:checked").length==0)
+					if($("#${module}_edit_form input[name='type']:checked").length==0)
 					{
 						$.messager.confirm("确认","您是否确认不选择题型?",function(r){
 							if(r){
@@ -48,32 +48,7 @@ $(function(){
 						});
 					}else{
 						structureFormSubmit(d);
-					} */
-					var data = ${module}_edit_form_get_data();
-					//structureFormSubmit(d);
-					$.messager.progress();
-					$.ajax({
-						url:"<@s.url '/library/paper/structure/update/${current_paper_id}'/>",
-						type:"POST",
-						data:data,
-						dataType:'json',
-						success:function(data)
-						{
-							$.messager.progress("close");
-							console.info(data);
-							console.info(typeof data);
-							if(data.success){
-								$("#${module}_tree").tree("reload");
-								d.dialog("close");
-							}else{
-								$.messager.show({ title:"保存异常", msg:data.msg });
-							}
-						},
-						error:function(e){
-							$.messager.progress("close"); 
-							<@error_dialog "e"/> 
-						}
-					});
+					}
 				}
 			},
 			</@shiro.hasPermission>
@@ -87,26 +62,32 @@ $(function(){
 	}
 	function structureFormSubmit(d)
 	{
+		var isValid = $("#${module}_edit_form").form("validate");
+		if (!isValid){
+			$.messager.progress("close");
+			return isValid;
+		}
+		var data = ${module}_edit_form_get_data();
+		console.info(data.subjectId);
 		$.messager.progress();
-		$("#${module}_edit_form").form("submit",{
+		$.ajax({
 			url:"<@s.url '/library/paper/structure/update/${current_paper_id}'/>",
-			onSubmit: function(){
-				var isValid = $(this).form("validate");
-				if (!isValid)$.messager.progress("close");
-				return isValid;
-			},
-			onLoadError:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
-			success:function(data){
+			type:"POST",
+			data:data,
+			dataType:'json',
+			success:function(data)
+			{
 				$.messager.progress("close");
-				console.info(data);
-				console.info(typeof data);
-				var data = $.parseJSON(data);
 				if(data.success){
 					$("#${module}_tree").tree("reload");
 					d.dialog("close");
 				}else{
 					$.messager.show({ title:"保存异常", msg:data.msg });
 				}
+			},
+			error:function(e){
+				$.messager.progress("close"); 
+				<@error_dialog "e"/> 
 			}
 		});
 	}
@@ -250,7 +231,7 @@ $(function(){
 		}
 		var d = $("<div/>").dialog({
 			title:title,width:800,height:600,modal:true,
-			href:"<@s.url '/library/paper/items/edit/'/>" + type,
+			href:"<@s.url '/library/paper/items/edit/'/>" + type +"?structureId="+ structure_id,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
 			{

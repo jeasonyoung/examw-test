@@ -3,8 +3,10 @@ package com.examw.test.service.library.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -191,8 +193,14 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 		if(data.getParent()!=null){
 			info.setPid(data.getParent().getId());
 		}
-		if(data.getSubject()!=null){
-			info.setSubjectId(data.getSubject().getId());
+		Set<Subject> subjects = null;
+		if((subjects = data.getSubjects())!=null && subjects.size()>0){
+			List<String> listSubjectId = new ArrayList<>();
+			for(Subject subject : subjects){
+				if(subject == null) continue;
+				listSubjectId.add(subject.getId());
+			}
+			info.setSubjectId(listSubjectId.toArray(new String[0]));
 		}
 		if(isLoadChildren && data.getChildren()!=null && data.getChildren().size()>0){
 			List<StructureInfo> children = new ArrayList<>();
@@ -263,10 +271,16 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 			}
 		}
 		//加科目 [如果是子类,所选科目不能是非父类及父类下子类的科目]
-		if(!StringUtils.isEmpty(info.getSubjectId())){
-			Subject subject = this.subjectDao.load(Subject.class, info.getSubjectId());
-			if(subject!=null) data.setSubject(subject);
+		Set<Subject> subjects = null;
+		if(info.getSubjectId() != null && info.getSubjectId().length > 0){
+			subjects = new HashSet<>();
+			for(String subjectId : info.getSubjectId()){
+				if(StringUtils.isEmpty(subjectId)) continue;
+				Subject subject = this.subjectDao.load(Subject.class, subjectId);
+				if(subject != null)subjects.add(subject);
+			}
 		}
+		data.setSubjects(subjects);
 		if (isAdded) this.structureDao.save(data);
 	}
 	/*
@@ -292,4 +306,23 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 			}
 		}
 	}
+	
+	@Override
+	public Set<Subject> loadStructureSubjects(String structureId) {
+		if(StringUtils.isEmpty(structureId)) return null;
+		Structure structure = this.structureDao.load(Structure.class, structureId);
+		Structure parent = structure;
+		while(parent.getSubjects() == null || parent.getSubjects().size()==0){
+			if(parent.getParent()==null) break;
+			parent = parent.getParent();
+		}
+		if(parent.getSubjects() != null &&  parent.getSubjects().size() > 0){
+			return parent.getSubjects();
+		}else{
+			Set<Subject> subjects = new HashSet<Subject>();
+			subjects.add(structure.getPaper().getSubject());
+			return subjects;
+		}
+	}
+	
 }
