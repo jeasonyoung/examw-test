@@ -46,6 +46,7 @@ $(function(){
 			post["typeName"] = $("#${form} input[name='typeName']").val();
 			<#if !current_item_child>
 			post["orderNo"] = $("#${form} input[name='orderNo']").val();
+			post["subjectId"] = $("#${form} input[name='subjectId']").val();
 			</#if>
 			post["content"] = $.trim($("#${form} textarea[name='content']").val());
 			if($.trim(post["content"]) == ""){
@@ -102,12 +103,14 @@ $(function(){
 			<input name="typeName" type="hidden" value="${current_item_type_name}" />
 		</div>
 		<#if !current_item_child>
+		<div style="float:left;">
 		<div style="float:left;margin-left:10px;margin-top:8px;">
 			<label>排序号：</label>
 			<input name="orderNo" type="text" class="easyui-numberbox" data-options="min:0,value:0" style="width:70px;"/>
 		</div>
-		</#if>
 		<@item_base_share />
+		</div>
+		</#if>
 		<div style="float:left;margin-left:10px;margin-top:2px;">
 			<textarea style="float:left" name="content" class="easyui-ueditor"  data-options="required:true,width:762,height:<#if current_item_child>120<#else>85</#if>" rows="5" cols="20" />
 		</div>
@@ -115,7 +118,7 @@ $(function(){
 	<@paper_item_edit_opts_dg "radio"/>
 	<div data-options="region:'south',title:'答案解析',collapsible:false,height:180,border:false">
 		<div style="float:left;margin-left:10px;margin-top:3px;">
-			<textarea style="float:left" name="analysis" class="easyui-ueditor"  data-options="required:true,width:762,height:80" rows="5" cols="20"/>
+			<textarea style="float:left" name="analysis" class="easyui-ueditor"  data-options="required:true,width:732,height:80" rows="5" cols="20"/>
 		</div>
 	</div>
 </form>

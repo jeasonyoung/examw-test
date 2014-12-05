@@ -95,6 +95,7 @@ $(function(){
 			post["typeName"] = $("#${form} input[name='typeName']").val();
 			<#if !current_item_child>
 			post["orderNo"] = $("#${form} input[name='orderNo']").val();
+			post["subjectId"] = $("#${form} input[name='subjectId']").val();
 			</#if>
 			post["content"] = $.trim($("#${form} textarea[name='content']").val());
 			if($.trim(post["content"]) == ""){
@@ -132,10 +133,12 @@ $(function(){
 			<input name="typeName" type="hidden" value="${current_item_type_name}" />
 		</div>
 		<#if !current_item_child>
+		<div style="float:left;">
 		<div style="float:left;margin-left:10px;margin-top:8px;">
 			<label>排序号：</label>
 			<input name="orderNo" type="text" class="easyui-numberbox" data-options="min:0,value:0" style="width:70px;"/>
 		</div>
+		<@item_base_share />
 		</#if>
 		<div style="float:left;margin-left:6px;margin-top:2px;">
 			<textarea style="float:left" name="content" class="easyui-ueditor"  data-options="required:true,width:762,height:110" rows="5" cols="20" />

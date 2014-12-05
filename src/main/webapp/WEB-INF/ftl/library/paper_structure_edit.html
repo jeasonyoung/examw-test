@@ -17,6 +17,7 @@
 			create_data(data,inputs);
 			create_data(data,textareas);
 			data["subjectId"] = $("#${form}_subject").combotree("getValues").toString();
+			data["type"] = $("input[name='type']:checked").val();
 			return data;
 		}
 		function create_data(data,inputs){

@@ -3,9 +3,9 @@
 <#if SUBJECTS?? && (SUBJECTS?size == 1)>
 	<input name = "subjectId" type="hidden" value="${SUBJECTS[0].id}"/>
 <#elseif SUBJECTS?? && (SUBJECTS?size > 1)>
-	<div style="float:left;margin-top:5px;width:100%">
+	<div style="float:left;margin-top:8px;margin-left:10px">
 	<label style="width:75px;">所属科目：</label>
-	<select class="easyui-combobox" name="dept" style="width:200px;">
+	<select class="easyui-combobox" name="subjectId" style="width:200px;">
 		<#list SUBJECTS as subject>   
     	<option value="${subject.id}">${subject.name}</option>  
     	</#list> 
