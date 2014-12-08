@@ -136,7 +136,7 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 	 */
 	private TreeNode createTreeNode(Structure data, String ignoreStructureId,boolean checkHasItem,boolean isChildren) {
 		if(data == null || data.getId().equals(ignoreStructureId)) return null;
-		//TODO 这里如果是子类也与试卷关联的话就要进行一次判断
+		// 这里如果是子类也与试卷关联的话就要进行一次判断
 		if(!isChildren && data.getParent()!=null) return null;
 		if(checkHasItem){
 			Long totalItems = this.structureDao.totalStructureItems(data.getId());	
@@ -195,12 +195,14 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 		}
 		Set<Subject> subjects = null;
 		if((subjects = data.getSubjects())!=null && subjects.size()>0){
-			List<String> listSubjectId = new ArrayList<>();
+			List<String> listSubjectId = new ArrayList<>(),listSubjectName = new ArrayList<>();
 			for(Subject subject : subjects){
 				if(subject == null) continue;
 				listSubjectId.add(subject.getId());
+				listSubjectName.add(subject.getName());
 			}
 			info.setSubjectId(listSubjectId.toArray(new String[0]));
+			info.setSubjectName(listSubjectName.toArray(new String[0]));
 		}
 		if(isLoadChildren && data.getChildren()!=null && data.getChildren().size()>0){
 			List<StructureInfo> children = new ArrayList<>();
@@ -260,7 +262,7 @@ public class PaperStructureServiceImpl implements IPaperStructureService {
 		if(data.getPaper() != null && (paperStatus = data.getPaper().getStatus()) != PaperStatus.NONE.getValue()){
 			throw new RuntimeException(String.format("所属试卷［状态＝%s］不允许修改试卷结构！", PaperStatus.convert(paperStatus)));
 		}
-		//TODO 查询子结构下面的是否有其他科目
+		//查询子结构下面的是否有其他科目
 		BeanUtils.copyProperties(info, data,new String[]{"items","children"});
 		if(!StringUtils.isEmpty(info.getPid()) ){
 			Structure parent = this.structureDao.load(Structure.class, info.getPid());

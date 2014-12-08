@@ -3,6 +3,7 @@ package com.examw.test.service.library.impl;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
@@ -13,6 +14,7 @@ import com.examw.test.domain.library.Item;
 import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.library.Structure;
 import com.examw.test.domain.library.StructureItem;
+import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.library.StructureItemInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.library.IItemService;
@@ -164,11 +166,30 @@ public class PaperItemServiceImpl extends BaseDataServiceImpl<StructureItem,Stru
 			info.setOpt(paper.getType());//试卷类型。
 			info.setYear(paper.getYear());//使用年份。
 			//设置考试科目
-			//TODO 设置考试科目
 			if(StringUtils.isEmpty(info.getSubjectId()))
 			{
-				info.setSubjectId(this.getSubjectId(structure, paper));
+				String subject_id =  null;
+				Structure parentStructure = structure;
+				Set<Subject> subjects = null;
+				while(parentStructure != null && ((subjects = parentStructure.getSubjects()) == null || subjects.size() == 0)){
+					Structure p = null;
+					if((p = parentStructure.getParent()) == null) break;
+					parentStructure = p;
+				}
+				int count = 0;
+				if(subjects != null && (count = subjects.size()) > 0){
+					if(count > 1) throw new RuntimeException(String.format("结构［%1$s］有［%2$d］科目!", structure.getTitle(), count));
+					subject_id = subjects.iterator().next().getId();
+				}else {
+					Subject subject = null;
+					if((subject = paper.getSubject()) == null) throw new RuntimeException(String.format("试卷［%s］未设置所属科目！", paper.getName()));
+					subject_id = subject.getId();
+				}
+				if(!StringUtils.isEmpty(subject_id)){
+					info.setSubjectId(subject_id);
+				}
 			}
+			//设置考试
 			if(paper.getSubject().getExam() != null){
 				info.setExamId(paper.getSubject().getExam().getId());
 			}
@@ -181,7 +202,6 @@ public class PaperItemServiceImpl extends BaseDataServiceImpl<StructureItem,Stru
 				info.setAreaId(paper.getArea().getId());
 			}
 		}
-		
 		StructureItem data = new StructureItem();
 		data.setStructure(structure);
 		data.setOrderNo(info.getOrderNo());
@@ -196,25 +216,6 @@ public class PaperItemServiceImpl extends BaseDataServiceImpl<StructureItem,Stru
 		} 
 		structure.getItems().add(data);
 		return this.changeModel(data);
-	}
-	//2014.12.04 增加,得到subjectId
-	private String getSubjectId(Structure structure,Paper paper)
-	{
-		Structure parent = structure;
-		while(parent.getSubjects() == null || parent.getSubjects().size()==0){
-			if(parent.getParent()==null) break;
-			parent = parent.getParent();
-		}
-		if(parent.getSubjects() != null &&  parent.getSubjects().size() > 0){
-			//modify by FW. 题目需要落到子科目上 
-			if(parent.getSubjects().size()>1)
-			{
-				throw new RuntimeException("结构上有多个科目,无法判断题目属于哪个科目");
-			}
-			return parent.getSubjects().iterator().next().getId();
-		}else{
-			return (paper.getSubject().getId());
-		}
 	}
 	/*
 	 * 删除试卷试题。
@@ -261,6 +262,6 @@ public class PaperItemServiceImpl extends BaseDataServiceImpl<StructureItem,Stru
 				count--;
 			}
 		}
-		this.structureDao.saveOrUpdate(structure);
+		this.structureDao.update(structure);
 	}
 }
