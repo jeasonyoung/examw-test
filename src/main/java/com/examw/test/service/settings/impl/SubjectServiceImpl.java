@@ -260,8 +260,30 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 			}
 			data.setAreas(areas);
 		}
-		if(isAdded)this.subjectDao.save(data);
+		if(isAdded){
+			//包含多个科目的情况    name like 'asdf，asdf'
+			this.batchSave(data);
+		}
 		return this.changeModel(data);
+	}
+	
+	private void batchSave(Subject data)
+	{
+		if(data.getName().contains("，")){
+			String[] names = data.getName().split("，");
+			for(int i=0;i<names.length;i++){
+				if(StringUtils.isEmpty(names[i])) continue;
+				Subject subject = new Subject();
+				BeanUtils.copyProperties(data, subject);
+				subject.setId(UUID.randomUUID().toString());
+				subject.setName(names[i].trim());
+				subject.setCode(data.getCode()+i);
+				this.subjectDao.save(subject);
+			}
+		}else
+		{
+			this.subjectDao.save(data);
+		}
 	}
 	/*
 	 * 删除数据。

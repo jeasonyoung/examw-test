@@ -38,7 +38,7 @@ $(function(){
 			}
 		}
 		var d = $("<div/>").dialog({
-			title:title,width:498,height:270,modal:true,
+			title:title,width:498,height:300,modal:true,
 			href:"<@s.url '/settings/subject/edit'/>?categoryId=" + catalog_id + "&examId=" + exam_id+"&subjectId="+subject_id,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
