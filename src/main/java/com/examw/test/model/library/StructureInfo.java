@@ -22,7 +22,7 @@ public class StructureInfo implements Serializable,Comparable<StructureInfo> {
 	private BigDecimal score,min,ratio;
 	private Set<StructureItemInfo> items;
 	private List<StructureInfo> children;
-	private String[] subjectId;
+	private String[] subjectId,subjectName;
 	/**
 	 * 获取 结构父ID
 	 * @return pid
@@ -189,7 +189,6 @@ public class StructureInfo implements Serializable,Comparable<StructureInfo> {
 	public void setItems(Set<StructureItemInfo> items) {
 		this.items = items;
 	}
-	
 	/**
 	 * 获取 分数比例
 	 * @return ratio
@@ -223,20 +222,34 @@ public class StructureInfo implements Serializable,Comparable<StructureInfo> {
 		this.children = children;
 	}
 	/**
-	 * 获取 科目ID
-	 * @return subjectId
-	 * 科目ID
+	 * 获取科目ID集合。
+	 * @return 科目ID集合。
 	 */
 	public String[] getSubjectId() {
 		return subjectId;
 	}
 	/**
-	 * 设置 科目ID
+	 * 设置科目ID集合。
 	 * @param subjectId
-	 * 科目ID
+	 * 科目ID集合。
 	 */
 	public void setSubjectId(String[] subjectId) {
 		this.subjectId = subjectId;
+	}
+	/**
+	 * 获取科目名称集合。
+	 * @return 科目名称集合。
+	 */
+	public String[] getSubjectName() {
+		return subjectName;
+	}
+	/**
+	 * 设置科目名称集合。
+	 * @param subjectName 
+	 *	  科目名称集合。
+	 */
+	public void setSubjectName(String[] subjectName) {
+		this.subjectName = subjectName;
 	}
 	/*
 	 * 重载排序比较.
