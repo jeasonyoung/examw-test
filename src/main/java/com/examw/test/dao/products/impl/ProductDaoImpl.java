@@ -56,21 +56,26 @@ public class ProductDaoImpl extends BaseDaoImpl<Product> implements IProductDao{
 	}
 	// 添加查询条件到HQL。
 	private String addWhere(ProductInfo info, String hql,Map<String, Object> parameters) {
-		if (!StringUtils.isEmpty(info.getName())) {
-			hql += " and (p.name like :name)";
-			parameters.put("name", "%" + info.getName() + "%");
+		if(info.getStatus() != null){//状态
+			hql += " and (p.status = :status)";
+			parameters.put("status", info.getStatus());
 		}
-		if (!StringUtils.isEmpty(info.getExamId())) {
-			hql += " and (p.exam.id in (:examId))";
-			parameters.put("examId", info.getExamId().split(","));
-		}
-		if (!StringUtils.isEmpty(info.getCategoryId())) {
+		if (!StringUtils.isEmpty(info.getCategoryId())) {//考试类别
 			hql += " and (p.exam.category.id = :categoryId)";
 			parameters.put("categoryId", info.getCategoryId());
 		}
-		if(info.getStatus() != null){
-			hql += " and (p.status = :status)";
-			parameters.put("status", info.getStatus());
+		if (!StringUtils.isEmpty(info.getExamId())) {//考试
+			if(info.getExamId().indexOf(",") > -1){
+				hql += " and (p.exam.id in (:examId))";
+				parameters.put("examId", info.getExamId().split(","));
+			}else{
+				hql += " and (p.exam.id = :examId)";
+				parameters.put("examId", info.getExamId());
+			}
+		}
+		if (!StringUtils.isEmpty(info.getName())) {//名称
+			hql += " and (p.name like :name)";
+			parameters.put("name", "%" + info.getName() + "%");
 		}
 		return hql;
 	}
@@ -81,9 +86,16 @@ public class ProductDaoImpl extends BaseDaoImpl<Product> implements IProductDao{
 	@Override
 	public Integer loadMaxOrder(String examId) {
 		if(logger.isDebugEnabled()) logger.debug("加载最大排序号...");
-		final String hql = "select max(p.orderNo) from Product p where (p.exam.id = :examId) ";
+		StringBuilder hqlBuilder = new StringBuilder();
+		hqlBuilder.append("select max(p.orderNo) from Product p ");
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("examId", examId);
+		if(!StringUtils.isEmpty(examId)){
+			hqlBuilder.append(" where (p.exam.id = :examId) ");
+			parameters.put("examId", examId);
+		}
+		hqlBuilder.append(" order by p.orderNo desc ");
+		String hql = hqlBuilder.toString();
+		if(logger.isDebugEnabled()) logger.debug(hql);
 		Object obj = this.uniqueResult(hql, parameters);
 		return obj == null ? null : (int)obj;
 	}

@@ -1,5 +1,6 @@
 package com.examw.test.controllers.products;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -58,7 +60,7 @@ public class ProductController {
 	 */
 	@RequiresPermissions({ModuleConstant.PRODUCTS_PRODUCT + ":" + Right.UPDATE})
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
-	public String edit(String categoryId, String examId,Model model){
+	public String edit(String categoryId, String examId, Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
 		model.addAttribute("current_category_id", categoryId);
 		model.addAttribute("current_exam_id", examId);
@@ -126,16 +128,16 @@ public class ProductController {
 	@RequiresPermissions({ModuleConstant.PRODUCTS_PRODUCT + ":" + Right.DELETE})
 	@RequestMapping(value="/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public Json delete(String id){
-		if(logger.isDebugEnabled()) logger.debug("删除数据［"+ id +"］...");
+	public Json delete(@RequestBody String[] ids){
+		if(logger.isDebugEnabled()) logger.debug(String.format("删除数据:%s...", Arrays.toString(ids)));
 		Json result = new Json();
 		try {
-			this.productService.delete(id.split("\\|"));
+			this.productService.delete(ids);
 			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
-			logger.error("删除数据["+id+"]时发生异常:", e);
+			logger.error(String.format("删除数据时发生异常:%s", e.getMessage()), e);
 		}
 		return result;
 	}
