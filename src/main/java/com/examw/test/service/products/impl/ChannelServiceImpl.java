@@ -1,5 +1,6 @@
 package com.examw.test.service.products.impl;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,20 +15,20 @@ import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.products.IChannelService;
 
 /**
- * 渠道服务接口实现类
+ * 渠道服务接口实现类。
  * @author fengwei.
  * @since 2014年8月11日 下午4:12:14.
  */
 public class ChannelServiceImpl extends BaseDataServiceImpl<Channel,ChannelInfo> implements IChannelService{
 	private static final Logger logger = Logger.getLogger(ChannelServiceImpl.class);
 	private IChannelDao channelDao;
-	
 	/**
-	 * 设置 渠道数据接口
+	 * 设置渠道数据接口。
 	 * @param channelDao
-	 * 
+	 *  渠道数据接口。
 	 */
 	public void setChannelDao(IChannelDao channelDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入渠道数据接口...");
 		this.channelDao = channelDao;
 	}
 	/*
@@ -36,7 +37,7 @@ public class ChannelServiceImpl extends BaseDataServiceImpl<Channel,ChannelInfo>
 	 */
 	@Override
 	protected List<Channel> find(ChannelInfo info) {
-		if (logger.isDebugEnabled())	logger.debug("查询[渠道]数据...");
+		if (logger.isDebugEnabled())logger.debug("查询[渠道]数据...");
 		return this.channelDao.findChannels(info);
 	}
 	/*
@@ -45,9 +46,8 @@ public class ChannelServiceImpl extends BaseDataServiceImpl<Channel,ChannelInfo>
 	 */
 	@Override
 	protected ChannelInfo changeModel(Channel data) {
-		if (logger.isDebugEnabled())	logger.debug("[渠道]数据模型转换...");
-		if (data == null)
-			return null;
+		if (logger.isDebugEnabled())logger.debug("[渠道]数据模型转换...");
+		if (data == null) return null;
 		ChannelInfo info = new ChannelInfo();
 		BeanUtils.copyProperties(data, info);
 		return info;
@@ -58,7 +58,7 @@ public class ChannelServiceImpl extends BaseDataServiceImpl<Channel,ChannelInfo>
 	 */
 	@Override
 	protected Long total(ChannelInfo info) {
-		if (logger.isDebugEnabled())	logger.debug("查询统计...");
+		if (logger.isDebugEnabled())logger.debug("查询统计...");
 		return channelDao.total(info);
 	}
 	/*
@@ -88,13 +88,10 @@ public class ChannelServiceImpl extends BaseDataServiceImpl<Channel,ChannelInfo>
 	 */
 	@Override
 	public void delete(String[] ids) {
-		if (logger.isDebugEnabled())
-			logger.debug("删除数据...");
-		if (ids == null || ids.length == 0)
-			return;
+		if (logger.isDebugEnabled())logger.debug(String.format("删除数据: %s...", Arrays.toString(ids)));
+		if (ids == null || ids.length == 0) return;
 		for (int i = 0; i < ids.length; i++) {
-			if (StringUtils.isEmpty(ids[i]))
-				continue;
+			if (StringUtils.isEmpty(ids[i])) continue;
 			Channel data = this.channelDao.load(Channel.class, ids[i]);
 			if (data != null) {
 				logger.debug("删除渠道数据：" + ids[i]);
@@ -109,16 +106,21 @@ public class ChannelServiceImpl extends BaseDataServiceImpl<Channel,ChannelInfo>
 	@Override
 	public Integer loadMaxCode() {
 		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
-		List<Channel> sources = this.channelDao.findChannels(new ChannelInfo(){
+		return this.channelDao.loadMaxCode();
+	}
+	/*
+	 * 查询全部渠道数据。
+	 * @see com.examw.test.service.products.IChannelService#loadAll()
+	 */
+	@Override
+	public List<ChannelInfo> loadAll() {
+		if(logger.isDebugEnabled()) logger.debug("查询全部渠道数据...");
+		return this.changeModel(this.channelDao.findChannels(new ChannelInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
-			public String getSort() {return "code"; } 
+			public String getSort() { return "code";}
 			@Override
-			public String getOrder() { return "desc";}
-		});
-		if(sources != null && sources.size() > 0){
-			return sources.get(0).getCode();
-		}
-		return null;
+			public String getOrder() { return "asc";}
+		}));
 	}
 }

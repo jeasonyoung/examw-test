@@ -30,7 +30,8 @@ public class ChannelDaoImpl extends BaseDaoImpl<Channel> implements IChannelDao{
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
-			hql += " order by c." + info.getSort() + " " + info.getOrder();
+			if(StringUtils.isEmpty(info.getOrder())) info.setOrder("asc");
+			hql += String.format(" order by c.%1$s %2$s",info.getSort(),info.getOrder());
 		}
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.find(hql, parameters, info.getPage(), info.getRows());
@@ -48,13 +49,23 @@ public class ChannelDaoImpl extends BaseDaoImpl<Channel> implements IChannelDao{
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.count(hql, parameters);
 	}
-
 	// 添加查询条件到HQL。
 	private String addWhere(ChannelInfo info, String hql,Map<String, Object> parameters) {
 		if (!StringUtils.isEmpty(info.getName())) {
-			hql += " and (c.name like :name)";
+			hql += " and (c.name like :name or c.code like :name)";
 			parameters.put("name", "%" + info.getName() + "%");
 		}
 		return hql;
+	}
+	/*
+	 * 加载最大代码值。
+	 * @see com.examw.test.dao.products.IChannelDao#loadMaxCode()
+	 */
+	@Override
+	public Integer loadMaxCode() {
+		if(logger.isDebugEnabled()) logger.debug("加载最大代码值...");
+		final String hql = "select max(c.code) from Channel c order by c.code desc";
+		Object obj = this.uniqueResult(hql, null);
+		return obj == null ? null : (int)obj;
 	}
 }

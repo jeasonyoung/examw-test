@@ -1,5 +1,6 @@
 package com.examw.test.controllers.products;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -8,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -43,18 +45,6 @@ public class ChannelController {
 		return "products/channel_list";
 	}
 	/**
-	 * 查询数据。
-	 * @return
-	 */
-	@RequiresPermissions({ModuleConstant.PRODUCTS_CHANNEL + ":" + Right.VIEW})
-	@RequestMapping(value="/datagrid", method = RequestMethod.POST)
-	@ResponseBody
-	public DataGrid<ChannelInfo> datagrid(ChannelInfo info){
-		if(logger.isDebugEnabled()) logger.debug("加载列表数据...");
-		return this.channelService.datagrid(info);
-	}
-	
-	/**
 	 * 获取编辑页面。
 	 * @param model
 	 * 数据绑定。
@@ -66,6 +56,39 @@ public class ChannelController {
 	public String edit(Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
 		return "products/channel_edit";
+	}
+	/**
+	 * 查询数据。
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.PRODUCTS_CHANNEL + ":" + Right.VIEW})
+	@RequestMapping(value="/datagrid", method = RequestMethod.POST)
+	@ResponseBody
+	public DataGrid<ChannelInfo> datagrid(ChannelInfo info){
+		if(logger.isDebugEnabled()) logger.debug("加载列表数据...");
+		return this.channelService.datagrid(info);
+	}
+	/**
+	 * 加载全部的渠道数据
+	 * @return
+	 */
+	@RequestMapping(value="/all", method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public List<ChannelInfo> loadAll(){
+		if(logger.isDebugEnabled()) logger.debug("加载全部的渠道数据...");
+		return this.channelService.loadAll();
+	}
+	/**
+	 * 加载来源代码值。
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.PRODUCTS_CHANNEL + ":" + Right.VIEW})
+	@RequestMapping(value="/code", method = RequestMethod.GET)
+	@ResponseBody
+	public Integer code(){
+		Integer max = this.channelService.loadMaxCode();
+		if(max == null) max = 0;
+		return max + 1;
 	}
 	/**
 	 * 更新数据。
@@ -98,45 +121,17 @@ public class ChannelController {
 	@RequiresPermissions({ModuleConstant.PRODUCTS_CHANNEL + ":" + Right.DELETE})
 	@RequestMapping(value="/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public Json delete(String id){
-		if(logger.isDebugEnabled()) logger.debug("删除数据［"+ id +"］...");
+	public Json delete(@RequestBody String[] ids){
+		if(logger.isDebugEnabled()) logger.debug(String.format("删除数据:%s", Arrays.toString(ids)));
 		Json result = new Json();
 		try {
-			this.channelService.delete(id.split("\\|"));
+			this.channelService.delete(ids);
 			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
-			logger.error("删除数据["+id+"]时发生异常:", e);
+			logger.error(String.format("删除数据时发生异常:%s", e.getMessage()), e);
 		}
 		return result;
-	}
-	/**
-	 * 渠道的下拉数据
-	 * @return
-	 */
-	@RequestMapping(value="/combo", method = {RequestMethod.POST,RequestMethod.GET})
-	@ResponseBody
-	public List<ChannelInfo> combo(){
-		return this.channelService.datagrid(new ChannelInfo(){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public String getSort(){ return "code"; }
-			@Override
-			public String getOrder() { return "asc"; }
-		}).getRows();
-	}
-	
-	/**
-	 * 加载来源代码值。
-	 * @return
-	 */
-	@RequiresPermissions({ModuleConstant.PRODUCTS_CHANNEL + ":" + Right.VIEW})
-	@RequestMapping(value="/code", method = RequestMethod.GET)
-	@ResponseBody
-	public Integer code(){
-		Integer max = this.channelService.loadMaxCode();
-		if(max == null) max = 0;
-		return max + 1;
 	}
 }
