@@ -50,19 +50,10 @@ public enum PaperType {
 	 * 枚举对象。
 	 */
 	public static PaperType convert(Integer value){
-		switch(value){
-			//真题
-			case 0x01 : return PaperType.REAL;
-			//模拟题
-			case 0x02: return PaperType.SIMU;
-			//预测题
-			case 0x03: return PaperType.FORECAS;
-			//练习题
-			case 0x04: return PaperType.PRACTICE;
-			//章节练习
-			case 0x05: return PaperType.CHAPTER;
-			//每日一练
-			case 0x06: return PaperType.DAILY;
+		if(value != null){
+			for(PaperType type : PaperType.values()){
+				if(type.getValue() == value) return type;
+			}
 		}
 		throw new RuntimeException("不存在［value="+value+"］！");
 	}

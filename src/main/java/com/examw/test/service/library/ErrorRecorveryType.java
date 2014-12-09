@@ -50,20 +50,11 @@ public enum ErrorRecorveryType {
 	 * 枚举对象。
 	 */
 	public static ErrorRecorveryType convert(Integer value){
-		switch(value){
-			//错别字
-			case 0x01 : return ErrorRecorveryType.WRONG_WORDS;
-			//答案错误
-			case 0x02: return ErrorRecorveryType.WRONG_ANSWER;
-			//解析错误
-			case 0x03: return ErrorRecorveryType.WRONG_ANALYSIS;
-			//题目不完整
-			case 0x04: return ErrorRecorveryType.ITEM_UNCOMPLETED;
-			//图片丢失
-			case 0x05: return ErrorRecorveryType.IMAGE_MISSING;
-			//其他
-			case 0x06: return ErrorRecorveryType.OTHERS;
-			default:return ErrorRecorveryType.OTHERS;
+		if(value != null){
+			for(ErrorRecorveryType type : ErrorRecorveryType.values()){
+				if(type.getValue() == value) return type;
+			}
 		}
+		throw new RuntimeException("不存在［value="+value+"］！");
 	}
 }

@@ -16,9 +16,9 @@ import com.examw.support.CustomDateSerializer;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class ProductInfo extends Paging implements Comparable<ProductInfo>{
 	private static final long serialVersionUID = 1L;
-	private String id,name,content,categoryId,categoryName,examId,examName,areaId,areaName,statusName;
+	private String id,name,content,categoryId,categoryName,examId,examName,areaId,areaName,statusName,analysisTypeName,realTypeName;
 	private String[] subjectId,subjectName;
-	private Integer orderNo,status;
+	private Integer orderNo,status,analysisType,realType,paperTotal,itemTotal;
 	private BigDecimal price,discount;
 	private Date createTime,lastTime;
 	/**
@@ -262,6 +262,96 @@ public class ProductInfo extends Paging implements Comparable<ProductInfo>{
 	 */
 	public void setStatusName(String statusName) {
 		this.statusName = statusName;
+	}
+	/**
+	 * 获取答案解析类型。
+	 * @return 答案解析类型。
+	 */
+	public Integer getAnalysisType() {
+		return analysisType;
+	}
+	/**
+	 * 设置答案解析类型。
+	 * @param analysisType 
+	 *	  答案解析类型。
+	 */
+	public void setAnalysisType(Integer analysisType) {
+		this.analysisType = analysisType;
+	}
+	/**
+	 * 获取答案解析类型名称。
+	 * @return 答案解析类型名称。
+	 */
+	public String getAnalysisTypeName() {
+		return analysisTypeName;
+	}
+	/**
+	 * 设置答案解析类型名称。
+	 * @param analysisTypeName 
+	 *	  答案解析类型名称。
+	 */
+	public void setAnalysisTypeName(String analysisTypeName) {
+		this.analysisTypeName = analysisTypeName;
+	}
+	/**
+	 * 获取真题类型。
+	 * @return 真题类型。
+	 */
+	public Integer getRealType() {
+		return realType;
+	}
+	/**
+	 * 设置真题类型。
+	 * @param realType 
+	 *	  真题类型。
+	 */
+	public void setRealType(Integer realType) {
+		this.realType = realType;
+	}
+	/**
+	 * 获取真题类型名称。
+	 * @return 真题类型名称。
+	 */
+	public String getRealTypeName() {
+		return realTypeName;
+	}
+	/**
+	 * 设置真题类型名称。
+	 * @param realTypeName 
+	 *	  真题类型名称。
+	 */
+	public void setRealTypeName(String realTypeName) {
+		this.realTypeName = realTypeName;
+	}
+	/**
+	 * 获取试卷总数。
+	 * @return 试卷总数。
+	 */
+	public Integer getPaperTotal() {
+		return paperTotal;
+	}
+	/**
+	 * 设置试卷总数。
+	 * @param paperTotal 
+	 *	  试卷总数。
+	 */
+	public void setPaperTotal(Integer paperTotal) {
+		this.paperTotal = paperTotal;
+	}
+	/**
+	 * 获取试题总数。
+	 * @return 试题总数。
+	 */
+	public Integer getItemTotal() {
+		return itemTotal;
+	}
+	/**
+	 * 设置试题总数。
+	 * @param itemTotal 
+	 *	  试题总数。
+	 */
+	public void setItemTotal(Integer itemTotal) {
+		this.itemTotal = itemTotal;
 	}
 	/**
 	 * 获取排序号。

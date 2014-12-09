@@ -39,16 +39,11 @@ public enum PaperStatus {
 	 * 枚举对象。
 	 */
 	public static PaperStatus convert(Integer value){
-		PaperStatus result = PaperStatus.NONE;
-		switch(value){
-			case 0x01: 
-				result = PaperStatus.AUDIT;
-			break;
-			case 0x02:
-				result = PaperStatus.PUBLISH;
-			break;
-			default:break;
+		if(value != null){
+			for(PaperStatus status : PaperStatus.values()){
+				if(status.getValue() == value) return status;
+			}
 		}
-		return result;
+		throw new RuntimeException("不存在［value="+value+"］！");
 	}
 }
