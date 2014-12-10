@@ -1,5 +1,6 @@
 package com.examw.test.controllers.products;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -8,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -27,11 +29,11 @@ import com.examw.test.service.products.ISoftwareTypeService;
 @RequestMapping("/products/softwaretype")
 public class SoftwareTypeController {
 	private static final Logger logger = Logger.getLogger(SoftwareTypeController.class);
-	//软件类型服务接口。
+	//注入软件类型服务接口。
 	@Resource
 	private ISoftwareTypeService softwareTypeService;
 	/**
-	 * 获取列表页面。
+	 * 加载列表页面。
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.PRODUCTS_SOFTWARETYPE + ":" + Right.VIEW})
@@ -43,7 +45,30 @@ public class SoftwareTypeController {
 		return "products/softwaretype_list";
 	}
 	/**
-	 * 查询数据。
+	 * 加载编辑页面。
+	 * @param model
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.PRODUCTS_SOFTWARETYPE + ":" + Right.UPDATE})
+	@RequestMapping(value = "/edit", method = RequestMethod.GET)
+	public String edit(Model model){
+		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
+		return "products/softwaretype_edit";
+	}
+	/**
+	 * 加载最大代码值。
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.PRODUCTS_CHANNEL + ":" + Right.VIEW})
+	@RequestMapping(value="/code", method = RequestMethod.GET)
+	@ResponseBody
+	public Integer code(){
+		Integer max = this.softwareTypeService.loadMaxCode();
+		if(max == null) max = 0;
+		return max + 1;
+	}
+	/**
+	 * 加载列表数据。
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.PRODUCTS_SOFTWARETYPE + ":" + Right.VIEW})
@@ -52,20 +77,6 @@ public class SoftwareTypeController {
 	public DataGrid<SoftwareTypeInfo> datagrid(SoftwareTypeInfo info){
 		if(logger.isDebugEnabled()) logger.debug("加载列表数据...");
 		return this.softwareTypeService.datagrid(info);
-	}
-	
-	/**
-	 * 获取编辑页面。
-	 * @param model
-	 * 数据绑定。
-	 * @return
-	 * 编辑页面地址。
-	 */
-	@RequiresPermissions({ModuleConstant.PRODUCTS_SOFTWARETYPE + ":" + Right.UPDATE})
-	@RequestMapping(value = "/edit", method = RequestMethod.GET)
-	public String edit(Model model){
-		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
-		return "products/softwaretype_edit";
 	}
 	/**
 	 * 更新数据。
@@ -86,7 +97,7 @@ public class SoftwareTypeController {
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
-			logger.error("更新软件类型数据发生异常", e);
+			logger.error(String.format("更新数据时发生异常:%s", e.getMessage()), e);
 		}
 		return result;
 	}
@@ -98,44 +109,27 @@ public class SoftwareTypeController {
 	@RequiresPermissions({ModuleConstant.PRODUCTS_SOFTWARETYPE + ":" + Right.DELETE})
 	@RequestMapping(value="/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public Json delete(String id){
-		if(logger.isDebugEnabled()) logger.debug("删除数据［"+ id +"］...");
+	public Json delete(@RequestBody String[] ids){
+		if(logger.isDebugEnabled()) logger.debug(String.format("删除数据:%s...", Arrays.toString(ids)));
 		Json result = new Json();
 		try {
-			this.softwareTypeService.delete(id.split("\\|"));
+			this.softwareTypeService.delete(ids);
 			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
-			logger.error("删除数据["+id+"]时发生异常:", e);
+			logger.error(String.format("删除数据时发生异常:%s", e.getMessage()), e);
 		}
 		return result;
 	}
 	/**
-	 * 软件类型的下拉数据
+	 * 加载全部软件类型集合。
 	 * @return
 	 */
-	@RequestMapping(value="/combo", method = {RequestMethod.POST,RequestMethod.GET})
+	@RequestMapping(value="/all", method = {RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
-	public List<SoftwareTypeInfo> combo(){
-		return this.softwareTypeService.datagrid(new SoftwareTypeInfo(){
-			private static final long serialVersionUID = 1L;
-			@Override
-			public String getSort(){ return "code"; }
-			@Override
-			public String getOrder() { return "asc"; }
-		}).getRows();
-	}
-	/**
-	 * 加载来源代码值。
-	 * @return
-	 */
-	@RequiresPermissions({ModuleConstant.PRODUCTS_CHANNEL + ":" + Right.VIEW})
-	@RequestMapping(value="/code", method = RequestMethod.GET)
-	@ResponseBody
-	public Integer code(){
-		Integer max = this.softwareTypeService.loadMaxCode();
-		if(max == null) max = 0;
-		return max + 1;
-	}
+	public List<SoftwareTypeInfo> loadAll(){
+		if(logger.isDebugEnabled()) logger.debug("加载全部软件类型集合...");
+		return this.softwareTypeService.loadAllSoftwareTypes();
+	}	
 }

@@ -38,4 +38,14 @@ public interface IPaperDao extends IBaseDao<Paper> {
 	 * @return 已审核的全部试卷集合。
 	 */
 	List<Paper> loadAllAudit(Integer count);
+	/**
+	 * 统计科目地区下的试卷总数。
+	 * @param subjectIds
+	 * 科目ID集合。
+	 * @param areaId
+	 * 所属地区ID。
+	 * @return
+	 * 试卷总数。
+	 */
+	Integer totalPapers(String[] subjectIds,String areaId);
 }

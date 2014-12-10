@@ -52,22 +52,11 @@ public enum ItemType {
 	 * @param value
 	 * @return
 	 */
-	public static ItemType convert(int value){
-		switch(value){
-			//单选
-			case 0x01 : return ItemType.SINGLE;
-			//多选
-			case 0x02: return ItemType.MULTY;
-			//不定向选
-			case 0x03:return ItemType.UNCERTAIN;
-			//判断题目
-			case 0x04:return ItemType.JUDGE;
-			//问答题
-			case 0x05:return ItemType.QANDA;
-			//共享题干题
-			case 0x06:return ItemType.SHARE_TITLE;
-			//共享答案题
-			case 0x07:return ItemType.SHARE_ANSWER;
+	public static ItemType convert(Integer value){
+		if(value != null){
+			for(ItemType type : ItemType.values()){
+				if(type.getValue() == value) return type;
+			}
 		}
 		throw new RuntimeException("不存在［value="+value+"］！");
 	}

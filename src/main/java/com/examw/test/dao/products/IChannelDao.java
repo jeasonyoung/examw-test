@@ -28,4 +28,10 @@ public interface IChannelDao extends IBaseDao<Channel>{
 	 * 数据总数。
 	 */
 	Long total(ChannelInfo info);
+	/**
+	 * 加载最大代码值。
+	 * @return
+	 * 最大代码值。
+	 */
+	Integer loadMaxCode();
 }

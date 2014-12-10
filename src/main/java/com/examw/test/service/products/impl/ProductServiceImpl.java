@@ -12,6 +12,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
+import com.examw.test.dao.library.IItemDao;
+import com.examw.test.dao.library.IPaperDao;
 import com.examw.test.dao.products.IProductDao;
 import com.examw.test.dao.settings.IAreaDao;
 import com.examw.test.dao.settings.IExamDao;
@@ -35,7 +37,9 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 	private IExamDao examDao;
 	private ISubjectDao subjectDao;
 	private IAreaDao areaDao;
-	private Map<Integer,String> statusMap;
+	private IPaperDao paperDao;
+	private IItemDao itemDao;
+	private Map<Integer,String> statusMap,analysisTypeMap,realTypeMap;
 	/**
 	 * 设置产品数据接口
 	 * @param productDao
@@ -73,6 +77,24 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 		this.areaDao = areaDao;
 	}
 	/**
+	 * 设置试卷数据接口。
+	 * @param paperDao 
+	 *	  试卷数据接口。
+	 */
+	public void setPaperDao(IPaperDao paperDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入试卷数据接口...");
+		this.paperDao = paperDao;
+	}
+	/**
+	 * 设置试题数据接口。
+	 * @param itemDao 
+	 *	  试题数据接口。
+	 */
+	public void setItemDao(IItemDao itemDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入试题数据接口...");
+		this.itemDao = itemDao;
+	}
+	/**
 	 * 设置产品状态名称映射。
 	 * @param statusMap
 	 * 产品状态名称映射。
@@ -81,6 +103,24 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 		if(logger.isDebugEnabled()) logger.debug("注入产品状态名称映射...");
 		this.statusMap = statusMap;
 	}
+	/**
+	 * 设置产品答案解析类型值名称集合。
+	 * @param analysisTypeMap 
+	 *	  产品答案解析类型值名称集合。
+	 */
+	public void setAnalysisTypeMap(Map<Integer,String> analysisTypeMap) {
+		if(logger.isDebugEnabled()) logger.debug("注入产品答案解析类型值名称集合...");
+		this.analysisTypeMap = analysisTypeMap;
+	}
+	/**
+	 * 设置产品真题类型值名称集合。
+	 * @param realTypeMap 
+	 *	  产品真题类型值名称集合。
+	 */
+	public void setRealTypeMap(Map<Integer,String> realTypeMap) {
+		if(logger.isDebugEnabled()) logger.debug("注入产品真题类型值名称集合...");
+		this.realTypeMap = realTypeMap;
+	}
 	/*
 	 * 加载状态名称映射
 	 * @see com.examw.test.service.products.IProductService#loadStatusName(java.lang.Integer)
@@ -88,8 +128,28 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 	@Override
 	public String loadStatusName(Integer status) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载产品状态［status = %d］名称...", status));
-		if(status == null || statusMap == null) return null;
-		return statusMap.get(status);
+		if(status == null || this.statusMap == null || this.statusMap.size() == 0) return null;
+		return this.statusMap.get(status);
+	}
+	/*
+	 * 加载产品答案解析类型名称。
+	 * @see com.examw.test.service.products.IProductService#loadAnalysisTypeName(java.lang.Integer)
+	 */
+	@Override
+	public String loadAnalysisTypeName(Integer analysisType) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载产品答案解析类型名称:%d", analysisType));
+		if(analysisType == null || this.analysisTypeMap == null || this.analysisTypeMap.size() == 0) return null;
+		return this.analysisTypeMap.get(analysisType);
+	}
+	/*
+	 * 加载产品真题类型名称。
+	 * @see com.examw.test.service.products.IProductService#loadRealTypeName(java.lang.Integer)
+	 */
+	@Override
+	public String loadRealTypeName(Integer realType) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载产品真题类型名称：%d ", realType));
+		if(realType == null || this.realTypeMap == null || this.realTypeMap.size() == 0) return null;
+		return this.realTypeMap.get(realType);
 	}
 	/*
 	 * 加载考试下产品集合。
@@ -146,6 +206,8 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 			info.setSubjectName(subjectNames.toArray(new String[0]));
 		}
 		info.setStatusName(this.loadStatusName(info.getStatus()));
+		info.setAnalysisTypeName(this.loadAnalysisTypeName(info.getAnalysisType()));
+		info.setRealTypeName(this.loadRealTypeName(info.getRealType()));
 		return info;
 	}
 	/*
@@ -186,6 +248,12 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 			info.setCreateTime(data.getCreateTime());
 			if(info.getCreateTime() == null) info.setCreateTime(new Date());
 		}
+		info.setLastTime(new Date());
+		//试卷数
+		info.setPaperTotal(this.paperDao.totalPapers(info.getSubjectId(), info.getAreaId()));
+		//试题数
+		info.setItemTotal(this.itemDao.totalItems(info.getSubjectId(), info.getAreaId()));
+		//属性复制
 		BeanUtils.copyProperties(info, data);
 		//所属考试
 		data.setExam(StringUtils.isEmpty(info.getExamId()) ?  null : this.examDao.load(Exam.class, info.getExamId()));
@@ -201,9 +269,7 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 			}
 		}
 		data.setSubjects(subjects);
-		data.setLastTime(new Date());
 		if(isAdded) this.productDao.save(data);
-		
 		return this.changeModel(data);
 	}
 	/*

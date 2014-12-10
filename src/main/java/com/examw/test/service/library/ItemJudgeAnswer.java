@@ -32,13 +32,12 @@ public enum ItemJudgeAnswer {
 	 * @param value
 	 * @return
 	 */
-	public static ItemJudgeAnswer convert(int value){
-		switch(value){
-			//正确
-			case 0x01:return ItemJudgeAnswer.RIGTH;
-			//错误
-			case 0x00: return ItemJudgeAnswer.WRONG;
+	public static ItemJudgeAnswer convert(Integer value){
+		if(value != null){
+			for(ItemJudgeAnswer answer : ItemJudgeAnswer.values()){
+				if(answer.getValue() == value) return answer;
+			}
 		}
-		throw new RuntimeException("不存在！");
+		throw new RuntimeException("不存在［value="+value+"］！");
 	}
 }

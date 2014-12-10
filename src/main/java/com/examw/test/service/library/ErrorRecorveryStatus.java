@@ -31,12 +31,11 @@ public enum ErrorRecorveryStatus {
 	 * @param value
 	 * @return
 	 */
-	public static ErrorRecorveryStatus convert(int value){
-		switch(value){
-			//未审核
-			case 0x00 : return ErrorRecorveryStatus.NONE;
-			//已审核
-			case 0x01: return ErrorRecorveryStatus.WORKED;
+	public static ErrorRecorveryStatus convert(Integer value){
+		if(value != null){
+			for(ErrorRecorveryStatus status : ErrorRecorveryStatus.values()){
+				if(status.getValue() == value) return status;
+			}
 		}
 		throw new RuntimeException("不存在［value="+value+"］！");
 	}

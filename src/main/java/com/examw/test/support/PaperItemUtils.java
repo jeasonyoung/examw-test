@@ -1,8 +1,6 @@
 package com.examw.test.support;
 
-import java.util.Comparator;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.springframework.ui.Model;
 
@@ -19,20 +17,6 @@ import com.examw.test.service.library.PaperType;
  * @since 2014年9月24日
  */
 public final class PaperItemUtils {
-	//创建可排序Map。
-	public static Map<String, String> createTreeMap(){
-		Map<String, String> map = new TreeMap<String,String>(new Comparator<String>(){
-			@Override
-			public int compare(String o1, String o2) {
-				Integer v1 = Integer.parseInt(o1), v2 = Integer.parseInt(o2);
-				if(v1 != null && v2 != null){
-					return v1 - v2;
-				}
-				return o1.compareToIgnoreCase(o2);
-			}
-		 });
-		return map;
-	}
 	/**
 	 * 加载试卷类型值和名称集合。
 	 * @param paperService
@@ -40,7 +24,7 @@ public final class PaperItemUtils {
 	 */
 	public static Map<String, String> loadPaperTypeValueMap(IPaperService paperService){
 		if(paperService == null) return null;
-		Map<String, String> paperTypeMap = createTreeMap();
+		Map<String, String> paperTypeMap = EnumMapUtils.createTreeMap();
 		 for(PaperType type : PaperType.values()){
 			if(type == null) continue;
 			paperTypeMap.put(String.format("%d", type.getValue()), paperService.loadTypeName(type.getValue()));
@@ -63,7 +47,7 @@ public final class PaperItemUtils {
 	 */
 	public static Map<String, String> loadItemTypeValueMap(IItemService itemService){
 		if(itemService == null) return null;
-		Map<String, String> itemTypeMap = createTreeMap();
+		Map<String, String> itemTypeMap = EnumMapUtils.createTreeMap();
 		for(ItemType type : ItemType.values()){
 			if(type == null) continue;
 			itemTypeMap.put(String.format("%d", type.getValue()), itemService.loadTypeName(type.getValue()));
@@ -78,7 +62,7 @@ public final class PaperItemUtils {
 	 */
 	public static Map<String, String> loadItemTypeValueMap(IItemService itemService, ItemType[] types){
 		if(itemService == null || types == null || types.length == 0) return null;
-		Map<String, String> itemTypeMap = createTreeMap();
+		Map<String, String> itemTypeMap =  EnumMapUtils.createTreeMap();
 		for(ItemType type : types){
 			if(type == null) continue;
 			itemTypeMap.put(String.format("%d", type.getValue()), itemService.loadTypeName(type.getValue()));
@@ -125,7 +109,7 @@ public final class PaperItemUtils {
 	 */
 	public static Map<String, String> loadItemJudgeAnswerValueMap(IItemService itemService){
 		if(itemService == null) return null;
-		Map<String, String> answers = createTreeMap();
+		Map<String, String> answers =  EnumMapUtils.createTreeMap();
 		for(ItemJudgeAnswer answer : ItemJudgeAnswer.values()){
 			if(answer == null) continue;
 			answers.put(String.format("%d", answer.getValue()), itemService.loadJudgeAnswerName(answer.getValue()));

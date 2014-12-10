@@ -1,5 +1,7 @@
 package com.examw.test.service.products;
 
+import java.util.List;
+
 import com.examw.test.model.products.ChannelInfo;
 import com.examw.test.service.IBaseDataService;
 
@@ -10,8 +12,13 @@ import com.examw.test.service.IBaseDataService;
  */
 public interface IChannelService  extends IBaseDataService<ChannelInfo>{
 	/**
-	 * 加载最大代码值
+	 * 加载最大代码值。
 	 * @return
 	 */
 	Integer loadMaxCode();
+	/**
+	 * 加载全部渠道数据。
+	 * @return
+	 */
+	List<ChannelInfo> loadAll();
 }

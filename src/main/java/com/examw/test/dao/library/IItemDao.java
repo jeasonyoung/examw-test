@@ -76,4 +76,14 @@ public interface IItemDao extends IBaseDao<Item> {
 	 * 加载与试卷无关联的试题数据集合。
 	 */
 	List<Item> loadIsolatedItems();
+	/**
+	 * 统计科目地区下的试题总数。
+	 * @param subjectIds
+	 * 科目ID集合。
+	 * @param areaId
+	 * 所属地区ID。
+	 * @return
+	 * 试题总数。
+	 */
+	Integer totalItems(String[] subjectIds,String areaId);
 }
