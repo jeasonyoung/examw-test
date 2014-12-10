@@ -12,6 +12,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
+import com.examw.test.dao.library.IItemDao;
+import com.examw.test.dao.library.IPaperDao;
 import com.examw.test.dao.products.IProductDao;
 import com.examw.test.dao.settings.IAreaDao;
 import com.examw.test.dao.settings.IExamDao;
@@ -35,6 +37,8 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 	private IExamDao examDao;
 	private ISubjectDao subjectDao;
 	private IAreaDao areaDao;
+	private IPaperDao paperDao;
+	private IItemDao itemDao;
 	private Map<Integer,String> statusMap,analysisTypeMap,realTypeMap;
 	/**
 	 * 设置产品数据接口
@@ -71,6 +75,24 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 	public void setAreaDao(IAreaDao areaDao) {
 		if(logger.isDebugEnabled()) logger.debug("注入地区数据接口...");
 		this.areaDao = areaDao;
+	}
+	/**
+	 * 设置试卷数据接口。
+	 * @param paperDao 
+	 *	  试卷数据接口。
+	 */
+	public void setPaperDao(IPaperDao paperDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入试卷数据接口...");
+		this.paperDao = paperDao;
+	}
+	/**
+	 * 设置试题数据接口。
+	 * @param itemDao 
+	 *	  试题数据接口。
+	 */
+	public void setItemDao(IItemDao itemDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入试题数据接口...");
+		this.itemDao = itemDao;
 	}
 	/**
 	 * 设置产品状态名称映射。
@@ -227,6 +249,11 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 			if(info.getCreateTime() == null) info.setCreateTime(new Date());
 		}
 		info.setLastTime(new Date());
+		//试卷数
+		info.setPaperTotal(this.paperDao.totalPapers(info.getSubjectId(), info.getAreaId()));
+		//试题数
+		info.setItemTotal(this.itemDao.totalItems(info.getSubjectId(), info.getAreaId()));
+		//属性复制
 		BeanUtils.copyProperties(info, data);
 		//所属考试
 		data.setExam(StringUtils.isEmpty(info.getExamId()) ?  null : this.examDao.load(Exam.class, info.getExamId()));

@@ -13,6 +13,10 @@
 		<property name="subjectDao" ref="subjectDao" />
 		<!-- 地区数据操作接口 -->
 		<property name="areaDao" ref="areaDao" />
+		<!-- 试卷数据接口 -->
+		<property name="paperDao" ref="paperDao" />
+		<!-- 试题数据接口 -->
+		<property name="itemDao" ref="itemDao" />
 		<!-- 状态值名称映射 -->
 		<property name="statusMap">
 		    <map>

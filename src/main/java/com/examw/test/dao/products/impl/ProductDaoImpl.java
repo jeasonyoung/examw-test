@@ -29,14 +29,24 @@ public class ProductDaoImpl extends BaseDaoImpl<Product> implements IProductDao{
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
-			if(info.getSort().equalsIgnoreCase("examName")){
-				info.setSort("exam.name");
-			}else if(info.getSort().equalsIgnoreCase("areaName")){
-				info.setSort("area.name");
-			}else if(info.getSort().equalsIgnoreCase("statusName")){
-				info.setSort("status");
+			switch(info.getSort()){
+				case "examName"://考试名称
+					info.setSort("exam.name");
+					break;
+				case "areaName"://地区名称
+					info.setSort("area.name");
+					break;
+				case "statusName"://状态名称
+					info.setSort("status");
+					break;
+				case "analysisTypeName"://解题思路
+					 info.setSort("analysisType");
+					break;
+				case "realTypeName"://历年真题
+					info.setSort("realType");
+					break;
 			}
-			hql += " order by p." + info.getSort() + " " + info.getOrder();
+			hql += String.format(" order by p.%1$s %2$s",info.getSort(),info.getOrder());
 		}
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.find(hql, parameters, info.getPage(), info.getRows());
