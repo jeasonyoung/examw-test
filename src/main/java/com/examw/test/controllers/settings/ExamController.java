@@ -20,7 +20,7 @@ import com.examw.test.model.settings.AreaInfo;
 import com.examw.test.model.settings.ExamInfo;
 import com.examw.test.service.settings.ExamStatus;
 import com.examw.test.service.settings.IExamService;
-import com.examw.test.support.PaperItemUtils;
+import com.examw.test.support.EnumMapUtils;
 
 /**
  * 考试控制器。
@@ -54,7 +54,7 @@ public class ExamController {
 	@RequestMapping(value="/edit", method = RequestMethod.GET)
 	public String edit(Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
-		Map<String, String> examStatusMaps = PaperItemUtils.createTreeMap();
+		Map<String, String> examStatusMaps = EnumMapUtils.createTreeMap();
 		for(ExamStatus status : ExamStatus.values()){
 			examStatusMaps.put(String.format("%d", status.getValue()), this.examService.loadStatusName(status.getValue()));
 		}

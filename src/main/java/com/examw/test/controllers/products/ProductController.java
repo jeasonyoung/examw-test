@@ -20,8 +20,10 @@ import com.examw.model.Json;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.products.ProductInfo;
 import com.examw.test.service.products.IProductService;
+import com.examw.test.service.products.ProductAnalysisType;
+import com.examw.test.service.products.ProductRealType;
 import com.examw.test.service.products.ProductStatus;
-import com.examw.test.support.PaperItemUtils;
+import com.examw.test.support.EnumMapUtils;
 
 /**
  * 产品控制器
@@ -65,12 +67,20 @@ public class ProductController {
 		model.addAttribute("current_category_id", categoryId);
 		model.addAttribute("current_exam_id", examId);
 		
-		Map<String, String> productStatusMap = PaperItemUtils.createTreeMap();
-		for(ProductStatus status : ProductStatus.values()){
+		Map<String, String> productStatusMap = EnumMapUtils.createTreeMap(),
+				analysisTypeMap = EnumMapUtils.createTreeMap(),realTypeMap = EnumMapUtils.createTreeMap();
+		for(ProductStatus status : ProductStatus.values()){//状态
 			productStatusMap.put(String.format("%d", status.getValue()), this.productService.loadStatusName(status.getValue()));
 		}
-		model.addAttribute("ProductStatusMap", productStatusMap);
-		
+		model.addAttribute("productStatusMap", productStatusMap);
+		for(ProductAnalysisType type : ProductAnalysisType.values()){//答案解析类型
+			analysisTypeMap.put(String.format("%d", type.getValue()), this.productService.loadAnalysisTypeName(type.getValue()));
+		}
+		model.addAttribute("analysisTypeMap", analysisTypeMap);
+		for(ProductRealType type : ProductRealType.values()){//真题类型
+			realTypeMap.put(String.format("%d", type.getValue()), this.productService.loadRealTypeName(type.getValue()));
+		}
+		model.addAttribute("realTypeMap", realTypeMap);
 		return "products/product_edit";
 	}
 	/**
@@ -85,6 +95,16 @@ public class ProductController {
 		Integer max = this.productService.loadMaxOrder(examId);
 		if(max == null) max = 0;
 		return max + 1;
+	}
+	/**
+	 * 加载考试下产品数据集合。
+	 * @return
+	 */
+	@RequestMapping(value="/all", method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public List<ProductInfo> loadProducts(String examId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试［examId = %s］下产品数据集合...", examId)); 
+		return this.productService.loadProducts(examId);
 	}
 	/**
 	 * 查询数据。
@@ -116,7 +136,7 @@ public class ProductController {
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
-			logger.error("更新产品数据发生异常", e);
+			logger.error(String.format("更新数据发生异常:%s", e.getMessage()),e);
 		}
 		return result;
 	}
@@ -140,15 +160,5 @@ public class ProductController {
 			logger.error(String.format("删除数据时发生异常:%s", e.getMessage()), e);
 		}
 		return result;
-	}
-	/**
-	 * 加载考试下产品数据集合。
-	 * @return
-	 */
-	@RequestMapping(value="/all", method = {RequestMethod.POST,RequestMethod.GET})
-	@ResponseBody
-	public List<ProductInfo> loadProducts(String examId){
-		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试［examId = %s］下产品数据集合...", examId)); 
-		return this.productService.loadProducts(examId);
 	}
 }
