@@ -35,4 +35,9 @@ public interface ISoftwareTypeDao extends IBaseDao<SoftwareType>{
 	 * @return
 	 */
 	SoftwareType load(Integer code);
+	/**
+	 * 加载最大排序号。
+	 * @return
+	 */
+	Integer loadMaxCode();
 }
