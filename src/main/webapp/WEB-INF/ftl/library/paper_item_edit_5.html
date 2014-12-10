@@ -1,5 +1,6 @@
 <#--试卷试题（问答题）编辑页面-->
 <#include "comm.ftl" />
+<#include "library/paper_item_edit_common.ftl"/>
 <#assign module = "library_paper_item_${current_item_type_value}" />
 <#assign form = "${module}_edit_form" />
 <script type="text/javascript">
@@ -66,6 +67,7 @@ $(function(){
 		<div style="float:left;margin-left:6px;margin-top:2px;">
 			<textarea style="float:left" name="content" class="easyui-ueditor"  data-options="required:true,width:762,height:<#if current_item_child>120<#else>80</#if>" rows="5" cols="20" />
 		</div>
+	 </div>
 	</div>
 	<div data-options="region:'center',title:'正确答案',border:false">
 		<div style="float:left;margin-left:6px;margin-top:2px;">

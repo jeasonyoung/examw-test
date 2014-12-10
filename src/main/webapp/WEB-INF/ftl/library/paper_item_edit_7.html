@@ -1,5 +1,6 @@
 <#--试卷试题（共享答案题）编辑页面-->
 <#include "comm.ftl" />
+<#include "library/paper_item_edit_common.ftl"/>
 <#assign base="library_paper_item"/>
 <#assign module="${base}_${current_item_type_value}" />
 <#assign form="${module}_edit_form" />
@@ -261,6 +262,7 @@ $(function(){
 		</#if>
 		<div style="float:left;margin-left:6px;margin-top:2px;">
 			<textarea style="float:left" name="content" class="easyui-ueditor"  data-options="required:true,width:762,height:50" rows="5" cols="20" />
+		</div>
 		</div>
 	</div>
 	<div data-options="region:'center',title:'共享答案选项',
