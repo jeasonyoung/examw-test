@@ -1,6 +1,7 @@
 package com.examw.test.dao.library.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -270,5 +271,28 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 		if(logger.isDebugEnabled()) logger.debug("加载与试卷无关联的试题数据集合...");
 		final String hql = "from Item i where (i.parent is null) and (i.id not in (select si.item.id  from StructureItem si order by si.createTime)) ";
 		return this.find(hql, null, null, null);
+	}
+	/*
+	 * 统计科目地区下的试题总数。
+	 * @see com.examw.test.dao.library.IItemDao#totalItems(java.lang.String[], java.lang.String)
+	 */
+	@Override
+	public Integer totalItems(String[] subjectIds,String areaId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("统计科目［%1$s］地区［%2$s］下的试题总数...", Arrays.toString(subjectIds), areaId));
+		if(subjectIds != null && subjectIds.length > 0){
+			StringBuilder hqlBuilder = new StringBuilder();
+			hqlBuilder.append(" select sum(i.count) from Item i where (i.parent is null) and (i.subject.id in (:subjectId)) ");
+			Map<String, Object> parameters = new HashMap<>();
+			parameters.put("subjectId", subjectIds);
+			if(!StringUtils.isEmpty(areaId)){
+				hqlBuilder.append(" and  ((i.area is null) or (i.area.code = 1) or (i.area.id = :areaId)) ");
+				parameters.put("areaId", areaId);
+			}
+			String hql = hqlBuilder.toString();
+			if(logger.isDebugEnabled()) logger.debug(hql);
+			Object obj = this.uniqueResult(hql, parameters);
+			return (obj == null) ? null : (int)((long)obj);
+		}
+		return null;
 	}
 }

@@ -3,6 +3,43 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 	<!-- service -->
 	<!-- 产品管理 服务接口实现 begin -->
+	<!-- 产品服务 -->
+	<bean id="productService" class="com.examw.test.service.products.impl.ProductServiceImpl">
+		<!-- 产品数据操作接口 -->
+		<property name="productDao" ref="productDao" />
+		<!-- 考试数据操作接口 -->
+		<property name="examDao" ref="examDao" />
+		<!-- 科目数据操作接口 -->
+		<property name="subjectDao" ref="subjectDao" />
+		<!-- 地区数据操作接口 -->
+		<property name="areaDao" ref="areaDao" />
+		<!-- 试卷数据接口 -->
+		<property name="paperDao" ref="paperDao" />
+		<!-- 试题数据接口 -->
+		<property name="itemDao" ref="itemDao" />
+		<!-- 状态值名称映射 -->
+		<property name="statusMap">
+		    <map>
+		         <entry key="0" value="${STATUS_DISABLE}"/>
+		        <entry key="1" value="${STATUS_ENABLED}"/>
+		    </map>
+		</property>
+		<!-- 产品答案解析类型值名称集合 -->
+		<property name="analysisTypeMap">
+		    <map>
+		        <entry key="0" value="${product_analysis_type_none}" />
+		        <entry key="1" value="${product_analysis_type_part}" />
+		        <entry key="2" value="${product_analysis_type_all}" />
+		    </map>
+		</property>
+		<!-- 产品真题类型值名称集合 -->
+		<property name="realTypeMap">
+		    <map>
+		        <entry key="0" value="${product_real_type_none}" />
+		        <entry key="1" value="${product_real_type_exist}" />
+		    </map>
+		</property>
+	</bean>
 	<!-- 渠道服务 -->
 	<bean id="channelService" class="com.examw.test.service.products.impl.ChannelServiceImpl">
 		<!-- 渠道数据操作接口 -->
@@ -21,24 +58,6 @@
 		<property name="statusMap">
 		    <map>
 		        <entry key="0" value="${STATUS_DISABLE}"/>
-		        <entry key="1" value="${STATUS_ENABLED}"/>
-		    </map>
-		</property>
-	</bean>
-	<!-- 产品服务 -->
-	<bean id="productService" class="com.examw.test.service.products.impl.ProductServiceImpl">
-		<!-- 产品数据操作接口 -->
-		<property name="productDao" ref="productDao" />
-		<!-- 考试数据操作接口 -->
-		<property name="examDao" ref="examDao" />
-		<!-- 科目数据操作接口 -->
-		<property name="subjectDao" ref="subjectDao" />
-		<!-- 地区数据操作接口 -->
-		<property name="areaDao" ref="areaDao" />
-		<!-- 状态-名称映射 -->
-		<property name="statusMap">
-		    <map>
-		         <entry key="0" value="${STATUS_DISABLE}"/>
 		        <entry key="1" value="${STATUS_ENABLED}"/>
 		    </map>
 		</property>

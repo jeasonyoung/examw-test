@@ -20,11 +20,23 @@ public interface IProductService extends IBaseDataService<ProductInfo>{
 	 */
 	Integer loadMaxOrder(String examId);
 	/**
-	 * 加载状态名称
+	 * 加载状态名称。
 	 * @param stauts
 	 * @return
 	 */
 	String loadStatusName(Integer status);
+	/**
+	 * 加载产品答案解析类型名称。
+	 * @param analysisType
+	 * @return
+	 */
+	String loadAnalysisTypeName(Integer analysisType);
+	/**
+	 * 加载产品真题类型名称。
+	 * @param realType
+	 * @return
+	 */
+	String loadRealTypeName(Integer realType);
 	/**
 	 * 数据模型转换。
 	 * @param product

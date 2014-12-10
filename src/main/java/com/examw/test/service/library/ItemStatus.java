@@ -32,12 +32,11 @@ public enum ItemStatus {
 	 * @param value
 	 * @return
 	 */
-	public static ItemStatus convert(int value){
-		switch(value){
-			//未审核
-			case 0x00 : return ItemStatus.NONE;
-			//已审核
-			case 0x01: return ItemStatus.AUDIT;
+	public static ItemStatus convert(Integer value){
+		if(value != null){
+			for(ItemStatus status : ItemStatus.values()){
+				if(status.getValue() == value) return status;
+			}
 		}
 		throw new RuntimeException("不存在［value="+value+"］！");
 	}

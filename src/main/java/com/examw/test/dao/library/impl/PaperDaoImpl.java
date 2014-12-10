@@ -1,5 +1,6 @@
 package com.examw.test.dao.library.impl;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,14 +66,29 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 	}
 	//添加查询条件。
 	private String addWhere(PaperInfo info,String hql,Map<String, Object> parameters,Integer[] paperTypes){
-		if(!StringUtils.isEmpty(info.getName())){
-			hql += " and (p.name like :name) ";
-			parameters.put("name", "%"+ info.getName() +"%");
+		if(info.getStatus() != null && info.getStatus() > -1){
+			hql += " and (p.status = :status) ";
+			parameters.put("status", info.getStatus());
 		}
+		//年份
+		if(info.getYear()!=null){
+			hql += " and (p.year = :year) ";
+			parameters.put("year", info.getYear());
+		}
+		//类型
+		if(paperTypes != null && paperTypes.length > 0){
+			hql += " and (p.type in (:type)) ";
+			parameters.put("type", paperTypes);
+		}else if(info.getType() != null){
+			hql += " and (p.type = :type) ";
+			parameters.put("type", info.getType());
+		}
+		//考试
 		if(!StringUtils.isEmpty(info.getExamId())){
 			hql += " and ((p.subject.exam.id = :examId) or (p.subject.exam.category.id in (select c.id  from Category c where (c.parent.id = :examId or c.id = :examId))))";
 			parameters.put("examId", info.getExamId());
 		}
+		//科目
 		if(!StringUtils.isEmpty(info.getSubjectId())){
 			if(info.getSubjectId().indexOf(",") > -1){
 				hql += " and (p.subject.id in (:subjectId)) ";
@@ -82,25 +98,10 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 				parameters.put("subjectId", info.getSubjectId());
 			}
 		}
-		if(info.getStatus() != null && info.getStatus() > -1){
-			hql += " and (p.status = :status) ";
-			parameters.put("status", info.getStatus());
-		}
-		//类型
-		if(info.getType()!=null){
-			hql += " and (p.type = :type) ";
-			parameters.put("type", info.getType());
-		}else{
-			if(paperTypes!=null && paperTypes.length>0)
-			{
-				hql += " and (p.type in (:type)) ";
-				parameters.put("type", paperTypes);
-			}
-		}
-		//年份
-		if(info.getYear()!=null){
-			hql += " and (p.year = :year) ";
-			parameters.put("year", info.getYear());
+		//名称
+		if(!StringUtils.isEmpty(info.getName())){
+			hql += " and (p.name like :name) ";
+			parameters.put("name", "%"+ info.getName() +"%");
 		}
 		return hql;
 	}
@@ -138,6 +139,7 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 	 */
 	@Override
 	public List<Paper> loadAllAudit(Integer count) {
+		if(logger.isDebugEnabled()) logger.debug("加载已审核的试卷...");
 		final String hql = "from Paper p where p.status = :status order by p.lastTime desc,p.createTime desc";
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("status", PaperStatus.AUDIT.getValue());
@@ -149,10 +151,34 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 	 */
 	@Override
 	public Long loadAllAuditCount() {
+		if(logger.isDebugEnabled()) logger.debug("加载已审核的试卷总数...");
 		final String hql = "select count(*) from Paper p where p.status = :status "; 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("status", PaperStatus.AUDIT.getValue());
 		Object obj = this.uniqueResult(hql, parameters);
 		return obj == null ? null : (long)obj;
+	}
+	/*
+	 * 统计科目地区下的试卷总数。
+	 * @see com.examw.test.dao.library.IPaperDao#totalPapers(java.lang.String[], java.lang.String)
+	 */
+	@Override
+	public Integer totalPapers(String[] subjectIds, String areaId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("统计科目［%1$s］地区［%2$s］下的试卷总数...", Arrays.toString(subjectIds), areaId));
+		if(subjectIds != null && subjectIds.length > 0){
+			StringBuilder hqlBuilder = new StringBuilder();
+			hqlBuilder.append("select count(*) from Paper p where (p.subject.id in (:subjectId)) ");
+			Map<String, Object> parameters = new HashMap<>();
+			parameters.put("subjectId", subjectIds);
+			if(!StringUtils.isEmpty(areaId)){
+				hqlBuilder.append(" and  ((p.area is null) or (p.area.code = 1) or (p.area.id = :areaId)) ");
+				parameters.put("areaId", areaId);
+			}
+			String hql = hqlBuilder.toString();
+			if(logger.isDebugEnabled()) logger.debug(hql);
+			Object obj = this.uniqueResult(hql, parameters);
+			return (obj == null) ? null : (int)((long)obj);
+		}
+		return null;
 	}
 }

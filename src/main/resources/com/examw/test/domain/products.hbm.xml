@@ -18,8 +18,16 @@
 		<property name="discount" type="big_decimal" />
 		<!-- 产品介绍 -->
 		<property name="content" type="text" />
-		<!--  状态(0-停用，－1-启用) -->
+		<!--  状态(0-停用，1-启用) -->
 		<property name="status" type="integer" />
+		<!-- 答案解析类型(0-没有，1-部分有，2-有) -->
+		<property name="analysisType" type="integer" />
+		<!-- 真题类型(0-没有，1-有) -->
+		<property name="realType" type="integer" />
+		<!-- 试卷总数 -->
+		<property name="paperTotal" type="integer" />
+		<!-- 试题总数 -->
+		<property name="itemTotal" type="integer" />
 		<!-- 排序号 -->
 		<property name="orderNo" type="integer" />
 		<!-- 包含科目集合 -->

@@ -33,7 +33,7 @@ import com.examw.test.service.syllabus.IBookChapterService;
 import com.examw.test.service.syllabus.IBookService;
 import com.examw.test.service.syllabus.IChapterKnowledgeService;
 import com.examw.test.service.syllabus.ISyllabusService;
-import com.examw.test.support.PaperItemUtils;
+import com.examw.test.support.EnumMapUtils;
 /**
  * 教材控制器。
  * @author lq.
@@ -91,7 +91,7 @@ public class BookController {
 		model.addAttribute("current_exam_id", examId);
 		model.addAttribute("current_subject_id", subjectId);
 		
-		Map<String, String> bookStatusMap = PaperItemUtils.createTreeMap();
+		Map<String, String> bookStatusMap = EnumMapUtils.createTreeMap();
 		for(BookStatus status : BookStatus.values()){
 			if(status ==  null) continue;
 			bookStatusMap.put(String.format("%d", status.getValue()), this.bookService.loadStatusName(status.getValue()));

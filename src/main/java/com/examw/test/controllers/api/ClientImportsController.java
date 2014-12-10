@@ -24,6 +24,7 @@ import com.examw.test.service.library.IPaperItemService;
 import com.examw.test.service.library.IPaperService;
 import com.examw.test.service.library.IPaperStructureService;
 import com.examw.test.service.library.ItemType;
+import com.examw.test.service.library.PaperStatus;
 import com.examw.test.service.security.IUserAuthorization;
 import com.examw.test.service.settings.IExamService;
 import com.examw.test.support.PasswordHelper;
@@ -120,6 +121,8 @@ public class ClientImportsController {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public String getExamId(){return examId;}
+			@Override
+			public Integer getStatus() { return PaperStatus.NONE.getValue();}
 			@Override
 			public String getSort(){return "name";}
 			@Override

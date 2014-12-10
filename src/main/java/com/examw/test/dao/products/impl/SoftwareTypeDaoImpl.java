@@ -69,4 +69,15 @@ public class SoftwareTypeDaoImpl extends BaseDaoImpl<SoftwareType> implements IS
 		List<SoftwareType> list = this.find(hql, parameters, 0, 0);
 		return (list == null || list.size() == 0) ? null : list.get(0);
 	}
+	/*
+	 * 加载最大排序号。
+	 * @see com.examw.test.dao.products.ISoftwareTypeDao#loadMaxCode()
+	 */
+	@Override
+	public Integer loadMaxCode() {
+		if(logger.isDebugEnabled()) logger.debug("加载最大排序号...");
+		final String hql = "select max(st.code) from SoftwareType st order by st.code desc";
+		Object obj = this.uniqueResult(hql, null);
+		return obj == null ? null : (int)obj;
+	}
 }

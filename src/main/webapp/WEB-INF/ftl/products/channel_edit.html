@@ -3,11 +3,11 @@
 <form id="${module}_edit_form" method="POST" style="padding:10px;">
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">渠道代码：</label>
-		<input type="text" name="code" class="easyui-numberbox" data-options="required:true" style="width:268px;" />
+		<input name="code" class="easyui-numberbox"  required="true" missingMessage="请输入渠道代码" data-options="icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).numberbox('clear');}}]" style="width:80px;" />
 		<input type="hidden" name="id"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">渠道名称：</label>
-		<input type="text" name="name" class="easyui-validatebox" style="width:268px;" data-options="required:true"/>
+		<input name="name" class="easyui-textbox" required="true" missingMessage="请输入渠道名称" data-options="icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}}]" style="width:268px;" />
 	</div>
 </form>
