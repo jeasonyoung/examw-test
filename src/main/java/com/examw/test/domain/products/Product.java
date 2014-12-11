@@ -23,6 +23,7 @@ public class Product implements Serializable {
 	private Integer orderNo,status,analysisType,realType,paperTotal,itemTotal;
 	private Set<Subject> subjects;
 	private Set<RelationProduct> relations;
+	private Set<Software> softwares;
 	private Date createTime,lastTime;
 	/**
 	 * 获取产品ID。
@@ -248,6 +249,21 @@ public class Product implements Serializable {
 	 */
 	public void setRelations(Set<RelationProduct> relations) {
 		this.relations = relations;
+	}
+	/**
+	 * 获取关联的软件集合。
+	 * @return 关联的软件集合。
+	 */
+	public Set<Software> getSoftwares() {
+		return softwares;
+	}
+	/**
+	 * 设置关联的软件集合。
+	 * @param softwares 
+	 *	  关联的软件集合。
+	 */
+	public void setSoftwares(Set<Software> softwares) {
+		this.softwares = softwares;
 	}
 	/**
 	 * 获取排序号。

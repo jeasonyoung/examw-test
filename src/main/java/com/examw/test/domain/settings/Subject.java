@@ -3,6 +3,8 @@ package com.examw.test.domain.settings;
 import java.io.Serializable;
 import java.util.Set;
 
+import com.examw.test.domain.products.Product;
+
 /**
  * 考试科目。
  * @author yangyong.
@@ -14,6 +16,7 @@ public class Subject implements Serializable,Comparable<Subject>{
 	private Integer code;
 	private Exam exam;
 	private Set<Area> areas;
+	private Set<Product> products;
 	//Add by FW,2014.11.10 将科目改为树形结构 适应类似3+x考试
 	private Subject parent;
 	private Set<Subject> children;
@@ -92,35 +95,47 @@ public class Subject implements Serializable,Comparable<Subject>{
 	public void setAreas(Set<Area> areas) {
 		this.areas = areas;
 	}
-	
 	/**
-	 * 获取 上级科目
-	 * @return parent
-	 * 上级科目
+	 * 获取关联的产品集合。
+	 * @return 关联的产品集合。
+	 */
+	public Set<Product> getProducts() {
+		return products;
+	}
+	/**
+	 * 设置关联的产品集合。
+	 * @param products 
+	 *	  关联的产品集合。
+	 */
+	public void setProducts(Set<Product> products) {
+		this.products = products;
+	}
+	/**
+	 * 获取上级科目。
+	 * @return 上级科目。
 	 */
 	public Subject getParent() {
 		return parent;
 	}
 	/**
-	 * 设置 上级科目
+	 * 设置上级科目。
 	 * @param parent
-	 * 上级科目
+	 * 上级科目。
 	 */
 	public void setParent(Subject parent) {
 		this.parent = parent;
 	}
 	/**
-	 * 获取 子科目集合
-	 * @return children
-	 * 子科目集合
+	 * 获取子科目集合。
+	 * @return 子科目集合。
 	 */
 	public Set<Subject> getChildren() {
 		return children;
 	}
 	/**
-	 * 设置 子科目集合
+	 * 设置子科目集合。
 	 * @param children
-	 * 子科目集合
+	 * 子科目集合。
 	 */
 	public void setChildren(Set<Subject> children) {
 		this.children = children;

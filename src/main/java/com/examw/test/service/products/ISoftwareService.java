@@ -10,14 +10,19 @@ import com.examw.test.service.IBaseDataService;
  */
 public interface ISoftwareService  extends IBaseDataService<SoftwareInfo>{
 	/**
-	 * 加载最大代码值
-	 * @return
-	 */
-	Integer loadMaxCode();
-	/**
-	 * 加载状态名称
+	 * 加载状态值名称。
 	 * @param stauts
+	 * 状态值。
 	 * @return
+	 * 状态名称。
 	 */
 	String loadStatusName(Integer status);
+	/**
+	 * 加载最大排序号。
+	 * @param productId
+	 * 产品ID。
+	 * @return
+	 * 最大排序号。
+	 */
+	Integer loadMaxOrder(String productId);
 }

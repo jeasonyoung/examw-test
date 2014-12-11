@@ -3,6 +3,8 @@ package com.examw.test.domain.settings;
 import java.io.Serializable;
 import java.util.Set;
 
+import com.examw.test.domain.products.Product;
+
 /**
  * 考试。
  * @author yangyong.
@@ -10,12 +12,12 @@ import java.util.Set;
  */
 public class Exam implements Serializable,Comparable<Exam> {
 	private static final long serialVersionUID = 1L;
-	private String id,name,abbr;
+	private String id,name,abbr,imageUrl;//图片地址 add by FW 2014.11.10
 	private Integer code,status;
 	private Category category;
 	private Set<Area> areas;
 	private Set<Subject> subjects;
-	private String imageUrl ; //图片地址 add by FW 2014.11.10
+	private Set<Product> products;
 	/**
 	 * 获取考试ID。
 	 * @return 考试ID。
@@ -77,6 +79,21 @@ public class Exam implements Serializable,Comparable<Exam> {
 		this.abbr = abbr;
 	}
 	/**
+	 * 获取图片地址。
+	 * @return 图片地址。
+	 */
+	public String getImageUrl() {
+		return imageUrl;
+	}
+	/**
+	 * 设置图片地址。
+	 * @param imageUrl
+	 *  图片地址。
+	 */
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+	/**
 	 * 获取考试状态。
 	 * @return 考试状态。
 	 */
@@ -136,22 +153,20 @@ public class Exam implements Serializable,Comparable<Exam> {
 	public void setSubjects(Set<Subject> subjects) {
 		this.subjects = subjects;
 	}
-	
 	/**
-	 * 获取 图片地址
-	 * @return imageUrl
-	 * 图片地址
+	 * 获取关联产品集合。
+	 * @return 关联产品集合。
 	 */
-	public String getImageUrl() {
-		return imageUrl;
+	public Set<Product> getProducts() {
+		return products;
 	}
 	/**
-	 * 设置 图片地址
-	 * @param imageUrl
-	 * 图片地址
+	 * 设置关联产品集合。
+	 * @param products 
+	 *	  关联产品集合。
 	 */
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
+	public void setProducts(Set<Product> products) {
+		this.products = products;
 	}
 	/*
 	 * 对象字符串。

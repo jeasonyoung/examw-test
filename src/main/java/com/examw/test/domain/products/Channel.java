@@ -1,6 +1,7 @@
 package com.examw.test.domain.products;
 
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * 销售渠道。
@@ -11,6 +12,7 @@ public class Channel implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String id,name;
 	private Integer code;
+	private Set<Software> softwares;
 	/**
 	 * 获取渠道ID。
 	 * @return 渠道ID。
@@ -55,5 +57,20 @@ public class Channel implements Serializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+	/**
+	 * 获取关联的软件集合。
+	 * @return 关联的软件集合。
+	 */
+	public Set<Software> getSoftwares() {
+		return softwares;
+	}
+	/**
+	 * 设置关联的软件集合。
+	 * @param softwares 
+	 *	  关联的软件集合。
+	 */
+	public void setSoftwares(Set<Software> softwares) {
+		this.softwares = softwares;
 	}
 }

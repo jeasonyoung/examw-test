@@ -68,4 +68,18 @@ public class ChannelDaoImpl extends BaseDaoImpl<Channel> implements IChannelDao{
 		Object obj = this.uniqueResult(hql, null);
 		return obj == null ? null : (int)obj;
 	}
+	/*
+	 * 重载数据删除。
+	 * @see com.examw.test.dao.impl.BaseDaoImpl#delete(java.lang.Object)
+	 */
+	@Override
+	public void delete(Channel data) {
+		if(logger.isDebugEnabled()) logger.debug("重载数据删除...");
+		if(data == null) return;
+		int count = 0;
+		if(data.getSoftwares() != null && (count = data.getSoftwares().size()) > 0){
+			throw new RuntimeException(String.format("渠道［%1$s］关联［%2$d］软件，暂不能删除！", data.getName(), count));
+		}
+		super.delete(data);
+	}
 }

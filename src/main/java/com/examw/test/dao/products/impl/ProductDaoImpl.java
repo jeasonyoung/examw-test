@@ -121,4 +121,18 @@ public class ProductDaoImpl extends BaseDaoImpl<Product> implements IProductDao{
 		parameters.put("examId", examId);
 		return this.find(hql, parameters, null, null);
 	}
+	/*
+	 * 重载数据删除。
+	 * @see com.examw.test.dao.impl.BaseDaoImpl#delete(java.lang.Object)
+	 */
+	@Override
+	public void delete(Product data) {
+		if(logger.isDebugEnabled()) logger.debug("重载数据删除...");
+		if(data == null) return;
+		int count = 0;
+		if(data.getSoftwares() != null && (count = data.getSoftwares().size()) > 0){
+			throw new RuntimeException(String.format("产品［%1$s］关联［%2$d］软件，暂不能删除！", data.getName(), count));
+		}
+		super.delete(data);
+	}
 }

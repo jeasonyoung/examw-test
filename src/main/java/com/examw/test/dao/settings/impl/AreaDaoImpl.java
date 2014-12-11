@@ -90,6 +90,9 @@ public class AreaDaoImpl extends BaseDaoImpl<Area> implements IAreaDao {
 		if(data.getSubjects() != null && (count = data.getSubjects().size()) > 0){
 			throw new RuntimeException(String.format("地区［%1$s］关联［%2$d］考试科目，暂不能删除！", data.getName(), count));
 		}
+		if(data.getProducts() != null && (count = data.getSubjects().size()) > 0){
+			throw new RuntimeException(String.format("地区［%1$s］关联［%2$d］产品，暂不能删除！", data.getName(), count));
+		}
 		super.delete(data);
 	}
 }

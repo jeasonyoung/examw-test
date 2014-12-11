@@ -2,6 +2,8 @@ package com.examw.test.domain.settings;
 
 import java.io.Serializable;
 import java.util.Set;
+
+import com.examw.test.domain.products.Product;
 /**
  * 行政地区。
  * @author yangyong.
@@ -13,6 +15,7 @@ public class Area implements Serializable {
 	private Integer code;
 	private Set<Exam> exams;
 	private Set<Subject> subjects;
+	private Set<Product> products;
 	/**
 	 * 获取地区ID。
 	 * @return 地区ID。
@@ -102,6 +105,21 @@ public class Area implements Serializable {
 	 */
 	public void setSubjects(Set<Subject> subjects) {
 		this.subjects = subjects;
+	}
+	/**
+	 * 获取关联的产品集合。
+	 * @return 关联的产品集合。
+	 */
+	public Set<Product> getProducts() {
+		return products;
+	}
+	/**
+	 * 设置关联的产品集合。
+	 * @param products 
+	 *	  关联的产品集合。
+	 */
+	public void setProducts(Set<Product> products) {
+		this.products = products;
 	}
 	/*
 	 * 对象字符串表示。

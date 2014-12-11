@@ -26,6 +26,13 @@
 		    <!-- 科目ID -->
 		    <many-to-many class="Subject" column="subject_id" />
 		</set>
+		<!-- 关联的产品集合 -->
+		<set name="products" inverse="true" cascade="save-update" order-by="orderNo desc">
+		    <!-- 地区ID -->
+		    <key column="area_id" />
+		    <!-- 产品 -->
+		    <one-to-many class="com.examw.test.domain.products.Product"/>
+		</set>
 	</class>
 	<!-- 考试类别 -->
 	<class name="Category" table="tbl_Examw_Test_Settings_Categories">
@@ -78,10 +85,18 @@
 			<many-to-many class="Area"  column="area_id" />
 		</set>
 		<!-- 考试科目集合 -->
-		<set name="subjects" inverse="true" lazy="true" order-by="code asc">
+		<set name="subjects" inverse="true" cascade="save-update" order-by="code asc">
 		    <!-- 考试ID -->
 			<key column="exam_id" />
+			<!-- 科目 -->
 			<one-to-many class="Subject"/>
+		</set>
+		<!-- 关联产品集合 -->
+		<set name="products" inverse="true" cascade="save-update" order-by="orderNo desc">
+		    <!-- 考试ID -->
+		    <key column="exam_id" />
+		    <!-- 产品 -->
+		    <one-to-many class="com.examw.test.domain.products.Product"/>
 		</set>
 	</class>
 	<!-- 考试科目 -->
@@ -101,6 +116,13 @@
 			<key column="subject_id" />
 			<!-- 所属地区ID -->
 			<many-to-many class="Area"  column="area_id" />
+		</set>
+		<!-- 关联的产品集合 -->
+		<set name="products" inverse="true" cascade="save-update" table="tbl_Examw_Test_Products_ProductSubjects">
+		    <!-- 科目ID -->
+		    <key column="subject_id" />
+		    <!-- 产品ID -->
+		    <many-to-many class="com.examw.test.domain.products.Product" column="product_id" />
 		</set>
 		<!-- 上级科目类别[类似文科理科综合] -->	
 		<many-to-one name="parent" column="pid" class="Subject" />

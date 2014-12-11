@@ -24,5 +24,12 @@ public interface ISoftwareDao extends IBaseDao<Software>{
 	 * @return	产品数据
 	 */
 	Long total(SoftwareInfo info);
-
+	/**
+	 * 加载最大排序号。
+	 * @param productId
+	 * 产品ID。
+	 * @return
+	 * 最大排序号。
+	 */
+	Integer loadMaxOrder(String productId);
 }

@@ -50,6 +50,24 @@
 		<!-- 软件类型数据操作接口 -->
 		<property name="softwareTypeDao" ref="softwareTypeDao" />
 	</bean>
+	<!-- 产品软件服务 -->
+	<bean id="softwareService" class="com.examw.test.service.products.impl.SoftwareServiceImpl">
+		<!-- 产品软件数据操作接口 -->
+		<property name="softwareDao" ref="softwareDao" />
+		<!-- 产品数据操作接口 -->
+		<property name="productDao" ref="productDao" />
+		<!-- 软件类型数据操作接口 -->
+		<property name="softwareTypeDao" ref="softwareTypeDao" />
+		<!-- 渠道数据操作接口 -->
+		<property name="channelDao" ref="channelDao" />
+		<!-- 状态值名称集合 -->
+		<property name="statusMap">
+		    <map>
+		         <entry key="0" value="${STATUS_DISABLE}"/>
+		        <entry key="1" value="${STATUS_ENABLED}"/>
+		    </map>
+		</property>
+	</bean>
 	<!-- 产品用户服务 -->
 	<bean id="productUserService" class="com.examw.test.service.products.impl.ProductUserServiceImpl">
 		<!-- 产品用户数据操作接口 -->
@@ -73,24 +91,7 @@
 	    <!-- 前端试卷服务 -->
 	    <property name="frontPaperService" ref="frontPaperService" />
 	</bean>
-	<!-- 产品软件服务 -->
-	<bean id="softwareService" class="com.examw.test.service.products.impl.SoftwareServiceImpl">
-		<!-- 产品软件数据操作接口 -->
-		<property name="softwareDao" ref="softwareDao" />
-		<!-- 产品数据操作接口 -->
-		<property name="productDao" ref="productDao" />
-		<!-- 渠道数据操作接口 -->
-		<property name="channelDao" ref="channelDao" />
-		<!-- 软件类型数据操作接口 -->
-		<property name="softwareTypeDao" ref="softwareTypeDao" />
-		<!-- 状态-名称映射 -->
-		<property name="statusMap">
-		    <map>
-		         <entry key="0" value="${STATUS_DISABLE}"/>
-		        <entry key="1" value="${STATUS_ENABLED}"/>
-		    </map>
-		</property>
-	</bean>
+	
 	<!-- 注册码服务 -->
 	<bean id="registrationService" class="com.examw.test.service.products.impl.RegistrationServiceImpl">
 		<!-- 注册码数据操作接口 -->

@@ -15,18 +15,8 @@ public class Software implements Serializable {
 	private SoftwareType type;
 	private Channel channel;
 	private float version;
+	private Integer count,orderNo,status;
 	private Date createTime,lastTime;
-	private Long count;
-	private Integer status;
-	private Integer code;
-	/**
-	 * 状态－正常。
-	 */
-	public static final int STATUS_NONE = 0;
-	/**
-	 * 状态－删除。
-	 */
-	public static final int STATUS_DELETE = -1;
 	/**
 	 * 获取软件ID。
 	 * @return 软件ID。
@@ -41,21 +31,6 @@ public class Software implements Serializable {
 	 */
 	public void setId(String id) {
 		this.id = id;
-	}
-	/**
-	 * 获取软件代码。
-	 * @return 软件代码。
-	 */
-	public Integer getCode() {
-		return code;
-	}
-	/**
-	 * 设置软件代码。
-	 * @param code 
-	 *	  软件代码。
-	 */
-	public void setCode(Integer code) {
-		this.code = code;
 	}
 	/**
 	 * 获取软件名称。
@@ -211,7 +186,7 @@ public class Software implements Serializable {
 	 * 获取下载次数。
 	 * @return 下载次数。
 	 */
-	public Long getCount() {
+	public Integer getCount() {
 		return count;
 	}
 	/**
@@ -219,8 +194,23 @@ public class Software implements Serializable {
 	 * @param count 
 	 *	 下载次数。
 	 */
-	public void setCount(Long count) {
+	public void setCount(Integer count) {
 		this.count = count;
+	}
+	/**
+	 * 获取排序号。
+	 * @return 排序号。
+	 */
+	public Integer getOrderNo() {
+		return orderNo;
+	}
+	/**
+	 * 设置排序号。
+	 * @param orderNo 
+	 *	  排序号。
+	 */
+	public void setOrderNo(Integer orderNo) {
+		this.orderNo = orderNo;
 	}
 	/**
 	 * 获取状态。

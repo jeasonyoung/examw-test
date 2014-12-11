@@ -11,9 +11,10 @@ import java.util.Set;
 public class SoftwareType implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String id,name;
+	private Integer code;
 	private Set<SoftwareTypeLimit> limits;
 	private Set<RegistrationBindRecord> records;
-	private Integer code;
+	private Set<Software> softwares;
 	/**
 	 * 获取类型ID。
 	 * @return 类型ID。
@@ -88,5 +89,20 @@ public class SoftwareType implements Serializable {
 	 */
 	public void setRecords(Set<RegistrationBindRecord> records) {
 		this.records = records;
+	}
+	/**
+	 * 获取关联的软件集合。
+	 * @return 关联的软件集合。
+	 */
+	public Set<Software> getSoftwares() {
+		return softwares;
+	}
+	/**
+	 * 设置关联的软件集合。
+	 * @param softwares 
+	 *	  关联的软件集合。
+	 */
+	public void setSoftwares(Set<Software> softwares) {
+		this.softwares = softwares;
 	}
 }
