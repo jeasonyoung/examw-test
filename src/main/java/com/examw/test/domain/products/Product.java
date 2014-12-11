@@ -16,7 +16,7 @@ import com.examw.test.domain.settings.Subject;
  */
 public class Product implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id,name,content;
+	private String id,name,image,content;
 	private Exam exam;
 	private Area area;
 	private BigDecimal price,discount;
@@ -53,6 +53,21 @@ public class Product implements Serializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+	/**
+	 * 获取宣传图片URL。
+	 * @return 宣传图片URL。
+	 */
+	public String getImage() {
+		return image;
+	}
+	/**
+	 * 设置宣传图片URL。
+	 * @param image 
+	 *	  宣传图片URL。
+	 */
+	public void setImage(String image) {
+		this.image = image;
 	}
 	/**
 	 * 获取产品介绍。

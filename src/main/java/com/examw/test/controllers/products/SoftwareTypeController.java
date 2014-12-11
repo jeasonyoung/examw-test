@@ -68,6 +68,16 @@ public class SoftwareTypeController {
 		return max + 1;
 	}
 	/**
+	 * 加载全部软件类型集合。
+	 * @return
+	 */
+	@RequestMapping(value="/all", method = {RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public List<SoftwareTypeInfo> loadAll(){
+		if(logger.isDebugEnabled()) logger.debug("加载全部软件类型集合...");
+		return this.softwareTypeService.loadAllSoftwareTypes();
+	}
+	/**
 	 * 加载列表数据。
 	 * @return
 	 */
@@ -121,15 +131,5 @@ public class SoftwareTypeController {
 			logger.error(String.format("删除数据时发生异常:%s", e.getMessage()), e);
 		}
 		return result;
-	}
-	/**
-	 * 加载全部软件类型集合。
-	 * @return
-	 */
-	@RequestMapping(value="/all", method = {RequestMethod.POST,RequestMethod.GET})
-	@ResponseBody
-	public List<SoftwareTypeInfo> loadAll(){
-		if(logger.isDebugEnabled()) logger.debug("加载全部软件类型集合...");
-		return this.softwareTypeService.loadAllSoftwareTypes();
 	}	
 }

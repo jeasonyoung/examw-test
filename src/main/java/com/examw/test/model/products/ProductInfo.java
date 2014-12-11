@@ -16,7 +16,7 @@ import com.examw.support.CustomDateSerializer;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class ProductInfo extends Paging implements Comparable<ProductInfo>{
 	private static final long serialVersionUID = 1L;
-	private String id,name,content,categoryId,categoryName,examId,examName,areaId,areaName,statusName,analysisTypeName,realTypeName;
+	private String id,name,image,content,categoryId,categoryName,examId,examName,areaId,areaName,statusName,analysisTypeName,realTypeName;
 	private String[] subjectId,subjectName;
 	private Integer orderNo,status,analysisType,realType,paperTotal,itemTotal;
 	private BigDecimal price,discount;
@@ -57,6 +57,21 @@ public class ProductInfo extends Paging implements Comparable<ProductInfo>{
 	 */
 	public String getContent() {
 		return content;
+	}
+	/**
+	 * 获取宣传图片URL。
+	 * @return 宣传图片URL。
+	 */
+	public String getImage() {
+		return image;
+	}
+	/**
+	 * 设置宣传图片URL。
+	 * @param image 
+	 *	  宣传图片URL。
+	 */
+	public void setImage(String image) {
+		this.image = image;
 	}
 	/**
 	 * 设置产品介绍。
