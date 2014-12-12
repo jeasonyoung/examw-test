@@ -206,6 +206,6 @@ public class SoftwareServiceImpl extends BaseDataServiceImpl<Software,SoftwareIn
 	@Override
 	public Integer loadMaxOrder(String productId) {
 		if(logger.isDebugEnabled()) logger.debug(String.format(" 加载产品［%s］下最大排序号...", productId));
-		return this.loadMaxOrder(productId);
+		return this.softwareDao.loadMaxOrder(productId);
 	}
 }

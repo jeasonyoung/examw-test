@@ -156,9 +156,17 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 	 * @see com.examw.test.service.products.IProductService#loadProducts(java.lang.String)
 	 */
 	@Override
-	public List<ProductInfo> loadProducts(String examId) {
+	public List<ProductInfo> loadProducts(final String examId) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试［%s］下产品集合...", examId));
-		return this.changeModel(this.productDao.loadProducts(examId));
+		return this.changeModel(this.productDao.findProducts(new ProductInfo(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public String getExamId() { return examId;}
+			@Override
+			public String getSort() { return "orderNo";}
+			@Override
+			public String getOrder() { return "desc";}
+		}));
 	}
 	/*
 	 * 查询数据

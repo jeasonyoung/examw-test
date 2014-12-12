@@ -110,18 +110,6 @@ public class ProductDaoImpl extends BaseDaoImpl<Product> implements IProductDao{
 		return obj == null ? null : (int)obj;
 	}
 	/*
-	 * 加载考试下产品数据集合。
-	 * @see com.examw.test.dao.products.IProductDao#loadProducts(java.lang.String)
-	 */
-	@Override
-	public List<Product> loadProducts(String examId) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试［examId = %s］下产品数据集合...", examId));
-		final String hql = "from Product p where (p.exam.id = :examId) ";
-		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("examId", examId);
-		return this.find(hql, parameters, null, null);
-	}
-	/*
 	 * 重载数据删除。
 	 * @see com.examw.test.dao.impl.BaseDaoImpl#delete(java.lang.Object)
 	 */

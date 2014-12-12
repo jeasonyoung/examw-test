@@ -1,6 +1,7 @@
 package com.examw.test.controllers.products;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -15,9 +16,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.model.DataGrid;
 import com.examw.model.Json;
+import com.examw.service.Status;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.products.SoftwareInfo;
 import com.examw.test.service.products.ISoftwareService;
+import com.examw.test.support.EnumMapUtils;
 
 /**
  * 产品软件控制器
@@ -56,6 +59,13 @@ public class SoftwareController {
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
 		model.addAttribute("current_category_id", categoryId);
 		model.addAttribute("current_exam_id", examId);
+		
+		Map<String, String> statusMap = EnumMapUtils.createTreeMap();
+		for(Status status : Status.values()){
+			statusMap.put(String.format("%d", status.getValue()), this.softwareService.loadStatusName(status.getValue()));
+		}
+		model.addAttribute("statusMap", statusMap);
+		
 		return "products/software_edit";
 	}
 	/**

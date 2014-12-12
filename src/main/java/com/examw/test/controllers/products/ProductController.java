@@ -1,5 +1,6 @@
 package com.examw.test.controllers.products;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -104,7 +106,11 @@ public class ProductController {
 	@ResponseBody
 	public List<ProductInfo> loadProducts(String examId){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试［examId = %s］下产品数据集合...", examId)); 
-		return this.productService.loadProducts(examId);
+		List<ProductInfo> list = new ArrayList<>();
+		if(!StringUtils.isEmpty(examId)){
+			list = this.productService.loadProducts(examId);
+		}
+		return list;
 	}
 	/**
 	 * 查询数据。

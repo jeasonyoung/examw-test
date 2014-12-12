@@ -1,5 +1,6 @@
 package com.examw.test.controllers.settings;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -80,7 +82,11 @@ public class ExamController {
 	@ResponseBody
 	public List<ExamInfo> all(String categoryId){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试类别［categoryId = %s］下的考试集合...", categoryId));
-		return this.examService.loadExams(categoryId,null);
+		List<ExamInfo> list = new ArrayList<>();
+		if(!StringUtils.isEmpty(categoryId)){
+			list = this.examService.loadExams(categoryId,null);
+		}
+		return list;
 	}
 	/**
 	 * 加载考试所属地区集合。
