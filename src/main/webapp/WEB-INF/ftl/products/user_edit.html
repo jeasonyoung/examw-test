@@ -1,22 +1,27 @@
-<!-- 地区编辑页面 -->
-<#assign module="products_user"/>
-<form id="${module}_edit_form" method="POST" style="padding:10px;">
-	<div style="float:left;margin-top:12px;width:100%;">
+<#--产品用户编辑-->
+<#include "/comm.ftl"/>
+<#assign module = "products_user"/>
+<#assign form = "${module}_edit_form" />
+<form id="${form}" method="POST" style="padding:10px;">
+	<div style="float:left;margin-top:2px;width:100%;">
 		<label style="width:75px;">用户代码：</label>
-		<input type="text" name="code" class="easyui-numberbox" data-options="required:true" style="width:268px;" />
+		<input name="code" class="easyui-textbox" required="true" missingMessage="请输入用户代码" data-options="icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}}]" style="width:268px;" />
 		<input type="hidden" name="id"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">用户名称：</label>
-		<input type="text" name="name" class="easyui-validatebox" style="width:268px;" data-options="required:true"/>
+		<input name="name" class="easyui-textbox" required="true" missingMessage="请输入用户名称" data-options="icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}}]" style="width:268px;"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">手机号码：</label>
-		<input type="text" name="mobile" class="easyui-validatebox" data-options="required:true,validType:['mobile']" style="width:268px;"/>
+		<input name="mobile" class="easyui-textbox" data-options="validType:['mobile'],icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}}]" style="width:268px;"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">状态：</label>
-		<label><input type="radio" name="status" value="1" checked="checked"/>启用</label>
-		<label><input type="radio" name="status" value="0"/>禁用</label>
+		<#list statusMap?keys as key>
+		<label style="padding-top:0px;<#if (key_index > 0)>margin-left:12px;</#if> ">
+			<input type="radio" name="status" value="${key}"  <#if (key_index == 0)> checked="checked" </#if> />${statusMap[key]}
+		</label>
+		</#list> 
 	</div>
 </form>

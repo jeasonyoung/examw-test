@@ -144,7 +144,7 @@
 		<property name="name" type="string" length="32" not-null="true" />
 		<!-- 手机号码 -->
 		<property name="mobile" type="string" length="20" />
-		<!-- 用户状态 (0-禁用，1-启用，－1－删除)-->
+		<!-- 用户状态 (0-禁用，1-启用)-->
 		<property name="status" type="integer" />
 		<!-- 创建时间 -->
 		<property name="createTime" type="timestamp" />

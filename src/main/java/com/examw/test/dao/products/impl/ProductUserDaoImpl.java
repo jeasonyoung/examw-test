@@ -13,7 +13,7 @@ import com.examw.test.domain.products.ProductUser;
 import com.examw.test.model.products.ProductUserInfo;
 
 /**
- * 产品用户数据接口实现类
+ * 产品用户数据接口实现类。
  * @author fengwei.
  * @since 2014年8月11日 下午4:02:13.
  */
@@ -30,7 +30,8 @@ public class ProductUserDaoImpl extends BaseDaoImpl<ProductUser> implements IPro
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
-			hql += " order by pu." + info.getSort() + " " + info.getOrder();
+			if(StringUtils.isEmpty(info.getOrder())) info.setOrder("asc");
+			hql += String.format(" order by pu.%1$s %2$s", info.getSort(),info.getOrder());
 		}
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.find(hql, parameters, info.getPage(), info.getRows());
@@ -50,17 +51,13 @@ public class ProductUserDaoImpl extends BaseDaoImpl<ProductUser> implements IPro
 	}
 	// 添加查询条件到HQL。
 	private String addWhere(ProductUserInfo info, String hql,Map<String, Object> parameters) {
-		if (!StringUtils.isEmpty(info.getName())) {
-			hql += " and (pu.name like :name)";
-			parameters.put("name", "%" + info.getName() + "%");
-		}
-		if (!StringUtils.isEmpty(info.getMobile())) {
-			hql += " and (pu.mobile like :mobile)";
-			parameters.put("mobile", "%" + info.getMobile() + "%");
-		}
-		if (!StringUtils.isEmpty(info.getStatus())) {
+		if (info.getStatus() != null) {//状态
 			hql += " and (pu.status = :status)";
 			parameters.put("status", info.getStatus());
+		}
+		if (!StringUtils.isEmpty(info.getName())) {
+			hql += " and ((pu.name like :name) or (pu.code like :name) or (pu.mobile like :name))";
+			parameters.put("name", "%" + info.getName() + "%");
 		}
 		return hql;
 	}

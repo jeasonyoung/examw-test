@@ -2,19 +2,6 @@
 <#include "comm.ftl"/>
 <#assign module="products_channel"/>
 <#assign dg="${module}_list_dg"/>
-<script type="text/javascript">
-<!--
-$(function(){
- 
-	<@shiro.hasPermission name="${PER_DELETE}">
-	//delete
-	${dg}_delete = function(){
-		
-	};
-	</@shiro.hasPermission>
-});
-//-->
-</script>
 <table id="${dg}" class="easyui-datagrid" data-options="url:'<@s.url '/products/channel/datagrid'/>',fit:true,fitColumns:true,rownumbers:true,pagination:true,border:true,striped:true,
 		pagePosition:'bottom',pageSize:20,pageList:[20,30,40],idField:'id',sortName:'code',sortOrder:'asc',toolbar:'#${dg}_toolbar',onLoadError:function(e){ <@error_dialog 'e'/> },
 		onDblClickRow:function(rowIndex,rowData){${module}_edit_window('编辑渠道',rowIndex,rowData,null); }">
@@ -50,7 +37,7 @@ $(function(){
 	${dg}_add = function(title,index,row,order){
 		if(m) return;
 		m = true;
-		$.getJSON("<@s.url '/products/channel/code'/>?_=" + Math.random(),function(code){
+		$.getJSON("<@s.url '/products/channel/code?_='/>" + Math.random(),function(code){
 			m = false;
 			${module}_edit_window("新增渠道",0,null,code);
 		});

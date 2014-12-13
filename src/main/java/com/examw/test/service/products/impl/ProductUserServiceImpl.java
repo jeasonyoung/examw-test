@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
+import com.examw.service.Status;
 import com.examw.test.dao.products.IProductUserDao;
 import com.examw.test.domain.products.ProductUser;
 import com.examw.test.model.products.FrontUserInfo;
@@ -17,7 +18,7 @@ import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.products.IProductUserService;
 
 /**
- * 
+ * 产品用户服务接口实现类。
  * @author fengwei.
  * @since 2014年8月12日 上午8:57:35.
  */
@@ -35,40 +36,40 @@ public class ProductUserServiceImpl extends BaseDataServiceImpl<ProductUser,Prod
 		this.productUserDao = ProductUserDao;
 	}
 	/**
-	 * 设置状态名称映射。
+	 * 设置状态值名称集合。
 	 * @param statusMap
-	 * 	状态名称映射。
+	 * 	状态值名称集合。
 	 */
 	public void setStatusMap(Map<Integer, String> statusMap) {
-		if(logger.isDebugEnabled()) logger.debug("注入状态名称映射...");
+		if(logger.isDebugEnabled()) logger.debug("注入状态值名称集合...");
 		this.statusMap = statusMap;
 	}
 	/*
-	 * 加载状态名称。
+	 * 加载状态值名称。
 	 * @see com.examw.test.service.products.IProductUserService#loadStatusName(java.lang.Integer)
 	 */
 	@Override
 	public String loadStatusName(Integer status) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("加载状态［status ＝ %d］名称...", status));
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载状态值［status ＝ %d］名称...", status));
 		if(status == null || this.statusMap == null || this.statusMap.size() == 0) return null;
 		return this.statusMap.get(status);
 	}
 	/*
-	 * 查询数据
+	 * 查询数据。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#find(java.lang.Object)
 	 */
 	@Override
 	protected List<ProductUser> find(ProductUserInfo info) {
-		if (logger.isDebugEnabled()) logger.debug("查询[产品用户]数据...");
+		if (logger.isDebugEnabled()) logger.debug("查询数据...");
 		return this.productUserDao.findProductUsers(info);
 	}
 	/*
-	 * 数据模型转换
+	 * 数据模型转换。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#changeModel(java.lang.Object)
 	 */
 	@Override
 	protected ProductUserInfo changeModel(ProductUser data) {
-		if (logger.isDebugEnabled())logger.debug("[产品用户]数据模型转换 ProductUser => ProductUserInfo...");
+		if (logger.isDebugEnabled())logger.debug("数据模型转换 ProductUser => ProductUserInfo...");
 		if (data == null) return null;
 		ProductUserInfo info = new ProductUserInfo();
 		BeanUtils.copyProperties(data, info);
@@ -76,16 +77,16 @@ public class ProductUserServiceImpl extends BaseDataServiceImpl<ProductUser,Prod
 		return info;
 	}
 	/*
-	 * 查询统计
+	 * 查询数据统计。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#total(java.lang.Object)
 	 */
 	@Override
 	protected Long total(ProductUserInfo info) {
-		if (logger.isDebugEnabled())logger.debug("查询统计...");
+		if (logger.isDebugEnabled())logger.debug("查询数据统计...");
 		return productUserDao.total(info);
 	}
 	/*
-	 * 新增或更新数据
+	 * 更新数据。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#update(java.lang.Object)
 	 */
 	@Override
@@ -93,24 +94,26 @@ public class ProductUserServiceImpl extends BaseDataServiceImpl<ProductUser,Prod
 		if (logger.isDebugEnabled())logger.debug("更新数据...");
 		if(info == null) return null;
 		boolean isAdded = false;
-		ProductUser  data = StringUtils.isEmpty(info.getId()) ?  null : this.productUserDao.load(ProductUser.class, info.getId());
-		if((isAdded = (data ==  null)) && !StringUtils.isEmpty(info.getCode())){
-			data = this.productUserDao.loadUserByCode(info.getCode());
-		}
+		ProductUser data = StringUtils.isEmpty(info.getId()) ?  null : this.productUserDao.load(ProductUser.class, info.getId());
 		if(isAdded = (data == null)){
-			if(StringUtils.isEmpty(info.getId())){
-				info.setId(UUID.randomUUID().toString());
+			if(!StringUtils.isEmpty(info.getCode())){
+				data = this.productUserDao.loadUserByCode(info.getCode());
 			}
-			data = new ProductUser();
-			data.setCreateTime(new Date());
-		}else {
-			info.setId(data.getId());
+			if(isAdded = (data == null)){
+				if(StringUtils.isEmpty(info.getId())) info.setId(UUID.randomUUID().toString());
+				info.setCreateTime(new Date());
+				if(info.getStatus() == null) info.setStatus(Status.ENABLED.getValue());
+				data = new ProductUser();
+			}else {
+				info.setId(data.getId());
+			}
+		}
+		if(!isAdded){
 			info.setCreateTime(data.getCreateTime());
 			if(info.getCreateTime() == null) info.setCreateTime(new Date());
 		}
 		info.setLastTime(new Date());
 		BeanUtils.copyProperties(info, data);
-		//新增数据。
 		if(isAdded) this.productUserDao.save(data);
 		return this.changeModel(data);
 	}
@@ -122,11 +125,11 @@ public class ProductUserServiceImpl extends BaseDataServiceImpl<ProductUser,Prod
 	public void delete(String[] ids) {
 		if (logger.isDebugEnabled())logger.debug("删除数据...");
 		if (ids == null || ids.length == 0) return;
-		for(String id :  ids){
-			if(StringUtils.isEmpty(id)) continue;
-			ProductUser data = this.productUserDao.load(ProductUser.class, id);
+		for(int i = 0; i < ids.length;i++){
+			if(StringUtils.isEmpty(ids[i])) continue;
+			ProductUser data = this.productUserDao.load(ProductUser.class, ids[i]);
 			if(data != null){
-				logger.debug(String.format("删除产品用户［id = %1$s］［code = %2$s］［name = %3$s］...", data.getId(), data.getCode(), data.getName()));
+				if(logger.isDebugEnabled()) logger.debug(String.format("删除数据:%s", ids[i]));
 				this.productUserDao.delete(data);
 			}
 		}
@@ -144,6 +147,7 @@ public class ProductUserServiceImpl extends BaseDataServiceImpl<ProductUser,Prod
 			ProductUserInfo productUserInfo = new ProductUserInfo();
 			productUserInfo.setCode(info.getCode());
 			productUserInfo.setName(info.getName());
+			productUserInfo.setStatus(Status.ENABLED.getValue());
 			return this.update(productUserInfo);
 		}
 		return this.changeModel(productUser);

@@ -14,18 +14,6 @@ public class ProductUser implements Serializable {
 	private Integer status;
 	private Date createTime,lastTime;
 	/**
-	 * 状态－启用。
-	 */
-	public static final int STATUS_ENABLE = 1;
-	/**
-	 * 状态－禁用。
-	 */
-	public static final int STATUS_DISENABLE = 0;
-	/**
-	 * 状态－删除。
-	 */
-	public static final int STATUS_DELETE = -1;
-	/**
 	 * 获取用户ID。
 	 * @return 用户ID。
 	 */

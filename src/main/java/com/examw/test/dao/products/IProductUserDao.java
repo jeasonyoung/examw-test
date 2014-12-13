@@ -7,7 +7,7 @@ import com.examw.test.domain.products.ProductUser;
 import com.examw.test.model.products.ProductUserInfo;
 
 /**
- * 产品用户数据接口
+ * 产品用户数据接口。
  * @author fengwei.
  * @since 2014年8月11日 下午4:00:55.
  */

@@ -72,7 +72,7 @@
 	<bean id="productUserService" class="com.examw.test.service.products.impl.ProductUserServiceImpl">
 		<!-- 产品用户数据操作接口 -->
 		<property name="productUserDao" ref="productUserDao" />
-		<!-- 状态-名称映射 -->
+		<!-- 状态值名称映射 -->
 		<property name="statusMap">
 		    <map>
 		        <entry key="0" value="${STATUS_DISABLE}"/>
