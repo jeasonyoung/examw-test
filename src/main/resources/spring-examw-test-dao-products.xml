@@ -27,13 +27,20 @@
 	<bean id="registrationDao"  class="com.examw.test.dao.products.impl.RegistrationDaoImpl">
 	   <property name="sessionFactory"  ref="sessionFactory" />
 	</bean>
-	<!-- 注册码绑定记录Dao -->
+	<!-- 注册码软件类型限制Dao -->
+	<bean id="softwareTypeLimitDao" class="com.examw.test.dao.products.impl.SoftwareTypeLimitDaoImpl">
+	     <property name="sessionFactory"  ref="sessionFactory" />
+	</bean>
+	
+	<!-- 
+	
+	注册码绑定记录Dao
 	<bean id="registrationBindRecordDao"  class="com.examw.test.dao.products.impl.RegistrationBindRecordDaoImpl">
 	   <property name="sessionFactory"  ref="sessionFactory" />
 	</bean>
-	<!-- 注册码日志Dao -->
+	注册码日志Dao
 	<bean id="registrationLogDao"  class="com.examw.test.dao.products.impl.RegistrationLogDaoImpl">
 	   <property name="sessionFactory"  ref="sessionFactory" />
-	</bean>
+	</bean> -->
 	<!-- 产品管理  数据接口实现end -->
 </beans>

@@ -22,8 +22,8 @@ public class Product implements Serializable {
 	private BigDecimal price,discount;
 	private Integer orderNo,status,analysisType,realType,paperTotal,itemTotal;
 	private Set<Subject> subjects;
-	private Set<RelationProduct> relations;
 	private Set<Software> softwares;
+	private Set<Registration> registrations;
 	private Date createTime,lastTime;
 	/**
 	 * 获取产品ID。
@@ -236,21 +236,6 @@ public class Product implements Serializable {
 		this.itemTotal = itemTotal;
 	}
 	/**
-	 * 获取被关联集合。
-	 * @return 被关联集合。
-	 */
-	public Set<RelationProduct> getRelations() {
-		return relations;
-	}
-	/**
-	 * 设置被关联集合。
-	 * @param relations 
-	 *	  被关联集合。
-	 */
-	public void setRelations(Set<RelationProduct> relations) {
-		this.relations = relations;
-	}
-	/**
 	 * 获取关联的软件集合。
 	 * @return 关联的软件集合。
 	 */
@@ -264,6 +249,21 @@ public class Product implements Serializable {
 	 */
 	public void setSoftwares(Set<Software> softwares) {
 		this.softwares = softwares;
+	}
+	/**
+	 * 获取关联的注册码集合。
+	 * @return 关联的注册码集合。
+	 */
+	public Set<Registration> getRegistrations() {
+		return registrations;
+	}
+	/**
+	 * 设置关联的注册码集合。
+	 * @param registrations 
+	 *	  关联的注册码集合。
+	 */
+	public void setRegistrations(Set<Registration> registrations) {
+		this.registrations = registrations;
 	}
 	/**
 	 * 获取排序号。

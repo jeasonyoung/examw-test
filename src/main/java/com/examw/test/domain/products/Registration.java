@@ -13,30 +13,12 @@ import java.util.Set;
 public class Registration implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String id,code;
-	private Set<RelationProduct> products;
+	private Integer limits,status;
+	private BigDecimal price;
+	private Set<Product> products;
 	private Channel channel;
-	private ProductUser user;
-	private Set<SoftwareTypeLimit> typeLimits;
-	private Integer limitTime,status;
-	private BigDecimal price,discount;
-	private Date createTime,lastTime,startTime,endTime; 
-	private Set<RegistrationBindRecord> bindRecords;
-	/**
-	 * 状态－未激活。
-	 */
-	public static final int STATUS_NONE = 0;
-	/**
-	 * 状态－激活。
-	 */
-	public static final int STATUS_ACTIVATION = 1; 
-	/**
-	 *  状态－停用。
-	 */
-	public static final int STATUS_STOP = -1; 
-	/**
-	 * 状态－注销。
-	 */
-	public static final int STATUS_CANCLE = -2;
+	private Set<SoftwareTypeLimit> softwareTypeLimits;
+	private Date createTime,lastTime,startTime,endTime;
 	/**
 	 * 获取注册码ID。
 	 * @return 注册码ID。
@@ -68,79 +50,109 @@ public class Registration implements Serializable {
 		this.code = code;
 	}
 	/**
-	 * 获取关联产品集合。
-	 * @return 关联产品集合。
+	 * 获取注册码价格。
+	 * @return 注册码价格。
 	 */
-	public Set<RelationProduct> getProducts() {
+	public BigDecimal getPrice() {
+		return price;
+	}
+	/**
+	 * 设置注册码价格。
+	 * @param price 
+	 *	  注册码价格。
+	 */
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+	/**
+	 * 获取关联的产品集合。
+	 * @return 关联的产品集合。
+	 */
+	public Set<Product> getProducts() {
 		return products;
 	}
 	/**
-	 * 设置关联产品集合。
+	 * 设置关联的产品集合。
 	 * @param products 
-	 *	  关联产品集合。
+	 *	  关联的产品集合。
 	 */
-	public void setProducts(Set<RelationProduct> products) {
+	public void setProducts(Set<Product> products) {
 		this.products = products;
 	}
 	/**
-	 * 获取所属渠道。
-	 * @return 所属渠道。
+	 * 获取营销渠道。
+	 * @return 营销渠道。
 	 */
 	public Channel getChannel() {
 		return channel;
 	}
 	/**
-	 * 设置所属渠道。
+	 * 设置营销渠道。
 	 * @param channel 
-	 *	  所属渠道。
+	 *	  营销渠道。
 	 */
 	public void setChannel(Channel channel) {
 		this.channel = channel;
 	}
 	/**
-	 * 获取关联用户。
-	 * @return 关联用户。
-	 */
-	public ProductUser getUser() {
-		return user;
-	}
-	/**
-	 * 设置关联用户。
-	 * @param user 
-	 *	  关联用户。
-	 */
-	public void setUser(ProductUser user) {
-		this.user = user;
-	}
-	/**
 	 * 获取软件类型限制集合。
 	 * @return 软件类型限制集合。
 	 */
-	public Set<SoftwareTypeLimit> getTypeLimits() {
-		return typeLimits;
+	public Set<SoftwareTypeLimit> getSoftwareTypeLimits() {
+		return softwareTypeLimits;
 	}
 	/**
 	 * 设置软件类型限制集合。
-	 * @param typeLimits 
+	 * @param softwareTypeLimits 
 	 *	  软件类型限制集合。
 	 */
-	public void setTypeLimits(Set<SoftwareTypeLimit> typeLimits) {
-		this.typeLimits = typeLimits;
+	public void setSoftwareTypeLimits(Set<SoftwareTypeLimit> softwareTypeLimits) {
+		this.softwareTypeLimits = softwareTypeLimits;
 	}
 	/**
-	 * 获取使用期限。
-	 * @return 使用期限。
+	 * 获取有效期限(月)。
+	 * @return 有效期限(月)。
 	 */
-	public Integer getLimitTime() {
-		return limitTime;
+	public Integer getLimits() {
+		return limits;
 	}
 	/**
-	 * 设置使用期限。
-	 * @param limitTime 
-	 *	  使用期限。
+	 * 设置有效期限(月)。
+	 * @param limits 
+	 *	  有效期限(月)。
 	 */
-	public void setLimitTime(Integer limitTime) {
-		this.limitTime = limitTime;
+	public void setLimits(Integer limits) {
+		this.limits = limits;
+	}
+	/**
+	 * 获取首次激活时间。
+	 * @return 首次激活时间。
+	 */
+	public Date getStartTime() {
+		return startTime;
+	}
+	/**
+	 * 设置首次激活时间。
+	 * @param startTime 
+	 *	  首次激活时间。
+	 */
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+	/**
+	 * 获取过期时间。
+	 * @return 过期时间。
+	 */
+	public Date getEndTime() {
+		return endTime;
+	}
+	/**
+	 * 设置过期时间。
+	 * @param endTime 
+	 *	  过期时间。
+	 */
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 	/**
 	 * 获取状态。
@@ -156,36 +168,6 @@ public class Registration implements Serializable {
 	 */
 	public void setStatus(Integer status) {
 		this.status = status;
-	}
-	/**
-	 * 获取原价。
-	 * @return 原价。
-	 */
-	public BigDecimal getPrice() {
-		return price;
-	}
-	/**
-	 * 设置原价。
-	 * @param price 
-	 *	  原价。
-	 */
-	public void setPrice(BigDecimal price) {
-		this.price = price;
-	}
-	/**
-	 * 获取优惠价。
-	 * @return 优惠价。
-	 */
-	public BigDecimal getDiscount() {
-		return discount;
-	}
-	/**
-	 * 设置优惠价。
-	 * @param discount 
-	 *	  优惠价。
-	 */
-	public void setDiscount(BigDecimal discount) {
-		this.discount = discount;
 	}
 	/**
 	 * 获取创建时间。
@@ -216,50 +198,5 @@ public class Registration implements Serializable {
 	 */
 	public void setLastTime(Date lastTime) {
 		this.lastTime = lastTime;
-	}
-	/**
-	 * 获取激活时间。
-	 * @return 激活时间。
-	 */
-	public Date getStartTime() {
-		return startTime;
-	}
-	/**
-	 * 设置激活时间。
-	 * @param startTime 
-	 *	  激活时间。
-	 */
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
-	}
-	/**
-	 * 获取过期时间。
-	 * @return 过期时间。
-	 */
-	public Date getEndTime() {
-		return endTime;
-	}
-	/**
-	 * 设置过期时间。
-	 * @param endTime 
-	 *	  过期时间。
-	 */
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
-	}
-	/**
-	 * 获取绑定记录集合。
-	 * @return 绑定记录集合。
-	 */
-	public Set<RegistrationBindRecord> getBindRecords() {
-		return bindRecords;
-	}
-	/**
-	 * 设置绑定记录集合。
-	 * @param bindRecords 
-	 *	 绑定记录集合。
-	 */
-	public void setBindRecords(Set<RegistrationBindRecord> bindRecords) {
-		this.bindRecords = bindRecords;
 	}
 }

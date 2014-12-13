@@ -121,6 +121,9 @@ public class ProductDaoImpl extends BaseDaoImpl<Product> implements IProductDao{
 		if(data.getSoftwares() != null && (count = data.getSoftwares().size()) > 0){
 			throw new RuntimeException(String.format("产品［%1$s］关联［%2$d］软件，暂不能删除！", data.getName(), count));
 		}
+		if(data.getRegistrations() != null && (count = data.getRegistrations().size()) > 0){
+			throw new RuntimeException(String.format("产品［%1$s］关联［%2$d］注册码，暂不能删除！", data.getName(), count));
+		}
 		super.delete(data);
 	}
 }

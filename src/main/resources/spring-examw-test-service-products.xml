@@ -113,10 +113,10 @@
 		</property>
 	</bean>
 	<!-- 注册码日志服务 -->
-	<bean id="registrationLogService" class="com.examw.test.service.products.impl.RegistrationLogServiceImpl">
-		<!-- 注册码数据操作接口 -->
+	<!-- <bean id="registrationLogService" class="com.examw.test.service.products.impl.RegistrationLogServiceImpl">
+		注册码数据操作接口
 		<property name="registrationLogDao" ref="registrationLogDao" />
-		<!-- 状态-名称映射 -->
+		状态-名称映射
 		<property name="typeMap">
 		    <map>
 		        <entry key="1" value="绑定注册码"/>
@@ -124,11 +124,11 @@
 		        <entry key="3" value="软件升级"/>
 		    </map>
 		</property>
-	</bean>
+	</bean> -->
 	<!-- 注册码绑定记录服务 -->
-	<bean id="registrationBindRecordService" class="com.examw.test.service.products.impl.RegistrationBindRecordServiceImpl">
-		<!-- 软件类型数据操作接口 -->
+	<!-- <bean id="registrationBindRecordService" class="com.examw.test.service.products.impl.RegistrationBindRecordServiceImpl">
+		软件类型数据操作接口
 		<property name="registrationBindRecordDao" ref="registrationBindRecordDao" />
-	</bean>
+	</bean> -->
 	<!-- 产品管理  服务接口实现 end -->
 </beans>

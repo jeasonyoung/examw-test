@@ -13,6 +13,7 @@ public class Channel implements Serializable {
 	private String id,name;
 	private Integer code;
 	private Set<Software> softwares;
+	private Set<Registration> registrations;
 	/**
 	 * 获取渠道ID。
 	 * @return 渠道ID。
@@ -72,5 +73,20 @@ public class Channel implements Serializable {
 	 */
 	public void setSoftwares(Set<Software> softwares) {
 		this.softwares = softwares;
+	}
+	/**
+	 * 获取关联的注册码集合。
+	 * @return 关联的注册码集合。
+	 */
+	public Set<Registration> getRegistrations() {
+		return registrations;
+	}
+	/**
+	 * 设置关联的注册码集合。
+	 * @param registrations 
+	 *	  关联的注册码集合。
+	 */
+	public void setRegistrations(Set<Registration> registrations) {
+		this.registrations = registrations;
 	}
 }

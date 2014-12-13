@@ -1,7 +1,5 @@
 package com.examw.test.controllers.products;
 
-import javax.annotation.Resource;
-
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
@@ -26,7 +24,7 @@ import com.examw.test.service.products.IRegistrationLogService;
 public class RegistrationLogController {
 	private static final Logger logger = Logger.getLogger(RegistrationLogController.class);
 	//注册码日志服务接口。
-	@Resource
+	//@Resource
 	private IRegistrationLogService registrationLogService;
 	
 	/**

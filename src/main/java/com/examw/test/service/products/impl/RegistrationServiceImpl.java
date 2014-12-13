@@ -2,10 +2,8 @@ package com.examw.test.service.products.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -17,13 +15,8 @@ import com.examw.test.dao.products.IProductDao;
 import com.examw.test.dao.products.IRegistrationDao;
 import com.examw.test.dao.products.ISoftwareTypeDao;
 import com.examw.test.domain.products.Channel;
-import com.examw.test.domain.products.Product;
 import com.examw.test.domain.products.Registration;
-import com.examw.test.domain.products.RelationProduct;
-import com.examw.test.domain.products.SoftwareType;
-import com.examw.test.domain.products.SoftwareTypeLimit;
 import com.examw.test.model.products.RegistrationInfo;
-import com.examw.test.model.products.SoftwareTypeLimitInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.products.IRegistrationService;
 
@@ -110,30 +103,30 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 		}
 		//关联产品
 		String productId ="", productName = "";
-		if(data.getProducts()!=null && data.getProducts().size()>0){
-			for(RelationProduct rp : data.getProducts()){
-				productId = productId+rp.getProduct().getId()+",";	//注意这里是产品的ID
-				productName = productName + rp.getName()+",";
-			}
-		}
-		if(!"".equals(productId)){
-			info.setProductId(productId.split(","));
-			info.setProductName(productName);
-		}
+//		if(data.getProducts()!=null && data.getProducts().size()>0){
+//			for(RelationProduct rp : data.getProducts()){
+//				productId = productId+rp.getProduct().getId()+",";	//注意这里是产品的ID
+//				productName = productName + rp.getName()+",";
+//			}
+//		}
+//		if(!"".equals(productId)){
+//			info.setProductId(productId.split(","));
+//			info.setProductName(productName);
+//		}
 		//软件类型限制
-		if(data.getTypeLimits()!=null && data.getTypeLimits().size()>0)
-		{
-			Set<SoftwareTypeLimitInfo> limit = new HashSet<SoftwareTypeLimitInfo>();
-			for(SoftwareTypeLimit stl : data.getTypeLimits()){
-				SoftwareTypeLimitInfo stlInfo = new SoftwareTypeLimitInfo();
-				BeanUtils.copyProperties(stl, stlInfo);
-				stlInfo.setTypeId(stl.getType().getId());
-				stlInfo.setTypeName(stl.getType().getName());
-				stlInfo.setRegistrationId(stl.getRegistration().getId());
-				limit.add(stlInfo);
-			}
-			info.setLimit(limit);
-		}
+//		if(data.getTypeLimits()!=null && data.getTypeLimits().size()>0)
+//		{
+//			Set<SoftwareTypeLimitInfo> limit = new HashSet<SoftwareTypeLimitInfo>();
+//			for(SoftwareTypeLimit stl : data.getTypeLimits()){
+//				SoftwareTypeLimitInfo stlInfo = new SoftwareTypeLimitInfo();
+//				BeanUtils.copyProperties(stl, stlInfo);
+//				stlInfo.setTypeId(stl.getType().getId());
+//				stlInfo.setTypeName(stl.getType().getName());
+//				stlInfo.setRegistrationId(stl.getRegistration().getId());
+//				limit.add(stlInfo);
+//			}
+//			info.setLimit(limit);
+//		}
 		info.setStatusName(this.loadStatusName(data.getStatus()));
 		return info;
 	}
@@ -157,7 +150,7 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 			data.setCreateTime(new Date());
 		}
 		info.setCreateTime(data.getCreateTime());
-		if(info.getStatus() == null) info.setStatus(Registration.STATUS_NONE);
+	//	if(info.getStatus() == null) info.setStatus(Registration.STATUS_NONE);
 		//TODO 生成注册码  先随便模拟一个
 		if(StringUtils.isEmpty(info.getCode()))info.setCode(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
 		BeanUtils.copyProperties(info, data);
@@ -166,109 +159,109 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 		if(data.getChannel() != null){
 			info.setChannelName(data.getChannel().getName());
 		}
-		//注册码软件限制
-		if(data.getTypeLimits() == null) data.setTypeLimits(new HashSet<SoftwareTypeLimit>());
-		Set<SoftwareTypeLimit> oldTypeLimit = data.getTypeLimits();
-		if(info.getLimit()!=null && info.getLimit().size()>0)
-		{
-			if(logger.isDebugEnabled())logger.debug("开始注册码软件限制...");
-			for(SoftwareTypeLimitInfo stlInfo : info.getLimit()){
-				SoftwareType type = this.softwareTypeDao.load(SoftwareType.class, stlInfo.getTypeId());
-				if(type == null){
-					if(logger.isDebugEnabled()) logger.debug(String.format("软件类型[id = %s]不存在!", stlInfo.getTypeId()));
-					continue;
-				}
-				SoftwareTypeLimit stl = createSoftwareTypeLimit(oldTypeLimit,data,type);
-				stl.setTime(stlInfo.getTime());
-				if(logger.isDebugEnabled()) logger.debug(String.format("限制软件类型[%1$s,%2$s]...", stlInfo.getTypeId(), data.getId()));
-				data.getTypeLimits().add(stl);
-			}
-		}else
-			data.getTypeLimits().clear();
-		//产品关联
-		if(data.getProducts() == null) data.setProducts(new HashSet<RelationProduct>());
-		//data.getProducts().clear();
-		Set<RelationProduct> old = data.getProducts();
-		if(info.getProductId() != null && info.getProductId().length > 0){
-			if(logger.isDebugEnabled())logger.debug("开始注册码产品关联...");
-			for(String productId : info.getProductId()){
-				if(StringUtils.isEmpty(productId))continue;
-				Product product = this.productDao.load(Product.class, productId);
-				if(product == null){
-					if(logger.isDebugEnabled()) logger.debug(String.format("产品[id = %s]不存在!", productId));
-					continue;
-				}
-				RelationProduct rp = createRelationProduct(old,data,product);
-				rp.setCreateTime(new Date());
-				if(logger.isDebugEnabled()) logger.debug(String.format("关联产品[%1$s,%2$s]...", productId, data.getId()));
-				data.getProducts().add(rp);
-			}
-			
-		}else
-			data.getProducts().clear();
-		if(isAdded)this.registrationDao.save(data);
-		else{
-			data.setLastTime(new Date());
-			info.setLastTime(data.getLastTime());
-		}
+//		//注册码软件限制
+//		if(data.getTypeLimits() == null) data.setTypeLimits(new HashSet<SoftwareTypeLimit>());
+//		Set<SoftwareTypeLimit> oldTypeLimit = data.getTypeLimits();
+//		if(info.getLimit()!=null && info.getLimit().size()>0)
+//		{
+//			if(logger.isDebugEnabled())logger.debug("开始注册码软件限制...");
+//			for(SoftwareTypeLimitInfo stlInfo : info.getLimit()){
+//				SoftwareType type = this.softwareTypeDao.load(SoftwareType.class, stlInfo.getTypeId());
+//				if(type == null){
+//					if(logger.isDebugEnabled()) logger.debug(String.format("软件类型[id = %s]不存在!", stlInfo.getTypeId()));
+//					continue;
+//				}
+//				SoftwareTypeLimit stl = createSoftwareTypeLimit(oldTypeLimit,data,type);
+//				stl.setTime(stlInfo.getTime());
+//				if(logger.isDebugEnabled()) logger.debug(String.format("限制软件类型[%1$s,%2$s]...", stlInfo.getTypeId(), data.getId()));
+//				data.getTypeLimits().add(stl);
+//			}
+//		}else
+//			data.getTypeLimits().clear();
+//		//产品关联
+//		if(data.getProducts() == null) data.setProducts(new HashSet<RelationProduct>());
+//		//data.getProducts().clear();
+//		Set<RelationProduct> old = data.getProducts();
+//		if(info.getProductId() != null && info.getProductId().length > 0){
+//			if(logger.isDebugEnabled())logger.debug("开始注册码产品关联...");
+//			for(String productId : info.getProductId()){
+//				if(StringUtils.isEmpty(productId))continue;
+//				Product product = this.productDao.load(Product.class, productId);
+//				if(product == null){
+//					if(logger.isDebugEnabled()) logger.debug(String.format("产品[id = %s]不存在!", productId));
+//					continue;
+//				}
+//				RelationProduct rp = createRelationProduct(old,data,product);
+//				rp.setCreateTime(new Date());
+//				if(logger.isDebugEnabled()) logger.debug(String.format("关联产品[%1$s,%2$s]...", productId, data.getId()));
+//				data.getProducts().add(rp);
+//			}
+//			
+//		}else
+//			data.getProducts().clear();
+//		if(isAdded)this.registrationDao.save(data);
+//		else{
+//			data.setLastTime(new Date());
+//			info.setLastTime(data.getLastTime());
+//		}
 		info.setStatusName(this.loadStatusName(info.getStatus()));
 		return info;
 	}
-	/**
-	 * 构造关联产品
-	 * @param old
-	 * @param reg
-	 * @param product
-	 * @return
-	 */
-	private RelationProduct createRelationProduct(Set<RelationProduct> old,Registration reg,
-			Product product) {
-		RelationProduct data = null;
-		for(RelationProduct rp:old)
-		{
-			if(rp.getProduct().getId().equals(product.getId()) && rp.getRegistration().getId().equals(reg.getId()))
-			{
-				data = rp;
-				break;
-			}
-		}
-		if(data == null)
-		{
-			data = new RelationProduct();
-			data.setId(UUID.randomUUID().toString());
-			data.setName(product.getName());
-			data.setProduct(product);
-			data.setRegistration(reg);
-		}
-		return data;
-	}
-	/**
-	 * 构造软件类型限制
-	 * @param old
-	 * @param reg
-	 * @param type
-	 * @return
-	 */
-	private SoftwareTypeLimit createSoftwareTypeLimit(Set<SoftwareTypeLimit> old,Registration reg,
-			SoftwareType type) {
-		SoftwareTypeLimit data = null;
-		for(SoftwareTypeLimit stl:old)
-		{
-			if(stl.getType().getId().equals(type.getId()) && stl.getRegistration().getId().equals(reg.getId()))
-			{
-				data = stl;
-				break;
-			}
-		}
-		if(data == null)
-		{
-			data = new SoftwareTypeLimit();
-			data.setId(UUID.randomUUID().toString());
-			data.setType(type);
-			data.setRegistration(reg);
-		}
-		return data;
-	}
+//	/**
+//	 * 构造关联产品
+//	 * @param old
+//	 * @param reg
+//	 * @param product
+//	 * @return
+//	 */
+//	private RelationProduct createRelationProduct(Set<RelationProduct> old,Registration reg,
+//			Product product) {
+//		RelationProduct data = null;
+//		for(RelationProduct rp:old)
+//		{
+//			if(rp.getProduct().getId().equals(product.getId()) && rp.getRegistration().getId().equals(reg.getId()))
+//			{
+//				data = rp;
+//				break;
+//			}
+//		}
+//		if(data == null)
+//		{
+//			data = new RelationProduct();
+//			data.setId(UUID.randomUUID().toString());
+//			data.setName(product.getName());
+//			data.setProduct(product);
+//			data.setRegistration(reg);
+//		}
+//		return data;
+//	}
+//	/**
+//	 * 构造软件类型限制
+//	 * @param old
+//	 * @param reg
+//	 * @param type
+//	 * @return
+//	 */
+//	private SoftwareTypeLimit createSoftwareTypeLimit(Set<SoftwareTypeLimit> old,Registration reg,
+//			SoftwareType type) {
+//		SoftwareTypeLimit data = null;
+//		for(SoftwareTypeLimit stl:old)
+//		{
+//			if(stl.getType().getId().equals(type.getId()) && stl.getRegistration().getId().equals(reg.getId()))
+//			{
+//				data = stl;
+//				break;
+//			}
+//		}
+//		if(data == null)
+//		{
+//			data = new SoftwareTypeLimit();
+//			data.setId(UUID.randomUUID().toString());
+//			data.setType(type);
+//			data.setRegistration(reg);
+//		}
+//		return data;
+//	}
 	@Override
 	public void delete(String[] ids) {
 		if (logger.isDebugEnabled())

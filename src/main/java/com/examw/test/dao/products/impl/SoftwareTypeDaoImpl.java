@@ -30,7 +30,8 @@ public class SoftwareTypeDaoImpl extends BaseDaoImpl<SoftwareType> implements IS
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
-			hql += " order by st." + info.getSort() + " " + info.getOrder();
+			if(StringUtils.isEmpty(info.getOrder())) info.setOrder("asc");
+			hql += String.format(" order by st.%1$s %2$s",info.getSort(),info.getOrder());
 		}
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.find(hql, parameters, info.getPage(), info.getRows());
@@ -91,6 +92,9 @@ public class SoftwareTypeDaoImpl extends BaseDaoImpl<SoftwareType> implements IS
 		int count = 0;
 		if(data.getSoftwares() != null && (count = data.getSoftwares().size()) > 0){
 			throw new RuntimeException(String.format("产品软件类型［%1$s］关联［%2$d］软件，暂不能删除！", data.getName(), count));
+		}
+		if(data.getSoftwareTypeLimits() != null && (count = data.getSoftwareTypeLimits().size()) > 0){
+			throw new RuntimeException(String.format("产品软件类型［%1$s］关联［%2$d］注册码，暂不能删除！", data.getName(), count));
 		}
 		super.delete(data);
 	}

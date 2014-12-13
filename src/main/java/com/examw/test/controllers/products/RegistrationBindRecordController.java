@@ -1,7 +1,5 @@
 package com.examw.test.controllers.products;
 
-import javax.annotation.Resource;
-
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
@@ -26,7 +24,7 @@ import com.examw.test.service.products.IRegistrationBindRecordService;
 public class RegistrationBindRecordController {
 	private static final Logger logger = Logger.getLogger(RegistrationBindRecordController.class);
 	//注册码绑定记录服务接口。
-	@Resource
+	//@Resource
 	private IRegistrationBindRecordService registrationBindRecordService;
 	/**
 	 * 获取列表页面。

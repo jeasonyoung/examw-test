@@ -12,9 +12,8 @@ public class SoftwareType implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String id,name;
 	private Integer code;
-	private Set<SoftwareTypeLimit> limits;
-	private Set<RegistrationBindRecord> records;
 	private Set<Software> softwares;
+	private Set<SoftwareTypeLimit> softwareTypeLimits;
 	/**
 	 * 获取类型ID。
 	 * @return 类型ID。
@@ -61,36 +60,6 @@ public class SoftwareType implements Serializable {
 		this.name = name;
 	}
 	/**
-	 * 获取关联限制集合。
-	 * @return 关联限制集合。
-	 */
-	public Set<SoftwareTypeLimit> getLimits() {
-		return limits;
-	}
-	/**
-	 * 设置关联限制集合。
-	 * @param limits 
-	 *	  关联限制集合。
-	 */
-	public void setLimits(Set<SoftwareTypeLimit> limits) {
-		this.limits = limits;
-	}
-	/**
-	 * 获取绑定记录集合。
-	 * @return 绑定记录集合。
-	 */
-	public Set<RegistrationBindRecord> getRecords() {
-		return records;
-	}
-	/**
-	 * 设置绑定记录集合。
-	 * @param records 
-	 *	  绑定记录集合。
-	 */
-	public void setRecords(Set<RegistrationBindRecord> records) {
-		this.records = records;
-	}
-	/**
 	 * 获取关联的软件集合。
 	 * @return 关联的软件集合。
 	 */
@@ -104,5 +73,20 @@ public class SoftwareType implements Serializable {
 	 */
 	public void setSoftwares(Set<Software> softwares) {
 		this.softwares = softwares;
+	}
+	/**
+	 * 获取关联限制集合。
+	 * @return 关联限制集合。
+	 */
+	public Set<SoftwareTypeLimit> getSoftwareTypeLimits() {
+		return softwareTypeLimits;
+	}
+	/**
+	 * 设置关联限制集合。
+	 * @param softwareTypeLimits 
+	 *	  关联限制集合。
+	 */
+	public void setSoftwareTypeLimits(Set<SoftwareTypeLimit> softwareTypeLimits) {
+		this.softwareTypeLimits = softwareTypeLimits;
 	}
 }
