@@ -14,7 +14,7 @@ import com.examw.test.domain.settings.Subject;
  * @author yangyong.
  * @since 2014-08-04.
  */
-public class Product implements Serializable {
+public class Product implements Serializable,Comparable<Product> {
 	private static final long serialVersionUID = 1L;
 	private String id,name,image,content;
 	private Exam exam;
@@ -309,5 +309,22 @@ public class Product implements Serializable {
 	 */
 	public void setLastTime(Date lastTime) {
 		this.lastTime = lastTime;
+	}
+	/*
+	 * 重载排序比较。
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(Product o) {
+		int index = 0;
+		if(this == o) return index;
+		index = this.getOrderNo() - o.getOrderNo();
+		if(index == 0){
+			index = this.getName().compareToIgnoreCase(o.getName());
+			if(index == 0){
+				index = this.getId().compareToIgnoreCase(o.getId());
+			}
+		}
+		return index;
 	}
 }

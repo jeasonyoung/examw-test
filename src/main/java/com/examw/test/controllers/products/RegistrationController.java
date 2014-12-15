@@ -1,5 +1,8 @@
 package com.examw.test.controllers.products;
 
+import java.util.Arrays;
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
@@ -16,9 +19,11 @@ import com.examw.model.Json;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.products.RegistrationInfo;
 import com.examw.test.service.products.IRegistrationService;
+import com.examw.test.service.products.RegistrationStatus;
+import com.examw.test.support.EnumMapUtils;
 
 /**
- * 注册码控制器
+ * 注册码控制器。
  * @author fengwei.
  * @since 2014年8月14日 下午3:46:38.
  */
@@ -30,7 +35,8 @@ public class RegistrationController {
 	@Resource
 	private IRegistrationService registrationService;
 	/**
-	 * 获取列表页面。
+	 * 加载列表页面。
+	 * @param model
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.VIEW})
@@ -39,11 +45,30 @@ public class RegistrationController {
 		if(logger.isDebugEnabled()) logger.debug("加载列表页面...");
 		model.addAttribute("PER_UPDATE", ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE);
 		model.addAttribute("PER_DELETE", ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.DELETE);
-		model.addAttribute("STATUS_MAP",this.registrationService.getStatusMap());
+		
 		return "products/registration_list";
 	}
 	/**
-	 * 查询数据。
+	 * 加载加载编辑页面。
+	 * @param model
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE})
+	@RequestMapping(value = "/edit", method = RequestMethod.GET)
+	public String edit(Model model){
+		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
+		
+		Map<String, String> statusMap = EnumMapUtils.createTreeMap();
+		for(RegistrationStatus status : RegistrationStatus.values()){
+			statusMap.put(String.format("%d", status.getValue()),  this.registrationService.loadStatusName(status.getValue()));
+		}
+		model.addAttribute("statusMap", statusMap);
+		
+		return "products/registration_edit";
+	}
+	/**
+	 * 加载列表数据。
+	 * @param info
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.VIEW})
@@ -54,34 +79,9 @@ public class RegistrationController {
 		return this.registrationService.datagrid(info);
 	}
 	/**
-	 * 编辑页面
-	 * @param model
-	 * @return
-	 */
-	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE})
-	@RequestMapping(value = "/edit", method = RequestMethod.GET)
-	public String edit(Model model){
-		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
-		return "products/registration_edit";
-	}
-	/**
-	 * 选择产品
-	 * @param model
-	 * @return
-	 */
-	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE})
-	@RequestMapping(value = "/chooseproduct", method = RequestMethod.GET)
-	public String chooseProduct(String productId,Model model){
-		if(logger.isDebugEnabled()) logger.debug("加载选择产品页面...");
-		model.addAttribute("CURRENT_CHOOSE_PRODUCT_ID", productId);
-		return "products/registration_choose_product";
-	}
-	/**
 	 * 更新数据。
 	 * @param info
-	 * 更新源数据。
 	 * @return
-	 * 更新后数据。
 	 */
 	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE})
 	@RequestMapping(value="/update", method = RequestMethod.POST)
@@ -107,26 +107,17 @@ public class RegistrationController {
 	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.DELETE})
 	@RequestMapping(value="/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public Json delete(String id){
-		if(logger.isDebugEnabled()) logger.debug("删除数据［"+ id +"］...");
+	public Json delete(@RequestBody String[] ids){
+		if(logger.isDebugEnabled()) logger.debug(String.format("删除数据: %s...",Arrays.toString(ids)));
 		Json result = new Json();
 		try {
-			this.registrationService.delete(id.split("\\|"));
+			this.registrationService.delete(ids);
 			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
-			logger.error("删除数据["+id+"]时发生异常:", e);
+			logger.error(String.format("删除数据时发生异常:%s", e.getMessage()), e);
 		}
 		return result;
-	}
-	/**
-	 * 加载添加软件类型限制页面
-	 * @return
-	 */
-	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE})
-	@RequestMapping(value = "/typelimit", method = RequestMethod.GET)
-	public String typeLimit(){
-		return "products/registration_add_softwarelimit";
 	}
 }

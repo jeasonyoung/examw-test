@@ -2,8 +2,7 @@ package com.examw.test.model.products;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-import com.examw.model.IPaging;
-import com.examw.test.domain.products.Channel;
+import com.examw.model.Paging;
 
 /**
  * 销售渠道信息。
@@ -11,77 +10,53 @@ import com.examw.test.domain.products.Channel;
  * @since 2014年8月11日 下午3:15:30.
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class ChannelInfo extends Channel implements IPaging{
+public class ChannelInfo extends Paging{
 	private static final long serialVersionUID = 1L;
-	private Integer rows,page;
-	private String sort,order;
-	/*
-	 * 获取每页数据量
-	 * @see com.examw.model.IPaging#getRows()
+	private String id,name;
+	private Integer code;
+	/**
+	 * 获取渠道ID。
+	 * @return 渠道ID。
 	 */
-	@Override
-	public Integer getRows() {
-		return rows;
+	public String getId() {
+		return id;
 	}
-	/*
-	 * 设置每页数据量。
-	 * @see com.examw.model.IPaging#setRows(java.lang.Integer)
+	/**
+	 * 设置渠道ID。
+	 * @param id 
+	 *	 渠道ID。
 	 */
-	@Override
-	public void setRows(Integer rows) {
-		this.rows = rows;
+	public void setId(String id) {
+		this.id = id;
 	}
-	
-	/*
-	 * 获取页码。
-	 * @see com.examw.model.IPaging#getPage()
+	/**
+	 * 获取渠道代码。
+	 * @return 渠道代码。
 	 */
-	@Override
-	public Integer getPage() {
-		return page;
+	public Integer getCode() {
+		return code;
 	}
-	/*
-	 * 设置页码。
-	 * @see com.examw.model.IPaging#setPage(java.lang.Integer)
+	/**
+	 * 设置渠道代码。
+	 * @param code 
+	 *	  渠道代码。
 	 */
-	@Override
-	public void setPage(Integer page) {
-		this.page = page;
+	public void setCode(Integer code) {
+		this.code = code;
 	}
-	
-	/*
-	 * 获取排序字段名称。
-	 * @see com.examw.model.IPaging#getSort()
+	/**
+	 * 获取渠道名称。
+	 * @return 渠道名称。
 	 */
-	@Override
-	public String getSort() {
-		return sort;
+	public String getName() {
+		return name;
 	}
-	
-	/*
-	 * 设置排序字段名称。
-	 * @see com.examw.model.IPaging#setSort(java.lang.String)
+	/**
+	 * 设置渠道名称。
+	 * @param name 
+	 *	 渠道名称。
 	 */
-	@Override
-	public void setSort(String sort) {
-		this.sort = sort;
-	}
-	
-	/*
-	 * 获取排序方式。
-	 * @see com.examw.model.IPaging#getOrder()
-	 */
-	@Override
-	public String getOrder() {
-		return order;
-	}
-	
-	/*
-	 * 设置排序方式。
-	 * @see com.examw.model.IPaging#setOrder(java.lang.String)
-	 */
-	@Override
-	public void setOrder(String order) {
-		this.order = order;
+	public void setName(String name) {
+		this.name = name;
 	}
 }
