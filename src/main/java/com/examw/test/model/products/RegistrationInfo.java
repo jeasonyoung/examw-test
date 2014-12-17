@@ -2,6 +2,7 @@ package com.examw.test.model.products;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Set;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
@@ -17,11 +18,11 @@ import com.examw.support.CustomDateSerializer;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class RegistrationInfo extends Paging {
 	private static final long serialVersionUID = 1L;
-	private String id,code,statusName,channelId,channelName;
-	private String[] productId,productName;
-	private Integer limits,status,count;
+	private String id,code,statusName,channelId,channelName,categoryId,examId,examName,productId,productName;
+	private Integer limits,status;
 	private BigDecimal price;
 	private Date createTime,lastTime,startTime,endTime;
+	private Set<RegistrationLimitInfo> typeLimits;
 	/**
 	 * 获取注册码ID。
 	 * @return 注册码ID。
@@ -53,33 +54,78 @@ public class RegistrationInfo extends Paging {
 		this.code = code;
 	}
 	/**
-	 * 获取产品ID集合。
-	 * @return 产品ID集合。
+	 * 获取所属考试类别ID。
+	 * @return 所属考试类别ID。
 	 */
-	public String[] getProductId() {
+	public String getCategoryId() {
+		return categoryId;
+	}
+	/**
+	 * 设置所属考试类别ID。
+	 * @param categoryId 
+	 *	  所属考试类别ID。
+	 */
+	public void setCategoryId(String categoryId) {
+		this.categoryId = categoryId;
+	}
+	/**
+	 * 获取所属考试ID。
+	 * @return 所属考试ID。
+	 */
+	public String getExamId() {
+		return examId;
+	}
+	/**
+	 * 设置所属考试ID。
+	 * @param examId 
+	 *	  所属考试ID。
+	 */
+	public void setExamId(String examId) {
+		this.examId = examId;
+	}
+	/**
+	 * 获取所属考试名称。
+	 * @return 所属考试名称。
+	 */
+	public String getExamName() {
+		return examName;
+	}
+	/**
+	 * 设置所属考试名称。
+	 * @param examName 
+	 *	  所属考试名称。
+	 */
+	public void setExamName(String examName) {
+		this.examName = examName;
+	}
+	/**
+	 * 获取产品ID。
+	 * @return 产品ID。
+	 */
+	public String getProductId() {
 		return productId;
 	}
 	/**
-	 * 设置产品ID集合。
+	 * 设置产品ID。
 	 * @param productId 
-	 *	  产品ID集合。
+	 *	  产品ID。
 	 */
-	public void setProductId(String[] productId) {
+	public void setProductId(String productId) {
 		this.productId = productId;
 	}
 	/**
-	 * 获取产品名称集合。
-	 * @return 产品名称集合。
+	 * 获取产品名称。
+	 * @return 产品名称。
 	 */
-	public String[] getProductName() {
+	public String getProductName() {
 		return productName;
 	}
 	/**
-	 * 设置产品名称集合。
+	 * 设置产品名称。
 	 * @param productName 
-	 *	  产品名称集合。
+	 *	  产品名称。
 	 */
-	public void setProductName(String[] productName) {
+	public void setProductName(String productName) {
 		this.productName = productName;
 	}
 	/**
@@ -236,18 +282,18 @@ public class RegistrationInfo extends Paging {
 		this.lastTime = lastTime;
 	}
 	/**
-	 * 获取创建注册码总数。
-	 * @return 创建注册码总数。
+	 * 获取注册码软件类型限制集合。
+	 * @return 注册码软件类型限制集合。
 	 */
-	public Integer getCount() {
-		return count;
+	public Set<RegistrationLimitInfo> getTypeLimits() {
+		return typeLimits;
 	}
 	/**
-	 * 设置创建注册码总数。
-	 * @param count 
-	 *	  创建注册码总数。
+	 * 设置注册码软件类型限制集合。
+	 * @param typeLimits 
+	 *	  注册码软件类型限制集合。
 	 */
-	public void setCount(Integer count) {
-		this.count = count;
+	public void setTypeLimits(Set<RegistrationLimitInfo> typeLimits) {
+		this.typeLimits = typeLimits;
 	}
 }

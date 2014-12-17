@@ -8,12 +8,14 @@
 	<thead>
 		<tr>
 			<th data-options="field:'id',checkbox:true"></th>
-			<th data-options="field:'code',width:20,align:'left',sortable:true">注册码</th>
-			<th data-options="field:'productName',width:60,align:'left',sortable:false">包含产品集合</th>
+			<th data-options="field:'code',width:30,align:'left',sortable:true">注册码</th>
+			<th data-options="field:'examName',width:25,align:'left',sortable:true">所属考试</th>
+			<th data-options="field:'productName',width:40,align:'left',sortable:true">所属产品</th>
 			<th data-options="field:'channelName',width:25,align:'left',sortable:true">所属渠道</th>
 			<th data-options="field:'price',width:10,align:'right',sortable:true">价格</th>
 			<th data-options="field:'statusName',width:8,align:'center',sortable:true">状态</th>
 			<th data-options="field:'limits',width:10,align:'right',sortable:true">期限(月)</th>
+			<th data-options="field:'createTime',width:15,align:'center',sortable:true">创建时间</th>
 			<th data-options="field:'startTime',width:15,align:'center',sortable:true">激活时间</th>
 			<th data-options="field:'endTime',width:15,align:'center',sortable:true">到期时间</th>
 		</tr>
@@ -21,7 +23,7 @@
 </table>
 <div id="${dg}_toolbar">
 	<@shiro.hasPermission name="${PER_UPDATE}">
-	<a href="#" class="easyui-linkbutton" onclick="${module}_edit_window('新增注册码',0,null);" data-options="iconCls:'icon-add',plain:true" style="float:left;">新增</a>
+	<a href="#" class="easyui-linkbutton" onclick="${module}_edit_window('新增注册码',1,null);" data-options="iconCls:'icon-add',plain:true" style="float:left;">新增</a>
 	</@shiro.hasPermission>
 	<span>|</span>
 	<@shiro.hasPermission name="${PER_DELETE}">
@@ -39,26 +41,38 @@ $(function(){
 	};
 	//edit
 	${module}_edit_window = function(title,index,row){
+		var registration_id = "",category_id = "",exam_id="";
+		if(row){
+			registration_id = row["id"] || "";
+			category_id = row["categoryId"] || "";
+			exam_id = row["examId"] || "";
+		}
 		var d = $("<div/>").dialog({
 			title:title,width:600,height:400,modal:true,
-			href:"<@s.url '/products/registration/edit'/>",
+			href:"<@s.url '/products/registration/edit?registrationId='/>" + registration_id + "&categoryId=" + category_id + "&examId=" + exam_id,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
 			  {
 				text:"保存",iconCls:"icon-save",
 				handler:function(){
 					$.messager.progress({"text":"正在保存数据，请稍后..."});
-					$("#${module}_edit_form").form("submit",{
-						url:"<@s.url '/products/channel/update'/>",
-						onSubmit: function(){
-							var isValid = $(this).form("validate");
-							if (!isValid)$.messager.progress("close");
-							return isValid;
-						},
-						onLoadError:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
-						success:function(data){
+					if(!$("#${module}_edit_form").form("validate")){
+						$.messager.progress("close");
+						return;
+					}
+					var post = $("#${module}_edit_form").form("serialize");
+					post["typeLimits"] = [];
+					var dg_rows = $("#${module}_limits_dg").datagrid("getRows");
+					if(dg_rows && dg_rows.length > 0){
+						for(var i = 0; i < dg_rows.length; i++){
+							post["typeLimits"].push({"softwareTypeId":dg_rows[i]["softwareTypeId"],"times":dg_rows[i]["times"] });
+						}
+					}
+					$.ajax({
+						url:"<@s.url '/products/registration/update'/>",type:"POST",data:JSON.stringify(post),dataType:"json",contentType:"application/json;charset=UTF-8",
+						error:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
+						success:function(data,textStatus){
 							$.messager.progress("close");
-							var data = $.parseJSON(data);
 							if(data.success){
 								$("#${dg}").datagrid(row ? "updateRow" : "insertRow",{index:index, row:data.data });
 								d.dialog("close");

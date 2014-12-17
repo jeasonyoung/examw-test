@@ -3,6 +3,8 @@ package com.examw.test.dao.products;
 import java.util.List;
 
 import com.examw.test.dao.IBaseDao;
+import com.examw.test.domain.products.Registration;
+import com.examw.test.domain.products.SoftwareType;
 import com.examw.test.domain.products.SoftwareTypeLimit;
 import com.examw.test.model.products.SoftwareTypeLimitInfo;
 
@@ -30,13 +32,19 @@ public interface ISoftwareTypeLimitDao extends IBaseDao<SoftwareTypeLimit> {
 	 */
 	Long total(SoftwareTypeLimitInfo info);
 	/**
-	 * 根据软件类型ID和注册码ID查询限制数据。
-	 * @param softwareTypeId
-	 * 软件类型ID。
+	 * 删除注册码ID下的软件类型限制。
 	 * @param registerId
 	 * 注册码ID。
-	 * @return
-	 * 限制数据。
 	 */
-	SoftwareTypeLimit loadSoftwareTypeLimit(String softwareTypeId, String registerId);
+	void deleteByRegistrationId(String registerId);
+	/**
+	 * 更新数据。
+	 * @param register
+	 * 注册码。
+	 * @param type
+	 * 软件类型。
+	 * @param times
+	 * 限制次数。
+	 */
+	SoftwareTypeLimit update(Registration register,SoftwareType type, Integer times);
 }

@@ -3,11 +3,11 @@ package com.examw.test.service.products.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -17,10 +17,17 @@ import org.springframework.util.StringUtils;
 import com.examw.test.dao.products.IChannelDao;
 import com.examw.test.dao.products.IProductDao;
 import com.examw.test.dao.products.IRegistrationDao;
+import com.examw.test.dao.products.ISoftwareTypeDao;
+import com.examw.test.dao.products.ISoftwareTypeLimitDao;
 import com.examw.test.domain.products.Channel;
 import com.examw.test.domain.products.Product;
 import com.examw.test.domain.products.Registration;
+import com.examw.test.domain.products.SoftwareType;
+import com.examw.test.domain.products.SoftwareTypeLimit;
+import com.examw.test.domain.settings.Category;
+import com.examw.test.domain.settings.Exam;
 import com.examw.test.model.products.RegistrationInfo;
+import com.examw.test.model.products.RegistrationLimitInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.products.IRegistrationService;
 import com.examw.test.service.products.RegistrationStatus;
@@ -35,6 +42,8 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 	private IRegistrationDao registrationDao;
 	private IProductDao productDao;
 	private IChannelDao channelDao;
+	private ISoftwareTypeDao softwareTypeDao;
+	private ISoftwareTypeLimitDao softwareTypeLimitDao;
 	private Map<Integer,String> statusMap;
 	/**
 	 * 设置注册码数据接口。
@@ -62,6 +71,24 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 	public void setChannelDao(IChannelDao channelDao) {
 		if(logger.isDebugEnabled()) logger.debug("注入渠道数据接口...");
 		this.channelDao = channelDao;
+	}
+	/**
+	 * 设置软件类型数据接口。
+	 * @param softwareTypeDao 
+	 *	  软件类型数据接口。
+	 */
+	public void setSoftwareTypeDao(ISoftwareTypeDao softwareTypeDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入软件类型数据接口...");
+		this.softwareTypeDao = softwareTypeDao;
+	}
+	/**
+	 * 设置注册码软件类型限制数据接口。
+	 * @param softwareTypeLimitDao 
+	 *	  注册码软件类型限制数据接口。
+	 */
+	public void setSoftwareTypeLimitDao(ISoftwareTypeLimitDao softwareTypeLimitDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入注册码软件类型限制数据接口...");
+		this.softwareTypeLimitDao = softwareTypeLimitDao;
 	}
 	/**
 	 * 设置状态值名称集合。
@@ -101,15 +128,19 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 		if(data == null) return null;
 		RegistrationInfo info = new RegistrationInfo();
 		BeanUtils.copyProperties(data, info);
-		if(data.getProducts() != null && data.getProducts().size() > 0){
-			List<String> listProductId = new ArrayList<>(),listProductName = new ArrayList<>();
-			for(Product product : data.getProducts()){
-				if(product == null) continue;
-				listProductId.add(product.getId());
-				listProductName.add(product.getName());
+		Product product = null;
+		if((product = data.getProduct()) != null){
+			info.setProductId(product.getId());
+			info.setProductName(product.getName());
+			Exam exam = null;
+			if((exam = product.getExam()) != null){
+				info.setExamId(exam.getId());
+				info.setExamName(exam.getName());
+				Category category = null;
+				if((category = exam.getCategory()) != null){
+					info.setCategoryId(category.getId());
+				}
 			}
-			info.setProductId(listProductId.toArray(new String[0]));
-			info.setProductName(listProductName.toArray(new String[0]));
 		}
 		Channel channel = null;
 		if((channel = data.getChannel()) != null){
@@ -160,22 +191,51 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 			calendar.set(Calendar.MILLISECOND, 0);//微妙
 			data.setEndTime(calendar.getTime());//过期时间
 		}
-		//产品集合
-		 if(data.getProducts() != null && data.getProducts().size() > 0) data.getProducts().clear();
-		if(info.getProductId() != null && info.getProductId().length > 0){
-			 Set<Product> products = new HashSet<>();
-			 for(String productId : info.getProductId()){
-				 if(StringUtils.isEmpty(productId)) continue;
-				 Product p = this.productDao.load(Product.class, productId);
-				 if(p != null){
-					 products.add(p);
-				 }
-			 }
-			 if(products.size() > 0) data.setProducts(products);
-		}
+		//产品
+		data.setProduct(StringUtils.isEmpty(info.getProductId()) ? null : this.productDao.load(Product.class, info.getProductId()));
 		//渠道
 		data.setChannel(StringUtils.isEmpty(info.getChannelId()) ?  null : this.channelDao.load(Channel.class, info.getChannelId()));
+		//add
 		if(isAdded)this.registrationDao.save(data);
+		//注册码软件类型限制
+		List<SoftwareTypeLimit> updateLimits = new ArrayList<>(),limits = new ArrayList<>();
+		if(!isAdded && data.getSoftwareTypeLimits() != null && data.getSoftwareTypeLimits().size() > 0){
+			for(SoftwareTypeLimit limit : data.getSoftwareTypeLimits()){
+				if(limit == null) continue;
+				limits.add(limit);
+			}
+		}
+		if(info.getTypeLimits() != null && info.getTypeLimits().size() > 0){
+			for(RegistrationLimitInfo limit : info.getTypeLimits()){
+				if(limit == null) continue;
+				SoftwareType type = this.softwareTypeDao.load(SoftwareType.class, limit.getSoftwareTypeId());
+				if(type == null) throw new RuntimeException(String.format("软件类型［%s］不存在！", limit.getSoftwareTypeId()));
+				SoftwareTypeLimit stl = this.softwareTypeLimitDao.update(data, type, limit.getTimes());
+				if(stl != null) updateLimits.add(stl);
+			}
+		}
+		if(!isAdded && limits != null && limits.size() > 0){
+			for(SoftwareTypeLimit limit : limits){
+				if(limit == null) continue;
+				if(updateLimits.size() == 0){
+					this.softwareTypeLimitDao.deleteByRegistrationId(data.getId());
+					break;
+				}
+				int index = Collections.binarySearch(updateLimits, limit, new Comparator<SoftwareTypeLimit>(){
+					@Override
+					public int compare(SoftwareTypeLimit o1,SoftwareTypeLimit o2) {
+						String o1_value = String.format("%1$s-%2$s", o1.getRegister().getId(), o1.getSoftwareType().getId()),
+									o2_value = String.format("%1$s-%2$s", o2.getRegister().getId(), o2.getSoftwareType().getId());
+						return o1_value.compareTo(o2_value);
+					}
+				});
+				if(index < 0){
+					data.getSoftwareTypeLimits().remove(limit);
+					this.softwareTypeLimitDao.delete(limit);
+				}
+			}
+		}
+		//
 		return this.changeModel(data);
 	}
 	/*

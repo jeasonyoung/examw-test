@@ -32,6 +32,12 @@ public class RegistrationDaoImpl extends BaseDaoImpl<Registration> implements IR
 		if(!StringUtils.isEmpty(info.getSort())){
 			if(StringUtils.isEmpty(info.getOrder())) info.setOrder("asc");
 			switch(info.getSort()){
+				case "examName"://考试
+					info.setSort("product.exam.name");
+					break;
+				case "productName"://产品
+					info.setSort("product.name");
+					break;
 				case "channelName"://渠道
 					info.setSort("channel.name");
 					break;

@@ -10,26 +10,10 @@ import java.util.Date;
  */
 public class SoftwareTypeLimit implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id;
 	private SoftwareType softwareType;
 	private Registration register;
 	private Integer times;
-	private Date createTime,lastTime;
-	/**
-	 * 获取限制ID。
-	 * @return 限制ID。
-	 */
-	public String getId() {
-		return id;
-	}
-	/**
-	 * 设置限制ID。
-	 * @param id 
-	 *	  限制ID。
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
+	private Date createTime;
 	/**
 	 * 获取软件类型。
 	 * @return 软件类型。
@@ -89,20 +73,5 @@ public class SoftwareTypeLimit implements Serializable {
 	 */
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
-	}
-	/**
-	 * 获取最后修改时间。
-	 * @return 最后修改时间。
-	 */
-	public Date getLastTime() {
-		return lastTime;
-	}
-	/**
-	 * 设置最后修改时间。
-	 * @param lastTime 
-	 *	  最后修改时间。
-	 */
-	public void setLastTime(Date lastTime) {
-		this.lastTime = lastTime;
 	}
 }

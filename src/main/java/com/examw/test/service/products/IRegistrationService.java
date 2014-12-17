@@ -15,4 +15,12 @@ public interface IRegistrationService extends IBaseDataService<RegistrationInfo>
 	 * @return
 	 */
 	String loadStatusName(Integer status);
+//	/**
+//	 * 查询注册码的软件类型限制集合。
+//	 * @param registrationId
+//	 * 注册码ID。
+//	 * @return
+//	 * 数据集合。
+//	 */
+//	List<SoftwareTypeLimitInfo> findSoftwareTypeLimits(String registrationId);
 }
