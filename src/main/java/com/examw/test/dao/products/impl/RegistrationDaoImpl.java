@@ -105,6 +105,6 @@ public class RegistrationDaoImpl extends BaseDaoImpl<Registration> implements IR
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("code", code);
 		Object obj = this.uniqueResult(hql, parameters);
-		return (obj == null) ? false : ((int)obj) > 0;
+		return (obj == null) ? false : ((long)obj) > 0;
 	}
 }

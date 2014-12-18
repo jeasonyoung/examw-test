@@ -31,6 +31,8 @@ import com.examw.test.model.products.RegistrationLimitInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.products.IRegistrationService;
 import com.examw.test.service.products.RegistrationStatus;
+import com.examw.utils.StringUtil;
+import com.examw.utils.VerifyCodeUtil;
 
 /**
  * 注册码服务接口
@@ -127,7 +129,8 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 		if(logger.isDebugEnabled()) logger.debug("数据模型转换 Registration => RegistrationInfo...");
 		if(data == null) return null;
 		RegistrationInfo info = new RegistrationInfo();
-		BeanUtils.copyProperties(data, info);
+		BeanUtils.copyProperties(data, info,new String[]{"code"});
+		info.setCode(this.formatCode(data.getCode()));
 		Product product = null;
 		if((product = data.getProduct()) != null){
 			info.setProductId(product.getId());
@@ -178,6 +181,14 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 		}
 		info.setLastTime(new Date());
 		if(info.getStatus() == null) info.setStatus(RegistrationStatus.NONE.getValue());
+		try {
+			if(!this.verificationFormat(info.getCode())){
+				throw new Exception(String.format("非法注册码:%s", info.getCode()));
+			}
+			info.setCode(this.cleanCodeFormat(info.getCode()));
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
 		BeanUtils.copyProperties(info, data, new String[]{"startTime","endTime"});
 		//创建注册码激活
 		if(info.getLimits() > 0 && info.getStatus() == RegistrationStatus.ACTIVE.getValue() && (data.getStatus() != RegistrationStatus.ACTIVE.getValue() || data.getStartTime() == null)){
@@ -254,5 +265,73 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 				this.registrationDao.delete(data);
 			}
 		}
+	}
+	/*
+	 * 校验注册码格式。
+	 * @see com.examw.test.service.products.IRegistrationCodeService#verificationFormat(java.lang.String)
+	 */
+	@Override
+	public Boolean verificationFormat(String code) throws Exception {
+		if(logger.isDebugEnabled()) logger.debug(String.format("校验注册码格式:%s ...", code));
+		if(StringUtils.isEmpty(code)) throw new Exception("校验码为空！");
+		//清理注册码格式
+		code = this.cleanCodeFormat(code);
+		if(!code.matches("^\\d{18}$")) return false;
+		return this.calChecksumValue(code.substring(0, 8) + code.substring(10)) == Integer.parseInt(code.substring(8,10));
+	}
+	//清理注册码格式
+	private String cleanCodeFormat(String code){
+		if(StringUtils.isEmpty(code)) return null;
+		//转半角
+		code = StringUtil.toSemiangle(code);
+		//剔除空格和横杠
+		return code.replaceAll("\\s+", "").replaceAll("-", "").trim();
+	}
+	//格式化注册码。
+	private String formatCode(String code){
+		if(StringUtils.isEmpty(code)) return null;
+		StringBuilder builder = new StringBuilder();
+		for(int i = 0; i < code.length(); i++){
+			if(i > 0 && i%3 == 0){
+				builder.append(" ");
+			}
+			builder.append(code.substring(i, i+1));
+		}
+		return builder.toString();
+	}
+	//计算校验数字。
+	private int calChecksumValue(String source){
+		int sum = 0,len = WEIGHT_VALUE.length;
+		for(int i = 0; i < source.length(); i++){
+			sum += Integer.parseInt(source.substring(i, i + 1)) * WEIGHT_VALUE[i % len];
+		}
+		return sum % CHECK_RESIDUE_VALUE;
+	}
+	/*
+	 * 生成注册码。
+	 * @see com.examw.test.service.products.IRegistrationCodeService#generatedCode(int, int)
+	 */
+	@Override
+	public String generatedCode(int price, int limit) throws Exception {
+		if(logger.isDebugEnabled()) logger.debug(String.format("生成注册码:[price=%1$d][limit=%2$d]", price, limit));
+		String p = String.format("%03d", price),l = String.format("%02d", limit);
+		if(p.length() > 3) p = p.substring(0, 3);//3位的价格
+		if(l.length() > 2) l = l.substring(0,2);//2位的期限
+		StringBuilder codeBuilder = new StringBuilder();
+		codeBuilder.append(String.format("%ty", new Date()))//2位的年份
+						   .append(p)//3位的价格
+						   .append(VerifyCodeUtil.generateTextCode(VerifyCodeUtil.TYPE_NUM_ONLY, 3, null))//3位随机数字
+						   .append(VerifyCodeUtil.generateTextCode(VerifyCodeUtil.TYPE_NUM_ONLY, 6, null))//6位随机数字
+						   .append(l);//2位的期限
+		int checksum = this.calChecksumValue(codeBuilder.toString());
+		codeBuilder.insert(8, String.format("%02d", checksum));
+		String code = codeBuilder.toString();
+		if(!this.verificationFormat(code)){//校验格式
+			throw new Exception(String.format("生成注册码失败：%s",code));
+		}
+		if(this.registrationDao.existCode(code)){//判断是否存在
+			return this.generatedCode(price, limit);//重新产生
+		}
+		return this.formatCode(code);
 	}
 }

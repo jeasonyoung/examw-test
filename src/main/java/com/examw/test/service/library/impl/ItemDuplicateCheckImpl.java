@@ -11,6 +11,7 @@ import org.springframework.util.StringUtils;
 import com.examw.test.model.library.BaseItemInfo;
 import com.examw.test.service.library.IItemDuplicateCheck;
 import com.examw.utils.MD5Util;
+import com.examw.utils.StringUtil;
 /**
  * 试题重复检查校验码计算接口实现类。
  * 
@@ -105,36 +106,14 @@ public class ItemDuplicateCheckImpl implements IItemDuplicateCheck {
 	//字符替换
 	private static String replaceSymbol(String source){
 		if(StringUtils.isEmpty(source)) return source;
-		source = toSemiangle(source);
+		
+		if(logger.isDebugEnabled()) logger.debug(String.format("转半角前：%s", source));
+		source = StringUtil.toSemiangle(source);
+		if(logger.isDebugEnabled()) logger.debug(String.format("转半角后：%s", source));
+		
 		for(int i = 0; i < stripHTMLRegexs.length; i++){
 		   source = source.replaceAll(stripHTMLRegexs[i][0], stripHTMLRegexs[i][1].trim());
 		}
-		source.replaceAll("<", "");
-		source.replaceAll(">", "");
-		source.replaceAll("\r\n", "");
-		return source;
-	}
-	//转半角。
-	//全角空格为12288，半角空格为32
-	//其他半角字符（33-126）与全角（65281-65374）的对应关系是：均相差65248
-	private static String toSemiangle(String source){
-		if(logger.isDebugEnabled()) logger.debug(String.format("转半角前：%s", source));
-		if(StringUtils.isEmpty(source)) return source;
-		final int sbc_char_start = 65281,/*全角字符开始*/
-					sbc_char_end = 65374,/*全角字符结束*/
-					offset = 65248,/*与半角的偏移量*/
-					sbc_space = 12288,/*全角空格*/
-					dbc_space = 32;/*半角空格*/
-		char[] chars = source.toCharArray();
-		for(int i = 0; i < chars.length; i++){
-			if(chars[i] == sbc_space){
-				chars[i] = dbc_space;
-			}else if(chars[i] >= sbc_char_start && chars[i] <= sbc_char_end){
-				chars[i] = (char)(chars[i] - offset);
-			}
-		}
-		String target = String.valueOf(chars);
-		if(logger.isDebugEnabled()) logger.debug(String.format("转半角后：%s", target));
-		return target;
+		return source.replaceAll("<", "").replaceAll(">", "").replaceAll("\r\n", "");
 	}
 }

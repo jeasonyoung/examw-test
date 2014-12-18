@@ -11,6 +11,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -81,6 +82,28 @@ public class RegistrationController {
 		model.addAttribute("statusMap", statusMap);
 		
 		return "products/registration_edit";
+	}
+	/**
+	 * 生成注册码。
+	 * @param price
+	 * @param limit
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.VIEW})
+	@RequestMapping(value = "/code/{price}/{limit}", method = RequestMethod.GET)
+	@ResponseBody
+	public Json generatedCode(@PathVariable int price, @PathVariable int limit) {
+		if(logger.isDebugEnabled()) logger.debug(String.format(" 生成注册码[price=%1$d][limit=%2$d]...", price,limit));
+		Json result = new Json();
+		try{
+			result.setData(this.registrationService.generatedCode(price, limit));
+			result.setSuccess(true);
+		}catch(Exception e){
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+		}
+		return result;
 	}
 	/**
 	 * 加载列表数据。

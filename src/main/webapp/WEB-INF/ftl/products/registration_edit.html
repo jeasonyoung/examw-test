@@ -34,13 +34,23 @@
 		<div style="float:left;margin-top:12px;width:100%;">
 			<label style="width:75px;">注册码：</label>
 			<input name="code" class="easyui-textbox" required="true" missingMessage="请刷新自动生成注册码" data-options="icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}},{iconCls:'icon-mini-refresh',handler:function(e){
-					alert('refresh');
+						var price = $('#${form}_price').numberbox('getValue');var limit = $('#${form}_limits').numberspinner('getValue');
+						if(price == '' || limit == '') return;
+						$.messager.progress({text:'正在创建注册码，请稍后...'});
+						$.getJSON('<@s.url '/products/registration/code/'/>'+price+'/'+ limit +'?_=' + Math.random(),function(result){
+							$.messager.progress('close');
+							if(result['success']){
+								$(e.data.target).textbox('setValue',result['data']);
+							}else{
+								$.messager.show({title:'保存异常', msg:result['msg']});
+							}	
+						});
 				}}]" style="width:480px;"/>
 			<input name="id" type="hidden"/>
 		</div>
 		<div style="float:left;margin-top:12px;width:100%;">
 			<label style="width:75px;">有效期限：</label>
-			<input name="limits" class="easyui-numberspinner" required="true" missingMessage="请输入注册码有效期限" data-options="min:1,value:12,icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).numberspinner('clear');}}]" style="width:100px;"/>
+			<input id="${form}_limits" name="limits" class="easyui-numberspinner" required="true" missingMessage="请输入注册码有效期限" data-options="min:1,value:12,icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).numberspinner('clear');}}]" style="width:100px;"/>
 			<span>单位：月 <span style="color:red;">(自激活之时开始计算)</span></span>
 		</div>
 		<div style="float:left;margin-top:9px;width:100%;">
