@@ -7,7 +7,7 @@
 		<!-- 产品ID -->
 		<id name="id"  type="string"  length="64" />
 		<!-- 产品名称 -->
-		<property name="name" type="string" length="32" not-null="true" />
+		<property name="name" type="string" length="64" not-null="true" />
 		<!-- 宣传图片 -->
 		<property name="image" type="string" length="1024" />
 		<!-- 所属考试  -->
