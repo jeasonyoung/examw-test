@@ -1,5 +1,8 @@
 package com.examw.test.service.products;
 
+import java.util.List;
+
+import com.examw.test.model.products.BatchRegistrationInfo;
 import com.examw.test.model.products.RegistrationInfo;
 import com.examw.test.service.IBaseDataService;
 
@@ -15,4 +18,11 @@ public interface IRegistrationService extends IBaseDataService<RegistrationInfo>
 	 * @return
 	 */
 	String loadStatusName(Integer status);
+	/**
+	 * 批量创建注册码。
+	 * @param info
+	 * @return
+	 * @throws Exception
+	 */
+	List<String> updateBatch(BatchRegistrationInfo info) throws Exception;
 }

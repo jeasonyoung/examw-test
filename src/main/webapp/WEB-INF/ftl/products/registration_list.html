@@ -15,15 +15,19 @@
 			<th data-options="field:'price',width:10,align:'right',sortable:true">价格</th>
 			<th data-options="field:'statusName',width:8,align:'center',sortable:true">状态</th>
 			<th data-options="field:'limits',width:10,align:'right',sortable:true">期限(月)</th>
-			<th data-options="field:'createTime',width:15,align:'center',sortable:true">创建时间</th>
-			<th data-options="field:'startTime',width:15,align:'center',sortable:true">激活时间</th>
-			<th data-options="field:'endTime',width:15,align:'center',sortable:true">到期时间</th>
+			<th data-options="field:'createTime',width:15,align:'center',sortable:true,formatter:function(v,row,index){return '<span title=\''+v+'\'>'+v+'</span>';}">创建时间</th>
+			<th data-options="field:'startTime',width:15,align:'center',sortable:true,formatter:function(v,row,index){return '<span title=\''+v+'\'>'+v+'</span>';}">激活时间</th>
+			<th data-options="field:'endTime',width:15,align:'center',sortable:true,formatter:function(v,row,index){return '<span title=\''+v+'\'>'+v+'</span>';}">到期时间</th>
 		</tr>
 	</thead>
 </table>
 <div id="${dg}_toolbar">
 	<@shiro.hasPermission name="${PER_UPDATE}">
-	<a href="#" class="easyui-linkbutton" onclick="${module}_edit_window('新增注册码',1,null);" data-options="iconCls:'icon-add',plain:true" style="float:left;">新增</a>
+	<a href="#" class="easyui-menubutton" data-options="iconCls:'icon-add',menu:'#${dg}_toolbar_menu',plain:true" style="float:left;">新增</a>
+	<div id="${dg}_toolbar_menu" style="width:120px;">
+		<div onclick="${module}_edit_window('新增注册码',0,null);">新增注册码</div>
+		<div onclick="${module}_batch_edit_window('批量新增注册码');">批量新增注册码</div>
+	</div>
 	</@shiro.hasPermission>
 	<span>|</span>
 	<@shiro.hasPermission name="${PER_DELETE}">
@@ -92,6 +96,56 @@ $(function(){
 			onLoad:function(){ if(row){$("#${module}_edit_form").form("load",row);} }
 		});
 	};
+	<@shiro.hasPermission name="${PER_UPDATE}">
+	//batch
+	${module}_batch_edit_window = function(title){
+		var registration_id = "",category_id = "",exam_id="";
+		var d = $("<div/>").dialog({
+			title:title,width:600,height:400,modal:true,
+			href:"<@s.url '/products/registration/batch/edit?registrationId='/>" + registration_id + "&categoryId=" + category_id + "&examId=" + exam_id,
+			buttons:[{
+				text:"保存",iconCls:"icon-save",
+				handler:function(){
+					$.messager.progress({"text":"正在批量生成注册码，请稍后..."});
+					if(!$("#${module}_batch_edit_form").form("validate")){
+						$.messager.progress("close");
+						return;
+					}
+					var post = $("#${module}_batch_edit_form").form("serialize");
+					post["typeLimits"] = [];
+					var dg_rows = $("#${module}_batch_limits_dg").datagrid("getRows");
+					if(dg_rows && dg_rows.length > 0){
+						for(var i = 0; i < dg_rows.length; i++){
+							post["typeLimits"].push({"softwareTypeId":dg_rows[i]["softwareTypeId"],"times":dg_rows[i]["times"] });
+						}
+					}
+					$.ajax({
+						url:"<@s.url '/products/registration/batch/update'/>",type:"POST",data:JSON.stringify(post),dataType:"json",contentType:"application/json;charset=UTF-8",
+						error:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
+						success:function(result,textStatus){
+							$.messager.progress("close");
+							if(result["success"]){
+								$("#${dg}").datagrid("load").datagrid("unselectAll");
+								d.dialog("close");
+								$("<div/>").window({
+									title:"下载",width:200,height:100,collapsible:false,minimizable:false,maximizable:false,
+									content:"<center>[下载批量注册码]</center><iframe scrolling='0' frameborder='0' src='<@s.url '/products/registration/batch/export/'/>" +result["data"] + "' style='width:90%;height:90%;display:none;'></iframe>",
+									onClose:function(){ $(this).dialog("destroy"); }
+								});
+							}else{
+								$.messager.show({ title:"批量生成注册码异常", msg:result["msg"] });
+							}
+						}
+					});
+				}
+			},{
+				text:"关闭",iconCls:"icon-cancel",
+				handler:function(){ d.dialog("close"); }
+			}],
+			onClose:function(){ $(this).dialog("destroy"); }
+		});
+	};
+	</@shiro.hasPermission>
 	<@shiro.hasPermission name="${PER_DELETE}">
 	//delete
 	${dg}_delete = function(){

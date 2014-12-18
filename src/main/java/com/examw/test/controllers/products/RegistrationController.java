@@ -2,9 +2,14 @@ package com.examw.test.controllers.products;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -20,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.examw.model.DataGrid;
 import com.examw.model.Json;
 import com.examw.test.domain.security.Right;
+import com.examw.test.model.products.BatchRegistrationInfo;
 import com.examw.test.model.products.RegistrationInfo;
 import com.examw.test.model.products.SoftwareTypeLimitInfo;
 import com.examw.test.service.products.IRegistrationService;
@@ -36,6 +42,7 @@ import com.examw.test.support.EnumMapUtils;
 @RequestMapping("/products/registration")
 public class RegistrationController {
 	private static final Logger logger = Logger.getLogger(RegistrationController.class);
+	private static final Map<String, List<String>> cache_registration_code = new HashMap<>();
 	//注入注册码服务接口。
 	@Resource
 	private IRegistrationService registrationService;
@@ -129,6 +136,21 @@ public class RegistrationController {
 		return "products/registration_limits_edit";
 	}
 	/**
+	 * 加载批量创建注册码编辑页面。
+	 * @param registrationId
+	 * @param categoryId
+	 * @param examId
+	 * @param model
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE})
+	@RequestMapping(value = "/batch/edit", method = RequestMethod.GET)
+	public String batchCreateEdit(String registrationId, String categoryId,String examId, Model model){
+		if(logger.isDebugEnabled()) logger.debug("加载批量创建注册码编辑页面..");
+		this.edit(registrationId, categoryId, examId, model);
+		return "products/registration_batch_edit";
+	}
+	/**
 	 * 加载注册码软件类型限制集合。
 	 * @param registerId
 	 * @param info
@@ -169,6 +191,60 @@ public class RegistrationController {
 			logger.error("更新产品数据发生异常", e);
 		}
 		return result;
+	}
+	/**
+	 * 批量创建注册码处理。
+	 * @param info
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE})
+	@RequestMapping(value="/batch/update", method = RequestMethod.POST)
+	@ResponseBody
+	public Json batchUpdate(@RequestBody BatchRegistrationInfo info){
+		if(logger.isDebugEnabled()) logger.debug("批量创建注册码处理...");
+		Json result = new Json();
+		try {
+			String key = UUID.randomUUID().toString();
+			cache_registration_code.put(key, this.registrationService.updateBatch(info));
+			result.setData(key);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+		}
+		return result;
+	}
+	/**
+	 * 导出批量创建的注册码。
+	 * @param key
+	 * @param response
+	 * @throws Exception 
+	 */
+	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE})
+	@RequestMapping(value="/batch/export/{key}", method = RequestMethod.GET)
+	public void batchExport(@PathVariable String key,HttpServletResponse response) throws Exception{
+		if(logger.isDebugEnabled()) logger.debug("导出批量创建的注册码...");
+		StringBuilder builder = new StringBuilder();
+		List<String> list = cache_registration_code.get(key);
+		if(list != null && list.size() > 0){
+			for(int i = 0; i < list.size(); i++){
+				builder.append(i+1).append(".").append(list.get(i)).append("\r\n");
+			}
+			cache_registration_code.remove(key);
+		}else{
+			builder.append("没有注册码数据！");
+		}
+		byte[] data = builder.toString().getBytes("UTF-8");
+		if(data != null && data.length > 0){
+			//设置页面不缓存。
+			response.setHeader("Pragme", "no-cache");
+			response.setHeader("Cache-Control", "no-cache");
+			response.setDateHeader("Expires", 0);
+			response.setContentType("text/plain;charset=UTF-8");
+			String fileName = String.format("attachment;filename=%1$s-%2$s", new String("批量创建注册码".getBytes("UTF-8"),"ISO8859-1"),new Date().getTime());
+			response.setHeader("Content-disposition", fileName);
+			response.getOutputStream().write(data);
+		}
 	}
 	/**
 	 * 删除数据。

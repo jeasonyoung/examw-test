@@ -1,0 +1,144 @@
+<#--注册码编辑页面-->
+<#include "/comm.ftl"/>
+<#assign base = "products_registration"/>
+<#assign module = "${base}_batch"/>
+<#assign form = "${module}_edit_form"/>
+<#assign dg = "${module}_limits_dg" />
+<#assign exam_query_url = "/settings/exam/all?categoryId=" />
+<#assign product_query_url = "/products/product/all?examId="/>
+<form id="${form}" method="POST" class="easyui-tabs" data-options="fit:true">
+	<div title="注册码信息">
+		<div style="float:left;margin-top:12px;width:100%;">
+			<label style="width:75px;">所属考试：</label>
+			<input name="categoryId" class="easyui-combotree" lines="true" prompt="所属考试类别" data-options="url:'<@s.url '/settings/category/tree'/>',onLoadError:function(e){ <@error_dialog 'e'/> },
+				onChange:function(n,o){$('#${form}_productId').combobox('clear');$('#${form}_examId').combobox('clear').combobox('reload','<@s.url '${exam_query_url}'/>' +n);},
+				icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).combotree('clear');}}]" style="width:208px;"/>
+			<input id="${form}_examId" name="examId" class="easyui-combobox" prompt="所属考试" data-options="url:'<@s.url '${exam_query_url}${current_category_id}'/>',valueField:'id',textField:'name',onLoadError:function(e){ <@error_dialog 'e'/> },
+				onSelect:function(record){$('#${form}_productId').combobox('clear').combobox('reload','<@s.url '${product_query_url}'/>' + record['id']);},
+				icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).combobox('clear');}}]" style="width:268px;"/>
+		</div>
+		<div style="float:left;margin-top:12px;width:100%;">
+			<label style="width:75px;">所属产品：</label>
+			<input id="${form}_productId" name="productId" class="easyui-combobox" data-options="url:'<@s.url '${product_query_url}${current_exam_id}'/>',valueField:'id',textField:'name',onLoadError:function(e){ <@error_dialog 'e'/> },
+				onSelect:function(record){$('#${form}_price').numberbox('setValue',record['price']); },icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).combobox('clear');$('#${form}_price').numberbox('clear'); }}]" style="width:480px;"/>
+		</div>
+		<div style="float:left;margin-top:12px;width:100%;">
+			<div style="float:left;">
+				<label style="width:75px;">所属渠道：</label>
+				<input id="${form}_channelId" name="channelId" class="easyui-combobox" data-options="url:'<@s.url '/products/channel/all'/>',valueField:'id',textField:'name',onLoadError:function(e){ <@error_dialog 'e'/> },icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).combobox('clear');}}]" style="width:368px;"/>
+			</div>
+			<div style="float:left;">
+				<label style="width:50px;">价格：</label>
+				<input id="${form}_price" name="price" class="easyui-numberbox" required="true" missingMessage="请输入注册码价格" data-options="min:0,value:0,icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).numberbox('clear');}}]" style="width:63px;"/>
+			</div>
+		</div>
+		<div style="float:left;margin-top:12px;width:100%;">
+			<label style="width:75px;">有效期限：</label>
+			<input name="limits" class="easyui-numberspinner" required="true" missingMessage="请输入注册码有效期限" data-options="min:1,value:12,icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).numberspinner('clear');}}]" style="width:100px;"/>
+			<span>单位：月 <span style="color:red;">(自激活之时开始计算)</span></span>
+		</div>
+		<div style="float:left;margin-top:9px;width:100%;">
+			<label style="width:75px;margin-top:3px;">状态：</label>
+			<#list statusMap?keys as key>
+			<label style="padding-top:0px;<#if (key_index > 0)>margin-left:12px;</#if> ">
+				<input type="radio" name="status" value="${key}"  <#if (key_index == 0)> checked="checked" </#if> />${statusMap[key]}
+			</label>
+			</#list>
+		</div>
+		<div style="float:left;margin-top:12px;width:100%;">
+			<label style="width:75px;">批量数目：</label>
+			<input name="count" class="easyui-numberspinner" required="true" missingMessage="请输入批量产生的注册码个数！" data-options="min:1,value:5,max:50,icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).numberspinner('clear');}}]" style="width:80px;"/>
+		</div>
+	</div>
+	<div title="软件类型限制">
+		<table id="${dg}" class="easyui-datagrid" data-options="url:'<@s.url '/products/registration/limits/datagrid?registrationId=${current_registration_id}'/>',fit:true,fitColumns:true,rownumbers:false,border:false,striped:true,
+			pagination:false,pagePosition:'bottom',pageSize:20,pageList:[20,30,40],idField:'softwareTypeId',sortName:'createTime',sortOrder:'desc',toolbar:'#${dg}_toolbar',onLoadError:function(e){ <@error_dialog 'e'/> }">
+			<thead>
+				<tr>
+					<th data-options="field:'softwareTypeId',checkbox:true"></th>
+					<th data-options="field:'softwareTypeName',width:80,align:'left',sortable:true">软件类型名称</th>
+					<th data-options="field:'times',width:20,align:'right',sortable:true">绑定设备次数</th>
+				</tr>
+			</thead>
+		</table>
+		<div id="${dg}_toolbar">
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			<a href="#" class="easyui-linkbutton" onclick="${dg}_add()" data-options="iconCls:'icon-add',plain:true" style="float:left;">新增</a>
+			</@shiro.hasPermission>
+			<span>|</span>
+			<@shiro.hasPermission name="${PER_DELETE}">
+			<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
+			</@shiro.hasPermission>
+		</div>
+	</div>
+</form>
+<script type="text/javascript">
+<!--
+$(function(){
+	<@shiro.hasPermission name="${PER_UPDATE}">
+	//add
+	${dg}_add = function(){
+		var title = "新增注册码软件类型限制";
+		var d = $("<div/>").dialog({
+			title:title,width:400,height:160,modal:true,
+			href:"<@s.url '/products/registration/limits/edit'/>",
+			buttons:[
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			{
+				text:"保存",iconCls:"icon-save",
+				handler:function(){
+					$.messager.progress({"text":"正在保存数据，请稍后..."});
+					if(!$("#${base}_limits_edit_form").form("validate")){
+						$.messager.progress("close");
+						return;
+					}
+					var limit = $("#${base}_limits_edit_form").form("serialize");
+					if(limit){
+						var index = $("#${dg}").datagrid("getRowIndex",limit["softwareTypeId"]);
+						if(index > -1){
+							$("#${dg}").datagrid("updateRow",{index:index,row:limit});
+						}else{
+							$("#${dg}").datagrid("insertRow",{index:0,row:limit});
+						}
+						d.dialog("close");
+					}
+					$.messager.progress("close");
+				}
+			},
+			</@shiro.hasPermission>
+			{
+				text:"关闭",iconCls:"icon-cancel",
+				handler:function(){ d.dialog("close"); }
+			}],
+			onClose:function(){ $(this).dialog("destroy"); }
+		});
+	};
+	</@shiro.hasPermission>
+	<@shiro.hasPermission name="${PER_DELETE}">
+	//delete
+	${dg}_delete = function(){
+		var rows = $("#${dg}").datagrid("getChecked");
+		if(rows && rows.length > 0){
+			$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
+				if(!r)return;
+				$.messager.progress({"text":"正在删除数据，请稍后..."});
+				var del_rows = [];
+				for(var i = 0; i < rows.length;i++){
+					del_rows.push(rows[i]);
+				}
+				for(var i = 0; i < del_rows.length;i++){
+					var index = $("#${dg}").datagrid("getRowIndex",del_rows[i]["softwareTypeId"]);
+					if(index > -1){
+						$("#${dg}").datagrid("deleteRow",index);
+					}
+				}
+				$.messager.progress("close");
+			});
+		}else{
+			$.messager.alert("提示","未选中须删除的数据！");
+		}
+	};
+	</@shiro.hasPermission>
+});
+//-->
+</script>

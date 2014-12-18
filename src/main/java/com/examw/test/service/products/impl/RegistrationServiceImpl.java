@@ -26,6 +26,7 @@ import com.examw.test.domain.products.SoftwareType;
 import com.examw.test.domain.products.SoftwareTypeLimit;
 import com.examw.test.domain.settings.Category;
 import com.examw.test.domain.settings.Exam;
+import com.examw.test.model.products.BatchRegistrationInfo;
 import com.examw.test.model.products.RegistrationInfo;
 import com.examw.test.model.products.RegistrationLimitInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
@@ -130,7 +131,7 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 		if(data == null) return null;
 		RegistrationInfo info = new RegistrationInfo();
 		BeanUtils.copyProperties(data, info,new String[]{"code"});
-		info.setCode(this.formatCode(data.getCode()));
+		info.setCode(this.formatCode(data.getCode()));//格式化注册码
 		Product product = null;
 		if((product = data.getProduct()) != null){
 			info.setProductId(product.getId());
@@ -150,6 +151,7 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 			info.setChannelId(channel.getId());
 			info.setChannelName(channel.getName());
 		}
+		info.setStatusName(this.loadStatusName(info.getStatus()));
 		return info;
 	}
 	/*
@@ -167,7 +169,11 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 	 */
 	@Override
 	public RegistrationInfo update(RegistrationInfo info) {
-		if(logger.isDebugEnabled()) logger.debug("更新数据...");
+		if(logger.isDebugEnabled()) logger.debug("更新数据..."); 
+		return this.changeModel(this.updateRegistration(info));
+	}
+	//更新注册码
+	private Registration updateRegistration(RegistrationInfo info){
 		if(info == null) return null;
 		boolean isAdded = false;
 		Registration data = StringUtils.isEmpty(info.getId()) ?  null : this.registrationDao.load(Registration.class, info.getId());
@@ -189,7 +195,6 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}
-		BeanUtils.copyProperties(info, data, new String[]{"startTime","endTime"});
 		//创建注册码激活
 		if(info.getLimits() > 0 && info.getStatus() == RegistrationStatus.ACTIVE.getValue() && (data.getStatus() != RegistrationStatus.ACTIVE.getValue() || data.getStartTime() == null)){
 			data.setStartTime(new Date());//激活时间
@@ -197,11 +202,13 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 			calendar.setTime(data.getStartTime());
 			calendar.add(Calendar.MONTH, info.getLimits());
 			calendar.set(Calendar.HOUR_OF_DAY, 23);//时
-			calendar.set(Calendar.SECOND, 59);//分
+			calendar.set(Calendar.MINUTE, 59);//分
 			calendar.set(Calendar.SECOND, 59);//秒
 			calendar.set(Calendar.MILLISECOND, 0);//微妙
 			data.setEndTime(calendar.getTime());//过期时间
 		}
+		//属性赋值
+		BeanUtils.copyProperties(info, data, new String[]{"startTime","endTime"});
 		//产品
 		data.setProduct(StringUtils.isEmpty(info.getProductId()) ? null : this.productDao.load(Product.class, info.getProductId()));
 		//渠道
@@ -246,8 +253,27 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 				}
 			}
 		}
-		//
-		return this.changeModel(data);
+		return data;
+	}
+	/*
+	 * 批量创建注册码。
+	 * @see com.examw.test.service.products.IRegistrationService#updateBatch(com.examw.test.model.products.BatchRegistrationInfo)
+	 */
+	@Override
+	public List<String> updateBatch(BatchRegistrationInfo info) throws Exception {
+		if(logger.isDebugEnabled()) logger.debug("批量创建注册码...");
+		List<String> list = new ArrayList<>();
+		if(info == null || info.getCount() == null || info.getCount() <= 0) return list;
+		for(int i = 0; i < info.getCount(); i++){
+			RegistrationInfo registerInfo = new RegistrationInfo();
+			BeanUtils.copyProperties(info, registerInfo);
+			registerInfo.setCode(this.generatedCode(registerInfo.getPrice().intValue(), registerInfo.getLimits().intValue()));
+			Registration data = this.updateRegistration(registerInfo);
+			if(data != null){
+				list.add(data.getCode());
+			}
+		}
+		return list;
 	}
 	/*
 	 * 删除数据。
@@ -273,7 +299,7 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 	@Override
 	public Boolean verificationFormat(String code) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug(String.format("校验注册码格式:%s ...", code));
-		if(StringUtils.isEmpty(code)) throw new Exception("校验码为空！");
+		if(StringUtils.isEmpty(code)) throw new Exception("注册码为空！");
 		//清理注册码格式
 		code = this.cleanCodeFormat(code);
 		if(!code.matches("^\\d{18}$")) return false;
