@@ -1,0 +1,18 @@
+<#--注册码软件类型限制编辑页面-->
+<#include "/comm.ftl"/>
+<#assign base = "products_registration"/>
+<#assign module = "${base}_limits"/>
+<#assign form = "${module}_edit_form"/>
+<form id="${form}" method="POST" style="padding:2px;">
+	<div style="float:left;margin-top:10px;width:100%;">
+		<label style="width:75px;">软件类型：</label>
+		<input name="softwareTypeId" class="easyui-combobox"  required="true" missingMessage="请选择注册码软件类型" data-options="url:'<@s.url '/products/softwaretype/all'/>',valueField:'id',textField:'name',
+			onLoadError:function(e){ <@error_dialog 'e'/> },onSelect:function(record){ $('#${form} input[name=softwareTypeName]').val(record['name']);},
+			 icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).combobox('clear');$('#${form} input[name=softwareTypeName]').val('');}}]" style="width:268px;"/>
+		<input name="softwareTypeName" type="hidden" />
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">绑定次数：</label>
+		<input name="times" class="easyui-numberspinner" required="true" missingMessage="请输入绑定设备次数" data-options="min:0,value:3,icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).numberspinner('clear');}}]" style="width:80px;"/>
+	</div>
+</form>

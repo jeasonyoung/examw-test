@@ -1,5 +1,6 @@
 package com.examw.test.dao.products.impl;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,8 @@ import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.impl.BaseDaoImpl;
 import com.examw.test.dao.products.ISoftwareTypeLimitDao;
+import com.examw.test.domain.products.Registration;
+import com.examw.test.domain.products.SoftwareType;
 import com.examw.test.domain.products.SoftwareTypeLimit;
 import com.examw.test.model.products.SoftwareTypeLimitInfo;
 
@@ -63,19 +66,44 @@ public class SoftwareTypeLimitDaoImpl extends BaseDaoImpl<SoftwareTypeLimit> imp
 		return hql;
 	}
 	/*
-	 * 加载软件类型限制对象。
-	 * @see com.examw.test.dao.products.ISoftwareTypeLimitDao#loadSoftwareTypeLimit(java.lang.String, java.lang.String)
+	 * 删除注册码ID下的软件类型限制。
+	 * @see com.examw.test.dao.products.ISoftwareTypeLimitDao#deleteByRegistrationId(java.lang.String)
 	 */
 	@Override
-	public SoftwareTypeLimit loadSoftwareTypeLimit(String softwareTypeId,String registerId) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("加载软件类型［%1$s］注册码［%2$s］限制对象...", softwareTypeId, registerId));
-		if(StringUtils.isEmpty(softwareTypeId) || StringUtils.isEmpty(registerId)) return null;
-		final String hql = "from SoftwareTypeLimit s where (s.softwareType.id = :softwareTypeId) and (s.register.id = :registerId) ";
+	public void deleteByRegistrationId(String registerId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("删除注册码ID［%s］下的软件类型限制..", registerId));
+		if(StringUtils.isEmpty(registerId)) return;
+		final String hql = "delete from SoftwareTypeLimit s where (s.register.id = :registerId) ";
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("softwareTypeId", softwareTypeId);
 		parameters.put("registerId", registerId);
-		List<SoftwareTypeLimit> list = this.find(hql, parameters, 0, 0);
-		return (list == null || list.size() == 0) ? null : list.get(0);
+		this.execuateUpdate(hql, parameters);
 	}
-
+	/*
+	 * 更新数据。
+	 * @see com.examw.test.dao.products.ISoftwareTypeLimitDao#update(com.examw.test.domain.products.Registration, com.examw.test.domain.products.SoftwareType, java.lang.Integer)
+	 */
+	@Override
+	public SoftwareTypeLimit update(final Registration register, final SoftwareType type, Integer times) {
+		if(logger.isDebugEnabled()) logger.debug("更新数据...");
+		if(register == null || type == null) return null;
+		SoftwareTypeLimit limit = this.load(SoftwareTypeLimit.class, new SoftwareTypeLimit(){ 
+			private static final long serialVersionUID = 1L;
+			public Registration getRegister() { return register; } 
+			public SoftwareType getSoftwareType() { return type; }
+		});
+		boolean isAdded = false;
+		if(isAdded = (limit == null)){
+			limit = new SoftwareTypeLimit();
+			limit.setRegister(register);
+			limit.setSoftwareType(type);
+			limit.setCreateTime(new Date());
+		}
+		limit.setTimes(times);
+		if(isAdded){
+			this.save(limit);
+		}else {
+			this.update(limit);
+		} 
+		return limit;
+	}
 }

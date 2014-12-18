@@ -31,6 +31,20 @@ public class RegistrationDaoImpl extends BaseDaoImpl<Registration> implements IR
 		hql = this.addWhere(info, hql, parameters);
 		if(!StringUtils.isEmpty(info.getSort())){
 			if(StringUtils.isEmpty(info.getOrder())) info.setOrder("asc");
+			switch(info.getSort()){
+				case "examName"://考试
+					info.setSort("product.exam.name");
+					break;
+				case "productName"://产品
+					info.setSort("product.name");
+					break;
+				case "channelName"://渠道
+					info.setSort("channel.name");
+					break;
+				case "statusName"://状态
+					info.setSort("status");
+					break;
+			}
 			hql += String.format(" order by r.%1$s %2$s", info.getSort(), info.getOrder());
 		}
 		if(logger.isDebugEnabled()) logger.debug(hql);

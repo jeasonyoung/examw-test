@@ -1,11 +1,16 @@
 package com.examw.test.controllers.products;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,10 +20,14 @@ import com.examw.model.DataGrid;
 import com.examw.model.Json;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.products.RegistrationInfo;
+import com.examw.test.model.products.SoftwareTypeLimitInfo;
 import com.examw.test.service.products.IRegistrationService;
+import com.examw.test.service.products.ISoftwareTypeLimitService;
+import com.examw.test.service.products.RegistrationStatus;
+import com.examw.test.support.EnumMapUtils;
 
 /**
- * 注册码控制器
+ * 注册码控制器。
  * @author fengwei.
  * @since 2014年8月14日 下午3:46:38.
  */
@@ -26,11 +35,15 @@ import com.examw.test.service.products.IRegistrationService;
 @RequestMapping("/products/registration")
 public class RegistrationController {
 	private static final Logger logger = Logger.getLogger(RegistrationController.class);
-	//注册码服务接口。
+	//注入注册码服务接口。
 	@Resource
 	private IRegistrationService registrationService;
+	//注入注册码软件类型限制服务接口。
+	@Resource
+	private ISoftwareTypeLimitService softwareTypeLimitService;
 	/**
-	 * 获取列表页面。
+	 * 加载列表页面。
+	 * @param model
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.VIEW})
@@ -39,11 +52,39 @@ public class RegistrationController {
 		if(logger.isDebugEnabled()) logger.debug("加载列表页面...");
 		model.addAttribute("PER_UPDATE", ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE);
 		model.addAttribute("PER_DELETE", ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.DELETE);
-		model.addAttribute("STATUS_MAP",this.registrationService.getStatusMap());
+		
 		return "products/registration_list";
 	}
 	/**
-	 * 查询数据。
+	 * 加载编辑页面。
+	 * @param categoryId
+	 * @param examId
+	 * @param model
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE})
+	@RequestMapping(value = "/edit", method = RequestMethod.GET)
+	public String edit(String registrationId, String categoryId,String examId, Model model){
+		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
+		
+		model.addAttribute("PER_UPDATE", ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE);
+		model.addAttribute("PER_DELETE", ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.DELETE);
+		
+		model.addAttribute("current_registration_id", registrationId);
+		model.addAttribute("current_category_id", categoryId);
+		model.addAttribute("current_exam_id", examId);
+		
+		Map<String, String> statusMap = EnumMapUtils.createTreeMap();
+		for(RegistrationStatus status : RegistrationStatus.values()){
+			statusMap.put(String.format("%d", status.getValue()),  this.registrationService.loadStatusName(status.getValue()));
+		}
+		model.addAttribute("statusMap", statusMap);
+		
+		return "products/registration_edit";
+	}
+	/**
+	 * 加载列表数据。
+	 * @param info
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.VIEW})
@@ -54,34 +95,41 @@ public class RegistrationController {
 		return this.registrationService.datagrid(info);
 	}
 	/**
-	 * 编辑页面
+	 * 加载注册码软件类型限制编辑页面。
 	 * @param model
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE})
-	@RequestMapping(value = "/edit", method = RequestMethod.GET)
-	public String edit(Model model){
-		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
-		return "products/registration_edit";
+	@RequestMapping(value = "/limits/edit", method = RequestMethod.GET)
+	public String loadLimitsEdit(Model model){
+		if(logger.isDebugEnabled()) logger.debug("加载注册码软件类型限制编辑页面...");
+		return "products/registration_limits_edit";
 	}
 	/**
-	 * 选择产品
-	 * @param model
+	 * 加载注册码软件类型限制集合。
+	 * @param registerId
+	 * @param info
 	 * @return
 	 */
-	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE})
-	@RequestMapping(value = "/chooseproduct", method = RequestMethod.GET)
-	public String chooseProduct(String productId,Model model){
-		if(logger.isDebugEnabled()) logger.debug("加载选择产品页面...");
-		model.addAttribute("CURRENT_CHOOSE_PRODUCT_ID", productId);
-		return "products/registration_choose_product";
+	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.VIEW})
+	@RequestMapping(value="/limits/datagrid", method = RequestMethod.POST)
+	@ResponseBody
+	public DataGrid<SoftwareTypeLimitInfo> loadRegistrationLimits(String registrationId,SoftwareTypeLimitInfo info){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载注册码［%s］软件类型限制集合...", registrationId));
+		DataGrid<SoftwareTypeLimitInfo> dg = new DataGrid<>();
+		if(!StringUtils.isEmpty(registrationId)){
+			info.setRegisterId(registrationId);
+			dg = this.softwareTypeLimitService.datagrid(info);
+		}else{
+			dg.setRows(new ArrayList<SoftwareTypeLimitInfo>());
+			dg.setTotal((long)0);
+		}
+		return dg;
 	}
 	/**
 	 * 更新数据。
 	 * @param info
-	 * 更新源数据。
 	 * @return
-	 * 更新后数据。
 	 */
 	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE})
 	@RequestMapping(value="/update", method = RequestMethod.POST)
@@ -107,26 +155,17 @@ public class RegistrationController {
 	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.DELETE})
 	@RequestMapping(value="/delete", method = RequestMethod.POST)
 	@ResponseBody
-	public Json delete(String id){
-		if(logger.isDebugEnabled()) logger.debug("删除数据［"+ id +"］...");
+	public Json delete(@RequestBody String[] ids){
+		if(logger.isDebugEnabled()) logger.debug(String.format("删除数据: %s...",Arrays.toString(ids)));
 		Json result = new Json();
 		try {
-			this.registrationService.delete(id.split("\\|"));
+			this.registrationService.delete(ids);
 			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
-			logger.error("删除数据["+id+"]时发生异常:", e);
+			logger.error(String.format("删除数据时发生异常:%s", e.getMessage()), e);
 		}
 		return result;
-	}
-	/**
-	 * 加载添加软件类型限制页面
-	 * @return
-	 */
-	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE})
-	@RequestMapping(value = "/typelimit", method = RequestMethod.GET)
-	public String typeLimit(){
-		return "products/registration_add_softwarelimit";
 	}
 }

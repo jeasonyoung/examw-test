@@ -27,12 +27,12 @@
 			</div>
 			<div style="float:left;margin-top:12px;width:100%;">
 				<label style="width:75px;">所属考试：</label>
-				<input name="categoryId"  class="easyui-combotree" lines="true" required="true" missingMessage="请选择所属考试类别" data-options="url:'<@s.url '/settings/category/tree'/>',onChange:function(n,o){
-							$('#${form}_subjectId').combobox('clear');$('#${form}_areaId').combobox('clear');
+				<input name="categoryId"  class="easyui-combotree" lines="true" required="true" missingMessage="请选择所属考试类别" data-options="url:'<@s.url '/settings/category/tree'/>',
+						onLoadError:function(e){ <@error_dialog 'e'/> },onChange:function(n,o){ $('#${form}_subjectId').combobox('clear');$('#${form}_areaId').combobox('clear');
 							$('#${form}_examId').combobox('clear').combobox('reload','<@s.url '/settings/exam/all?categoryId='/>' + n);
 						}" style="width:232px;"/>
 				<input id="${form}_examId" name="examId" class="easyui-combobox" required="true" missingMessage="请选择所属考试" data-options="url:'<@s.url '/settings/exam/all?categoryId=${current_category_id}'/>',
-						valueField:'id',textField:'name',onSelect:function(record){
+						valueField:'id',textField:'name',onLoadError:function(e){ <@error_dialog 'e'/> },onSelect:function(record){
 							$('#${form}_subjectId').combobox('clear').combobox('reload','<@s.url '/settings/subject/all?examId='/>' + record.id);
 							$('#${form}_areaId').combobox('clear').combobox('reload','<@s.url '/settings/exam/areas?examId='/>' + record.id);
 						}" style="width:232px;"/>

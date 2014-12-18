@@ -1,7 +1,5 @@
 package com.examw.test.service.products;
 
-import java.util.Map;
-
 import com.examw.test.model.products.RegistrationInfo;
 import com.examw.test.service.IBaseDataService;
 
@@ -17,10 +15,12 @@ public interface IRegistrationService extends IBaseDataService<RegistrationInfo>
 	 * @return
 	 */
 	String loadStatusName(Integer status);
-	
-	/**
-	 * 获取状态映射
-	 * @return
-	 */
-	Map<String,String> getStatusMap();
+//	/**
+//	 * 查询注册码的软件类型限制集合。
+//	 * @param registrationId
+//	 * 注册码ID。
+//	 * @return
+//	 * 数据集合。
+//	 */
+//	List<SoftwareTypeLimitInfo> findSoftwareTypeLimits(String registrationId);
 }

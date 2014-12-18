@@ -74,8 +74,12 @@ ${module}_edit_window = function(title,index,row){
 		if(rows && rows.length > 0){
 			$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
 				if(!r)return;
-				for(var i = 0; i < rows.length; i++){
-					var index = $("#${dg}").datagrid("getRowIndex",rows[i]["opt_id"]);
+				var del_rows = [];
+				for(var i = 0; i < rows.length;i++){
+					del_rows.push(rows[i]);
+				}
+				for(var i = 0; i < del_rows.length; i++){
+					var index = $("#${dg}").datagrid("getRowIndex",del_rows[i]["opt_id"]);
 					if(index > -1){
 						$("#${dg}").datagrid("deleteRow",index);
 					}

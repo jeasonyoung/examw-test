@@ -5,7 +5,7 @@ package com.examw.test.service.products;
  * @author yangyong
  * @since 2014年12月13日
  */
-public enum PollCodeStatus {
+public enum RegistrationStatus {
 	/**
 	 * 未激活。
 	 */
@@ -17,18 +17,18 @@ public enum PollCodeStatus {
 	/**
 	 * 禁用。
 	 */
-	DISABLE(-1),
+	DISABLE(2),
 	/**
 	 * 注销。
 	 */
-	LOGOFF(-2);
+	LOGOFF(3);
 	
 	private int value;
 	/**
 	 * 构造函数。
 	 * @param value
 	 */
-	private PollCodeStatus(int value){
+	private RegistrationStatus(int value){
 		this.value = value;
 	}
 	/**
@@ -43,9 +43,9 @@ public enum PollCodeStatus {
 	 * @param value
 	 * @return
 	 */
-	public static PollCodeStatus convert(Integer value){
+	public static RegistrationStatus convert(Integer value){
 		if(value != null){
-			for(PollCodeStatus status : PollCodeStatus.values()){
+			for(RegistrationStatus status : RegistrationStatus.values()){
 				if(status.getValue() == value) return status;
 			}
 		}

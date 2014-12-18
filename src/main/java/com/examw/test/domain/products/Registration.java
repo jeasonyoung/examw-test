@@ -15,7 +15,7 @@ public class Registration implements Serializable {
 	private String id,code;
 	private Integer limits,status;
 	private BigDecimal price;
-	private Set<Product> products;
+	private Product product;
 	private Channel channel;
 	private Set<SoftwareTypeLimit> softwareTypeLimits;
 	private Date createTime,lastTime,startTime,endTime;
@@ -65,19 +65,19 @@ public class Registration implements Serializable {
 		this.price = price;
 	}
 	/**
-	 * 获取关联的产品集合。
-	 * @return 关联的产品集合。
+	 * 获取所属产品。
+	 * @return 所属产品。
 	 */
-	public Set<Product> getProducts() {
-		return products;
+	public Product getProduct() {
+		return product;
 	}
 	/**
-	 * 设置关联的产品集合。
+	 * 设置所属产品。
 	 * @param products 
-	 *	  关联的产品集合。
+	 *	  所属产品。
 	 */
-	public void setProducts(Set<Product> products) {
-		this.products = products;
+	public void setProduct(Product product) {
+		this.product = product;
 	}
 	/**
 	 * 获取营销渠道。

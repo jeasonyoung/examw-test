@@ -5,8 +5,7 @@
 	<label style="width:75px;">所属科目：</label>
 	<input name="examId" class="easyui-combotree" data-options="url:'<@s.url '/settings/category/exams/tree'/>',required:true,lines:true,onLoadError:function(e){<@error_dialog 'e'/>},
 			onChange:function(n,o){
-				$('#${form}_subjectId').combotree('clear');
-				$('#${form}_subjectId').combotree('reload','<@s.url '/settings/subject/tree'/>?examId=' + n);
+				$('#${form}_subjectId').combotree('clear').combotree('reload','<@s.url '/settings/subject/tree'/>?examId=' + n);
 				$('#${form}_areaId').combobox('clear');
 			}" style="width:368px;"/>
 	<input id="${form}_subjectId" name="subjectId" class="easyui-combotree" data-options="url:'<@s.url '/settings/subject/tree'/>?examId=${current_exam_id}',required:true,
@@ -18,8 +17,7 @@
 				}
 			},
 			onChange:function(n,o){
-				$('#${form}_areaId').combobox('clear');
-				$('#${form}_areaId').combobox('reload','<@s.url '/settings/subject/areas'/>?subjectId=' + n);
+				$('#${form}_areaId').combobox('clear').combobox('reload','<@s.url '/settings/subject/areas'/>?subjectId=' + n);
 			}" style="width:298px;"/>
 </div>
 <div style="float:left;margin-top:2px;width:100%;">
@@ -104,8 +102,12 @@ ${dg}_delete = function(){
 	if(rows && rows.length > 0){
 		$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
 			if(!r)return;
-			for(var i = 0; i < rows.length; i++){
-				var index = $("#${dg}").datagrid("getRowIndex",rows[i]["opt_id"]);
+			var del_rows = [];
+			for(var i = 0; i < rows.length;i++){
+				del_rows.push(rows[i]);
+			}
+			for(var i = 0; i < del_rows.length; i++){
+				var index = $("#${dg}").datagrid("getRowIndex",del_rows[i]["opt_id"]);
 				if(index > -1){
 					$("#${dg}").datagrid("deleteRow",index);
 				}
