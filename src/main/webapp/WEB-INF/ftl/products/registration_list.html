@@ -16,8 +16,8 @@
 			<th data-options="field:'statusName',width:8,align:'center',sortable:true">状态</th>
 			<th data-options="field:'limits',width:10,align:'right',sortable:true">期限(月)</th>
 			<th data-options="field:'createTime',width:15,align:'center',sortable:true,formatter:function(v,row,index){return '<span title=\''+v+'\'>'+v+'</span>';}">创建时间</th>
-			<th data-options="field:'startTime',width:15,align:'center',sortable:true,formatter:function(v,row,index){return '<span title=\''+v+'\'>'+v+'</span>';}">激活时间</th>
-			<th data-options="field:'endTime',width:15,align:'center',sortable:true,formatter:function(v,row,index){return '<span title=\''+v+'\'>'+v+'</span>';}">到期时间</th>
+			<th data-options="field:'startTime',width:15,align:'center',sortable:true,formatter:function(v,row,index){if(v == null){ return '';} return '<span title=\''+v+'\'>'+v+'</span>';}">激活时间</th>
+			<th data-options="field:'endTime',width:15,align:'center',sortable:true,formatter:function(v,row,index){if(v == null){ return '';} return '<span title=\''+v+'\'>'+v+'</span>';}">到期时间</th>
 		</tr>
 	</thead>
 </table>
@@ -71,6 +71,10 @@ $(function(){
 						for(var i = 0; i < dg_rows.length; i++){
 							post["typeLimits"].push({"softwareTypeId":dg_rows[i]["softwareTypeId"],"times":dg_rows[i]["times"] });
 						}
+					}else{
+						$.messager.progress("close");
+						$.messager.show({ title:"提示", msg:"未设置注册码[软件类型限制]！" });
+						return;
 					}
 					$.ajax({
 						url:"<@s.url '/products/registration/update'/>",type:"POST",data:JSON.stringify(post),dataType:"json",contentType:"application/json;charset=UTF-8",
@@ -93,7 +97,7 @@ $(function(){
 				handler:function(){ d.dialog("close"); }
 			}],
 			onClose:function(){ $(this).dialog("destroy"); },
-			onLoad:function(){ if(row){$("#${module}_edit_form").form("load",row);} }
+			onLoad:function(){ if(row){$("#${module}_edit_form").form("load",row); $("#${module}_edit_form_code").textbox("readonly",true);} }
 		});
 	};
 	<@shiro.hasPermission name="${PER_UPDATE}">
@@ -118,6 +122,10 @@ $(function(){
 						for(var i = 0; i < dg_rows.length; i++){
 							post["typeLimits"].push({"softwareTypeId":dg_rows[i]["softwareTypeId"],"times":dg_rows[i]["times"] });
 						}
+					}else{
+						$.messager.progress("close");
+						$.messager.show({ title:"提示", msg:"未设置注册码[软件类型限制]！" });
+						return;
 					}
 					$.ajax({
 						url:"<@s.url '/products/registration/batch/update'/>",type:"POST",data:JSON.stringify(post),dataType:"json",contentType:"application/json;charset=UTF-8",

@@ -302,7 +302,7 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 		if(StringUtils.isEmpty(code)) throw new Exception("注册码为空！");
 		//清理注册码格式
 		code = this.cleanCodeFormat(code);
-		if(!code.matches("^\\d{18}$")) return false;
+		if(!code.matches("^\\d{16}$")) return false;
 		return this.calChecksumValue(code.substring(0, 8) + code.substring(10)) == Integer.parseInt(code.substring(8,10));
 	}
 	//清理注册码格式
@@ -318,7 +318,7 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 		if(StringUtils.isEmpty(code)) return null;
 		StringBuilder builder = new StringBuilder();
 		for(int i = 0; i < code.length(); i++){
-			if(i > 0 && i%3 == 0){
+			if(i > 0 && i%4 == 0){
 				builder.append(" ");
 			}
 			builder.append(code.substring(i, i+1));
@@ -347,7 +347,7 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 		codeBuilder.append(String.format("%ty", new Date()))//2位的年份
 						   .append(p)//3位的价格
 						   .append(VerifyCodeUtil.generateTextCode(VerifyCodeUtil.TYPE_NUM_ONLY, 3, null))//3位随机数字
-						   .append(VerifyCodeUtil.generateTextCode(VerifyCodeUtil.TYPE_NUM_ONLY, 6, null))//6位随机数字
+						   .append(VerifyCodeUtil.generateTextCode(VerifyCodeUtil.TYPE_NUM_ONLY, 4, null))//4位随机数字
 						   .append(l);//2位的期限
 		int checksum = this.calChecksumValue(codeBuilder.toString());
 		codeBuilder.insert(8, String.format("%02d", checksum));

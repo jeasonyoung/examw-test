@@ -26,6 +26,8 @@
 	<!-- 注册码Dao -->
 	<bean id="registrationDao"  class="com.examw.test.dao.products.impl.RegistrationDaoImpl">
 	   <property name="sessionFactory"  ref="sessionFactory" />
+	   <!-- 注册码软件类型限制数据接口 -->
+	   <property name="softwareTypeLimitDao" ref="softwareTypeLimitDao" />
 	</bean>
 	<!-- 注册码软件类型限制Dao -->
 	<bean id="softwareTypeLimitDao" class="com.examw.test.dao.products.impl.SoftwareTypeLimitDaoImpl">

@@ -33,7 +33,7 @@
 		</div>
 		<div style="float:left;margin-top:12px;width:100%;">
 			<label style="width:75px;">注册码：</label>
-			<input name="code" class="easyui-textbox" required="true" missingMessage="请刷新自动生成注册码" data-options="icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}},{iconCls:'icon-mini-refresh',handler:function(e){
+			<input id="${form}_code" name="code" class="easyui-textbox" required="true" missingMessage="请刷新自动生成注册码" data-options="icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}},{iconCls:'icon-mini-refresh',handler:function(e){
 						var price = $('#${form}_price').numberbox('getValue');var limit = $('#${form}_limits').numberspinner('getValue');
 						if(price == '' || limit == '') return;
 						$.messager.progress({text:'正在创建注册码，请稍后...'});

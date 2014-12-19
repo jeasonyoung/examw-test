@@ -72,7 +72,7 @@ public class RegistrationController {
 	 */
 	@RequiresPermissions({ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE})
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
-	public String edit(String registrationId, String categoryId,String examId, Model model){
+	public String edit(String registrationId, String categoryId,String examId,Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
 		
 		model.addAttribute("PER_UPDATE", ModuleConstant.PRODUCTS_REGISTRATION + ":" + Right.UPDATE);

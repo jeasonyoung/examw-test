@@ -9,6 +9,7 @@ import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.impl.BaseDaoImpl;
 import com.examw.test.dao.products.IRegistrationDao;
+import com.examw.test.dao.products.ISoftwareTypeLimitDao;
 import com.examw.test.domain.products.Registration;
 import com.examw.test.model.products.RegistrationInfo;
 
@@ -19,6 +20,16 @@ import com.examw.test.model.products.RegistrationInfo;
  */
 public class RegistrationDaoImpl extends BaseDaoImpl<Registration> implements IRegistrationDao{
 	private static final Logger logger = Logger.getLogger(RegistrationDaoImpl.class);
+	private ISoftwareTypeLimitDao softwareTypeLimitDao;
+	/**
+	 * 设置注册码软件限制数据接口。
+	 * @param softwareTypeLimitDao 
+	 *	  注册码软件限制数据接口。
+	 */
+	public void setSoftwareTypeLimitDao(ISoftwareTypeLimitDao softwareTypeLimitDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入注册码软件限制数据接口..");
+		this.softwareTypeLimitDao = softwareTypeLimitDao;
+	}
 	/*
 	 * 查询数据。
 	 * @see com.examw.test.dao.products.IRegistrationDao#findRegistrations(com.examw.test.model.products.RegistrationInfo)
@@ -106,5 +117,18 @@ public class RegistrationDaoImpl extends BaseDaoImpl<Registration> implements IR
 		parameters.put("code", code);
 		Object obj = this.uniqueResult(hql, parameters);
 		return (obj == null) ? false : ((long)obj) > 0;
+	}
+	/*
+	 * 重载数据删除。
+	 * @see com.examw.test.dao.impl.BaseDaoImpl#delete(java.lang.Object)
+	 */
+	@Override
+	public void delete(Registration data) {
+		if(logger.isDebugEnabled()) logger.debug("重载数据删除...");
+		if(data == null) return;
+		if(data.getSoftwareTypeLimits() != null && data.getSoftwareTypeLimits().size() > 0){
+			this.softwareTypeLimitDao.deleteByRegistrationId(data.getId());
+		}
+		super.delete(data);
 	}
 }
