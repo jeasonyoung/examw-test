@@ -96,6 +96,9 @@ public class SoftwareTypeDaoImpl extends BaseDaoImpl<SoftwareType> implements IS
 		if(data.getSoftwareTypeLimits() != null && (count = data.getSoftwareTypeLimits().size()) > 0){
 			throw new RuntimeException(String.format("产品软件类型［%1$s］关联［%2$d］注册码，暂不能删除！", data.getName(), count));
 		}
+		if(data.getBindings() != null && (count = data.getBindings().size()) > 0){
+			throw new RuntimeException(String.format("产品软件类型［%1$s］关联［%2$d］注册码绑定，暂不能删除！", data.getName(), count));
+		}
 		super.delete(data);
 	}
 }

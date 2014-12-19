@@ -91,7 +91,6 @@
 	    <!-- 前端试卷服务 -->
 	    <property name="frontPaperService" ref="frontPaperService" />
 	</bean>
-	
 	<!-- 注册码服务 -->
 	<bean id="registrationService" class="com.examw.test.service.products.impl.RegistrationServiceImpl">
 		<!-- 注册码数据接口 -->
@@ -119,23 +118,16 @@
 	    <!--注册码软件类型限制数据接口 -->
 	    <property name="softwareTypeLimitDao" ref="softwareTypeLimitDao" />
 	</bean>
-	<!-- 注册码日志服务 -->
-	<!-- <bean id="registrationLogService" class="com.examw.test.service.products.impl.RegistrationLogServiceImpl">
-		注册码数据操作接口
-		<property name="registrationLogDao" ref="registrationLogDao" />
-		状态-名称映射
-		<property name="typeMap">
-		    <map>
-		        <entry key="1" value="绑定注册码"/>
-		        <entry key="2" value="更新数据"/>
-		        <entry key="3" value="软件升级"/>
-		    </map>
-		</property>
-	</bean> -->
-	<!-- 注册码绑定记录服务 -->
-	<!-- <bean id="registrationBindRecordService" class="com.examw.test.service.products.impl.RegistrationBindRecordServiceImpl">
-		软件类型数据操作接口
-		<property name="registrationBindRecordDao" ref="registrationBindRecordDao" />
-	</bean> -->
+	<!-- 注册码绑定服务 -->
+	<bean id="registrationBindingService" class="com.examw.test.service.products.impl.RegistrationBindingServiceImpl">
+	    <!-- 注册码绑定数据接口 -->
+	    <property name="registrationBindingDao" ref="registrationBindingDao" />
+	    <!-- 注册码数据接口 -->
+	    <property name="registrationDao" ref="registrationDao" />
+	    <!-- 产品用户数据接口 -->
+	    <property name="productUserDao" ref="productUserDao" />
+	    <!-- 注册码代码服务接口 -->
+	    <property name="registrationCodeService" ref="registrationService" />
+	</bean> 
 	<!-- 产品管理  服务接口实现 end -->
 </beans>

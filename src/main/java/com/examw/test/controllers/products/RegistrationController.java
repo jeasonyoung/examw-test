@@ -188,7 +188,7 @@ public class RegistrationController {
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
-			logger.error("更新产品数据发生异常", e);
+			logger.error(String.format("更新数据发生异常:%s", e.getMessage()), e);
 		}
 		return result;
 	}
@@ -211,6 +211,7 @@ public class RegistrationController {
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
+			logger.error(String.format("批量创建注册码处理发生异常:%s", e.getMessage()), e);
 		}
 		return result;
 	}

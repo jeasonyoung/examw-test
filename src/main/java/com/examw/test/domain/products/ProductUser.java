@@ -2,6 +2,7 @@ package com.examw.test.domain.products;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * 产品用户。
@@ -13,6 +14,7 @@ public class ProductUser implements Serializable {
 	private String id,code,name,mobile;
 	private Integer status;
 	private Date createTime,lastTime;
+	private Set<RegistrationBinding> bindings;
 	/**
 	 * 获取用户ID。
 	 * @return 用户ID。
@@ -117,5 +119,20 @@ public class ProductUser implements Serializable {
 	 */
 	public void setLastTime(Date lastTime) {
 		this.lastTime = lastTime;
+	}
+	/**
+	 * 获取关联的注册码绑定集合。
+	 * @return 关联的注册码绑定集合。
+	 */
+	public Set<RegistrationBinding> getBindings() {
+		return bindings;
+	}
+	/**
+	 * 设置关联的注册码绑定集合。
+	 * @param bindings 
+	 *	  关联的注册码绑定集合。
+	 */
+	public void setBindings(Set<RegistrationBinding> bindings) {
+		this.bindings = bindings;
 	}
 }

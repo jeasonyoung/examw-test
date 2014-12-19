@@ -32,9 +32,5 @@ public final class ModuleConstant {
 	/**
 	 * 注册码绑定记录ID。
 	 */
-	public static final String PRODUCTS_REGISTRATION_BIND = "ETS0000705";
-	/**
-	 * 注册码日志ID。
-	 */
-	public static final String PRODUCTS_REGISTRATION_LOG = "ETS0000805";
+	public static final String PRODUCTS_REGISTRATION_BINDING = "ETS0000705";
 }

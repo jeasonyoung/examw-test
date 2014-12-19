@@ -74,4 +74,17 @@ public class ProductUserDaoImpl extends BaseDaoImpl<ProductUser> implements IPro
 		List<ProductUser> list = this.find(hql, parameters, 0, 0);
 		return (list == null || list.size() == 0) ? null : list.get(0);
 	}
+	/*
+	 * 重载删除数据。
+	 * @see com.examw.test.dao.impl.BaseDaoImpl#delete(java.lang.Object)
+	 */
+	@Override
+	public void delete(ProductUser data) {
+		if(logger.isDebugEnabled()) logger.debug("重载删除数据...");
+		int count = 0;
+		if(data.getBindings() != null && (count = data.getBindings().size()) > 0){
+			throw new RuntimeException(String.format("产品用户［%1$s］关联［%2$d］注册码绑定，暂不能删除！", data.getName(), count));
+		}
+		super.delete(data);
+	}
 }

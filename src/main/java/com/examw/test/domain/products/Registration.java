@@ -18,6 +18,7 @@ public class Registration implements Serializable {
 	private Product product;
 	private Channel channel;
 	private Set<SoftwareTypeLimit> softwareTypeLimits;
+	private Set<RegistrationBinding> bindings;
 	private Date createTime,lastTime,startTime,endTime;
 	/**
 	 * 获取注册码ID。
@@ -198,5 +199,20 @@ public class Registration implements Serializable {
 	 */
 	public void setLastTime(Date lastTime) {
 		this.lastTime = lastTime;
+	}
+	/**
+	 * 获取关联注册码绑定集合。
+	 * @return 关联注册码绑定集合。
+	 */
+	public Set<RegistrationBinding> getBindings() {
+		return bindings;
+	}
+	/**
+	 * 设置关联注册码绑定集合。
+	 * @param bindings 
+	 *	  关联注册码绑定集合。
+	 */
+	public void setBindings(Set<RegistrationBinding> bindings) {
+		this.bindings = bindings;
 	}
 }

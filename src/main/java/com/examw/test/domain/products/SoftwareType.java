@@ -14,6 +14,7 @@ public class SoftwareType implements Serializable {
 	private Integer code;
 	private Set<Software> softwares;
 	private Set<SoftwareTypeLimit> softwareTypeLimits;
+	private Set<RegistrationBinding> bindings;
 	/**
 	 * 获取类型ID。
 	 * @return 类型ID。
@@ -88,5 +89,20 @@ public class SoftwareType implements Serializable {
 	 */
 	public void setSoftwareTypeLimits(Set<SoftwareTypeLimit> softwareTypeLimits) {
 		this.softwareTypeLimits = softwareTypeLimits;
+	}
+	/**
+	 * 获取关联注册码绑定集合。
+	 * @return 关联注册码绑定集合。
+	 */
+	public Set<RegistrationBinding> getBindings() {
+		return bindings;
+	}
+	/**
+	 * 设置关联注册码绑定集合。
+	 * @param bindings 
+	 *	  关联注册码绑定集合。
+	 */
+	public void setBindings(Set<RegistrationBinding> bindings) {
+		this.bindings = bindings;
 	}
 }

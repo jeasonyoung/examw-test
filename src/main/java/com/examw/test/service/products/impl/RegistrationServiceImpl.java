@@ -1,5 +1,6 @@
 package com.examw.test.service.products.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -297,7 +298,7 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 	 * @see com.examw.test.service.products.IRegistrationCodeService#verificationFormat(java.lang.String)
 	 */
 	@Override
-	public Boolean verificationFormat(String code) throws Exception {
+	public boolean verificationFormat(String code) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug(String.format("校验注册码格式:%s ...", code));
 		if(StringUtils.isEmpty(code)) throw new Exception("注册码为空！");
 		//清理注册码格式
@@ -305,16 +306,47 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 		if(!code.matches("^\\d{16}$")) return false;
 		return this.calChecksumValue(code.substring(0, 8) + code.substring(10)) == Integer.parseInt(code.substring(8,10));
 	}
-	//清理注册码格式
-	private String cleanCodeFormat(String code){
+	/*
+	 * 验证注册码合法性。
+	 * @see com.examw.test.service.products.IRegistrationCodeService#validation(java.lang.String)
+	 */
+	@Override
+	public boolean validation(String code) throws Exception {
+		if(logger.isDebugEnabled()) logger.debug(String.format("验证注册码合法性：%s", code));
+		boolean result = this.verificationFormat(code);
+		if(!result) throw new Exception("注册码错误！");
+		Registration data = this.registrationDao.loadRegistration(code);
+		if(data == null) throw new Exception("注册码未登记！");
+		if(data.getStatus() != RegistrationStatus.ACTIVE.getValue()){
+			throw new Exception(String.format("注册码：%s!", this.loadStatusName(data.getStatus())));
+		}
+		if(data.getStartTime() != null && data.getEndTime() != null){//验证有效期
+			long current_time = System.currentTimeMillis(),start_time = data.getStartTime().getTime(),end_time = data.getEndTime().getTime();
+			if(current_time < start_time || current_time > end_time){
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				throw new Exception(String.format("注册码不在有效时间范围［%1$s - %2$s］内！", sdf.format(data.getStartTime()), sdf.format(data.getEndTime())));
+			}
+		}
+		return true;
+	}
+	/*
+	 * 去除注册码格式。
+	 * @see com.examw.test.service.products.IRegistrationCodeService#cleanCodeFormat(java.lang.String)
+	 */
+	@Override
+	public String cleanCodeFormat(String code){
 		if(StringUtils.isEmpty(code)) return null;
 		//转半角
 		code = StringUtil.toSemiangle(code);
 		//剔除空格和横杠
 		return code.replaceAll("\\s+", "").replaceAll("-", "").trim();
 	}
-	//格式化注册码。
-	private String formatCode(String code){
+	/*
+	 * 格式化注册码。
+	 * @see com.examw.test.service.products.IRegistrationCodeService#formatCode(java.lang.String)
+	 */
+	@Override
+	public String formatCode(String code){
 		if(StringUtils.isEmpty(code)) return null;
 		StringBuilder builder = new StringBuilder();
 		for(int i = 0; i < code.length(); i++){

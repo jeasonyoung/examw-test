@@ -142,6 +142,8 @@ public class MenuRightServiceImpl extends BaseDataServiceImpl<MenuRight, MenuRig
 			if(logger.isDebugEnabled()) logger.error(err);
 			throw new RuntimeException(err);
 		}
+		info.setCode(String.format("%1$s:%2$d",menu.getId(),right.getValue()));
+		BeanUtils.copyProperties(info, data);
 		data.setMenu(menu);
 		data.setRight(right);
 		if(isAdded) this.menuRightDao.save(data);

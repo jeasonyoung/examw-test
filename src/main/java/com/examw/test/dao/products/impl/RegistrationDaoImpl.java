@@ -126,6 +126,10 @@ public class RegistrationDaoImpl extends BaseDaoImpl<Registration> implements IR
 	public void delete(Registration data) {
 		if(logger.isDebugEnabled()) logger.debug("重载数据删除...");
 		if(data == null) return;
+		int count = 0;
+		if(data.getBindings() != null && (count = data.getBindings().size()) > 0){
+			throw new RuntimeException(String.format("注册码［%1$s］关联［%2$d］软件绑定，暂不能删除！", data.getCode(), count));
+		}
 		if(data.getSoftwareTypeLimits() != null && data.getSoftwareTypeLimits().size() > 0){
 			this.softwareTypeLimitDao.deleteByRegistrationId(data.getId());
 		}

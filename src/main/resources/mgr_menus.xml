@@ -34,8 +34,7 @@
   		<module id="ETS0000405" icon="" name="产品软件管理" uri="/products/software" order="4"/>
   		<module id="ETS0000505" icon="" name="产品用户管理" uri="/products/user" order="5"/>
   		<module id="ETS0000605" icon="" name="注册码管理" uri="/products/registration" order="6"/>
-  		<module id="ETS0000705" icon="" name="注册码绑定记录" uri="/products/registration/bind" order="7"/>
-  		<module id="ETS0000805" icon="" name="注册码日志" uri="/products/registration/log" order="8"/>
+  		<module id="ETS0000705" icon="" name="注册码绑定" uri="/products/registration/binding" order="7"/>
   	</module>
   	<module id="ETS0000006" icon="" name="用户记录" uri="" order="6">
   		<module id="ETS0000106" icon="" name="用户考试记录" uri="/record/paper" order="1"/>

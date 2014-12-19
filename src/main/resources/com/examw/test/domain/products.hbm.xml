@@ -105,6 +105,13 @@
 		    <!-- 软件类型限制 -->
 		    <one-to-many class="SoftwareTypeLimit"/>
 		</set>
+		<!-- 关联的注册码绑定集合 -->
+		<set name="bindings" inverse="true" cascade="save-update" order-by="createTime desc">
+		    <!-- 软件类型ID -->
+		    <key column="type_id" />
+		    <!-- 注册码绑定 -->
+		    <one-to-many class="RegistrationBinding"/>
+		</set>
 	</class>
 	<!-- 产品软件 -->
 	<class name="Software" table="tbl_Examw_Test_Products_Softwares">
@@ -155,6 +162,13 @@
 		<property name="createTime" type="timestamp" />
 		<!-- 最后修改时间 -->
 		<property name="lastTime" type="timestamp" />
+		<!-- 关联的注册码绑定集合 -->
+		<set name="bindings" inverse="true" cascade="save-update" order-by="createTime desc">
+		    <!-- 产品用户ID -->
+		    <key column="user_id" />
+		    <!-- 注册码绑定 -->
+		    <one-to-many class="RegistrationBinding"/>
+		</set>
 	</class>
 	<!-- 注册码管理 -->
 	<class name="Registration" table="tbl_Examw_Test_Products_Registrations">
@@ -188,6 +202,13 @@
 		<property name="createTime" type="timestamp" />
 		<!-- 最后修改时间 -->
 		<property name="lastTime" type="timestamp" />
+		<!-- 关联的注册码绑定集合 -->
+		<set name="bindings" inverse="true" cascade="save-update" order-by="createTime desc">
+		    <!-- 注册码ID -->
+		    <key column="register_id" />
+		    <!-- 注册码绑定 -->
+		    <one-to-many class="RegistrationBinding" />
+		</set>
 	</class>
 	<!-- 注册码软件类型限制 -->
 	<class name="SoftwareTypeLimit" table="tbl_Examw_Test_Products_SoftwareTypeLimits">
@@ -204,44 +225,24 @@
 	    <!-- 创建时间 -->
 		<property name="createTime" type="timestamp" />
 	</class>
-	
-	  
-	<!-- 注册码绑定记录 -->
-	<!-- <class name="RegistrationBindRecord" table="tbl_Examw_Test_Products_RegistrationBindRecord">
-		<cache usage="read-write" />
-		绑定记录ID
-		<id name="id"  type="string"  length="64" />
-		所属注册码
-		<many-to-one name="registration" column="registration_id" class="Registration" unique-key="uk_registration_software_type" not-null="true" />
-		所属软件类型
-		<many-to-one name="softwareType" column="software_type_id" class="SoftwareType" unique-key="uk_registration_software_type" not-null="true" />
-		机器码
-		<property name="machineCode" type="string" length="64" />
-		机器信息
-		<property name="detail" type="string" length="512" />
-		绑定时间
+	<!-- 注册码绑定 -->
+	<class name="RegistrationBinding" table="tbl_Examw_Test_Products_RegistrationBindings">
+	    <cache usage="read-write" />
+	    <!-- 绑定ID -->
+	    <id name="id"  type="string"  length="64" />
+	    <!-- 所属注册码 -->
+	    <many-to-one name="registration" column="register_id" class="Registration" />
+	    <!-- 所属产品用户 -->
+	    <many-to-one name="user" column="user_id" class="ProductUser" />
+	    <!-- 所属软件类型 -->
+	    <many-to-one name="softwareType" column="type_id" class="SoftwareType" />
+	    <!-- 设备机器码 -->
+	    <property name="machine" type="string" length="512" />
+	    <!-- 绑定次数 -->
+	    <property name="times" type="integer" />
+	    <!-- 创建时间 -->
 		<property name="createTime" type="timestamp" />
+		<!-- 最后修改时间 -->
+		<property name="lastTime" type="timestamp" />
 	</class>
-	注册码日志
-	<class name="RegistrationLog" table="tbl_Examw_Test_Products_RegistrationBindRecord_Logs">
-		<cache usage="read-write" />
-		日志ID
-		<id name="id"  type="string"  length="64" />
-		所属注册码
-		<many-to-one name="registration" column="registration_id" class="Registration" not-null="true" />
-		所属软件
-		<many-to-one name="software" column="software_id" class="Software" />
-		机器码
-		<property name="machineCode" type="string" length="64" />
-		机器信息
-		<property name="detail" type="string" length="512" />
-		IP地址
-		<property name="ip" type="string" length="32" />
-		操作类型(1-绑定注册码,2-更新数据,3-软件更新)
-		<property name="type" type="integer" />
-		机器同步次数（从机器上获取）
-		<property name="time" type="long" />
-		记录时间
-		<property name="createTime" type="timestamp" />
-	</class> -->
 </hibernate-mapping>

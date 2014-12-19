@@ -21,7 +21,15 @@ public interface IRegistrationCodeService {
 	 * @return
 	 * @throws Exception
 	 */
-	Boolean verificationFormat(String code) throws Exception;
+	boolean verificationFormat(String code) throws Exception;
+	/**
+	 * 验证注册码合法性。
+	 * @param code
+	 * 注册码。
+	 * @return
+	 * @throws Exception
+	 */
+	boolean validation(String code) throws Exception;
 	/**
 	 * 生成注册码。
 	 * @param price
@@ -31,4 +39,20 @@ public interface IRegistrationCodeService {
 	 * @return
 	 */
 	String generatedCode(int price, int limit) throws Exception;
+	/**
+	 *  格式化注册码。
+	 * @param code
+	 * 注册码。
+	 * @return
+	 *  格式化后注册码。
+	 */
+	String formatCode(String code);
+	/**
+	 * 去除注册码格式。
+	 * @param code
+	 * 格式化的注册码。
+	 * @return
+	 * 去除格式后注册码。
+	 */
+	String cleanCodeFormat(String code);
 }

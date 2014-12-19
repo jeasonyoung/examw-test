@@ -33,6 +33,10 @@
 	<bean id="softwareTypeLimitDao" class="com.examw.test.dao.products.impl.SoftwareTypeLimitDaoImpl">
 	     <property name="sessionFactory"  ref="sessionFactory" />
 	</bean>
+	<!-- 注册码绑定 -->
+	<bean id="registrationBindingDao" class="com.examw.test.dao.products.impl.RegistrationBindingDaoImpl">
+	    <property name="sessionFactory"  ref="sessionFactory" />
+	</bean>
 	
 	<!-- 
 	

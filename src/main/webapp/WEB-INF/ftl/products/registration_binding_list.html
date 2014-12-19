@@ -1,0 +1,61 @@
+<#--注册码绑定列表-->
+<#include "/comm.ftl"/>
+<#assign module="products_registration_binding"/>
+<#assign dg="${module}_list_dg"/>
+<table id="${dg}" class="easyui-datagrid" data-options="url:'<@s.url '/products/registration/binding/datagrid'/>',fit:true,fitColumns:true,rownumbers:true,border:true,striped:true,
+	pagination:true,pagePosition:'bottom',pageSize:20,pageList:[20,30,40],idField:'id',sortName:'createTime',sortOrder:'desc',toolbar:'#${dg}_toolbar',onLoadError:function(e){ <@error_dialog 'e'/> }">
+	<thead>
+		<tr>
+			<th data-options="field:'id',checkbox:true"></th>
+			<th data-options="field:'registrationCode',width:25,align:'left',sortable:true">注册码</th>
+			<th data-options="field:'softwareTypeName',width:15,align:'center',sortable:true">软件类型</th>
+			<th data-options="field:'userName',width:15,align:'left',sortable:true,formatter:function(v,row,index){ return '<span title=\'用户代码:'+row['userCode']+ ' \r\n电话号码:' + row['userMobile'] + '\'></span>';}">所属用户</th>
+			<th data-options="field:'machine',width:20,align:'left',sortable:true">设备标示</th>
+			<th data-options="field:'times',width:10,align:'right',sortable:true">绑定次数</th>
+			<th data-options="field:'createTime',width:15,align:'right',sortable:true,formatter:function(v,row,index){return '<span title=\'' +v+'\'>'+v+'</span>';}">绑定时间</th>
+			<th data-options="field:'lastTime',width:15,align:'right',sortable:true,formatter:function(v,row,index){return '<span title=\'' +v+'\'>'+v+'</span>';}">更新时间</th>
+		</tr>
+	</thead>
+</table>
+<div id="${dg}_toolbar">
+	<@shiro.hasPermission name="${PER_DELETE}">
+	<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
+	</@shiro.hasPermission>
+	<label style="margin-left:12px;"><input name="registrationCode" class="easyui-textbox" prompt="注册码" data-options="icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}},
+	{iconCls:'icon-search',handler:function(e){
+			$('#${dg}').datagrid('load',{'registrationCode':$(e.data.target).textbox('getValue')});
+		}}]" style="width:398px;"/></label>
+</div>
+<script type="text/javascript">
+<!--
+$(function(){
+	<@shiro.hasPermission name="${PER_DELETE}">
+	${dg}_delete = function(){
+		/* var rows = $("#${dg}'').datagrid("getChecked");
+		if(rows && rows.length > 0){
+			$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
+				if(!r)return;
+				$.messager.progress("text":"正在删除数据，请稍后...");
+				var ids = [];
+				for(var i = 0; i < rows.length; i++){ ids.push(rows[i].id);}
+				$.ajax({
+					url:"<@s.url '/products/registration/binding/delete'/>", type:"POST",data:JSON.stringify(ids),dataType:"json",contentType:"application/json;charset=UTF-8",
+					error:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
+					success:function(data,textStatus){
+						$.messager.progress("close");
+						if(data.success){
+							$("#${dg}'').datagrid("load").datagrid("unselectAll");
+						}else{
+							$.messager.show({ title:"提示", msg:data.msg });
+						}
+					}
+				});
+			});
+		}else{
+			$.messager.alert("提示","未选中须删除的数据！");
+		} */
+	};
+	</@shiro.hasPermission>
+});
+//-->
+</script>
