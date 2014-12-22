@@ -65,7 +65,7 @@
 			<!-- api鉴权拦截器 -->
 			<mvc:interceptor>
 			    <!-- 需拦截的API URL -->
-			    <mvc:mapping path="/api/*"/>
+			    <mvc:mapping path="/api/**"/>
 			    <!-- 拦截器类 -->
 			    <bean class="com.examw.test.interceptors.HTTPDigestAuthenticateInterceptor">
 			        <!-- 设置realm -->
