@@ -76,7 +76,7 @@ public class HTTPDigestAuthenticateInterceptor extends HandlerInterceptorAdapter
 	public boolean preHandle(HttpServletRequest request,HttpServletResponse response, Object handler) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("开始摘要认证处理...");
 		//验证摘要。
-		if(!this.authentication(request.getHeader(AUTHORIZATION_HEADER))){
+		if(!this.authentication(request.getMethod(), request.getHeader(AUTHORIZATION_HEADER))){
 			//认证失败，发送401错误。
 			this.sendAuthenticate(response);
 			return false;
@@ -87,18 +87,24 @@ public class HTTPDigestAuthenticateInterceptor extends HandlerInterceptorAdapter
 	//发送401错误认证信息。
 	private void sendAuthenticate(HttpServletResponse response){
 		if(logger.isDebugEnabled()) logger.debug("Authentication required: sending 401 Authentication challenge response.");
-		final String authc_header_temple = "%1$s  realm=\"%2$s\",qop=\"auth\",nonce=\"%3$s\"";
-		String header = String.format(authc_header_temple, HttpServletRequest.DIGEST_AUTH, this.realm, createRandomCode());
-		if(logger.isDebugEnabled()) logger.debug(String.format("http-head:%s", header));
+		String randomCode = createRandomCode(),qop = "auth";
+		StringBuilder authcHeadBuilder = new StringBuilder();
+		authcHeadBuilder.append(HttpServletRequest.DIGEST_AUTH).append(" ")
+									.append("realm").append("=").append("\"").append(this.realm).append("\",")
+									.append("qop").append("=").append("\"").append(qop).append("\",")
+									.append("nonce").append("=").append("\"").append(randomCode).append("\",")
+									.append("opaque").append("=").append("\"").append(MD5Util.MD5(this.realm + ":" + qop + ":" + randomCode)).append("\"");
+		String authc_head = authcHeadBuilder.toString();
+		if(logger.isDebugEnabled()) logger.debug(String.format("http-head:%s", authc_head));
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		response.setHeader(AUTHENTICATE_HEADER, header);
+		response.setHeader(AUTHENTICATE_HEADER, authc_head);
 	}
 	//生成随机码。
 	private static String createRandomCode(){
 		return UUID.randomUUID().toString().replaceAll("-", "").toLowerCase();
 	}
 	//验证摘要。
-	private synchronized boolean authentication(String authz){
+	private synchronized boolean authentication(String method, String authz){
 		if(logger.isDebugEnabled()) logger.debug(String.format("验证摘要：%s", authz));
 		//摘要信息为空
 		if(StringUtils.isEmpty(authz)){
@@ -120,11 +126,11 @@ public class HTTPDigestAuthenticateInterceptor extends HandlerInterceptorAdapter
 			if(logger.isDebugEnabled()) logger.debug("没有获取到nonce值！");
 			return false;
 		}
-//		String uri_value = this.getParameter(authz, "uri");
-//		if(StringUtils.isEmpty(uri_value)){
-//			if(logger.isDebugEnabled()) logger.debug("没有获取到uri值！");
-//			return false;
-//		}
+		String uri_value = this.getParameter(authz, "uri");
+		if(StringUtils.isEmpty(uri_value)){
+			if(logger.isDebugEnabled()) logger.debug("没有获取到uri值！");
+			return false;
+		}
 		String qop_value = this.getParameter(authz, "qop");
 		if(StringUtils.isEmpty(qop_value)){
 			if(logger.isDebugEnabled()) logger.debug("没有获取到qop值！");
@@ -145,15 +151,27 @@ public class HTTPDigestAuthenticateInterceptor extends HandlerInterceptorAdapter
 			if(logger.isDebugEnabled()) logger.debug("没有获取到response值！");
 			return false;
 		}
+		String opaque_value = this.getParameter(authz, "opaque");
+		if(StringUtils.isEmpty(opaque_value)){
+			if(logger.isDebugEnabled()) logger.debug("没有获取到opaque值！");
+			return false;
+		}
+		//验证opaque
+		String opaque =  MD5Util.MD5(this.realm + ":" + qop_value + ":" + nonce_value);
+		if(!opaque.equalsIgnoreCase(opaque_value)){
+			if(logger.isDebugEnabled()) logger.debug("验证opaque失败！");
+			return false;
+		}
 		//获取用户
 		UserInfo user = this.userService.conversion(this.userAuthorization.loadUserByAccount(username_value),true);
 		if(user == null){
 			if(logger.isDebugEnabled()) logger.debug(String.format("用户［%s］不存在！", username_value));
 			return false;
 		}
-		String ha1 = MD5Util.MD5(username_value + ":" + realm_value + ":" + user.getPassword());
+		String ha1 = MD5Util.MD5(username_value + ":" + realm_value + ":" + user.getPassword()),
+				  ha2 = MD5Util.MD5(method + ":" + uri_value);
 		if(logger.isDebugEnabled()) logger.debug(String.format("HA1:%s", ha1));
-		String response = MD5Util.MD5(ha1 + ":" + nonce_value + ":" + nc_value + ":" + cnonce_value + ":" + qop_value);
+		String response = MD5Util.MD5(ha1 + ":" + nonce_value + ":" + nc_value + ":" + cnonce_value + ":" + qop_value + ":" + ha2);
 		if(logger.isDebugEnabled()) logger.debug(String.format("response:%s", response));
 		return response.equalsIgnoreCase(response);
 	}

@@ -58,9 +58,24 @@
 		<mvc:view-controller path="/404" view-name="/error/404"/>
 		<!-- mvc 拦截器 -->
 		<mvc:interceptors>
+		    <!-- 拦截器类 -->
 			<bean class="com.examw.test.interceptors.UserAuthenticationInterceptor">
 				<property name="userAuthorization"  ref="userService" />
 			</bean>
+			<!-- api鉴权拦截器 -->
+			<mvc:interceptor>
+			    <!-- 需拦截的API URL -->
+			    <mvc:mapping path="/api/*"/>
+			    <!-- 拦截器类 -->
+			    <bean class="com.examw.test.interceptors.HTTPDigestAuthenticateInterceptor">
+			        <!-- 设置realm -->
+			        <property name="realm" value="api@tiku.examw.com" />
+			        <!-- 用户验证接口 -->
+			        <property name="userAuthorization" ref="userService" />
+			        <!-- 用户服务接口 -->
+			        <property name="userService" ref="userService" />
+			    </bean>
+			</mvc:interceptor>
 		</mvc:interceptors>
 		<!-- 文件上传 -->
 		<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
