@@ -3,6 +3,7 @@
 <hibernate-mapping package="com.examw.test.domain">
     <!-- 附件 -->
     <class name="Attachment" table="tbl_Examw_Test_Attachments">
+        <cache usage="read-write" />
          <!-- 附件ID -->
          <id name="id"  type="string"  length="64" />
          <!-- 附件名称 -->
@@ -22,6 +23,7 @@
     </class>
     <!-- 附件存储 -->
     <class name="AttachmentStorage" table="tbl_Examw_Test_Attachments_Storages">
+        <cache usage="read-write" />
         <!-- 附件存储ID -->
         <id name="id" type="string"  length="64" />
         <!-- 附件大小 -->
