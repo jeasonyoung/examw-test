@@ -75,4 +75,18 @@ public class PublishRecordDaoImpl extends BaseDaoImpl<PublishRecord> implements 
 		}
 		return hql;
 	}
+	/*
+	 * 重载删除数据。
+	 * @see com.examw.test.dao.impl.BaseDaoImpl#delete(java.lang.Object)
+	 */
+	@Override
+	public void delete(PublishRecord data) {
+		if(logger.isDebugEnabled()) logger.debug("重载删除数据...");
+		if(data == null) return;
+		int count = 0;
+		if((data.getPages() != null) && (count = data.getPages().size()) > 0){
+			throw new RuntimeException(String.format("发布记录［%1$s］关联有［%2$d］静态页面，暂不能删除！", data.getName(), count));
+		}
+		super.delete(data);
+	}
 }

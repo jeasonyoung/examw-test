@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 页面静态化存储。
+ * 静态页面。
  * 
  * @author yangyong
  * @since 2014年12月24日

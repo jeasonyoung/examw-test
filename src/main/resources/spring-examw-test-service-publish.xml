@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<!-- 发布管理 服务接口实现 -->
+	
+	<!-- 发布配置服务接口 -->
+    <bean id="configurationService" class="com.examw.test.service.publish.impl.ConfigurationServiceImpl">
+        <!-- 发布配置数据接口 -->
+        <property name="configurationDao" ref="configurationDao" />
+        <!-- 考试类别数据接口 -->
+        <property name="categoryDao" ref="categoryDao" />
+        <!-- 考试数据接口 -->
+        <property name="examDao" ref="examDao" />
+        <!-- 产品数据接口 -->
+        <property name="productDao" ref="productDao" />
+        <!-- 状态值名称集合 -->
+        <property name="statusMap">
+            <map>
+                 <entry key="0" value="${STATUS_DISABLE}" />
+		         <entry key="1" value="${STATUS_ENABLED}" />
+            </map>
+        </property>
+        <!-- 模版值名称集合 -->
+        <property name="templateMap">
+            <map>
+                <entry key="0x00" value="空" />
+                <entry key="0x01" value="首页" />
+                <entry key="0x02" value="考试页面" />
+                <entry key="0x04" value="产品页面" />
+                <entry key="0x08" value="试卷列表页面" />
+                <entry key="0x10" value="试卷详情页面" />
+            </map>
+        </property>
+    </bean>
+    <!-- 发布记录服务接口 -->
+    <bean id="publishRecordService" class="com.examw.test.service.publish.impl.PublishRecordServiceImpl">
+        <!-- 发布记录数据接口 -->
+        <property name="publishRecordDao" ref="publishRecordDao" />
+        <!-- 发布配置数据接口 -->
+        <property name="configurationDao" ref="configurationDao" />
+        <!-- 状态值名称集合 -->
+        <property name="statusMap">
+            <map>
+                 <entry key="0" value="发布失败" />
+		         <entry key="1" value="发布成功" />
+            </map>
+        </property>
+    </bean>
+    <!-- 静态页面服务接口 -->
+    <bean id="staticPageService" class="com.examw.test.service.publish.impl.StaticPageServiceImpl">
+        <!-- 静态页面数据接口 -->
+        <property name="staticPageDao" ref="staticPageDao" />
+        <!-- 发布记录数据接口 -->
+        <property name="publishRecordDao" ref="publishRecordDao" />
+    </bean>
+</beans>

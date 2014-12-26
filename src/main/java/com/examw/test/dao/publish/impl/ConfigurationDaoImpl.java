@@ -68,4 +68,18 @@ public class ConfigurationDaoImpl extends BaseDaoImpl<Configuration> implements 
 		}
 		return hql;
 	}
+	/*
+	 * 重载删除数据。
+	 * @see com.examw.test.dao.impl.BaseDaoImpl#delete(java.lang.Object)
+	 */
+	@Override
+	public void delete(Configuration data) {
+		if(logger.isDebugEnabled()) logger.debug("重载删除数据...");
+		if(data == null) return;
+		int count = 0;
+		if(data.getRecords() != null && (count = data.getRecords().size()) > 0){
+			throw new RuntimeException(String.format("发布配置［%1$s］关联有［%2$d］发布记录，暂不能删除！", data.getName(), count));
+		}
+		super.delete(data);
+	}
 }
