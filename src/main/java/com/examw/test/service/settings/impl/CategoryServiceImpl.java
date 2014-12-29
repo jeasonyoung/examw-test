@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 
 import com.examw.model.TreeNode;
 import com.examw.test.dao.settings.ICategoryDao;
+import com.examw.test.domain.products.Product;
 import com.examw.test.domain.settings.Category;
 import com.examw.test.domain.settings.Exam;
 import com.examw.test.domain.settings.Subject;
@@ -144,105 +145,60 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		if(topCategories != null && topCategories.size() > 0){
 			for(Category data : topCategories){
 				if(data == null) continue;
-				TreeNode e = this.createTreeNode(data,ignoreCategoryId,false,false,false);
+				TreeNode e = this.buildCategoryNode(data, ignoreCategoryId, true);
 				if(e != null)result.add(e);
 			}
 		}
 		return result;
 	}
-	//创建考试类别树。
-	/**
-	 * 创建考试类别树。
-	 * @param data	顶级考试分类
-	 * @param ignoreCategoryId 避免加载的考试分类
-	 * @param withExam	是否加载考试
-	 * @param withSubject	是否加载科目
-	 * @param withSubjectChildren 是否加载子科目
-	 * @return
-	 */
-	private TreeNode createTreeNode(Category data,String ignoreCategoryId,boolean withExam,boolean withSubject,boolean withSubjectChildren){
-		if(data == null || data.getId().equalsIgnoreCase(ignoreCategoryId)) return null;
-		TreeNode node = new TreeNode();
-		node.setId(data.getId());
-		node.setText(data.getName());
+	//创建考试类别节点
+	private TreeNode buildCategoryNode(Category category,String ignoreCategoryId, boolean withChildren){
+		if(category == null || (!StringUtils.isEmpty(ignoreCategoryId) && category.getId().equalsIgnoreCase(ignoreCategoryId))) return null;
+		TreeNode node = new TreeNode(); 
+		node.setId(category.getId());
+		node.setText(category.getName());
 		Map<String, Object> attributes = new HashMap<>();
 		attributes.put("type", "category");
 		node.setAttributes(attributes);
-		//考试
-		if(withExam && data.getExams() != null && data.getExams().size() > 0){
-			List<TreeNode> examTreeNodes = new ArrayList<>();
-			for(final Exam exam : data.getExams()){
-				if(exam == null) continue;
-				TreeNode tn_exam = new TreeNode();
-				tn_exam.setId(exam.getId());
-				tn_exam.setText(exam.getName());
-				Map<String, Object> exam_attributes = new HashMap<>();
-				exam_attributes.put("type", "exam");
-				tn_exam.setAttributes(exam_attributes);
-				//科目
-				if(withSubject && exam.getSubjects() != null && exam.getSubjects().size() > 0){
-					List<TreeNode> subjectNodes = new ArrayList<>();
-					for(final Subject subject : exam.getSubjects()){
-						if(subject == null) continue;
-						if(subject.getParent()!=null) continue;	//如果科目是子科目,应该跳过加载
-						subjectNodes.add(createSubjectTreeNode(subject,withSubjectChildren));
-					}
-					if(subjectNodes.size() > 0){
-						tn_exam.setChildren(subjectNodes);
-					}
-				}
-				examTreeNodes.add(tn_exam);
-			}
-			if(examTreeNodes.size() > 0){
-				if(node.getChildren()!=null && node.getChildren().size()>0){
-					List<TreeNode> nodes = node.getChildren();
-					nodes.addAll(examTreeNodes);
-					node.setChildren(nodes);
-				}else
-					node.setChildren(examTreeNodes);
-			}
-		}
-		if(data.getChildren() != null && data.getChildren().size() > 0){
-			List<TreeNode> children = new ArrayList<>();
-			for(Category child : data.getChildren()){
-				if(child == null) continue;
-				TreeNode e = this.createTreeNode(child, ignoreCategoryId, withExam, withSubject,withSubjectChildren);
+		if(withChildren && category.getChildren() != null && category.getChildren().size() > 0){
+			List<TreeNode> children = new ArrayList<TreeNode>();
+			for(Category child : category.getChildren()){
+				TreeNode e = this.buildCategoryNode(child, ignoreCategoryId, withChildren);
 				if(e != null) children.add(e);
 			}
-			if(children.size() > 0){
-				if(node.getChildren()!=null && node.getChildren().size()>0){
-					List<TreeNode> nodes = node.getChildren();
-					nodes.addAll(children);
-					node.setChildren(nodes);
-				}else
-					node.setChildren(children);
-			}
+			if(children.size() > 0) node.setChildren(children);
 		}
 		return node;
 	}
-	/**
-	 * 创建科目的节点
-	 * @param subject
-	 * @return
-	 */
-	private TreeNode createSubjectTreeNode(Subject subject,boolean withSubjectChildren){
-		TreeNode tn_subject = new TreeNode();
-		tn_subject.setId(subject.getId());
-		tn_subject.setText(subject.getName());
-		Map<String, Object> subject_attributes = new HashMap<>();
-		subject_attributes.put("type", "subject");
-		tn_subject.setAttributes(subject_attributes);
-		if(withSubjectChildren && subject.getChildren()!=null && subject.getChildren().size()>0){
+	//创建考试节点
+	private TreeNode buildExamNode(Exam exam){
+		if(exam == null) return null;
+		TreeNode node = new TreeNode();
+		node.setId(exam.getId());
+		node.setText(exam.getName());
+		Map<String, Object> attributes = new HashMap<>();
+		attributes.put("type", "exam");
+		node.setAttributes(attributes);
+		return node;
+	}
+	//创建科目节点
+	private TreeNode buildSubjectNode(Subject subject, boolean withChildren){
+		if(subject == null) return null;
+		TreeNode node = new TreeNode();
+		node.setId(subject.getId());
+		node.setText(subject.getName());
+		Map<String, Object> attributes = new HashMap<>();
+		attributes.put("type", "subject");
+		node.setAttributes(attributes);
+		if(withChildren && subject.getChildren() != null && subject.getChildren().size() > 0){
 			List<TreeNode> children = new ArrayList<TreeNode>();
-			for(Subject data:subject.getChildren())
-			{
-				if(data == null) continue;
-				TreeNode node = this.createSubjectTreeNode(data,withSubjectChildren);
-				children.add(node);
+			for(Subject child : subject.getChildren()){
+				TreeNode e = this.buildSubjectNode(child, withChildren);
+				if(e != null) children.add(e);
 			}
-			tn_subject.setChildren(children);
+			if(children.size() > 0) node.setChildren(children);
 		}
-		return tn_subject;
+		return node;
 	}
 	/*
 	 * 加载全部考试类别/考试树。
@@ -254,13 +210,37 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		List<TreeNode> treeNodes = new ArrayList<>();
 		List<Category> list =  this.categoryDao.loadTopCategories();
 		if(list != null && list.size() > 0){
-			for(final Category data : list){
-				if(data == null) continue;
-				TreeNode e = this.createTreeNode(data,null,true,false,false);
+			for(Category data : list){
+				TreeNode e = this.buildAllCategoryExamNode(data);
 				if(e != null)treeNodes.add(e);
 			}
 		}
 		return treeNodes;
+	}
+	//创建全部考试类别/考试节点
+	private TreeNode buildAllCategoryExamNode(Category category){
+		if(category == null) return null;
+		TreeNode node = this.buildCategoryNode(category, null, false);
+		if(node != null){
+			if(category.getExams() != null && category.getExams().size() > 0){//考试
+				List<TreeNode> examNodes = new ArrayList<>();
+				for(Exam exam : category.getExams()){
+					TreeNode tn = this.buildExamNode(exam);
+					if(tn != null) examNodes.add(tn);
+				}
+				if(examNodes.size() > 0) node.setChildren(examNodes);
+			}
+			if(category.getChildren() != null && category.getChildren().size() > 0){//子节点
+				List<TreeNode> childrenNodes = new ArrayList<>();
+				for(Category child : category.getChildren()){
+					if(child == null) continue;
+					TreeNode e = this.buildAllCategoryExamNode(child);
+					if(e != null) childrenNodes.add(e);
+				}
+				if(childrenNodes.size() > 0) node.setChildren(childrenNodes);
+			}
+		}
+		return node;
 	}
 	/*
 	 * 加载全部考试类别/考试/顶级科目树。
@@ -272,9 +252,8 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		List<TreeNode> treeNodes = new ArrayList<>();
 		List<Category> list = this.categoryDao.loadTopCategories();
 		if(list != null && list.size() > 0){
-			for(final Category data : list){
-				if(data == null) continue;
-				TreeNode e = this.createTreeNode(data,null,true,true,false);
+			for(Category data : list){
+				TreeNode e = this.buildCategoryExamSubjectNode(data, true);
 				if(e != null)treeNodes.add(e);
 			}
 		}
@@ -290,12 +269,106 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		List<TreeNode> treeNodes = new ArrayList<>();
 		List<Category> list = this.categoryDao.loadTopCategories();
 		if(list != null && list.size() > 0){
-			for(final Category data : list){
-				if(data == null) continue;
-				TreeNode e = this.createTreeNode(data,null,true,true,true);
+			for(Category data : list){
+				TreeNode e = this.buildCategoryExamSubjectNode(data, false);
 				if(e != null)treeNodes.add(e);
 			}
 		}
 		return treeNodes;
+	}
+	//构建考试类别/考试/科目
+	private TreeNode buildCategoryExamSubjectNode(Category category,boolean topSubject){
+		if(category == null) return null;
+		TreeNode node = this.buildCategoryNode(category, null, false);
+		if(node == null) return node;
+		if(category.getExams() != null && category.getExams().size() > 0){//考试
+			List<TreeNode> examNodes = new ArrayList<>();
+			for(Exam exam : category.getExams()){
+				TreeNode tn = this.buildExamNode(exam);
+				if(tn != null){
+					if(exam.getSubjects() != null && exam.getSubjects().size() > 0){//科目
+						List<TreeNode> subjectNodes = new ArrayList<>();
+						for(Subject subject : exam.getSubjects()){
+							TreeNode e = this.buildSubjectNode(subject, !topSubject);
+							if(e != null) subjectNodes.add(e);
+						}
+						if(subjectNodes.size() > 0) tn.setChildren(subjectNodes);
+					}
+					examNodes.add(tn);
+				}
+			}
+			if(examNodes.size() > 0) node.setChildren(examNodes);
+		}
+		//children
+		if(category.getChildren() != null && category.getChildren().size() > 0){
+			List<TreeNode> childrenNodes = new ArrayList<>();
+			for(Category child : category.getChildren()){
+				TreeNode e = this.buildCategoryExamSubjectNode(child, topSubject);
+				if(e != null) childrenNodes.add(e);
+			}
+			if(childrenNodes.size() > 0) node.setChildren(childrenNodes);
+		}
+		return node;
+	}
+	/*
+	 * 加载全部考试类别/考试/产品树。
+	 * @see com.examw.test.service.settings.ICategoryService#loadAllCategoryExamProducts()
+	 */
+	@Override
+	public List<TreeNode> loadAllCategoryExamProducts() {
+		if(logger.isDebugEnabled()) logger.debug("加载全部考试类别/考试/产品树...");
+		List<TreeNode> treeNodes = new ArrayList<>(); 
+		List<Category> list = this.categoryDao.loadTopCategories();
+		if(list != null && list.size() > 0){
+			for(Category category : list){
+				TreeNode e = this.buildCategoryExamProduct(category);
+				if(e != null) treeNodes.add(e);
+			}
+		}
+		return treeNodes;
+	}
+	//构建产品节点
+	private TreeNode buildProductNode(Product product){
+		if(product == null) return null;
+		TreeNode node = new TreeNode();
+		node.setId(product.getId());
+		node.setText(product.getName());
+		Map<String, Object> attributes = new HashMap<>();
+		attributes.put("type", "product");
+		node.setAttributes(attributes);
+		return node;
+	}
+	//构建考试类别/考试/产品节点
+	private TreeNode buildCategoryExamProduct(Category category){
+		if(category == null) return null;
+		TreeNode node = this.buildCategoryNode(category, null, false);
+		if(node == null) return null;
+		if(category.getExams() != null && category.getExams().size() > 0){//考试
+			List<TreeNode> examNodes = new ArrayList<>();
+			for(Exam exam : category.getExams()){
+				TreeNode examNode = this.buildExamNode(exam);
+				if(examNode != null){
+					if(exam.getProducts() != null && exam.getProducts().size() > 0){//产品
+						List<TreeNode> productNodes = new ArrayList<>();
+						for(Product product : exam.getProducts()){
+							TreeNode pNode = this.buildProductNode(product);
+							if(pNode != null) productNodes.add(pNode);
+						}
+						if(productNodes.size() > 0) examNode.setChildren(productNodes);
+					}
+					examNodes.add(examNode);
+				}
+			}
+			if(examNodes.size() > 0) node.setChildren(examNodes);
+		}
+		if(category.getChildren() != null && category.getChildren().size() > 0){//children
+			List<TreeNode> childrenNodes = new ArrayList<>();
+			for(Category child : category.getChildren()){
+				TreeNode e = this.buildCategoryExamProduct(child);
+				if(e != null) childrenNodes.add(e);
+			}
+			if(childrenNodes.size() > 0) node.setChildren(childrenNodes);
+		}
+		return node;
 	}
 }

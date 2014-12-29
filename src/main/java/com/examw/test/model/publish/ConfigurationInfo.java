@@ -6,6 +6,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
 import com.examw.model.Paging;
+import com.examw.support.CustomDateSerializer;
 
 /**
  * 发布配置信息。
@@ -18,7 +19,7 @@ public class ConfigurationInfo extends Paging {
 	private static final long serialVersionUID = 1L;
 	private String id,name,statusName,templateName;
 	private Integer status,categoriesCount,examsCount,productsCount;
-	private Integer[] templates;
+	private Integer [] templates;
 	private String[] categoryId,categoryName,examId,examName,productId,productName;
 	private Date createTime,lastTime;
 	/**
@@ -250,6 +251,7 @@ public class ConfigurationInfo extends Paging {
 	 * 获取创建时间。
 	 * @return 创建时间。
 	 */
+	@JsonSerialize(using = CustomDateSerializer.LongDate.class)
 	public Date getCreateTime() {
 		return createTime;
 	}
@@ -265,6 +267,7 @@ public class ConfigurationInfo extends Paging {
 	 * 获取最后修改时间。
 	 * @return 最后修改时间。
 	 */
+	@JsonSerialize(using = CustomDateSerializer.LongDate.class)
 	public Date getLastTime() {
 		return lastTime;
 	}

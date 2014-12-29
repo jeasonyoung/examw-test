@@ -1,0 +1,31 @@
+<#--发布配置编辑页面-->
+<#include "comm.ftl"/>
+<#assign module="publish_config"/>
+<#assign form="${module}_edit_form"/>
+<form id="${module}_edit_form" method="POST"  style="padding:2px;">
+	<div style="float:left;margin-top:10px;width:100%;">
+		<label style="width:75px;">配置名称：</label>
+		<input name="name" class="easyui-textbox" required="true" missingMessage="请输入配置名称" data-options="icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}}]" style="width:480px;" />
+		<input type="hidden" name="id"/>
+	</div> 
+	<div style="float:left;margin-top:7px;width:100%;">
+		<label style="width:75px;margin-top:3px;">发布模版：</label>
+		<#list templateMap?keys as key>
+		<label style="padding-top:0px;<#if (key_index > 0)>margin-left:5px;</#if> ">
+			<input type="checkbox" name="templates" value="${key}"  <#if (key_index == 0)> checked="checked" </#if> />${templateMap[key]}
+		</label>
+		</#list>
+	</div>
+	<div style="float:left;margin-top:7px;width:100%;">
+		<label style="width:75px;margin-top:3px;">配置状态：</label>
+		<#list statusMap?keys as key>
+		<label style="padding-top:0px;<#if (key_index > 0)>margin-left:12px;</#if> ">
+			<input type="radio" name="status" value="${key}"  <#if (key_index == 0)> checked="checked" </#if> />${statusMap[key]}
+		</label>
+		</#list>
+	</div>
+	<fieldset style="float:left;width:530px;height:400px;margin-left:10px;margin-top:10px;border:solid 1px #ccc">
+			<legend>考试类别/考试/产品</legend>
+			<ul id="${module}_tree" class="easyui-tree" lines="true" data-options="url:'<@s.url '/settings/category/exams/products/tree'/>',checkbox:true"></ul>
+		</fieldset>
+</form>
