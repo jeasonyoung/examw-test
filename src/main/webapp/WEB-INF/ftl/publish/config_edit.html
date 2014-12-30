@@ -2,7 +2,7 @@
 <#include "comm.ftl"/>
 <#assign module="publish_config"/>
 <#assign form="${module}_edit_form"/>
-<form id="${module}_edit_form" method="POST"  style="padding:2px;">
+<form id="${form}" method="POST"  style="padding:2px;">
 	<div style="float:left;margin-top:10px;width:100%;">
 		<label style="width:75px;">配置名称：</label>
 		<input name="name" class="easyui-textbox" required="true" missingMessage="请输入配置名称" data-options="icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}}]" style="width:480px;" />
@@ -26,6 +26,48 @@
 	</div>
 	<fieldset style="float:left;width:530px;height:400px;margin-left:10px;margin-top:10px;border:solid 1px #ccc">
 			<legend>考试类别/考试/产品</legend>
-			<ul id="${module}_tree" class="easyui-tree" lines="true" data-options="url:'<@s.url '/settings/category/exams/products/tree'/>',checkbox:true"></ul>
+			<ul id="${module}_tree" class="easyui-tree" lines="true" data-options="url:'<@s.url '/settings/category/exams/products/tree'/>',checkbox:true
+				<#if (current_configuration_Id?length > 0)>,onLoadSuccess:function(node,data){
+					$.messager.progress({'text':'正在加载数据，请稍后...'});
+					$.getJSON('<@s.url '/publish/config/cfg/${current_configuration_Id}'/>?_' + Math.random(),function(callback){
+						$.messager.progress('close');
+						if(callback['success']){
+							 ${form}_check_tree(callback['data']['categoryId']);
+							 ${form}_check_tree(callback['data']['examId']);
+							 ${form}_check_tree(callback['data']['productId']);
+						}
+					});
+				}</#if>"></ul>
 		</fieldset>
 </form>
+<script type="text/javascript">
+<!--
+$(function(){
+	//load
+	${form}_load = function(row){
+		$("#${form}").form("load",{ id:row["id"], name:row["name"], status:row["status"]});
+		if($.isArray(row["templates"])){
+			$.each(row["templates"],function(i,n){
+				if($.trim(n) != ""){
+					$("#${form} input[name='templates'][value='"  + n + "']").attr("checked",true);
+				}
+			});
+		}
+	};
+	//
+	${form}_check_tree = function(ids){
+		if(ids && $.isArray(ids) && ids.length > 0){
+			var t = $("#${module}_tree"); 
+			$.each(ids,function(i,n){ 
+				if($.trim(n) != ""){
+					var node = t.tree("find",n);
+					if(node && (!$.isArray(node["children"]))){
+						t.tree("check",node.target);
+					}
+				}
+			});	 
+		}
+	};
+});
+//-->
+</script>

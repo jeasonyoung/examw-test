@@ -13,8 +13,8 @@
 			<th data-options="field:'categoriesCount',width:20,align:'right',sortable:false">考试类别数量</th>
 			<th data-options="field:'examsCount',width:20,align:'right',sortable:false">考试数量</th>
 			<th data-options="field:'productsCount',width:20,align:'right',sortable:false">产品数量</th>
-			<th data-options="field:'statusName',width:15,align:'right',sortable:true">状态</th>
-			<th data-options="field:'lastTime',width:25,align:'right',sortable:true">修改时间</th>
+			<th data-options="field:'statusName',width:15,align:'center',sortable:true">状态</th>
+			<th data-options="field:'lastTime',width:25,align:'center',sortable:true">修改时间</th>
 		</tr>
 	</thead>
 </table>
@@ -40,9 +40,11 @@ $(function(){
 	};
 	//edit
 	${module}_edit_window = function(title,index,row){
+		var configurationId = "";
+		if(row){configurationId = row["id"] || "";}
 		var d = $("<div/>").dialog({
 			title:title,width:600,height:600,modal:true,
-			href:"<@s.url '/publish/config/edit'/>",
+			href:"<@s.url '/publish/config/edit?configurationId='/>" + configurationId,
 			buttons:[
 			 <@shiro.hasPermission name="${PER_UPDATE}">
 			  {
@@ -103,27 +105,9 @@ $(function(){
 				handler:function(){ d.dialog("close"); }
 			}],
 			onClose:function(){ $(this).dialog("destroy"); },
-			onLoad:function(){ 
-				if(row){
-					$("#${module}_edit_form").form("load",row);
-					//check_tree(row["categoryId"]);
-					//check_tree(row["examId"]);
-					check_tree(row["productId"]);
-				}
-			}
+			onLoad:function(){ if(row){ ${module}_edit_form_load(row);} }
 	  });
 	};
-	//check_tree
-	function check_tree(ids){
-		if(ids && $.isArray(ids) && ids.length > 0){
-			$.each(ids,function(i,n){
-				var node = $("#${module}_tree").tree("find",n);
-				if(node){
-					$("#${module}_tree").tree("check",node.target);
-				}
-			});
-		}
-	}
 	<@shiro.hasPermission name="${PER_DELETE}">
 	//delete
 	${dg}_delete = function(){

@@ -1,6 +1,7 @@
 package com.examw.test.controllers.publish;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -9,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -68,8 +70,11 @@ public class ConfigurationController {
 	 */
 	@RequiresPermissions({ModuleConstant.PUBLISH_CONFIG + ":" + Right.UPDATE})
 	@RequestMapping(value={"/edit"}, method = RequestMethod.GET)
-	public String edit(Model model){
+	public String edit(String configurationId, Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
+		//当前配置ID
+		model.addAttribute("current_configuration_Id", configurationId);
+		
 		Map<String, String> templateMap = EnumMapUtils.createTreeMap(),statusMap = EnumMapUtils.createTreeMap();
 		//模版
 		for(ConfigurationTemplateType type : ConfigurationTemplateType.values()){
@@ -83,6 +88,34 @@ public class ConfigurationController {
 		}
 		model.addAttribute("statusMap", statusMap);
 		return "publish/config_edit";
+	}
+	/**
+	 * 加载发布配置的考试类别/考试/产品数据。
+	 * @param configurationId
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.PUBLISH_CONFIG + ":" + Right.UPDATE})
+	@RequestMapping(value={"/cfg/{configurationId}"}, method = RequestMethod.GET)
+	@ResponseBody
+	public Json loadCategoryExamProducts(@PathVariable String configurationId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载发布配置［%s］的考试类别/考试/产品数据...", configurationId));
+		Json result = new Json();
+		try {
+			ConfigurationInfo info = this.configurationService.convert(this.configurationService.loadConfiguration(configurationId));
+			result.setSuccess(info != null);
+			if(result.isSuccess()){
+				Map<String, Object> map = new HashMap<>();
+				map.put("categoryId", info.getCategoryId());
+				map.put("examId", info.getExamId());
+				map.put("productId", info.getProductId());
+				result.setData(map);
+			}
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error(String.format("加载数据发生异常:%s", e.getMessage()),e);
+		}
+		return result;
 	}
 	/**
 	 * 更新数据。

@@ -166,11 +166,20 @@ public class ConfigurationServiceImpl extends BaseDataServiceImpl<Configuration,
 	}
 	/*
 	 * 数据模型转换。
+	 * @see com.examw.test.service.publish.IConfigurationService#convert(com.examw.test.domain.publish.Configuration)
+	 */
+	@Override
+	public ConfigurationInfo convert(Configuration configuration) {
+		return this.changeModel(configuration);
+	}
+	/*
+	 * 数据模型转换。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#changeModel(java.lang.Object)
 	 */
 	@Override
 	protected ConfigurationInfo changeModel(Configuration data) {
 		if(logger.isDebugEnabled()) logger.debug("数据模型转换：Configuration => ConfigurationInfo...");
+		if(data == null) return null;
 		ConfigurationInfo info = new ConfigurationInfo();
 		BeanUtils.copyProperties(data, info);
 		if(data.getCategories() != null){//考试类别
@@ -241,6 +250,7 @@ public class ConfigurationServiceImpl extends BaseDataServiceImpl<Configuration,
 			info.setCreateTime(data.getCreateTime());
 			if(info.getCreateTime() == null) info.setCreateTime(new Date());
 		}
+		info.setLastTime(new Date());
 		BeanUtils.copyProperties(info, data);
 		data.setTemplate(this.mergeTemplateValues(info.getTemplates()));
 		//考试类别
@@ -299,5 +309,14 @@ public class ConfigurationServiceImpl extends BaseDataServiceImpl<Configuration,
 				this.configurationDao.delete(data);
 			}
 		}
+	}
+	/*
+	 * 加载发布配置。
+	 * @see com.examw.test.service.publish.IConfigurationService#loadConfiguration(java.lang.String)
+	 */
+	@Override
+	public Configuration loadConfiguration(String configurationId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载发布配置［id = %s］...", configurationId));
+		return StringUtils.isEmpty(configurationId) ? null :  this.configurationDao.load(Configuration.class, configurationId);
 	}
 }
