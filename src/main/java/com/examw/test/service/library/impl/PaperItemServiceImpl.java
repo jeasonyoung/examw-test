@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
+import org.springframework.beans.BeanUtils;
 
 import com.examw.test.dao.library.IPaperDao;
 import com.examw.test.dao.library.IStructureDao;
@@ -214,8 +215,29 @@ public class PaperItemServiceImpl extends BaseDataServiceImpl<StructureItem,Stru
 		if(structure.getItems() == null){
 			structure.setItems(new HashSet<StructureItem>());
 		} 
-		structure.getItems().add(data);
+//		structure.getItems().add(data);
+		//2014.12.30 修改序号不起作用的问题
+		updateStructureItem(structure, data);
 		return this.changeModel(data);
+	}
+	/**
+	 * 修改更新structureItem
+	 * @param structure
+	 * @param item
+	 */
+	private void updateStructureItem(Structure structure,StructureItem item)
+	{
+		Set<StructureItem> items = structure.getItems();
+		if(items.size() == 0) items.add(item);
+		for(StructureItem si :items)
+		{
+			if(si.getItem().getId().equals(item.getItem().getId()))
+			{
+				BeanUtils.copyProperties(item,si);
+				break;
+			}
+		}
+		structure.setItems(items);
 	}
 	/*
 	 * 删除试卷试题。

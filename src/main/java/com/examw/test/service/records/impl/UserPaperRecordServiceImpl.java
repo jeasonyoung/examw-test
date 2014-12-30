@@ -282,10 +282,37 @@ public class UserPaperRecordServiceImpl extends BaseDataServiceImpl<UserPaperRec
 			}
 		}
 	}
-	
+	/*
+	 * 查询今日一练的记录
+	 * @see com.examw.test.service.records.IUserPaperRecordService#totalUserDailyPaperRecords(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public Long totalUserDailyPaperRecords(String userId, String productId) {
 		if(logger.isDebugEnabled()) logger.debug("查询今日一练的记录...");
 		return this.userPaperRecordDao.findTotalUserDailyPaperRecords(userId, productId);
+	}
+	/*
+	 * 查询最新的考试记录时间
+	 * @see com.examw.test.service.records.IUserPaperRecordService#loadRecordLastTime(java.lang.String, java.lang.String, java.lang.Integer)
+	 */
+	@Override
+	public Date loadRecordLastTime(String productId, String userId,Integer terminalId) {
+		if(logger.isDebugEnabled()) logger.debug("查询最新的考试记录时间...");
+		return this.userPaperRecordDao.findRecordLastTime(productId, userId,terminalId);
+	}
+	/*
+	 * 终端上传考试记录
+	 * @see com.examw.test.service.records.IUserPaperRecordService#updateRecords(com.examw.test.model.records.UserPaperRecordInfo[])
+	 */
+	@Override
+	public void updateRecords(UserPaperRecordInfo[] records) {
+		if(logger.isDebugEnabled()) logger.debug("终端上传考试记录...");
+		if(records!=null)
+		{
+			for(UserPaperRecordInfo info:records)
+			{
+				this.update(info);
+			}
+		}
 	}
 }

@@ -480,6 +480,42 @@ public class FrontDataController {
 		}
 		return result;
 	}
+	@RequestMapping(value = {"/{productId}/{userId}/{terminalId}/record/lasttime"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public Json loadLastTimeRecord(@PathVariable String productId,@PathVariable String userId,@PathVariable Integer terminalId)
+	{
+		if(logger.isDebugEnabled()) logger.debug(String.format("查询用户[%s]考试记录的最新时间", userId));
+		Json result = new Json();
+		try {
+			result.setData(this.userPaperRecordService.loadRecordLastTime(productId,userId,terminalId));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("删除试题收藏发生异常：" + e.getMessage(), e);
+		}
+		return result;
+	}
 	
-	
+	/**
+	 * 上传用户试卷记录。
+	 * @param info
+	 * 用户试卷记录信息。
+	 * @return
+	 */
+	@RequestMapping(value = {"/records/add"}, method = {RequestMethod.POST})
+	@ResponseBody
+	public Json addPaperRecords(@RequestBody UserPaperRecordInfo[] records){
+		if(logger.isDebugEnabled()) logger.debug("添加用户试卷记录...");
+		Json result = new Json();
+		try {
+			this.userPaperRecordService.updateRecords(records);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("添加用户试卷记录发生异常：" + e.getMessage(), e);
+		}
+		return result;
+	}
 }

@@ -1,5 +1,6 @@
 package com.examw.test.service.library;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +44,13 @@ public interface IFrontPaperService {
 	 * 试卷集合。
 	 */
 	List<FrontPaperInfo> loadProductPapers(String productId);
+	/**
+	 * 加载产品日期之后添加的试卷。
+	 * @param productId
+	 * @param lastTime
+	 * @return
+	 */
+	List<FrontPaperInfo> loadNeedUpdatePapers(String productId,Date lastTime);
 	/**
 	 * 加载每日一练试卷集合。
 	 * @param subjectId

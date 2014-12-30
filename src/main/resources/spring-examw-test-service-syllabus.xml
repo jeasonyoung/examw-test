@@ -23,6 +23,8 @@
 		        <entry key="1" value="${STATUS_ENABLED}" />
 		    </map>
 		</property>
+		<!-- 题目服务接口 2014.12.28 -->
+		<property name="itemService" ref="itemService"/>
 	</bean>
 	<!-- 教材服务接口 -->
 	<bean id="bookService" class="com.examw.test.service.syllabus.impl.BookServiceImpl">

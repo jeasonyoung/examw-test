@@ -16,11 +16,15 @@ import org.springframework.util.StringUtils;
 import com.examw.test.dao.settings.IAreaDao;
 import com.examw.test.dao.settings.ISubjectDao;
 import com.examw.test.dao.syllabus.ISyllabusDao;
+import com.examw.test.domain.library.Item;
 import com.examw.test.domain.settings.Area;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.domain.syllabus.Syllabus;
+import com.examw.test.model.library.ItemInfo;
 import com.examw.test.model.syllabus.SyllabusInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
+import com.examw.test.service.library.IItemService;
+import com.examw.test.service.library.ItemStatus;
 import com.examw.test.service.syllabus.ISyllabusService;
 /**
  * 大纲服务接口实现类。
@@ -267,5 +271,44 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试大纲[syllabusId = %s]数据...", syllabusId));
 		if(StringUtils.isEmpty(syllabusId)) return null;
 		return this.syllabusDao.load(Syllabus.class, syllabusId);
+	}
+	
+	
+	private IItemService itemService;
+	
+	/**
+	 * 设置 题目服务
+	 * @param itemService
+	 * 
+	 */
+	public void setItemService(IItemService itemService) {
+		this.itemService = itemService;
+	}
+	/*
+	 * 2014.12.28
+	 * @see com.examw.test.service.syllabus.ISyllabusService#loadSyllabusItems(java.lang.String)
+	 */
+	@Override
+	public List<ItemInfo> loadSyllabusItems(String syllabusId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试大纲[syllabusId = %s]试题数据...", syllabusId));
+		if(StringUtils.isEmpty(syllabusId)) return null;
+		Syllabus data = this.syllabusDao.load(Syllabus.class, syllabusId);
+		if(data == null ) return null;
+		Set<Item> items = data.getItems();
+		List<ItemInfo> result = new ArrayList<ItemInfo>();
+		if(items!=null && !items.isEmpty())
+		{
+			for(Item item:items)
+			{
+				if(item == null) continue;
+				if(item.getStatus().equals(ItemStatus.AUDIT.getValue()))
+				{
+					ItemInfo info = new ItemInfo();
+					itemService.conversion(item, info, true);
+					result.add(info);
+				}
+			}
+		}
+		return result;
 	}
 }

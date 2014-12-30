@@ -1,6 +1,7 @@
 package com.examw.test.controllers.api;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.test.model.library.FrontPaperInfo;
+import com.examw.test.model.library.ItemInfo;
 import com.examw.test.model.library.PaperPreview;
 import com.examw.test.model.products.FrontProductInfo;
 import com.examw.test.model.settings.AreaInfo;
@@ -261,5 +263,27 @@ public class FrontController {
 	public List<FrontPaperInfo> loadDailyloadDailyPapers(@PathVariable String productId,Integer page,Integer rows){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载产品下的每日一练试卷数据集合...", productId));
 		return this.frontPaperService.loadDailyPapers(productId, page, rows);
+	}
+	
+	//2014.12.28
+	/**
+	 * 获取产品下日期之后需要更新的试卷数据
+	 * @param productId
+	 * @param lastTime
+	 * @return
+	 */
+	@RequestMapping(value = {"/products/{productId}/papersupdate"}, method = { RequestMethod.GET })
+	@ResponseBody
+	public List<FrontPaperInfo> loadNeedUpdatePapers(String productId,long lastTime)
+	{
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载产品下[%1$s]日期[%2$s]后的试卷数据集合...", productId,lastTime));
+		return this.frontPaperService.loadNeedUpdatePapers(productId,new Date(lastTime));
+	}
+	@RequestMapping(value = {"/syllabus/{syllabusId}/items"}, method = { RequestMethod.GET })
+	@ResponseBody
+	public List<ItemInfo> loadSyllabusItems(@PathVariable String syllabusId)
+	{
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载大纲下[%1$s]试题的集合...", syllabusId));
+		return this.syllabusService.loadSyllabusItems(syllabusId);
 	}
 }

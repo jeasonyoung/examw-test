@@ -2,6 +2,7 @@ package com.examw.test.dao.records.impl;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -167,5 +168,20 @@ public class UserPaperRecordDaoImpl extends BaseDaoImpl<UserPaperRecord> impleme
 			return obj == null ? null : (long)obj;
 		}
 		return null;
+	}
+	/*
+	 * 查询终端上最新的考试记录时间
+	 * @see com.examw.test.dao.records.IUserPaperRecordDao#findRecordLastTime(java.lang.String, java.lang.String, java.lang.Integer)
+	 */
+	@Override
+	public Date findRecordLastTime(String productId, String userId,
+			Integer terminalId) {
+		final String hql = "select max(u.createTime) from UserPaperRecord u where (u.user.id = :userId) and (u.product.id = :productId) and (u.terminal.code = :terminalId)order by u.createTime desc";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("userId", userId);
+		parameters.put("productId", productId);
+		parameters.put("terminalId", terminalId);
+		Object obj = this.uniqueResult(hql, parameters);
+		return obj == null ? null : (Date)obj;
 	}
 }
