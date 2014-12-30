@@ -72,7 +72,7 @@
  	<class name="StaticPage" table="tbl_Examw_Publish_StaticPages">
  	    <cache usage="read-write" />
  	    <!-- 页面ID -->
- 	    <id name="id"  type="string"  length="512" />
+ 	    <id name="id"  type="string"  length="128" />
  	    <!-- 页面路径 -->
  	    <property name="path" type="string" length="1024" />
  	    <!-- 页面内容 -->

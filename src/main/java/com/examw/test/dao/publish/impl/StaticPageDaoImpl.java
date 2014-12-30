@@ -37,7 +37,7 @@ public class StaticPageDaoImpl extends BaseDaoImpl<StaticPage> implements IStati
 					info.setSort("publish.name");
 					break;
 			}
-			hql += String.format(" sp.%1$s %2$s", info.getSort(), info.getOrder());
+			hql += String.format(" order by sp.%1$s %2$s", info.getSort(), info.getOrder());
 		}
 		if(logger.isDebugEnabled()) logger.debug(hql);
 		return this.find(hql, parameters, info.getPage(), info.getRows());
@@ -63,7 +63,7 @@ public class StaticPageDaoImpl extends BaseDaoImpl<StaticPage> implements IStati
 			parameters.put("id", info.getId());
 		}
 		if(!StringUtils.isEmpty(info.getPath())){//页面路径
-			hql += " and (sp.path like :path) ";
+			hql += " and ((sp.path like :path) or (sp.id like :path)) ";
 			parameters.put("path", "%" + info.getPath() + "%");
 		}
 		if(!StringUtils.isEmpty(info.getPublishId())){//所属发布记录ID

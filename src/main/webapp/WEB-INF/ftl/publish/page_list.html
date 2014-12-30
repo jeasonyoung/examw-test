@@ -1,0 +1,68 @@
+<#--静态页面列表页面-->
+<#include "comm.ftl"/>
+<#assign module="publish_page"/>
+<#assign dg="${module}_list_dg"/>
+<table id="${dg}" class="easyui-datagrid" data-options="url:'<@s.url '/publish/page/datagrid'/>',fit:true,fitColumns:true,rownumbers:true,pagination:true,border:true,striped:true,
+		pagePosition:'bottom',pageSize:20,pageList:[20,30,40],idField:'id',sortName:'createTime',sortOrder:'desc',toolbar:'#${dg}_toolbar',onLoadError:function(e){ <@error_dialog 'e'/> }">
+	<thead>
+		<tr>
+			<th data-options="field:'opt',checkbox:true"></th>
+			<th data-options="field:'id',width:30,align:'left',sortable:true">静态文件ID</th>
+			<th data-options="field:'path',width:50,align:'left',sortable:true">发布路径</th>
+			<th data-options="field:'publishName',width:25,align:'left',sortable:true">所属发布记录</th>
+			<th data-options="field:'createTime',width:20,align:'center',sortable:true">开始时间</th>
+			<th data-options="field:'lastTime',width:20,align:'center',sortable:true">结束时间</th>
+		</tr>
+	</thead>
+</table>
+<div id="${dg}_toolbar">
+	<@shiro.hasPermission name="${PER_DELETE}">
+	<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
+	</@shiro.hasPermission>
+	
+	<label style="margin-left:10px;">
+		<input name="publishId" class="easyui-combobox" prompt="所属发布记录" data-options="url:'<@s.url '/publish/record/all'/>',valueField:'id',textField:'name',icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).combobox('clear');}}]" style="width:298px;"/>
+		<input name="path" class="easyui-textbox" prompt="发布路径" data-options="icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}},{iconCls:'icon-search',handler:function(e){ ${dg}_search(); }}]" style="width:398px;"/>
+	</label>
+</div>
+<script type="text/javascript">
+<!--
+$(function(){
+	//search
+	${dg}_search = function(){
+		$("#${dg}").datagrid("load",{
+			"publishId":$("#${dg}_toolbar input[name='publishId']").val(),
+			"path":$("#${dg}_toolbar input[name='path']").val()
+		});
+	};
+	<@shiro.hasPermission name="${PER_DELETE}">
+	//delete
+	${dg}_delete = function(){
+		var rows = $("#${dg}").datagrid("getChecked");
+		if(rows && rows.length > 0){
+			$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
+				if(!r)return;
+				$.messager.progress({"text":"正在删除数据，请稍后..."});
+				var ids = [];
+				for(var i = 0; i < rows.length; i++){ ids.push(rows[i].id); }
+				$.ajax({
+					url:"<@s.url '/publish/page/delete'/>",type:"POST",data:JSON.stringify(ids),dataType:"json",contentType:"application/json;charset=UTF-8",
+					error:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
+					success:function(data,textStatus){
+						$.messager.progress("close");
+						if(data.success){
+							$("#${dg}").datagrid("load").datagrid("unselectAll");
+						}else{
+							$.messager.show({title:"提示", msg:data.msg });
+						}
+					}
+				});
+			});
+		}else{
+			$.messager.alert("提示","未选中须删除的数据！");
+		}
+	};
+	</@shiro.hasPermission>
+});
+//-->
+</script>
