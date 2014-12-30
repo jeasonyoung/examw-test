@@ -2,6 +2,7 @@ package com.examw.test.controllers.publish;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -116,6 +117,22 @@ public class ConfigurationController {
 			logger.error(String.format("加载数据发生异常:%s", e.getMessage()),e);
 		}
 		return result;
+	}
+	/**
+	 * 加载全部发布配置数据。
+	 * @return
+	 */
+	@RequestMapping(value={"/all"}, method = {RequestMethod.POST, RequestMethod.GET})
+	@ResponseBody
+	public List<ConfigurationInfo> loadAll(){
+		if(logger.isDebugEnabled()) logger.debug("加载全部发布配置数据...");
+		return this.configurationService.datagrid(new ConfigurationInfo(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public String getSort() { return "createTime"; }
+			@Override
+			public String getOrder() { return "desc";}
+		}).getRows();
 	}
 	/**
 	 * 更新数据。

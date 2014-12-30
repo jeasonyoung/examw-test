@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -57,38 +58,6 @@ public class PublishRecordController {
 		return this.publishRecordService.datagrid(info);
 	}
 	/**
-	 * 加载编辑页面。
-	 * @param model
-	 * @return
-	 */
-	@RequiresPermissions({ModuleConstant.PUBLISH_RECORD + ":" + Right.UPDATE})
-	@RequestMapping(value={"/edit"}, method = RequestMethod.GET)
-	public String edit(Model model){
-		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
-		return "publish/record_edit";
-	}
-	/**
-	 * 更新数据。
-	 * @param info
-	 * @return
-	 */
-	@RequiresPermissions({ModuleConstant.PUBLISH_RECORD + ":" + Right.UPDATE})
-	@RequestMapping(value={"/update"}, method = RequestMethod.POST)
-	@ResponseBody
-	public Json update(PublishRecordInfo info){
-		if(logger.isDebugEnabled()) logger.debug("更新数据...");
-		Json result = new Json();
-		try {
-			 result.setData(this.publishRecordService.update(info));
-			 result.setSuccess(true);
-		} catch (Exception e) {
-			result.setSuccess(false);
-			result.setMsg(e.getMessage());
-			logger.error(String.format("更新数据发生异常:%s", e.getMessage()),e);
-		}
-		return result;
-	}
-	/**
 	 * 删除数据。
 	 * @param ids
 	 * @return
@@ -96,7 +65,7 @@ public class PublishRecordController {
 	@RequiresPermissions({ModuleConstant.PUBLISH_RECORD + ":" + Right.DELETE})
 	@RequestMapping(value={"/delete"}, method = RequestMethod.POST)
 	@ResponseBody
-	public Json delete(String[] ids){
+	public Json delete(@RequestBody String[] ids){
 		if(logger.isDebugEnabled()) logger.debug(String.format("删除数据:%s...", Arrays.toString(ids)));
 		Json result = new Json();
 		try {
