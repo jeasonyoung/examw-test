@@ -23,4 +23,6 @@
 	<import resource="spring-examw-test-service-products.xml"/>
 	<!-- 考试记录 服务接口实现 -->
 	<import resource="spring-examw-test-service-records.xml"/>
+	<!-- 发布管理 服务接口实现 -->
+	<import resource="spring-examw-test-service-publish.xml"/>
 </beans>

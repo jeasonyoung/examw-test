@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	
+    <!-- 发布管理dao  -->
+    
+    <!-- 发布配置Dao -->
+    <bean id="configurationDao" class="com.examw.test.dao.publish.impl.ConfigurationDaoImpl">
+        <property name="sessionFactory"  ref="sessionFactory" />
+    </bean>
+    <!-- 发布记录Dao -->
+    <bean id="publishRecordDao" class="com.examw.test.dao.publish.impl.PublishRecordDaoImpl">
+        <property name="sessionFactory"  ref="sessionFactory" />
+    </bean>
+    <!-- 静态页面Dao -->
+    <bean id="staticPageDao" class="com.examw.test.dao.publish.impl.StaticPageDaoImpl">
+        <property name="sessionFactory"  ref="sessionFactory" />
+    </bean>
+ </beans>

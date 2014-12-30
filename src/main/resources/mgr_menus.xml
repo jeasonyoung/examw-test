@@ -39,5 +39,10 @@
   	<module id="ETS0000006" icon="" name="用户记录" uri="" order="6">
   		<module id="ETS0000106" icon="" name="用户考试记录" uri="/record/paper" order="1"/>
   	</module>
+  	<module id="ETS0000007" icon="" name="发布管理" uri="" order="7">
+  	    <module id="ETS0000107" icon="" name="发布配置" uri="/publish/config" order="1"/>
+  	    <module id="ETS0000207" icon="" name="发布记录" uri="/publish/record" order="2"/>
+  	    <module id="ETS0000307" icon="" name="静态页面" uri="/publish/page" order="3"/>
+  	</module>
   </system>
 </ipower>

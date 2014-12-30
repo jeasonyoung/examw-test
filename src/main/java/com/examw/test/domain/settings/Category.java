@@ -3,6 +3,8 @@ package com.examw.test.domain.settings;
 import java.io.Serializable;
 import java.util.Set;
 
+import com.examw.test.domain.publish.Configuration;
+
 /**
  * 考试类别。
  * @author yangyong.
@@ -14,6 +16,7 @@ public class Category implements Serializable {
 	private Category parent;
 	private Set<Category> children;
 	private Set<Exam> exams;
+	private Set<Configuration> configurations;
 	private Integer code;
 	private String imageUrl;	//图片地址 add by fw 2014.11.10
 	/**
@@ -120,6 +123,21 @@ public class Category implements Serializable {
 	 */
 	public void setExams(Set<Exam> exams) {
 		this.exams = exams;
+	}
+	/**
+	 * 获取关联发布配置集合。
+	 * @return 关联发布配置集合。
+	 */
+	public Set<Configuration> getConfigurations() {
+		return configurations;
+	}
+	/**
+	 * 设置关联发布配置集合。
+	 * @param configurations 
+	 *	  关联发布配置集合。
+	 */
+	public void setConfigurations(Set<Configuration> configurations) {
+		this.configurations = configurations;
 	}
 	/**
 	 * 获取 图片地址

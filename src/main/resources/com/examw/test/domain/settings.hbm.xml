@@ -51,13 +51,24 @@
 		<many-to-one name="parent" column="pid" class="Category" />
 		<!-- 子考试类别集合 -->
 		<set name="children" inverse="true" cascade="save-update" order-by="code asc">
+		    <!-- 上级考试类别ID -->
 			<key column="pid" />
+			<!-- 考试类别 -->
 			<one-to-many class="Category"/>
 		</set>
 		<!-- 考试集合 -->
 		<set name="exams" inverse="true" cascade="save-update" order-by="code asc">
+		    <!-- 考试类别ID -->
 			<key column="category_id" />
+			<!-- 考试 -->
 			<one-to-many class="Exam"/>
+		</set>
+		<!-- 关联发布配置集合 -->
+		<set name="configurations" inverse="true"  cascade="save-update"  table="tbl_Examw_Publish_Configurations_Categories">
+		    <!-- 考试类别ID -->
+		    <key column="category_id" />
+		    <!-- 发布配置 -->
+		    <many-to-many class="com.examw.test.domain.publish.Configuration" column="config_id" />
 		</set>
 	</class>
 	<!-- 考试 -->
@@ -97,6 +108,13 @@
 		    <key column="exam_id" />
 		    <!-- 产品 -->
 		    <one-to-many class="com.examw.test.domain.products.Product"/>
+		</set>
+		<!-- 关联发布配置集合 -->
+		<set name="configurations" inverse="true"  cascade="save-update"  table="tbl_Examw_Publish_Configurations_Exams">
+		    <!-- 考试ID -->
+		    <key column="exam_id" />
+		    <!-- 发布配置 -->
+		    <many-to-many class="com.examw.test.domain.publish.Configuration" column="config_id" />
 		</set>
 	</class>
 	<!-- 考试科目 -->

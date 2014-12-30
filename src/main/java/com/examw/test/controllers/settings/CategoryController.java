@@ -91,7 +91,7 @@ public class CategoryController {
 	 */
 	@RequestMapping(value = "/exams/subject/tree", method = { RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
-	public List<TreeNode> allCatalogExamSubjects(){
+	public List<TreeNode> loadCategoryExamSubjects(){
 		if(logger.isDebugEnabled()) logger.debug("加载考试类别/考试/科目树...");
 		return this.categroyService.loadAllCategoryExamSubjects();
 	}
@@ -101,9 +101,19 @@ public class CategoryController {
 	 */
 	@RequestMapping(value = "/exams/subject/all/tree", method = { RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
-	public List<TreeNode> allCatalogExamAllSubjects(){
+	public List<TreeNode>loadCategoryExamAllSubjects(){
 		if(logger.isDebugEnabled()) logger.debug("加载考试类别/考试/科目树...");
 		return this.categroyService.loadAllCategoryExamAllSubjects();
+	}
+	/**
+	 * 加载考试类别/考试/产品树。
+	 * @return
+	 */
+	@RequestMapping(value = "/exams/products/tree", method = { RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public List<TreeNode> loadCategoryExamProducts(){
+		if(logger.isDebugEnabled()) logger.debug("加载考试类别/考试/产品树...");
+		return this.categroyService.loadAllCategoryExamProducts();
 	}
 	/**
 	 * 更新数据。

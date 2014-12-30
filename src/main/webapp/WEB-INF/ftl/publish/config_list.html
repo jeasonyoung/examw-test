@@ -1,0 +1,141 @@
+<#--发布配置列表页面-->
+<#include "comm.ftl"/>
+<#assign module="publish_config"/>
+<#assign dg="${module}_list_dg"/>
+<table id="${dg}" class="easyui-datagrid" data-options="url:'<@s.url '/publish/config/datagrid'/>',fit:true,fitColumns:true,rownumbers:true,pagination:true,border:true,striped:true,
+		pagePosition:'bottom',pageSize:20,pageList:[20,30,40],idField:'id',sortName:'lastTime',sortOrder:'desc',toolbar:'#${dg}_toolbar',onLoadError:function(e){ <@error_dialog 'e'/> },
+		onDblClickRow:function(rowIndex,rowData){${module}_edit_window('编辑发布配置',rowIndex,rowData); }">
+	<thead>
+		<tr>
+			<th data-options="field:'id',checkbox:true"></th>
+			<th data-options="field:'name',width:30,align:'left',sortable:true">名称</th>
+			<th data-options="field:'templateName',width:70,align:'left',sortable:true">发布模版</th>
+			<th data-options="field:'categoriesCount',width:20,align:'right',sortable:false">考试类别数量</th>
+			<th data-options="field:'examsCount',width:20,align:'right',sortable:false">考试数量</th>
+			<th data-options="field:'productsCount',width:20,align:'right',sortable:false">产品数量</th>
+			<th data-options="field:'statusName',width:15,align:'center',sortable:true">状态</th>
+			<th data-options="field:'lastTime',width:25,align:'center',sortable:true">修改时间</th>
+		</tr>
+	</thead>
+</table>
+<div id="${dg}_toolbar">
+	<@shiro.hasPermission name="${PER_UPDATE}">
+	<a href="#" class="easyui-linkbutton" onclick="${module}_edit_window('新增发布配置', 0, null);" data-options="iconCls:'icon-add',plain:true" style="float:left;">新增</a>
+	</@shiro.hasPermission>
+	<span>|</span>
+	<@shiro.hasPermission name="${PER_DELETE}">
+	<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
+	</@shiro.hasPermission>
+	
+	<label style="margin-left:10px;"><input name="name" class="easyui-textbox" prompt="发布配置名称" data-options="icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}},{iconCls:'icon-search',handler:function(e){ ${dg}_search(); }}]" style="width:398px;"/></label>
+</div>
+<script type="text/javascript">
+<!--
+$(function(){
+	//search
+	${dg}_search = function(){
+		$("#${dg}").datagrid("load",{
+			"name":$("#${dg}_toolbar input[name=name]").val()
+		});
+	};
+	//edit
+	${module}_edit_window = function(title,index,row){
+		var configurationId = "";
+		if(row){configurationId = row["id"] || "";}
+		var d = $("<div/>").dialog({
+			title:title,width:600,height:600,modal:true,
+			href:"<@s.url '/publish/config/edit?configurationId='/>" + configurationId,
+			buttons:[
+			 <@shiro.hasPermission name="${PER_UPDATE}">
+			  {
+				text:"保存",iconCls:"icon-save",
+				handler:function(){
+					$.messager.progress({"text":"正在保存数据，请稍后..."});
+					if(!$("#${module}_edit_form").form("validate")){
+						$.messager.progress("close");
+						return;
+					}
+					var post = $("#${module}_edit_form").form("serialize");
+					if(post["templates"] == undefined){
+						$.messager.progress("close");
+						$.messager.alert("提示","请选择发布模版！");
+						return;
+					}
+					var templates = post["templates"].split(",");
+					if(templates){
+						post["templates"] = [];
+						$.each(templates, function(i,n){
+							if(n && n != ""){
+								post["templates"].push(n);
+							}
+						});
+					}
+					var nodes =	$("#${module}_tree").tree("getChecked",["checked","indeterminate"]);
+					if(nodes && nodes.length > 0){
+						post["categoryId"] = [], post["examId"] = [], post["productId"] = []; 
+						$.each(nodes,function(i,n){
+							var id = n["id"], type = n["attributes"]["type"] || "";
+							if(type == "category"){
+								post["categoryId"].push(id);
+							}else if(type == "exam"){
+								post["examId"].push(id);
+							}else if(type == "product"){
+								post["productId"].push(id);
+							}
+						});
+					}
+					$.ajax({
+						url:"<@s.url '/publish/config/update'/>",type:"POST",data:JSON.stringify(post),dataType:"json",contentType:"application/json;charset=UTF-8",
+						error:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
+						success:function(data,textStatus){
+							$.messager.progress("close");
+							if(data.success){
+								$("#${dg}").datagrid(row ? "updateRow" : "insertRow",{index:index, row:data.data });
+								d.dialog("close");
+							}else{
+								$.messager.show({title:"提示", msg:data.msg });
+							}
+						}
+					});
+				}
+			},
+			</@shiro.hasPermission>
+			{
+				text:"关闭",iconCls:"icon-cancel",
+				handler:function(){ d.dialog("close"); }
+			}],
+			onClose:function(){ $(this).dialog("destroy"); },
+			onLoad:function(){ if(row){ ${module}_edit_form_load(row);} }
+	  });
+	};
+	<@shiro.hasPermission name="${PER_DELETE}">
+	//delete
+	${dg}_delete = function(){
+		var rows = $("#${dg}").datagrid("getChecked");
+		if(rows && rows.length > 0){
+			$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
+				if(!r)return;
+				$.messager.progress({"text":"正在删除数据，请稍后..."});
+				var ids = [];
+				for(var i = 0; i < rows.length; i++){ ids.push(rows[i].id); }
+				$.ajax({
+					url:"<@s.url '/publish/config/delete'/>",type:"POST",data:JSON.stringify(ids),dataType:"json",contentType:"application/json;charset=UTF-8",
+					error:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
+					success:function(data,textStatus){
+						$.messager.progress("close");
+						if(data.success){
+							$("#${dg}").datagrid("load").datagrid("unselectAll");
+						}else{
+							$.messager.show({title:"提示", msg:data.msg });
+						}
+					}
+				});
+			});
+		}else{
+			$.messager.alert("提示","未选中须删除的数据！");
+		}
+	};
+	</@shiro.hasPermission>
+});
+//-->
+</script>
