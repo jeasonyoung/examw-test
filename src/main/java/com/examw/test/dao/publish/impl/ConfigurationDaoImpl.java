@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
 
+import com.examw.service.Status;
 import com.examw.test.dao.impl.BaseDaoImpl;
 import com.examw.test.dao.publish.IConfigurationDao;
 import com.examw.test.domain.publish.Configuration;
@@ -81,5 +82,18 @@ public class ConfigurationDaoImpl extends BaseDaoImpl<Configuration> implements 
 			throw new RuntimeException(String.format("发布配置［%1$s］关联有［%2$d］发布记录，暂不能删除！", data.getName(), count));
 		}
 		super.delete(data);
+	}
+	/*
+	 * 加载当前可用发布配置。
+	 * @see com.examw.test.dao.publish.IConfigurationDao#loadTopConfiguration()
+	 */
+	@Override
+	public Configuration loadTopConfiguration() {
+		if(logger.isDebugEnabled()) logger.debug("加载当前可用发布配置...");
+		final String hql = "from Configuration c where c.status = :status order by c.lastTime desc";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("status", Status.ENABLED.getValue());
+		List<Configuration> list = this.find(hql, parameters, 0, 0);
+		return (list == null || list.size() == 0) ? null : list.get(0);
 	}
 }

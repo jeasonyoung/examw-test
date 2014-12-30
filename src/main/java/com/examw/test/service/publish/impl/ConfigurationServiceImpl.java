@@ -23,6 +23,7 @@ import com.examw.test.domain.settings.Category;
 import com.examw.test.domain.settings.Exam;
 import com.examw.test.model.publish.ConfigurationInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
+import com.examw.test.service.publish.ConfigurationTemplateType;
 import com.examw.test.service.publish.IConfigurationService;
 import com.examw.utils.StringUtil;
 
@@ -128,27 +129,27 @@ public class ConfigurationServiceImpl extends BaseDataServiceImpl<Configuration,
 	//分离模版值
 	private Integer[] splitTemplateValue(Integer template){
 		List<Integer> list = new ArrayList<>();
-		if((template & Configuration.TEMPLATE_TYPE_HOME) == Configuration.TEMPLATE_TYPE_HOME){//主页
-			list.add(Configuration.TEMPLATE_TYPE_HOME);
+		if((template & ConfigurationTemplateType.HOME.getValue()) == ConfigurationTemplateType.HOME.getValue()){//首页
+			list.add(ConfigurationTemplateType.HOME.getValue());
 		}
-		if((template & Configuration.TEMPLATE_TYPE_EXAM) == Configuration.TEMPLATE_TYPE_EXAM){//考试
-			list.add(Configuration.TEMPLATE_TYPE_EXAM);
+		if((template & ConfigurationTemplateType.EXAM.getValue()) == ConfigurationTemplateType.EXAM.getValue()){//考试
+			list.add(ConfigurationTemplateType.EXAM.getValue());
 		}
-		if((template & Configuration.TEMPLATE_TYPE_PRODUCT) == Configuration.TEMPLATE_TYPE_PRODUCT){//产品
-			list.add(Configuration.TEMPLATE_TYPE_PRODUCT);
+		if((template & ConfigurationTemplateType.PRODUCT.getValue()) == ConfigurationTemplateType.PRODUCT.getValue()){//产品
+			list.add(ConfigurationTemplateType.PRODUCT.getValue());
 		}
-		if((template & Configuration.TEMPLATE_TYPE_PAPERLIST) == Configuration.TEMPLATE_TYPE_PAPERLIST){//试卷列表
-			list.add(Configuration.TEMPLATE_TYPE_PAPERLIST);
+		if((template & ConfigurationTemplateType.PAPERLIST.getValue()) == ConfigurationTemplateType.PAPERLIST.getValue()){//试卷列表
+			list.add(ConfigurationTemplateType.PAPERLIST.getValue());
 		}
-		if((template & Configuration.TEMPLATE_TYPE_PAPERDETAIL) == Configuration.TEMPLATE_TYPE_PAPERDETAIL){//试卷详细
-			list.add(Configuration.TEMPLATE_TYPE_PAPERDETAIL);
+		if((template & ConfigurationTemplateType.PAPERDETAIL.getValue()) == ConfigurationTemplateType.PAPERDETAIL.getValue()){//试卷详细
+			list.add(ConfigurationTemplateType.PAPERDETAIL.getValue());
 		}
 		return list.toArray(new Integer[0]);
 	}
 	//合并模版值
 	private Integer mergeTemplateValues(Integer[] templates){
 		if(templates == null || templates.length == 0) return null;
-		int result = Configuration.TEMPLATE_TYPE_NONE;
+		int result = ConfigurationTemplateType.NONE.getValue();
 		for(int i = 0; i < templates.length; i++){
 			if(templates[i] == null) continue;
 			result |= templates[i];

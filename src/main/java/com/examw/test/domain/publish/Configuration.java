@@ -24,30 +24,6 @@ public class Configuration implements Serializable {
 	private Integer status,template;
 	private Date createTime,lastTime;
 	/**
-	 * 模版类型－空。
-	 */
-	public static final int TEMPLATE_TYPE_NONE = 0x00;
-	/**
-	 * 模版类型－首页。
-	 */
-	public static final int TEMPLATE_TYPE_HOME = 0x01;
-	/**
-	 * 模版类型－考试页面。
-	 */
-	public static final int TEMPLATE_TYPE_EXAM = 0x02;
-	/**
-	 * 模版类型－产品页面。
-	 */
-	public static final int TEMPLATE_TYPE_PRODUCT = 0x04;
-	/**
-	 * 模版类型－试卷列表页面。
-	 */
-	public static final int TEMPLATE_TYPE_PAPERLIST = 0x08;
-	/**
-	 * 模版类型－试卷详情页面。
-	 */
-	public static final int TEMPLATE_TYPE_PAPERDETAIL = 0x10;
-	/**
 	 * 获取发布配置ID。
 	 * @return 发布配置ID。
 	 */

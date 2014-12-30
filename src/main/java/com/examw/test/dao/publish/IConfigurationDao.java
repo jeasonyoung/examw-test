@@ -29,4 +29,10 @@ public interface IConfigurationDao extends IBaseDao<Configuration> {
 	 * 统计结果。
 	 */
 	Long total(ConfigurationInfo info);
+	/**
+	 * 加载当前可用发布配置。
+	 * @return
+	 * 当前可用发布配置。
+	 */
+	Configuration loadTopConfiguration();
 }
