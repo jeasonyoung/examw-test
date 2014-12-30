@@ -1,6 +1,7 @@
 package com.examw.test.dao.records;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import com.examw.test.dao.IBaseDao;
@@ -69,4 +70,12 @@ public interface IUserPaperRecordDao extends IBaseDao<UserPaperRecord> {
 	 * @return
 	 */
 	Long findTotalUserDailyPaperRecords(String userId,String productId);
+	/**
+	 * 查询终端上最新的考试记录时间
+	 * @param productId
+	 * @param userId
+	 * @param terminalId
+	 * @return
+	 */
+	Date findRecordLastTime(String productId, String userId, Integer terminalId);
 }

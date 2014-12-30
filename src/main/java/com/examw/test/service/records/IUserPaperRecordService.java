@@ -1,6 +1,7 @@
 package com.examw.test.service.records;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import com.examw.service.IDataService;
@@ -54,5 +55,18 @@ public interface IUserPaperRecordService extends IDataService<UserPaperRecordInf
 	 * @return
 	 */
 	Long totalUserDailyPaperRecords(String userId,String productId);
-	
+	/**
+	 * 查询终端上最新的考试记录时间
+	 * @param productId
+	 * @param userId
+	 * @param terminalId
+	 * @return
+	 */
+	Date loadRecordLastTime(String productId,String userId,Integer terminalId);
+	/**
+	 * 更新考试记录[终端上传]
+	 * @param records
+	 * add at 2014.12.30
+	 */
+	void updateRecords(UserPaperRecordInfo[] records);
 }

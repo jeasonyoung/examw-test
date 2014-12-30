@@ -3,6 +3,7 @@ package com.examw.test.domain.syllabus;
 import java.io.Serializable;
 import java.util.Set;
 
+import com.examw.test.domain.library.Item;
 import com.examw.test.domain.settings.Area;
 import com.examw.test.domain.settings.Subject;
 /**
@@ -21,6 +22,8 @@ public class Syllabus implements Serializable {
 	//Add by FW 增加两个字段
 	private Integer year;
 	private Set<Area> areas;
+	//2014.12.28
+	private Set<Item> items;
 	/**
 	 * 获取要点ID。
 	 * @return 要点ID。
@@ -173,4 +176,22 @@ public class Syllabus implements Serializable {
 	public void setAreas(Set<Area> areas) {
 		this.areas = areas;
 	}
+	
+	/**
+	 * 获取 试题的集合
+	 * @return items
+	 * 
+	 */
+	public Set<Item> getItems() {
+		return items;
+	}
+	/**
+	 * 设置 试题的集合
+	 * @param items
+	 * 
+	 */
+	public void setItems(Set<Item> items) {
+		this.items = items;
+	}
+	
 }

@@ -3,6 +3,7 @@ package com.examw.test.service.syllabus;
 import java.util.List;
 
 import com.examw.test.domain.syllabus.Syllabus;
+import com.examw.test.model.library.ItemInfo;
 import com.examw.test.model.syllabus.SyllabusInfo;
 import com.examw.test.service.IBaseDataService;
 /**
@@ -58,4 +59,11 @@ public interface ISyllabusService extends IBaseDataService<SyllabusInfo> {
 	 * @return
 	 */
 	Syllabus loadSyllabus(String syllabusId);
+	/**
+	 * 加载大纲下的试题
+	 * @param syllabusId
+	 * @return
+	 * 2014.12.28
+	 */
+	List<ItemInfo> loadSyllabusItems(String syllabusId);
 }

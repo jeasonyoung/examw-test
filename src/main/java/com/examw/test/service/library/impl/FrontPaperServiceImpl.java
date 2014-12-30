@@ -3,6 +3,7 @@ package com.examw.test.service.library.impl;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -118,6 +119,15 @@ public class FrontPaperServiceImpl implements IFrontPaperService  {
 		 if(product == null) throw new RuntimeException(String.format("产品［productId = %s］不存在！", productId));
 		 return this.changeModel(this.paperReleaseDao.loadReleases(default_paper_types, this.buildProductSubjectIds(product.getSubjects()), product.getArea()==null?null:new String[]{ product.getArea().getId() },
 				 																							  null,null,null));
+	}
+	@Override
+	public List<FrontPaperInfo> loadNeedUpdatePapers(String productId,
+			Date lastTime) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载产品［productId = %s］下的试卷集合...", productId));
+		 Product product = this.productDao.load(Product.class, productId);
+		 if(product == null) throw new RuntimeException(String.format("产品［productId = %s］不存在！", productId));
+		 return this.changeModel(this.paperReleaseDao.loadReleases(default_paper_types, this.buildProductSubjectIds(product.getSubjects()), product.getArea()==null?null:new String[]{ product.getArea().getId() },
+				 lastTime,null,null));
 	}
 	//构建产品科目ID数组。
 	private String[] buildProductSubjectIds(Set<Subject> subjects){
