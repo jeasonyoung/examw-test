@@ -228,7 +228,13 @@ public class PaperItemServiceImpl extends BaseDataServiceImpl<StructureItem,Stru
 	private void updateStructureItem(Structure structure,StructureItem item)
 	{
 		Set<StructureItem> items = structure.getItems();
-		if(items.size() == 0) items.add(item);
+		if(items.size() == 0)
+		{
+			items.add(item);
+			structure.setItems(items);
+			return;
+		}
+		int count = 0;
 		for(StructureItem si :items)
 		{
 			if(si.getItem().getId().equals(item.getItem().getId()))
@@ -236,6 +242,11 @@ public class PaperItemServiceImpl extends BaseDataServiceImpl<StructureItem,Stru
 				BeanUtils.copyProperties(item,si);
 				break;
 			}
+			count++;
+		}
+		if(count == items.size())
+		{
+			items.add(item);
 		}
 		structure.setItems(items);
 	}
