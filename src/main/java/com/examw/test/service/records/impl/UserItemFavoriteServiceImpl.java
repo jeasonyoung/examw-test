@@ -285,4 +285,31 @@ public class UserItemFavoriteServiceImpl extends BaseDataServiceImpl<UserItemFav
 		if(list.size() > 0) Collections.sort(list);
 		return list;
 	}
+	/*
+	 * 从终端上传收藏
+	 * @see com.examw.test.service.records.IUserItemFavoriteService#batchAddFavors(com.examw.test.model.records.UserItemFavoriteInfo)
+	 */
+	@Override
+	public void batchAddFavors(UserItemFavoriteInfo[] favors) {
+		if(logger.isDebugEnabled()) logger.debug("终端上传考试记录...");
+		if(favors!=null)
+		{
+			for(UserItemFavoriteInfo info:favors)
+			{
+				this.updateFromTerminal(info);
+			}
+		}
+	}
+	/**
+	 * 从终端上传的收藏只增不减
+	 */
+	private void updateFromTerminal(UserItemFavoriteInfo favor)
+	{
+		//已经传过的不再增加
+		if(this.userItemFavoriteDao.exists(favor.getUserId(), favor.getItemId()))
+		{
+			return ;
+		}
+		this.update(favor);
+	}
 }
