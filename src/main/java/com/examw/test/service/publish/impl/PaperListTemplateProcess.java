@@ -8,13 +8,13 @@ import com.examw.test.domain.publish.Configuration;
 import com.examw.test.domain.publish.StaticPage;
 
 /**
- * 首页模版处理器。
+ * 试卷列表模版处理。
  * 
  * @author yangyong
- * @since 2014年12月30日
+ * @since 2014年12月31日
  */
-public class IndexTemplateProcess extends BaseTemplateProcess {
-	private static Logger logger = Logger.getLogger(IndexTemplateProcess.class);
+public class PaperListTemplateProcess extends BaseTemplateProcess {
+	private static final Logger logger = Logger.getLogger(PaperListTemplateProcess.class);
 	/*
 	 * 模版处理。
 	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#templateProcess(com.examw.test.domain.publish.Configuration)
@@ -25,4 +25,5 @@ public class IndexTemplateProcess extends BaseTemplateProcess {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 }

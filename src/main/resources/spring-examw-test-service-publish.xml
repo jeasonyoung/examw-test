@@ -63,31 +63,54 @@
         <!-- 静态页面数据接口 -->
         <property name="staticPageDao" ref="staticPageDao" />
         <!--  模版处理配置集合 -->
-        <!-- <property name="processes">
+        <property name="processes">
             <map>
-                首页
                 <entry key="0x01">
-                    
+                    <ref local="indexTemplateProcess"/><!-- 首页模版处理 -->
                 </entry>
-                考试页面
                 <entry key="0x02">
-                    
+                    <ref local="examTemplateProcess"/><!-- 考试页面模版处理 -->
                 </entry>
-                产品页面
                 <entry key="0x04">
-                    
+                    <ref local="productTemplateProcess"/><!-- 产品页面模版处理 -->
                 </entry>
-                试卷列表页面
                 <entry key="0x08">
-                    
+                    <ref local="paperListTemplateProcess"/><!-- 试卷列表页面模版处理 -->
                 </entry>
-                试卷详情页面
                 <entry key="0x10">
-                    
+                    <ref local="paperDetailTemplateProcess"/><!-- 试卷详情页面模版处理 -->
                 </entry>
             </map>
-        </property> -->
+        </property>
+    </bean>
+    <!-- 模版处理器抽象类 -->
+    <bean id="templateProcess" abstract="true" class="com.examw.test.service.publish.impl.BaseTemplateProcess">
+        <!-- 模版根目录 -->
+        <property name="templatesRoot" value="${publish_templates_dir}" />
     </bean>
     <!-- 首页模版处理器 -->
-     
+    <bean id="indexTemplateProcess" class="com.examw.test.service.publish.impl.IndexTemplateProcess" parent="templateProcess">
+        <!-- 模版名称 -->
+        <property name="templateName" value="${publish_templates_index}" />
+    </bean>
+    <!-- 考试模版处理器 -->
+    <bean id="examTemplateProcess" class="com.examw.test.service.publish.impl.ExamTemplateProcess" parent="templateProcess">
+        <!-- 模版名称 -->
+        <property name="templateName" value="${publish_templates_exam}" />
+    </bean>
+    <!-- 产品模版处理器 -->
+    <bean id="productTemplateProcess" class="com.examw.test.service.publish.impl.ProductTemplateProcess" parent="templateProcess">
+        <!-- 模版名称 -->
+        <property name="templateName" value="${publish_templates_product}" />
+    </bean>
+    <!-- 试卷列表模版处理器 -->
+    <bean id="paperListTemplateProcess" class="com.examw.test.service.publish.impl.PaperListTemplateProcess" parent="templateProcess">
+        <!-- 模版名称 -->
+        <property name="templateName" value="${publish_templates_paper_list}" />
+    </bean>
+    <!-- 试卷详细模版处理器 -->
+    <bean id="paperDetailTemplateProcess" class="com.examw.test.service.publish.impl.PaperDetailTemplateProcess" parent="templateProcess">
+        <!-- 模版名称 -->
+        <property name="templateName" value="${publish_templates_paper_detail}" />
+    </bean>
 </beans>
