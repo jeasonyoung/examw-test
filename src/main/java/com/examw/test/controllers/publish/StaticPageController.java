@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -96,7 +97,7 @@ public class StaticPageController {
 	@RequiresPermissions({ModuleConstant.PUBLISH_PAGE + ":" + Right.DELETE})
 	@RequestMapping(value={"/delete"}, method = RequestMethod.POST)
 	@ResponseBody
-	public Json delete(String[] ids){
+	public Json delete(@RequestBody String[] ids){
 		if(logger.isDebugEnabled()) logger.debug(String.format("删除数据:%s...", Arrays.toString(ids)));
 		Json result = new Json();
 		try {

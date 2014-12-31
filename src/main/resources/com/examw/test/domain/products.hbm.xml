@@ -53,13 +53,6 @@
 		    <!-- 注册码 -->
 		    <one-to-many class="Registration"/>
 		</set>
-		<!-- 关联发布配置集合 -->
-		<set name="configurations" inverse="true" cascade="save-update"  table="tbl_Examw_Publish_Configurations_Products">
-		    <!-- 产品ID -->
-		    <key column="product_id" />
-		    <!-- 发布配置ID -->
-		    <many-to-many class="com.examw.test.domain.publish.Configuration" column="config_id" />
-		</set>
 		<!-- 创建时间 -->
 		<property name="createTime" column="create_time" type="timestamp" />
 		<!-- 最后修改时间 -->

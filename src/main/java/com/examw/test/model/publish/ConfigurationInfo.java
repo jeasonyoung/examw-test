@@ -18,9 +18,8 @@ import com.examw.support.CustomDateSerializer;
 public class ConfigurationInfo extends Paging {
 	private static final long serialVersionUID = 1L;
 	private String id,name,statusName,templateName;
-	private Integer status,categoriesCount,examsCount,productsCount;
+	private Integer status;
 	private Integer [] templates;
-	private String[] categoryId,categoryName,examId,examName,productId,productName;
 	private Date createTime,lastTime;
 	/**
 	 * 获取发布配置ID。
@@ -111,141 +110,6 @@ public class ConfigurationInfo extends Paging {
 	 */
 	public void setTemplateName(String templateName) {
 		this.templateName = templateName;
-	}
-	/**
-	 * 获取考试类别ID集合。
-	 * @return 考试类别ID集合。
-	 */
-	public String[] getCategoryId() {
-		return categoryId;
-	}
-	/**
-	 * 设置考试类别ID集合。
-	 * @param categoryId 
-	 *	  考试类别ID集合。
-	 */
-	public void setCategoryId(String[] categoryId) {
-		this.categoryId = categoryId;
-	}
-	/**
-	 * 获取考试类别名称集合。
-	 * @return 考试类别名称集合。
-	 */
-	public String[] getCategoryName() {
-		return categoryName;
-	}
-	/**
-	 * 设置考试类别名称集合。
-	 * @param categoryName 
-	 *	  考试类别名称集合。
-	 */
-	public void setCategoryName(String[] categoryName) {
-		this.categoryName = categoryName;
-	}
-	/**
-	 * 获取考试类别数量。
-	 * @return 考试类别数量。
-	 */
-	public Integer getCategoriesCount() {
-		return categoriesCount;
-	}
-	/**
-	 * 设置考试类别数量。
-	 * @param categoriesCount 
-	 *	  考试类别数量。
-	 */
-	public void setCategoriesCount(Integer categoriesCount) {
-		this.categoriesCount = categoriesCount;
-	}
-	/**
-	 * 获取考试ID集合。
-	 * @return 考试ID集合。
-	 */
-	public String[] getExamId() {
-		return examId;
-	}
-	/**
-	 * 设置考试ID集合。
-	 * @param examId 
-	 *	  考试ID集合。
-	 */
-	public void setExamId(String[] examId) {
-		this.examId = examId;
-	}
-	/**
-	 * 获取考试名称集合。
-	 * @return 考试名称集合。
-	 */
-	public String[] getExamName() {
-		return examName;
-	}
-	/**
-	 * 设置考试名称集合。
-	 * @param examName 
-	 *	  考试名称集合。
-	 */
-	public void setExamName(String[] examName) {
-		this.examName = examName;
-	}
-	/**
-	 * 获取考试数量。
-	 * @return 考试数量。
-	 */
-	public Integer getExamsCount() {
-		return examsCount;
-	}
-	/**
-	 * 设置考试数量。
-	 * @param examsCount 
-	 *	  考试数量。
-	 */
-	public void setExamsCount(Integer examsCount) {
-		this.examsCount = examsCount;
-	}
-	/**
-	 * 获取产品ID集合。
-	 * @return 产品ID集合。
-	 */
-	public String[] getProductId() {
-		return productId;
-	}
-	/**
-	 * 设置产品ID集合。
-	 * @param productId 
-	 *	  产品ID集合。
-	 */
-	public void setProductId(String[] productId) {
-		this.productId = productId;
-	}
-	/**
-	 * 获取产品名称集合。
-	 * @return 产品名称集合。
-	 */
-	public String[] getProductName() {
-		return productName;
-	}
-	/**
-	 * 设置产品名称集合。
-	 * @param productName 
-	 *	  产品名称集合。
-	 */
-	public void setProductName(String[] productName) {
-		this.productName = productName;
-	}
-	/**
-	 * 获取产品数量。
-	 * @return 产品数量。
-	 */
-	public Integer getProductsCount() {
-		return productsCount;
-	}
-	/**
-	 * 设置产品数量。
-	 * @param productsCount 
-	 *	  产品数量。
-	 */
-	public void setProductsCount(Integer productsCount) {
-		this.productsCount = productsCount;
 	}
 	/**
 	 * 获取创建时间。

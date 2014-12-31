@@ -56,7 +56,7 @@ public enum ConfigurationTemplateType {
 	 * 枚举值。
 	 * @return 枚举对象。
 	 */
-	public ConfigurationTemplateType[] convert(int value){
+	public static final ConfigurationTemplateType[] convert(int value){
 		List<ConfigurationTemplateType> list = new ArrayList<>();
 		for(ConfigurationTemplateType type : ConfigurationTemplateType.values()){
 			if(type == null) continue;

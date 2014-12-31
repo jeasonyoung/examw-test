@@ -2,33 +2,12 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="com.examw.test.domain.publish">
     <!-- 发布配置 -->
- 	<class name="Configuration" table="tbl_Examw_Publish_Configurations">
+ 	<class name="Configuration" table="tbl_Examw_Test_Publish_Configurations">
  	    <cache usage="read-write" />
  	    <!-- 配置ID -->
  	    <id name="id"  type="string"  length="64" />
  	    <!-- 配置名称 -->
  	    <property name="name" type="string" length="128" />
- 	    <!-- 所属考试类别集合 -->
- 	    <set name="categories" inverse="false"  cascade="save-update"  table="tbl_Examw_Publish_Configurations_Categories">
- 	        <!-- 配置ID -->
- 	        <key column="config_id" />
- 	        <!-- 考试类别ID -->
- 	        <many-to-many class="com.examw.test.domain.settings.Category" column="category_id" />
- 	    </set>
- 	    <!-- 所属考试集合 -->
- 	    <set name="exams" inverse="false"  cascade="save-update"  table="tbl_Examw_Publish_Configurations_Exams">
- 	        <!-- 配置ID -->
- 	        <key column="config_id" />
- 	        <!-- 考试ID -->
- 	        <many-to-many class="com.examw.test.domain.settings.Exam" column="exam_id" />
- 	    </set>
- 	    <!-- 所属产品集合 -->
- 	    <set name="products" inverse="false"  cascade="save-update"  table="tbl_Examw_Publish_Configurations_Products">
- 	        <!-- 配置ID -->
- 	        <key column="config_id" />
- 	        <!-- 产品ID -->
- 	        <many-to-many class="com.examw.test.domain.products.Product" column="product_id" />
- 	    </set>
  	    <!-- 关联的发布记录集合 -->
  	    <set name="records" inverse="true"  cascade="save-update" order-by="startTime desc">
  	        <!-- 配置ID -->
@@ -46,7 +25,7 @@
 		<property name="lastTime" type="timestamp" />
  	</class>
  	<!-- 发布记录 -->
- 	<class name="PublishRecord" table="tbl_Examw_Publish_PublishRecords">
+ 	<class name="PublishRecord" table="tbl_Examw_Test_Publish_PublishRecords">
  	    <cache usage="read-write" />
  	    <!-- 发布ID -->
  	    <id name="id"  type="string"  length="64" />
@@ -69,10 +48,10 @@
 		</set>
  	</class>
  	<!-- 静态页面 -->
- 	<class name="StaticPage" table="tbl_Examw_Publish_StaticPages">
+ 	<class name="StaticPage" table="tbl_Examw_Test_Publish_StaticPages">
  	    <cache usage="read-write" />
  	    <!-- 页面ID -->
- 	    <id name="id"  type="string"  length="512" />
+ 	    <id name="id"  type="string"  length="128" />
  	    <!-- 页面路径 -->
  	    <property name="path" type="string" length="1024" />
  	    <!-- 页面内容 -->

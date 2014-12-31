@@ -1,9 +1,12 @@
 package com.examw.test.domain.publish;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
+import java.util.UUID;
 
+import com.examw.service.Status;
 /**
  *  发布记录。
  * 
@@ -17,6 +20,23 @@ public class PublishRecord implements Serializable {
 	private Integer status;
 	private Date startTime,endTime;
 	private Set<StaticPage> pages;
+	/**
+	 * 构造函数。
+	 */
+	public PublishRecord(){}
+	/**
+	 * 构造函数。
+	 * @param configuration
+	 */
+	public PublishRecord(Configuration configuration, Status status){
+		this.setId(UUID.randomUUID().toString());
+		this.setConfiguration(configuration);
+		this.setStartTime(new Date());
+		if(status != null){
+			this.setStatus(status.getValue());
+		}
+		this.setName(String.format("%1$s-%2$s", configuration.getName(), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(this.getEndTime())));
+	}
 	/**
 	 * 获取发布ID。
 	 * @return 发布ID。

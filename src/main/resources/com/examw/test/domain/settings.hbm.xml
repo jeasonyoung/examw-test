@@ -63,13 +63,6 @@
 			<!-- 考试 -->
 			<one-to-many class="Exam"/>
 		</set>
-		<!-- 关联发布配置集合 -->
-		<set name="configurations" inverse="true"  cascade="save-update"  table="tbl_Examw_Publish_Configurations_Categories">
-		    <!-- 考试类别ID -->
-		    <key column="category_id" />
-		    <!-- 发布配置 -->
-		    <many-to-many class="com.examw.test.domain.publish.Configuration" column="config_id" />
-		</set>
 	</class>
 	<!-- 考试 -->
 	<class name="Exam" table="tbl_Examw_Test_Settings_Exams">
@@ -108,13 +101,6 @@
 		    <key column="exam_id" />
 		    <!-- 产品 -->
 		    <one-to-many class="com.examw.test.domain.products.Product"/>
-		</set>
-		<!-- 关联发布配置集合 -->
-		<set name="configurations" inverse="true"  cascade="save-update"  table="tbl_Examw_Publish_Configurations_Exams">
-		    <!-- 考试ID -->
-		    <key column="exam_id" />
-		    <!-- 发布配置 -->
-		    <many-to-many class="com.examw.test.domain.publish.Configuration" column="config_id" />
 		</set>
 	</class>
 	<!-- 考试科目 -->

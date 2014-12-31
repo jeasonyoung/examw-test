@@ -1,6 +1,7 @@
 package com.examw.test.controllers.publish;
 
 import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -56,6 +57,22 @@ public class PublishRecordController {
 	public DataGrid<PublishRecordInfo> datagrid(PublishRecordInfo info){
 		if(logger.isDebugEnabled()) logger.debug("加载列表数据...");
 		return this.publishRecordService.datagrid(info);
+	}
+	/**
+	 * 加载全部发布记录数据。
+	 * @return
+	 */
+	@RequestMapping(value={"/all"}, method = {RequestMethod.GET , RequestMethod.POST})
+	@ResponseBody
+	public List<PublishRecordInfo> loadRecords(){
+		if(logger.isDebugEnabled()) logger.debug("加载全部发布记录数据...");
+		return this.publishRecordService.datagrid(new PublishRecordInfo(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public String getSort() { return "startTime";}
+			@Override
+			public String getOrder() { return "desc";}
+		}).getRows();
 	}
 	/**
 	 * 删除数据。
