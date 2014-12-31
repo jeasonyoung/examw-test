@@ -24,21 +24,6 @@
 		</label>
 		</#list>
 	</div>
-	<fieldset style="float:left;width:530px;height:400px;margin-left:10px;margin-top:10px;border:solid 1px #ccc">
-			<legend>考试类别/考试/产品</legend>
-			<ul id="${module}_tree" class="easyui-tree" lines="true" data-options="url:'<@s.url '/settings/category/exams/products/tree'/>',checkbox:true
-				<#if (current_configuration_Id?length > 0)>,onLoadSuccess:function(node,data){
-					$.messager.progress({'text':'正在加载数据，请稍后...'});
-					$.getJSON('<@s.url '/publish/config/cfg/${current_configuration_Id}'/>?_' + Math.random(),function(callback){
-						$.messager.progress('close');
-						if(callback['success']){
-							 ${form}_check_tree(callback['data']['categoryId']);
-							 ${form}_check_tree(callback['data']['examId']);
-							 ${form}_check_tree(callback['data']['productId']);
-						}
-					});
-				}</#if>"></ul>
-		</fieldset>
 </form>
 <script type="text/javascript">
 <!--
@@ -52,20 +37,6 @@ $(function(){
 					$("#${form} input[name='templates'][value='"  + n + "']").attr("checked",true);
 				}
 			});
-		}
-	};
-	//
-	${form}_check_tree = function(ids){
-		if(ids && $.isArray(ids) && ids.length > 0){
-			var t = $("#${module}_tree"); 
-			$.each(ids,function(i,n){ 
-				if($.trim(n) != ""){
-					var node = t.tree("find",n);
-					if(node && (!$.isArray(node["children"]))){
-						t.tree("check",node.target);
-					}
-				}
-			});	 
 		}
 	};
 });

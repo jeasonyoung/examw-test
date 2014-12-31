@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Set;
 
 import com.examw.test.domain.products.Product;
-import com.examw.test.domain.publish.Configuration;
 
 /**
  * 考试。
@@ -19,7 +18,6 @@ public class Exam implements Serializable,Comparable<Exam> {
 	private Set<Area> areas;
 	private Set<Subject> subjects;
 	private Set<Product> products;
-	private Set<Configuration> configurations;
 	/**
 	 * 获取考试ID。
 	 * @return 考试ID。
@@ -169,21 +167,6 @@ public class Exam implements Serializable,Comparable<Exam> {
 	 */
 	public void setProducts(Set<Product> products) {
 		this.products = products;
-	}
-	/**
-	 * 获取关联发布配置集合。
-	 * @return 关联发布配置集合。
-	 */
-	public Set<Configuration> getConfigurations() {
-		return configurations;
-	}
-	/**
-	 * 设置关联发布配置集合。
-	 * @param configurations 
-	 *	  关联发布配置集合。
-	 */
-	public void setConfigurations(Set<Configuration> configurations) {
-		this.configurations = configurations;
 	}
 	/*
 	 * 对象字符串。

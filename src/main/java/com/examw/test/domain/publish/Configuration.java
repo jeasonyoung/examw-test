@@ -4,10 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
-import com.examw.test.domain.products.Product;
-import com.examw.test.domain.settings.Category;
-import com.examw.test.domain.settings.Exam;
-
 /**
  * 发布配置。
  * 
@@ -17,9 +13,6 @@ import com.examw.test.domain.settings.Exam;
 public class Configuration implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String id,name;
-	private Set<Category> categories;
-	private Set<Exam> exams;
-	private Set<Product> products;
 	private Set<PublishRecord> records;
 	private Integer status,template;
 	private Date createTime,lastTime;
@@ -52,51 +45,6 @@ public class Configuration implements Serializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
-	}
-	/**
-	 * 获取发布的考试类别集合。
-	 * @return 发布的考试类别集合。
-	 */
-	public Set<Category> getCategories() {
-		return categories;
-	}
-	/**
-	 * 设置发布的考试类别集合。
-	 * @param categories 
-	 *	  发布的考试类别集合。
-	 */
-	public void setCategories(Set<Category> categories) {
-		this.categories = categories;
-	}
-	/**
-	 * 获取发布的考试集合。
-	 * @return 发布的考试集合。
-	 */
-	public Set<Exam> getExams() {
-		return exams;
-	}
-	/**
-	 * 设置发布的考试集合。
-	 * @param exams 
-	 *	  发布的考试集合。
-	 */
-	public void setExams(Set<Exam> exams) {
-		this.exams = exams;
-	}
-	/**
-	 * 获取发布的产品集合。
-	 * @return 发布的产品集合。
-	 */
-	public Set<Product> getProducts() {
-		return products;
-	}
-	/**
-	 * 设置发布的产品集合。
-	 * @param products 
-	 *	  发布的产品集合。
-	 */
-	public void setProducts(Set<Product> products) {
-		this.products = products;
 	}
 	/**
 	 * 获取关联的发布记录集合。

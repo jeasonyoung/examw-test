@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
 
-import com.examw.test.domain.publish.Configuration;
 import com.examw.test.domain.settings.Area;
 import com.examw.test.domain.settings.Exam;
 import com.examw.test.domain.settings.Subject;
@@ -25,7 +24,6 @@ public class Product implements Serializable,Comparable<Product> {
 	private Set<Subject> subjects;
 	private Set<Software> softwares;
 	private Set<Registration> registrations;
-	private Set<Configuration> configurations;
 	private Date createTime,lastTime;
 	/**
 	 * 获取产品ID。
@@ -266,21 +264,6 @@ public class Product implements Serializable,Comparable<Product> {
 	 */
 	public void setRegistrations(Set<Registration> registrations) {
 		this.registrations = registrations;
-	}
-	/**
-	 * 获取关联发布配置集合。
-	 * @return 关联发布配置集合。
-	 */
-	public Set<Configuration> getConfigurations() {
-		return configurations;
-	}
-	/**
-	 * 设置关联发布配置集合。
-	 * @param configurations 
-	 *	  关联发布配置集合。
-	 */
-	public void setConfigurations(Set<Configuration> configurations) {
-		this.configurations = configurations;
 	}
 	/**
 	 * 获取排序号。

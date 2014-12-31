@@ -104,9 +104,6 @@ public class CategoryDaoImpl extends BaseDaoImpl<Category> implements ICategoryD
 		if(data.getChildren() != null && (count = data.getChildren().size()) > 0){
 			throw new RuntimeException(String.format("考试类别［%1$s］下有［%2$d］子类别，暂不能删除！", data.getName(), count));
 		}
-		if(data.getConfigurations() != null && (count = data.getConfigurations().size()) > 0){
-			throw new RuntimeException(String.format("考试类别［%1$s］下有［%2$d］发布配置，暂不能删除！", data.getName(), count));
-		}
 		super.delete(data);
 	}
 }

@@ -8,12 +8,6 @@
     <bean id="configurationService" class="com.examw.test.service.publish.impl.ConfigurationServiceImpl">
         <!-- 发布配置数据接口 -->
         <property name="configurationDao" ref="configurationDao" />
-        <!-- 考试类别数据接口 -->
-        <property name="categoryDao" ref="categoryDao" />
-        <!-- 考试数据接口 -->
-        <property name="examDao" ref="examDao" />
-        <!-- 产品数据接口 -->
-        <property name="productDao" ref="productDao" />
         <!-- 状态值名称集合 -->
         <property name="statusMap">
             <map>

@@ -15,6 +15,23 @@ public class StaticPage implements Serializable {
 	private PublishRecord publish;
 	private Date createTime,lastTime;
 	/**
+	 * 构造函数。
+	 */
+	public StaticPage(){}
+	/**
+	 * 构造函数。
+	 * @param id
+	 * 页面ID。
+	 * @param path
+	 * 页面路径。
+	 */
+	public StaticPage(String id,String path){
+		this.setId(id);
+		this.setPath(path);
+		this.setCreateTime(new Date());
+		this.setLastTime(new Date());
+	}
+	/**
 	 * 获取页面ID。
 	 * @return 页面ID。
 	 */
