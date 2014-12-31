@@ -51,59 +51,24 @@
 	<div class="bannerbox fl" style="background:url(http://img.examw.com/test/banner.jpg) center no-repeat"></div>
 	<div class="h30"></div>
 	<div class="main">
+		<#if categories??>
 		<div class="titbox bulebg fl">考试分类导航</div><div class="titboxbg"></div>
-	    <div class="fenlei fl">
-	    	<div class="fl-l">医药考试</div>
-	        <div class="fl-r">
-	        	<ul class="fl-list">
-	            	<li><a href="#" target="_blank" title="执业医师">执业医师</a></li>
-	                <li><a href="#" target="_blank" title="实践技能">实践技能</a></li>
-	                <li><a href="#" target="_blank" title="临床医师">临床医师</a></li>
-	                <li><a href="#" target="_blank" title="临床助理">临床助理</a></li>
-	                <li><a href="#" target="_blank" title="中医医师">中医医师</a></li>
-	                <li><a href="#" target="_blank" title="中医助理">中医助理</a></li>
-	                <li><a href="#" target="_blank" title="中西医医师">中西医医师</a></li>
-	                <li><a href="#" target="_blank" title="中西医助理">中西医助理</a></li>
-	                <li><a href="#" target="_blank" title="口腔医师">口腔医师</a></li>
-	                <li><a href="#" target="_blank" title="口腔助理">口腔助理</a></li>
-	            </ul>
-	        </div>
-	    </div>
-	    <div class="fenlei fl">
-	    	<div class="fl-l">建筑工程</div>
-	        <div class="fl-r">
-	        	<ul class="fl-list">
-	            	<li><a href="#" target="_blank" title="执业医师">执业医师</a></li>
-	                <li><a href="#" target="_blank" title="实践技能">实践技能</a></li>
-	                <li><a href="#" target="_blank" title="临床医师">临床医师</a></li>
-	                <li><a href="#" target="_blank" title="临床助理">临床助理</a></li>
-	                <li><a href="#" target="_blank" title="中医医师">中医医师</a></li>
-	                <li><a href="#" target="_blank" title="中医助理">中医助理</a></li>
-	                <li><a href="#" target="_blank" title="中西医医师">中西医医师</a></li>
-	                <li><a href="#" target="_blank" title="中西医助理">中西医助理</a></li>
-	                <li><a href="#" target="_blank" title="口腔医师">口腔医师</a></li>
-	                <li><a href="#" target="_blank" title="口腔助理">口腔助理</a></li>
-	            </ul>
-	        </div>
-	    </div>
-	    <div class="fenlei fl">
-	    	<div class="fl-l">职业英语</div>
-	        <div class="fl-r2">
-	        	<ul class="fl-list">
-	            	<li><a href="#" target="_blank" title="理工类">理工类</a></li>
-	                <li><a href="#" target="_blank" title="卫生类">卫生类</a></li>
-	                <li><a href="#" target="_blank" title="综合类">综合类</a></li>
-	            </ul>
-	        </div>
-	        <div class="fl-l">计算机类</div>
-	        <div class="fl-r2">
-	        	<ul class="fl-list">
-	            	<li><a href="#" target="_blank" title="理工类">理工类</a></li>
-	                <li><a href="#" target="_blank" title="卫生类">卫生类</a></li>
-	                <li><a href="#" target="_blank" title="综合类">综合类</a></li>
-	            </ul>
-	        </div>
-	    </div>
+		<#list categories?keys as key>
+			<div class="fenlei fl">
+				<div class="fl-l">${key}</div>
+				<div class="fl-r">
+					<#assign exams="${categories[key]}"/>
+					<#if (exams?size>0)>
+					<ul class="fl-list">
+						<#list exams?keys as k>
+							<li><a href="/index-${exams[k]}.html" target="_blank" title="${k}">${k}</a></li>
+						</#list>
+					</ul>
+					</#if>
+				</div>
+			</div>
+		</#list>
+		</#if>
 	    <div class="h30"></div>
 	    <div class="titbox bulebg fl">软件特色</div><div class="titboxbg"></div>
 	    <div class="tesebox fl">

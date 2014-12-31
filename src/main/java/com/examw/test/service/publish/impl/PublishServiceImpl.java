@@ -106,7 +106,7 @@ public class PublishServiceImpl implements IPublishService {
 				continue;
 			}
 			try {
-				List<StaticPage> listPages = process.process(configuration);
+				List<StaticPage> listPages = process.process();
 				if(listPages == null || listPages.size() == 0) throw new Exception("没有生成静态页面!");
 				for(StaticPage page : listPages){
 					if(page == null) continue;

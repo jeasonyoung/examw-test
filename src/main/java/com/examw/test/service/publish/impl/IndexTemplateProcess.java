@@ -9,8 +9,9 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.examw.test.dao.settings.ICategoryDao;
-import com.examw.test.domain.publish.Configuration;
 import com.examw.test.domain.publish.StaticPage;
+import com.examw.test.domain.settings.Category;
+import com.examw.test.domain.settings.Exam;
 
 /**
  * 首页模版处理器。
@@ -32,22 +33,48 @@ public class IndexTemplateProcess extends BaseTemplateProcess {
 	}
 	/*
 	 * 模版处理。
-	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#templateProcess(com.examw.test.domain.publish.Configuration)
+	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#templateProcess()
 	 */
 	@Override
-	protected List<StaticPage> templateProcess(Configuration configuration) throws Exception {
+	protected List<StaticPage> templateProcess() throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("模版处理...");
 		List<StaticPage> list = new ArrayList<>();
 		StaticPage page = new StaticPage("index","/");
-		page.setContent(this.createStaticPageContent(this.buildParameters(configuration)));
+		page.setContent(this.createStaticPageContent(this.createParameters()));
 		page.setLastTime(new Date());
 		list.add(page);
 		return list;
 	}
 	//构建参数集合。
-	private Map<String, Object> buildParameters(Configuration configuration){
-		//configuration.getCategories();
-		
-		return null;
+	private Map<String, Object> createParameters(){
+		List<Category> topCategories = this.categoryDao.loadTopCategories();
+		if(topCategories == null || topCategories.size() == 0) return null;
+		Map<String, Map<String, String>> categoriesMap = new HashMap<>();
+		for(Category category  : topCategories){
+			if(category == null) continue;
+			Map<String, String> examsMap = new HashMap<>();
+			this.buildCategoryExams(category, examsMap);
+			if(examsMap.size() > 0){
+				categoriesMap.put(category.getName(), examsMap);
+			}
+		}
+		Map<String, Object> parametersMap = new HashMap<>();
+		parametersMap.put("categories", categoriesMap);
+		return parametersMap;
+	}
+	//构建考试类别下考试
+	private void buildCategoryExams(Category category, Map<String, String> examsMap){
+		if(category == null) return;
+		if(category.getExams() != null && category.getExams().size() > 0){
+			for(Exam exam : category.getExams()){
+				if(exam == null) continue;
+				examsMap.put(exam.getName(), exam.getAbbr());
+			}
+		}
+		if(category.getChildren() != null && category.getChildren().size() > 0){
+			for(Category child : category.getChildren()){
+				this.buildCategoryExams(child, examsMap);
+			}
+		}
 	}
 }
