@@ -111,6 +111,7 @@ public class UserPaperRecordDaoImpl extends BaseDaoImpl<UserPaperRecord> impleme
 	@Override
 	public Long findUsersTotal(String paperId) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("查询试卷［paperId = %s］的参考人次...", paperId));
+		if(StringUtils.isEmpty(paperId)) return 0L;
 		final String hql = "select count(*) from UserPaperRecord u where u.paper.id = :paperId ";
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("paperId", paperId);

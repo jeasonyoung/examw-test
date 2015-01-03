@@ -47,19 +47,28 @@ public class IndexTemplateProcess extends BaseTemplateProcess {
 	}
 	//构建参数集合。
 	private Map<String, Object> createParameters(){
-		List<Category> topCategories = this.categoryDao.loadTopCategories();
-		if(topCategories == null || topCategories.size() == 0) return null;
-		Map<String, Map<String, String>> categoriesMap = new HashMap<>();
-		for(Category category  : topCategories){
-			if(category == null) continue;
-			Map<String, String> examsMap = new HashMap<>();
-			this.buildCategoryExams(category, examsMap);
-			if(examsMap.size() > 0){
-				categoriesMap.put(category.getName(), examsMap);
-			}
-		}
 		Map<String, Object> parametersMap = new HashMap<>();
-		parametersMap.put("categories", categoriesMap);
+		//考试分类
+		List<Category> topCategories = this.categoryDao.loadTopCategories();
+		if(topCategories != null && topCategories.size() > 0){
+			Map<String, Map<String, String>> categoriesMap = new HashMap<>();
+			for(Category category  : topCategories){
+				if(category == null) continue;
+				Map<String, String> examsMap = new HashMap<>();
+				this.buildCategoryExams(category, examsMap);
+				if(examsMap.size() > 0){
+					categoriesMap.put(category.getName(), examsMap);
+				}
+			}
+			parametersMap.put("categories", categoriesMap);
+		}
+		//最新试卷
+		parametersMap.put("newsPapers", this.loadNewsPapers());
+		//最热试卷
+		parametersMap.put("hotsPapers", this.loadHotsPapers());
+		//常见问题
+		parametersMap.put("questions", this.loadQuestions());
+		
 		return parametersMap;
 	}
 	//构建考试类别下考试

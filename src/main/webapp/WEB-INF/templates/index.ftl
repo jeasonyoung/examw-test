@@ -61,7 +61,7 @@
 					<#if (exams?size>0)>
 					<ul class="fl-list">
 						<#list exams?keys as k>
-							<li><a href="/index-${exams[k]}.html" target="_blank" title="${k}">${k}</a></li>
+							<li><a href="/index-exams-${exams[k]}.html" target="_blank" title="${k}">${k}</a></li>
 						</#list>
 					</ul>
 					</#if>
@@ -133,111 +133,40 @@
 	<div class="newbox fl">
 		<div class="main">
 	        <div class="newshj">
-	        	<div class="newtit bulebg fl"><span><a href="#" target="_blank">更多&gt;&gt;</a></span>最新试卷</div><div class="newtitbg"></div>
+	        	<div class="newtit bulebg fl"><span><a href="index-news-more.html" target="_blank">更多&gt;&gt;</a></span>最新试卷</div><div class="newtitbg"></div>
+	            <#if newsPapers??>
 	            <ul class="list-shj" id="list-shj">
-					<li class="shj">
-	                	<p>&middot;<a href="#" title="2014年全国会计从业考试《会计基础》模拟试题(6)">2014年全国会计从业考试《会计基础》模拟试题(6)</a></p>
-	                    <p class="btn"><span>1228人参与</span><a href="#">免费测试</a></p>
-	                </li>
-	               	<li>
-	                	<p>&middot;<a href="#" title="2014年全国会计从业考试《会计基础》模拟试题(6)">2014年全国会计从业考试《会计基础》模拟试题(6)</a></p>
-	                    <p class="btn"><span>1228人参与</span><a href="#">免费测试</a></p>
-	                </li>
+	            	<#list newsPapers as data>
 	                <li>
-	                	<p>&middot;<a href="#" title="2014年全国会计从业考试《会计基础》模拟试题(6)">2014年全国会计从业考试《会计基础》模拟试题(6)</a></p>
-	                    <p class="btn"><span>1228人参与</span><a href="#">免费测试</a></p>
+	                	<p>&middot;<a href="#" title="${data.text}">${data.text}</a></p>
+	                    <p class="btn"><span>${data.total}人参与</span><a href="index-papers-${data.id}">免费测试</a></p>
 	                </li>
-	                <li>
-	                	<p>&middot;<a href="#" title="2014年全国会计从业考试《会计基础》模拟试题(6)">2014年全国会计从业考试《会计基础》模拟试题(6)</a></p>
-	                    <p class="btn"><span>1228人参与</span><a href="#">免费测试</a></p>
-	                </li>
-	                <li>
-	                	<p>&middot;<a href="#" title="2014年全国会计从业考试《会计基础》模拟试题(6)">2014年全国会计从业考试《会计基础》模拟试题(6)</a></p>
-	                    <p class="btn"><span>1228人参与</span><a href="#">免费测试</a></p>
-	                </li>
-	                <li>
-	                	<p>&middot;<a href="#" title="2014年全国会计从业考试《会计基础》模拟试题(6)">2014年全国会计从业考试《会计基础》模拟试题(6)</a></p>
-	                    <p class="btn"><span>1228人参与</span><a href="#">免费测试</a></p>
-	                </li>
-	                <li>
-	                	<p>&middot;<a href="#" title="2014年全国会计从业考试《会计基础》模拟试题(6)">2014年全国会计从业考试《会计基础》模拟试题(6)</a></p>
-	                    <p class="btn"><span>1228人参与</span><a href="#">免费测试</a></p>
-	                </li>
-	                <li>
-	                	<p>&middot;<a href="#" title="2014年全国会计从业考试《会计基础》模拟试题(6)">2014年全国会计从业考试《会计基础》模拟试题(6)</a></p>
-	                    <p class="btn"><span>1228人参与</span><a href="#">免费测试</a></p>
-	                </li>
-	                <li>
-	                	<p>&middot;<a href="#" title="2014年全国会计从业考试《会计基础》模拟试题(6)">2014年全国会计从业考试《会计基础》模拟试题(6)</a></p>
-	                    <p class="btn"><span>1228人参与</span><a href="#">免费测试</a></p>
-	                </li>
-	                <li>
-	                	<p>&middot;<a href="#" title="2014年全国会计从业考试《会计基础》模拟试题(6)">2014年全国会计从业考试《会计基础》模拟试题(6)</a></p>
-	                    <p class="btn"><span>1228人参与</span><a href="#">免费测试</a></p>
-	                </li>
+	                </#list>
 				</ul>
+				</#if>
 	        </div>
 	        <div class="newshj">
-	        	<div class="newtit bulebg fl"><span><a href="#" target="_blank">更多&gt;&gt;</a></span>热门试卷</div><div class="newtitbg"></div>
+	        	<div class="newtit bulebg fl"><span><a href="index-hots-more.html" target="_blank">更多&gt;&gt;</a></span>热门试卷</div><div class="newtitbg"></div>
+	        	<#if hotsPapers??>
 	            <ul class="list-shj" id="list-shj">
-					<li class="shj">
-	                	<p>&middot;<a href="#" title="2014年全国会计从业考试《会计基础》模拟试题(6)">2014年全国会计从业考试《会计基础》模拟试题(6)</a></p>
-	                    <p class="btn"><span>1228人参与</span><a href="#">免费测试</a></p>
-	                </li>
-	               	<li>
-	                	<p>&middot;<a href="#" title="2014年全国会计从业考试《会计基础》模拟试题(6)">2014年全国会计从业考试《会计基础》模拟试题(6)</a></p>
-	                    <p class="btn"><span>1228人参与</span><a href="#">免费测试</a></p>
-	                </li>
+					<#list hotsPapers as data>
 	                <li>
-	                	<p>&middot;<a href="#" title="2014年全国会计从业考试《会计基础》模拟试题(6)">2014年全国会计从业考试《会计基础》模拟试题(6)</a></p>
-	                    <p class="btn"><span>1228人参与</span><a href="#">免费测试</a></p>
+	                	<p>&middot;<a href="#" title="${data.text}">${data.text}</a></p>
+	                    <p class="btn"><span>${data.total}人参与</span><a href="index-papers-${data.id}">免费测试</a></p>
 	                </li>
-	                <li>
-	                	<p>&middot;<a href="#" title="2014年全国会计从业考试《会计基础》模拟试题(6)">2014年全国会计从业考试《会计基础》模拟试题(6)</a></p>
-	                    <p class="btn"><span>1228人参与</span><a href="#">免费测试</a></p>
-	                </li>
-	                <li>
-	                	<p>&middot;<a href="#" title="2014年全国会计从业考试《会计基础》模拟试题(6)">2014年全国会计从业考试《会计基础》模拟试题(6)</a></p>
-	                    <p class="btn"><span>1228人参与</span><a href="#">免费测试</a></p>
-	                </li>
-	                <li>
-	                	<p>&middot;<a href="#" title="2014年全国会计从业考试《会计基础》模拟试题(6)">2014年全国会计从业考试《会计基础》模拟试题(6)</a></p>
-	                    <p class="btn"><span>1228人参与</span><a href="#">免费测试</a></p>
-	                </li>
-	                <li>
-	                	<p>&middot;<a href="#" title="2014年全国会计从业考试《会计基础》模拟试题(6)">2014年全国会计从业考试《会计基础》模拟试题(6)</a></p>
-	                    <p class="btn"><span>1228人参与</span><a href="#">免费测试</a></p>
-	                </li>
-	                <li>
-	                	<p>&middot;<a href="#" title="2014年全国会计从业考试《会计基础》模拟试题(6)">2014年全国会计从业考试《会计基础》模拟试题(6)</a></p>
-	                    <p class="btn"><span>1228人参与</span><a href="#">免费测试</a></p>
-	                </li>
-	                <li>
-	                	<p>&middot;<a href="#" title="2014年全国会计从业考试《会计基础》模拟试题(6)">2014年全国会计从业考试《会计基础》模拟试题(6)</a></p>
-	                    <p class="btn"><span>1228人参与</span><a href="#">免费测试</a></p>
-	                </li>
-	                <li>
-	                	<p>&middot;<a href="#" title="2014年全国会计从业考试《会计基础》模拟试题(6)">2014年全国会计从业考试《会计基础》模拟试题模(6)</a></p>
-	                    <p class="btn"><span>1228人参与</span><a href="#">免费测试</a></p>
-	                </li>
+	                </#list>
 				</ul>
+				</#if>
 	        </div>
 	        <div class="new-question">
-	        	<div class="newtit bulebg fl"><span><a href="#" target="_blank">更多&gt;&gt;</a></span>常见问题</div><div class="newtitbg"></div>
+	        	<div class="newtit bulebg fl"><span><a href="index-questions-more.html" target="_blank">更多&gt;&gt;</a></span>常见问题</div><div class="newtitbg"></div>
+	            <#if questions??>
 	            <ul class="list">
-	            	<li>&middot;<a href="#" title="使用职称计算机破解版有什么危害？">使用职称计算机破解版有什么危害？</a></li>
-	                <li>&middot;<a href="#" title="使用职称计算机破解版有什么危害？">使用职称计算机破解版有什么危害？</a></li>
-	                <li>&middot;<a href="#" title="使用职称计算机破解版有什么危害？">使用职称计算机破解版有什么危害？</a></li>
-	                <li>&middot;<a href="#" title="使用职称计算机破解版有什么危害？">使用职称计算机破解版有什么危害？</a></li>
-	                <li>&middot;<a href="#" title="使用职称计算机破解版有什么危害？">使用职称计算机破解版有什么危害？</a></li>
-	                <li>&middot;<a href="#" title="使用职称计算机破解版有什么危害？">使用职称计算机破解版有什么危害？</a></li>
-	                <li>&middot;<a href="#" title="使用职称计算机破解版有什么危害？">使用职称计算机破解版有什么危害？</a></li>
-	                <li>&middot;<a href="#" title="使用职称计算机破解版有什么危害？">使用职称计算机破解版有什么危害？</a></li>
-	                <li>&middot;<a href="#" title="使用职称计算机破解版有什么危害？">使用职称计算机破解版有什么危害？</a></li>
-	                <li>&middot;<a href="#" title="使用职称计算机破解版有什么危害？">使用职称计算机破解版有什么危害？</a></li>
-	                <li>&middot;<a href="#" title="使用职称计算机破解版有什么危害？">使用职称计算机破解版有什么危害？</a></li>
-	                <li>&middot;<a href="#" title="使用职称计算机破解版有什么危害？">使用职称计算机破解版有什么危害？</a></li>
+	            	<#list questions as data>
+	                <li>&middot;<a href="index-questions-${data.id}.html" title="${data.text}">${data.text}</a></li>
+	                </#list>
 	            </ul>
+	            </#if>
 	        </div>
 	    </div>
 	</div>

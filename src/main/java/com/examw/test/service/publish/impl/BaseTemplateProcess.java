@@ -1,12 +1,20 @@
 package com.examw.test.service.publish.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
 
+import com.examw.test.dao.library.IPaperReleaseDao;
+import com.examw.test.dao.records.IQuestionDao;
+import com.examw.test.dao.records.IUserPaperRecordDao;
+import com.examw.test.domain.library.Paper;
+import com.examw.test.domain.library.PaperRelease;
 import com.examw.test.domain.publish.StaticPage;
+import com.examw.test.domain.records.Question;
+import com.examw.test.model.publish.ViewListData;
 import com.examw.test.service.publish.ITemplateProcess;
 import com.examw.test.support.FreeMakerEngine;
 
@@ -18,8 +26,12 @@ import com.examw.test.support.FreeMakerEngine;
  */
 public abstract class BaseTemplateProcess implements ITemplateProcess {
 	private static final Logger logger = Logger.getLogger(BaseTemplateProcess.class);
+	private static final int list_max_top = 10;
 	private String templatesRoot,templateName;
 	private FreeMakerEngine engine;
+	private IPaperReleaseDao paperReleaseDao;
+	private IUserPaperRecordDao userPaperRecordDao;
+	private IQuestionDao questionDao;
 	/**
 	 * 设置模版根目录。
 	 * @param templatesRoot 
@@ -35,8 +47,35 @@ public abstract class BaseTemplateProcess implements ITemplateProcess {
 	 *	  模版名称。
 	 */
 	public void setTemplateName(String templateName) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("注入模版名称：", templateName));
+		if(logger.isDebugEnabled()) logger.debug(String.format("注入模版名称：%s", templateName));
 		this.templateName = templateName;
+	}
+	/**
+	 * 设置试卷发布数据接口。
+	 * @param paperReleaseDao 
+	 *	  试卷发布数据接口。
+	 */
+	public void setPaperReleaseDao(IPaperReleaseDao paperReleaseDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入试卷发布数据接口...");
+		this.paperReleaseDao = paperReleaseDao;
+	}
+	/**
+	 * 设置用户试卷记录数据接口。
+	 * @param userPaperRecordDao 
+	 *	  用户试卷记录数据接口。
+	 */
+	public void setUserPaperRecordDao(IUserPaperRecordDao userPaperRecordDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入用户试卷记录数据接口...");
+		this.userPaperRecordDao = userPaperRecordDao;
+	}
+	/**
+	 * 设置常见问题数据接口。
+	 * @param questionDao 
+	 *	  常见问题数据接口。
+	 */
+	public void setQuestionDao(IQuestionDao questionDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入常见问题数据接口...");
+		this.questionDao = questionDao;
 	}
 	/*
 	 * 模版处理入口。
@@ -70,5 +109,61 @@ public abstract class BaseTemplateProcess implements ITemplateProcess {
 	protected String createStaticPageContent(Map<String, Object> parameters) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug(String.format("生成模版［%s］静态页面内容...", this.templateName));
 		return this.engine.analysisTemplate(this.templateName, parameters);
+	}
+	/**
+	 * 加载最新试卷数据。
+	 * @return 最新试卷数据。
+	 */
+	protected List<ViewListData> loadNewsPapers(){
+		if(logger.isDebugEnabled()) logger.debug("加载最新试卷数据...");
+		List<ViewListData> list = null;
+		List<PaperRelease> releases = this.paperReleaseDao.loadNewsReleases(list_max_top);
+		if(releases != null && releases.size() > 0){
+			list = new ArrayList<>();
+			for(PaperRelease release : releases){
+				Paper paper = null;
+				if(release == null || (paper = release.getPaper()) == null) continue;
+				ViewListData data = new ViewListData(paper.getId(), paper.getName());
+				data.setTotal(this.userPaperRecordDao.findUsersTotal(data.getId()).intValue());
+				list.add(data);
+			}
+		}
+		return list;
+	}
+	/**
+	 * 加载最热试卷数据。
+	 * @return 最热试卷数据。
+	 */
+	protected List<ViewListData> loadHotsPapers(){
+		if(logger.isDebugEnabled()) logger.debug("加载最热试卷数据...");
+		List<ViewListData> list = null;
+		List<Paper> papers = this.userPaperRecordDao.loadHotsPapers(list_max_top);
+		if(papers != null && papers.size() > 0){
+			list = new ArrayList<>();
+			for(Paper paper : papers){
+				if(paper == null) continue;
+				ViewListData data = new ViewListData(paper.getId(), paper.getName());
+				data.setTotal(this.userPaperRecordDao.findUsersTotal(data.getId()).intValue());
+				list.add(data);
+			}
+		}
+		return list;
+	}
+	/**
+	 * 加载常见问题集合。
+	 * @return
+	 */
+	protected List<ViewListData> loadQuestions(){
+		if(logger.isDebugEnabled()) logger.debug("加载常见问题集合...");
+		List<ViewListData> list = null;
+		List<Question> questions = this.questionDao.loadTopQuestions(list_max_top);
+		if(questions != null && questions.size() > 0){
+			list = new ArrayList<>();
+			for(Question question : questions){
+				if(question == null) continue;
+				list.add(new ViewListData(question.getId(), question.getTitle()));
+			}
+		}
+		return list;
 	}
 }

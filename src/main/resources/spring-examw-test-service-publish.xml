@@ -81,6 +81,12 @@
     <bean id="templateProcess" abstract="true" class="com.examw.test.service.publish.impl.BaseTemplateProcess">
         <!-- 模版根目录 -->
         <property name="templatesRoot" value="${publish_templates_dir}" />
+        <!-- 试卷发布数据接口 -->
+        <property name="paperReleaseDao" ref="paperReleaseDao" />
+        <!-- 用户试卷记录数据接口 -->
+        <property name="userPaperRecordDao" ref="userPaperRecordDao" />
+        <!-- 常用问题数据接口 -->
+        <property name="questionDao" ref="questionDao" />
     </bean>
     <!-- 首页模版处理器 -->
     <bean id="indexTemplateProcess" class="com.examw.test.service.publish.impl.IndexTemplateProcess" parent="templateProcess">
