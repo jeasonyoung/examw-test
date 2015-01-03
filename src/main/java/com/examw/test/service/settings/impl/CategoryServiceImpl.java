@@ -228,7 +228,13 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 					TreeNode tn = this.buildExamNode(exam);
 					if(tn != null) examNodes.add(tn);
 				}
-				if(examNodes.size() > 0) node.setChildren(examNodes);
+				if(examNodes.size() > 0){
+					if(node.getChildren()!=null)
+					{
+						node.getChildren().addAll(examNodes);
+					}else
+						node.setChildren(examNodes);
+				}
 			}
 			if(category.getChildren() != null && category.getChildren().size() > 0){//子节点
 				List<TreeNode> childrenNodes = new ArrayList<>();
@@ -237,7 +243,13 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 					TreeNode e = this.buildAllCategoryExamNode(child);
 					if(e != null) childrenNodes.add(e);
 				}
-				if(childrenNodes.size() > 0) node.setChildren(childrenNodes);
+				if(childrenNodes.size() > 0){
+					if(node.getChildren()!=null)
+					{
+						node.getChildren().addAll(childrenNodes);
+					}else
+						node.setChildren(childrenNodes);
+				}
 			}
 		}
 		return node;
@@ -253,7 +265,7 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		List<Category> list = this.categoryDao.loadTopCategories();
 		if(list != null && list.size() > 0){
 			for(Category data : list){
-				TreeNode e = this.buildCategoryExamSubjectNode(data, true);
+				TreeNode e = this.buildCategoryExamSubjectNode(data, false);
 				if(e != null)treeNodes.add(e);
 			}
 		}
@@ -270,14 +282,20 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		List<Category> list = this.categoryDao.loadTopCategories();
 		if(list != null && list.size() > 0){
 			for(Category data : list){
-				TreeNode e = this.buildCategoryExamSubjectNode(data, false);
+				TreeNode e = this.buildCategoryExamSubjectNode(data, true);
 				if(e != null)treeNodes.add(e);
 			}
 		}
 		return treeNodes;
 	}
 	//构建考试类别/考试/科目
-	private TreeNode buildCategoryExamSubjectNode(Category category,boolean topSubject){
+	/**
+	 * 构建考试类别/考试/科目的树节点
+	 * @param category		考试分类
+	 * @param withSubjectChild	是否加载科目的子类
+	 * @return
+	 */
+	private TreeNode buildCategoryExamSubjectNode(Category category,boolean withSubjectChild){
 		if(category == null) return null;
 		TreeNode node = this.buildCategoryNode(category, null, false);
 		if(node == null) return node;
@@ -289,7 +307,9 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 					if(exam.getSubjects() != null && exam.getSubjects().size() > 0){//科目
 						List<TreeNode> subjectNodes = new ArrayList<>();
 						for(Subject subject : exam.getSubjects()){
-							TreeNode e = this.buildSubjectNode(subject, !topSubject);
+							//2015.01.02 不是直接的科目不重复加载
+							if(subject.getParent()!=null) continue;
+							TreeNode e = this.buildSubjectNode(subject, withSubjectChild);
 							if(e != null) subjectNodes.add(e);
 						}
 						if(subjectNodes.size() > 0) tn.setChildren(subjectNodes);
@@ -297,16 +317,27 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 					examNodes.add(tn);
 				}
 			}
-			if(examNodes.size() > 0) node.setChildren(examNodes);
+			if(examNodes.size() > 0){
+				if(node.getChildren()==null)
+				{
+					node.setChildren(examNodes);
+				}else
+					node.getChildren().addAll(examNodes);
+			}
 		}
 		//children
 		if(category.getChildren() != null && category.getChildren().size() > 0){
 			List<TreeNode> childrenNodes = new ArrayList<>();
 			for(Category child : category.getChildren()){
-				TreeNode e = this.buildCategoryExamSubjectNode(child, topSubject);
+				TreeNode e = this.buildCategoryExamSubjectNode(child, withSubjectChild);
 				if(e != null) childrenNodes.add(e);
 			}
-			if(childrenNodes.size() > 0) node.setChildren(childrenNodes);
+			if(childrenNodes.size() > 0){
+				if(node.getChildren()==null)
+					node.setChildren(childrenNodes);
+				else
+					node.getChildren().addAll(childrenNodes);
+			}
 		}
 		return node;
 	}
@@ -359,7 +390,13 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 					examNodes.add(examNode);
 				}
 			}
-			if(examNodes.size() > 0) node.setChildren(examNodes);
+			if(examNodes.size() > 0)
+			{
+				if(node.getChildren() == null)
+					node.setChildren(examNodes);
+				else
+					node.getChildren().addAll(examNodes);
+			}
 		}
 		if(category.getChildren() != null && category.getChildren().size() > 0){//children
 			List<TreeNode> childrenNodes = new ArrayList<>();
@@ -367,7 +404,12 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 				TreeNode e = this.buildCategoryExamProduct(child);
 				if(e != null) childrenNodes.add(e);
 			}
-			if(childrenNodes.size() > 0) node.setChildren(childrenNodes);
+			if(childrenNodes.size() > 0){
+				if(node.getChildren() == null)
+					node.setChildren(childrenNodes);
+				else
+					node.getChildren().addAll(childrenNodes);
+			}
 		}
 		return node;
 	}
