@@ -9,4 +9,8 @@ public final class ModuleConstant {
 	 * 用户考试记录ID。
 	 */
 	public static final String PAPER_RECORD = "ETS0000106";
+	/**
+	 * 常见问题ID。
+	 */
+	public static final String PAPER_QUESTION = "ETS0000206";
 }

@@ -82,4 +82,16 @@
 	    <!-- 收藏时间 -->
 	    <property name="createTime" column="create_time" type="timestamp" />
 	</class>
+	<!-- 用户常见问题 -->
+	<class name="Question" table="tbl_Examw_Test_Records_Questions">
+	    <cache usage="read-write" />
+	    <!-- 问题ID -->
+	    <id name="id" type="string" length="64" />
+	    <!-- 问题标题 -->
+	    <property name="title" type="string" length="512" />
+	    <!-- 问题内容 -->
+	    <property name="content" type="text" />
+	    <!-- 创建时间 -->
+	    <property name="createTime" column="create_time" type="timestamp" />
+	</class>
 </hibernate-mapping>
