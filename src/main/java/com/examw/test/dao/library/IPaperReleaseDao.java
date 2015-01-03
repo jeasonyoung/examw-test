@@ -73,4 +73,12 @@ public interface IPaperReleaseDao extends IBaseDao<PaperRelease> {
 	 * @return
 	 */
 	boolean hasRealItem(String[] subjectsId);
+	/**
+	 * 加载最新试卷集合。
+	 * @param top
+	 * 最新数据条数。
+	 * @return
+	 * 最新试卷集合。
+	 */
+	List<PaperRelease> loadNewsReleases(Integer top);
 }

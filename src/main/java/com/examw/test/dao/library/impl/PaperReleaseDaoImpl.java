@@ -161,4 +161,14 @@ public class PaperReleaseDaoImpl extends BaseDaoImpl<PaperRelease> implements IP
 		int total = this.execuateUpdate(hql, null);
 		logger.debug(String.format("清理试卷已被删除的发布［%d］条记录", total));
 	}
+	/*
+	 * 加载最新试卷集合。
+	 * @see com.examw.test.dao.library.IPaperReleaseDao#loadNewsReleases(java.lang.Integer)
+	 */
+	@Override
+	public List<PaperRelease> loadNewsReleases(Integer top) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载最新试卷集合:［%d］...", top));
+		final String hql = "from PaperRelease p order by p.createTime desc";
+		return this.find(hql, null, 0, top == null ? 0 : top);
+	}
 }

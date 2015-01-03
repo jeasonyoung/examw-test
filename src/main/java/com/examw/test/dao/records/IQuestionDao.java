@@ -28,4 +28,12 @@ public interface IQuestionDao extends IBaseDao<Question> {
 	 * 数据统计。
 	 */
 	Long total(QuestionInfo info);
+	/**
+	 * 加载最新常用问题数据。
+	 * @param top
+	 * 最新条数。
+	 * @return
+	 * 数据集合。
+	 */
+	List<Question> loadTopQuestions(Integer top);
 }

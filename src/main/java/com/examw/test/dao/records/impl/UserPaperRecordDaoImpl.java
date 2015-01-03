@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
 import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.impl.BaseDaoImpl;
 import com.examw.test.dao.records.IUserPaperRecordDao;
+import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.records.UserPaperRecord;
 import com.examw.test.model.records.UserPaperRecordInfo;
 import com.examw.test.service.library.PaperType;
@@ -161,21 +161,15 @@ public class UserPaperRecordDaoImpl extends BaseDaoImpl<UserPaperRecord> impleme
 		parameters.put("productId", productId);
 		parameters.put("type", PaperType.DAILY.getValue());
 		parameters.put("createTime", calendar.getTime());
-		Query query = this.getCurrentSession().createQuery(hql);
-		if(query != null){
-			this.addParameters(query, parameters);
-			Object obj = query.uniqueResult();
-			return obj == null ? null : (long)obj;
-		}
-		return null;
+		Object obj = this.uniqueResult(hql, parameters);
+		return obj == null ? null : (long)obj;
 	}
 	/*
 	 * 查询终端上最新的考试记录时间
 	 * @see com.examw.test.dao.records.IUserPaperRecordDao#findRecordLastTime(java.lang.String, java.lang.String, java.lang.Integer)
 	 */
 	@Override
-	public Date findRecordLastTime(String productId, String userId,
-			Integer terminalId) {
+	public Date findRecordLastTime(String productId, String userId, Integer terminalId) {
 		final String hql = "select max(u.createTime) from UserPaperRecord u where (u.user.id = :userId) and (u.product.id = :productId) and (u.terminal.code = :terminalId)order by u.createTime desc";
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("userId", userId);
@@ -183,5 +177,16 @@ public class UserPaperRecordDaoImpl extends BaseDaoImpl<UserPaperRecord> impleme
 		parameters.put("terminalId", terminalId);
 		Object obj = this.uniqueResult(hql, parameters);
 		return obj == null ? null : (Date)obj;
+	}
+	/*
+	 * 加载最热的试卷集合。
+	 * @see com.examw.test.dao.records.IUserPaperRecordDao#loadHotsPapers(java.lang.Integer)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Paper> loadHotsPapers(Integer top) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载最热的［%d］试卷集合...", top));
+		final String hql = "select u.paper from UserPaperRecord u group by u.paper.id order by count(u.id) desc ";
+		return this.query(hql, null, 0, top == null ? null : top);
 	}
 }

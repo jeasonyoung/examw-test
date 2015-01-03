@@ -59,4 +59,14 @@ public class QuestionDaoImpl extends BaseDaoImpl<Question> implements IQuestionD
 		}
 		return hql;
 	}
+	/*
+	 * 加载最新常用问题数据。
+	 * @see com.examw.test.dao.records.IQuestionDao#loadTopQuestions(java.lang.Integer)
+	 */
+	@Override
+	public List<Question> loadTopQuestions(Integer top) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载最新［%d］常用问题数据...", top));
+		final String hql = "from Question q order by q.createTime desc";
+		return this.find(hql, null, 0, top == null ? 0 : top);
+	}
 }
