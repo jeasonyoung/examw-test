@@ -301,6 +301,7 @@ public class UserPaperRecordServiceImpl extends BaseDataServiceImpl<UserPaperRec
 		return this.userPaperRecordDao.findRecordLastTime(productId, userId,terminalId);
 	}
 	/*
+	 * 2014.12.28
 	 * 终端上传考试记录
 	 * @see com.examw.test.service.records.IUserPaperRecordService#updateRecords(com.examw.test.model.records.UserPaperRecordInfo[])
 	 */
@@ -311,8 +312,23 @@ public class UserPaperRecordServiceImpl extends BaseDataServiceImpl<UserPaperRec
 		{
 			for(UserPaperRecordInfo info:records)
 			{
-				this.update(info);
+				this.updateRecordFromTerminal(info);
 			}
 		}
+	}
+	/**
+	 * 终端上传考试记录
+	 * @param info
+	 */
+	private void updateRecordFromTerminal(UserPaperRecordInfo info)
+	{
+		/*
+		 * 没考虑修改的情况,只传了做完了的记录
+		 */
+		UserPaperRecord data = StringUtils.isEmpty(info.getId()) ? null : this.userPaperRecordDao.load(UserPaperRecord.class, info.getId());
+		if(data != null){
+			return;
+		}
+		this.update(info);
 	}
 }

@@ -54,4 +54,9 @@ public interface IUserItemFavoriteService extends IDataService<UserItemFavoriteI
 	 * @return
 	 */
 	List<FrontSubjectInfo> loadProductFrontSubjects(String productId,String userId);
+	/**
+	 * 从终端上传收藏
+	 * @param favors
+	 */
+	void batchAddFavors(UserItemFavoriteInfo[] favors);
 }

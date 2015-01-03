@@ -518,4 +518,19 @@ public class FrontDataController {
 		}
 		return result;
 	}
+	@RequestMapping(value = {"/favorites/add"}, method = {RequestMethod.POST})
+	@ResponseBody
+	public Json addFavorites(@RequestBody UserItemFavoriteInfo[] favors){
+		if(logger.isDebugEnabled()) logger.debug("添加用户试卷记录...");
+		Json result = new Json();
+		try {
+			this.userItemFavoriteService.batchAddFavors(favors);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("添加用户试卷记录发生异常：" + e.getMessage(), e);
+		}
+		return result;
+	}
 }

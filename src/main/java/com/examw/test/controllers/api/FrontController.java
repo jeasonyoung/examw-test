@@ -274,7 +274,7 @@ public class FrontController {
 	 */
 	@RequestMapping(value = {"/products/{productId}/papersupdate"}, method = { RequestMethod.GET })
 	@ResponseBody
-	public List<FrontPaperInfo> loadNeedUpdatePapers(String productId,long lastTime)
+	public List<FrontPaperInfo> loadNeedUpdatePapers(@PathVariable String productId,long lastTime)
 	{
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载产品下[%1$s]日期[%2$s]后的试卷数据集合...", productId,lastTime));
 		return this.frontPaperService.loadNeedUpdatePapers(productId,new Date(lastTime));
