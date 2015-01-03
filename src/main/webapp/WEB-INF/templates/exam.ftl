@@ -1,356 +1,119 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<#--è€ƒè¯•é¡µé¢-->
+<#include "/inc.ftl" />
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
-<title>¿¼ÊÔÒ³Ãæ</title>
-<link href="img/pub.css" rel="stylesheet" type="text/css" />
-<link href="img/index.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="http://img.examw.com/jQuery.js"></script>
-</head>
-
-<body>
-<div class="topbox">
-	<div class="main">
-        <div class="top-l">
-            <ul>
-                <li><a class="shy" href="http://www.examw.com/">Ê×Ò³</a></li>
-                <li><a href="/ksbd/fdc/">±¦µä</a></li>
-                <li><a href="/zl/class/">ÍøÐ£</a></li>
-                <li><a href="http://test.examw.com/91/">Ä£¿¼</a></li>
-                <li><a href="http://test.examw.com/91/">ÂÛÌ³</a></li>
-                <li class="brno"><a href="http://book.examw.com/fdc/">Í¼Êé</a></li>
-            </ul>
-        </div>
-        <div class="top-r">
-        	<div class="log"><a href="#" target="_blank">µÇÂ½</a></div>
-            <div class="ge fl">|</div>
-            <div class="log"><a href="#" target="_blank">×¢²á</a></div>
-            <div class="vip fl"><a href="#">¸öÈËÖÐÐÄ</a></div>
-        </div>
-    </div>
-</div>
-<div class="main">
-	<div class="logo fl"><a href="http://www.examw.com/"><img src="http://img.examw.com/index/logo.png" width="281" height="92" /></a></div>
-    <div class="tel">
-        <div class="telnum">4000-525-585</div>
-        <div class="teltime">·þÎñÊ±¼ä&nbsp;&nbsp;08£º30 - 21£º30</div>
-    </div>
-</div>
-<div class="menubox fl bulebg">
-	<div class="menu">
-        <ul>
-            <li><a href="http://test.examw.com/91/">Ê×Ò³</a></li>
-            <li><a href="#">¿¼ÊÔ·ÖÀà</a></li>
-            <li><a href="#">×îÐÂÊÔ¾í</a></li>
-            <li><a href="#">ÊÔ¾íÅÅÐÐ</a></li>
-            <li><a href="#">³£¼ûÎÊÌâ</a></li>
-        </ul>
-        <div class="my"><a href="#" target="_blank"></a></div>
-    </div>
-</div>
-<div class="h20"></div>
-<div class="main">
-	<div class="weizhi fl"><span></span>µ±Ç°Î»ÖÃ£º<a href="#">Ê×Ò³</a><i>&gt;</i>Ò»¼¶½¨ÔìÊ¦</div>
-</div>
-<div class="h1d"></div>
-<div class="h1f"></div>
-<div class="h20"></div>
-<div class="main">
-	<div class="titbox bulebg fl">Ãâ·ÑÏÂÔØÊÔÓÃ</div><div class="titboxbg"></div>
-    <div class="content yinying">
-        <div class="porduct-list">
-            <ul>
-                <li class="porduct-top">
-                    <div class="title">
-                        <em class="txt">²úÆ·Ãû³Æ</em>
-                        <span>²úÆ·¼Û¸ñ</span>
-                        <span>ÓÅ»Ý¼Û</span>
-                        <span>ÊÔÌâÊýÁ¿</span>
-                        <i>Ãâ·ÑÌåÑé</i>
-                    </div>
-                </li>
-                <li class="out" onMouseOver="this.className='over'" onMouseOut="this.className='out'">
-                    <div class="title">
-                        <em>&middot;<a href="#" target="_blank" title="2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)">2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)ÄêÈËÁ¦×ÊÔ´¹ÜÀíÊ¦</a></em>
-                        <span>50Ôª</span>
-                        <span class="red">0Ôª</span>
-                        <span>30Ìâ</span>
-                        <i><div class="buy"><a href="#" target="_blank">ÎÒÒª¹ºÂò</a></div><div class="tiyan"><a href="#" target="_blank">Ãâ·ÑÌåÑé</a></div></i>
-                    </div>
-                </li>
-                <li class="out" onMouseOver="this.className='over'" onMouseOut="this.className='out'">
-                    <div class="title">
-                        <em>&middot;<a href="#" target="_blank" title="2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)">2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)ÄêÈËÁ¦×ÊÔ´¹ÜÀíÊ¦</a></em>
-                        <span>50Ôª</span>
-                        <span class="red">0Ôª</span>
-                        <span>30Ìâ</span>
-                        <i><div class="buy"><a href="#" target="_blank">ÎÒÒª¹ºÂò</a></div><div class="tiyan"><a href="#" target="_blank">Ãâ·ÑÌåÑé</a></div></i>
-                    </div>
-                </li>
-                <li class="out" onMouseOver="this.className='over'" onMouseOut="this.className='out'">
-                    <div class="title">
-                        <em>&middot;<a href="#" target="_blank" title="2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)">2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)ÄêÈËÁ¦×ÊÔ´¹ÜÀíÊ¦</a></em>
-                        <span>50Ôª</span>
-                        <span class="red">0Ôª</span>
-                        <span>30Ìâ</span>
-                        <i><div class="buy"><a href="#" target="_blank">ÎÒÒª¹ºÂò</a></div><div class="tiyan"><a href="#" target="_blank">Ãâ·ÑÌåÑé</a></div></i>
-                    </div>
-                </li>
-                <li class="out" onMouseOver="this.className='over'" onMouseOut="this.className='out'">
-                    <div class="title">
-                        <em>&middot;<a href="#" target="_blank" title="2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)">2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)ÄêÈËÁ¦×ÊÔ´¹ÜÀíÊ¦</a></em>
-                        <span>50Ôª</span>
-                        <span class="red">0Ôª</span>
-                        <span>30Ìâ</span>
-                        <i><div class="buy"><a href="#" target="_blank">ÎÒÒª¹ºÂò</a></div><div class="tiyan"><a href="#" target="_blank">Ãâ·ÑÌåÑé</a></div></i>
-                    </div>
-                </li>
-                <li class="out" onMouseOver="this.className='over'" onMouseOut="this.className='out'">
-                    <div class="title">
-                        <em>&middot;<a href="#" target="_blank" title="2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)">2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)ÄêÈËÁ¦×ÊÔ´¹ÜÀíÊ¦</a></em>
-                        <span>50Ôª</span>
-                        <span class="red">0Ôª</span>
-                        <span>30Ìâ</span>
-                        <i><div class="buy"><a href="#" target="_blank">ÎÒÒª¹ºÂò</a></div><div class="tiyan"><a href="#" target="_blank">Ãâ·ÑÌåÑé</a></div></i>
-                    </div>
-                </li>
-                <li class="out" onMouseOver="this.className='over'" onMouseOut="this.className='out'">
-                    <div class="title">
-                        <em>&middot;<a href="#" target="_blank" title="2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)">2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)ÄêÈËÁ¦×ÊÔ´¹ÜÀíÊ¦</a></em>
-                        <span>50Ôª</span>
-                        <span class="red">0Ôª</span>
-                        <span>30Ìâ</span>
-                        <i><div class="buy"><a href="#" target="_blank">ÎÒÒª¹ºÂò</a></div><div class="tiyan"><a href="#" target="_blank">Ãâ·ÑÌåÑé</a></div></i>
-                    </div>
-                </li>
-                <li class="out" onMouseOver="this.className='over'" onMouseOut="this.className='out'">
-                    <div class="title">
-                        <em>&middot;<a href="#" target="_blank" title="2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)">2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)ÄêÈËÁ¦×ÊÔ´¹ÜÀíÊ¦</a></em>
-                        <span>50Ôª</span>
-                        <span class="red">0Ôª</span>
-                        <span>30Ìâ</span>
-                        <i><div class="buy"><a href="#" target="_blank">ÎÒÒª¹ºÂò</a></div><div class="tiyan"><a href="#" target="_blank">Ãâ·ÑÌåÑé</a></div></i>
-                    </div>
-                </li>
-                <li class="out" onMouseOver="this.className='over'" onMouseOut="this.className='out'">
-                    <div class="title">
-                        <em>&middot;<a href="#" target="_blank" title="2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)">2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)ÄêÈËÁ¦×ÊÔ´¹ÜÀíÊ¦</a></em>
-                        <span>50Ôª</span>
-                        <span class="red">0Ôª</span>
-                        <span>30Ìâ</span>
-                        <i><div class="buy"><a href="#" target="_blank">ÎÒÒª¹ºÂò</a></div><div class="tiyan"><a href="#" target="_blank">Ãâ·ÑÌåÑé</a></div></i>
-                    </div>
-                </li>
-                <li class="out" onMouseOver="this.className='over'" onMouseOut="this.className='out'">
-                    <div class="title">
-                        <em>&middot;<a href="#" target="_blank" title="2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)">2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)ÄêÈËÁ¦×ÊÔ´¹ÜÀíÊ¦</a></em>
-                        <span>50Ôª</span>
-                        <span class="red">0Ôª</span>
-                        <span>30Ìâ</span>
-                        <i><div class="buy"><a href="#" target="_blank">ÎÒÒª¹ºÂò</a></div><div class="tiyan"><a href="#" target="_blank">Ãâ·ÑÌåÑé</a></div></i>
-                    </div>
-                </li>
-                <li class="out" onMouseOver="this.className='over'" onMouseOut="this.className='out'">
-                    <div class="title">
-                        <em>&middot;<a href="#" target="_blank" title="2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)">2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)ÄêÈËÁ¦×ÊÔ´¹ÜÀíÊ¦</a></em>
-                        <span>50Ôª</span>
-                        <span class="red">0Ôª</span>
-                        <span>30Ìâ</span>
-                        <i><div class="buy"><a href="#" target="_blank">ÎÒÒª¹ºÂò</a></div><div class="tiyan"><a href="#" target="_blank">Ãâ·ÑÌåÑé</a></div></i>
-                    </div>
-                </li>
-                <li class="out" onMouseOver="this.className='over'" onMouseOut="this.className='out'">
-                    <div class="title">
-                        <em>&middot;<a href="#" target="_blank" title="2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)">2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)ÄêÈËÁ¦×ÊÔ´¹ÜÀíÊ¦</a></em>
-                        <span>50Ôª</span>
-                        <span class="red">0Ôª</span>
-                        <span>30Ìâ</span>
-                        <i><div class="buy"><a href="#" target="_blank">ÎÒÒª¹ºÂò</a></div><div class="tiyan"><a href="#" target="_blank">Ãâ·ÑÌåÑé</a></div></i>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <div class="h30"></div>
-    <div class="titbox bulebg fl">Èí¼þÌØÉ«</div><div class="titboxbg"></div>
-    <div class="tesebox fl">
-        <div class="tese btno">
-        	<div class="pic fl"><img src="img/01.jpg" width="530" height="299" /></div>
-            <div class="cont fr">
-            	<div class="one"></div>
-                <i>È«ÕæÄ£¿¼</i>
-                <span>ÒÀÍÐÐÐÒµ×îÏÈ½øÖÇÄÜËã·¨£¬ÅäºÏÐÐÒµ×îÈ«Ãæ¿¼Ìâ£¬ÊÔ¾íÑÏ¸ñ°´ÕÕÀúÄê¿¼ÊÔ³öÌâÇé¿ö¡¢ÖªÊ¶µã·Ö²¼Çé¿ö¼°½ñÄêÃüÌâ·½Ïò·ÖÎö½øÐÐ±àÖÆ£¬Ä£ÄâÕæÊµ¿¼ÊÔ»·¾³£¬ÈÃ¿¼ÊÔ²»ÔÙÄ°Éú£¬ÈÃÄãÑ§Ï°¿¼ÊÔ¸ü¼òµ¥£¡</span>
-                <em><div class="hong-btn"><a href="#">Á¢¼´×öÌâ</a></div></em>
-            </div>
-        </div>
-        <div class="tese">
-        	<div class="pic fr"><img src="img/02.jpg" width="530" height="299" /></div>
-            <div class="cont fl">
-            	<div class="two"></div>
-                <i>´óÊý¾Ý±£¹ý</i>
-                <span>¸ù¾Ýº£Á¿ÓÃ»§×öÌâµÄÖÇÄÜ»¯·ÖÎöÅÐ¶ÏÊý¾Ý£¬·ÖÎö´íÌâ£¬Ò×´íÖªÊ¶µã, ÀúÄêÕæÌâ³öÌâ»úÂÊ£¬¾«×¼Ô¤²â¿¼µã£®¿¼Ìâ£®ÃüÌâ£¬È«Î¬¶È»®¶¨Ê·ÉÏ×îÐ¡¿¼ÊÔ·¶Î§£¬ÎÞÏÞ½Ó½ü¿¼ÊÔ£¬×öµÄ¾ÍÊÇ×î½Ó½ü¿¼ÊÔµÄÊÔÌâ¡£</span>
-                <em><div class="hong-btn"><a href="#">Á¢¼´×öÌâ</a></div></em>
-            </div>
-        </div>
-        <div class="tese">
-        	<div class="pic fl"><img src="img/03.jpg" width="530" height="299" /></div>
-            <div class="cont fr">
-            	<div class="three"></div>
-            	<i>×ÔÓÉ×é¾í</i>
-                <span>×ÔÓÉ×é¾í£¬¿ÉÑ¡ÌâÐÍ¡¢ÄÑ¶È¡¢´íÎóÂÊ£¬µÈ¶àÖÖ·½Ê½¡£´Ó»ù´¡Ñ§Ï°½×¶Î£¬µ½³å´Ì¸´Ï°½×¶Î£¬ÔÙµ½¿¼Ç°¼ì²â½×¶Î£¬Äú¶¼ÄÜÔÚÌâ¿âÄÚÕÒµ½ÏàÓ¦µÄÁ·Ï°£¬°ïÖúÄúÑ¸ËÙÌá¸ß³É¼¨¡£</span>
-                <em><div class="hong-btn"><a href="#">Á¢¼´×öÌâ</a></div></em>
-            </div>
-        </div>
-        <div class="tese">
-        	<div class="pic fr"><img src="img/04.jpg" width="530" height="299" /></div>
-            <div class="cont fl">
-            	<div class="four"></div>
-            	<i>´íÌâÊÕ²Ø</i>
-                <span>½»¾íÖ®ºó¿ÉÏµÍ³×Ô¶¯Åú¸Ä£¬´íÌâ×Ô¶¯¼ÇÂ¼²¢ÇÒ¶¼ÓÐÏêÏ¸½âÎö£¬ ±ãÓÚ¸´Ï°±¡Èõ¿¼µã¡£</span>
-                <em><div class="hong-btn"><a href="#">Á¢¼´×öÌâ</a></div></em>
-            </div>
-        </div>
-        <div class="tese">
-        	<div class="pic fl"><img src="img/05.jpg" width="530" height="299" /></div>
-            <div class="cont fr">
-            	<div class="five"></div>
-            	<i>×¨Òµ´ðÒÉ</i>
-                <span>Ñ§¹óÖªÒÉ£¬Ñ§Ï°ÒÉÄÑÎÊÀÏÊ¦£¬ÓÐÒÉÎÊËæÊ±Ìá½»£¬×¨Òµ´ðÒÉÀÏÊ¦½â¾ö¸öÐÔ»¯Ñ§Ï°ÄÑÌâ¡£</span>
-                <em><div class="hong-btn"><a href="#">Á¢¼´×öÌâ</a></div></em>
-            </div>
-        </div>
-        <div class="tese bbno">
-        	<div class="pic fr"><img src="img/06.jpg" width="530" height="299" /></div>
-            <div class="cont fl">
-            	<div class="six"></div>
-            	<i>ÖÕÉíÊ¹ÓÃ</i>
-                <span>Ò»´Î¹ºÂò£¬ÖÕÉíÃâ·ÑÉý¼¶£¬²¢Ö§³ÖµçÄÔ£¬ÊÖ»úµÈ¶àÆ½Ì¨Ê¹ÓÃ¡£¿¼ÊÔÒ»µãÍ¨ÏÂÔØ°²×°²¢×¢²á³É¹¦Ö®ºó£¬ÄúÒ²¿ÉÒÔÀëÏßÊ¹ÓÃËüÁË£¬³ä·ÖÀûÓÃÄúµÄËéÆ¬»¯Ê±¼ä½øÐÐÑ§Ï°¡£</span>
-                <em><div class="hong-btn"><a href="#">Á¢¼´×öÌâ</a></div></em>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="h30"></div>
-<div class="h1d"></div>
-<div class="newbox fl">
-	<div class="main">
-        <div class="newshj">
-        	<div class="newtit bulebg fl"><span><a href="#" target="_blank">¸ü¶à&gt;&gt;</a></span>×îÐÂÊÔ¾í</div><div class="newtitbg"></div>
-            <ul class="list-shj" id="list-shj">
-				<li class="shj">
-                	<p>&middot;<a href="#" title="2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)">2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)</a></p>
-                    <p class="btn"><span>1228ÈË²ÎÓë</span><a href="#">Ãâ·Ñ²âÊÔ</a></p>
-                </li>
-               	<li>
-                	<p>&middot;<a href="#" title="2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)">2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)</a></p>
-                    <p class="btn"><span>1228ÈË²ÎÓë</span><a href="#">Ãâ·Ñ²âÊÔ</a></p>
-                </li>
-                <li>
-                	<p>&middot;<a href="#" title="2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)">2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)</a></p>
-                    <p class="btn"><span>1228ÈË²ÎÓë</span><a href="#">Ãâ·Ñ²âÊÔ</a></p>
-                </li>
-                <li>
-                	<p>&middot;<a href="#" title="2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)">2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)</a></p>
-                    <p class="btn"><span>1228ÈË²ÎÓë</span><a href="#">Ãâ·Ñ²âÊÔ</a></p>
-                </li>
-                <li>
-                	<p>&middot;<a href="#" title="2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)">2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)</a></p>
-                    <p class="btn"><span>1228ÈË²ÎÓë</span><a href="#">Ãâ·Ñ²âÊÔ</a></p>
-                </li>
-                <li>
-                	<p>&middot;<a href="#" title="2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)">2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)</a></p>
-                    <p class="btn"><span>1228ÈË²ÎÓë</span><a href="#">Ãâ·Ñ²âÊÔ</a></p>
-                </li>
-                <li>
-                	<p>&middot;<a href="#" title="2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)">2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)</a></p>
-                    <p class="btn"><span>1228ÈË²ÎÓë</span><a href="#">Ãâ·Ñ²âÊÔ</a></p>
-                </li>
-                <li>
-                	<p>&middot;<a href="#" title="2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)">2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)</a></p>
-                    <p class="btn"><span>1228ÈË²ÎÓë</span><a href="#">Ãâ·Ñ²âÊÔ</a></p>
-                </li>
-                <li>
-                	<p>&middot;<a href="#" title="2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)">2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)</a></p>
-                    <p class="btn"><span>1228ÈË²ÎÓë</span><a href="#">Ãâ·Ñ²âÊÔ</a></p>
-                </li>
-                <li>
-                	<p>&middot;<a href="#" title="2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)">2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)</a></p>
-                    <p class="btn"><span>1228ÈË²ÎÓë</span><a href="#">Ãâ·Ñ²âÊÔ</a></p>
-                </li>
-			</ul>
-        </div>
-        <div class="newshj">
-        	<div class="newtit bulebg fl"><span><a href="#" target="_blank">¸ü¶à&gt;&gt;</a></span>ÈÈÃÅÊÔ¾í</div><div class="newtitbg"></div>
-            <ul class="list-shj" id="list-shj">
-				<li class="shj">
-                	<p>&middot;<a href="#" title="2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)">2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)</a></p>
-                    <p class="btn"><span>1228ÈË²ÎÓë</span><a href="#">Ãâ·Ñ²âÊÔ</a></p>
-                </li>
-               	<li>
-                	<p>&middot;<a href="#" title="2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)">2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)</a></p>
-                    <p class="btn"><span>1228ÈË²ÎÓë</span><a href="#">Ãâ·Ñ²âÊÔ</a></p>
-                </li>
-                <li>
-                	<p>&middot;<a href="#" title="2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)">2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)</a></p>
-                    <p class="btn"><span>1228ÈË²ÎÓë</span><a href="#">Ãâ·Ñ²âÊÔ</a></p>
-                </li>
-                <li>
-                	<p>&middot;<a href="#" title="2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)">2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)</a></p>
-                    <p class="btn"><span>1228ÈË²ÎÓë</span><a href="#">Ãâ·Ñ²âÊÔ</a></p>
-                </li>
-                <li>
-                	<p>&middot;<a href="#" title="2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)">2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)</a></p>
-                    <p class="btn"><span>1228ÈË²ÎÓë</span><a href="#">Ãâ·Ñ²âÊÔ</a></p>
-                </li>
-                <li>
-                	<p>&middot;<a href="#" title="2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)">2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)</a></p>
-                    <p class="btn"><span>1228ÈË²ÎÓë</span><a href="#">Ãâ·Ñ²âÊÔ</a></p>
-                </li>
-                <li>
-                	<p>&middot;<a href="#" title="2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)">2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)</a></p>
-                    <p class="btn"><span>1228ÈË²ÎÓë</span><a href="#">Ãâ·Ñ²âÊÔ</a></p>
-                </li>
-                <li>
-                	<p>&middot;<a href="#" title="2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)">2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)</a></p>
-                    <p class="btn"><span>1228ÈË²ÎÓë</span><a href="#">Ãâ·Ñ²âÊÔ</a></p>
-                </li>
-                <li>
-                	<p>&middot;<a href="#" title="2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)">2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)</a></p>
-                    <p class="btn"><span>1228ÈË²ÎÓë</span><a href="#">Ãâ·Ñ²âÊÔ</a></p>
-                </li>
-                <li>
-                	<p>&middot;<a href="#" title="2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâ(6)">2014ÄêÈ«¹ú»á¼Æ´ÓÒµ¿¼ÊÔ¡¶»á¼Æ»ù´¡¡·Ä£ÄâÊÔÌâÄ£(6)</a></p>
-                    <p class="btn"><span>1228ÈË²ÎÓë</span><a href="#">Ãâ·Ñ²âÊÔ</a></p>
-                </li>
-			</ul>
-        </div>
-        <div class="new-question">
-        	<div class="newtit bulebg fl"><span><a href="#" target="_blank">¸ü¶à&gt;&gt;</a></span>³£¼ûÎÊÌâ</div><div class="newtitbg"></div>
-            <ul class="list">
-            	<li>&middot;<a href="#" title="Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿">Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿</a></li>
-                <li>&middot;<a href="#" title="Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿">Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿</a></li>
-                <li>&middot;<a href="#" title="Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿">Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿</a></li>
-                <li>&middot;<a href="#" title="Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿">Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿</a></li>
-                <li>&middot;<a href="#" title="Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿">Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿</a></li>
-                <li>&middot;<a href="#" title="Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿">Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿</a></li>
-                <li>&middot;<a href="#" title="Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿">Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿</a></li>
-                <li>&middot;<a href="#" title="Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿">Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿</a></li>
-                <li>&middot;<a href="#" title="Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿">Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿</a></li>
-                <li>&middot;<a href="#" title="Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿">Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿</a></li>
-                <li>&middot;<a href="#" title="Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿">Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿</a></li>
-                <li>&middot;<a href="#" title="Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿">Ê¹ÓÃÖ°³Æ¼ÆËã»úÆÆ½â°æÓÐÊ²Ã´Î£º¦£¿</a></li>
-            </ul>
-        </div>
-    </div>
-</div>
-<div class="h1d"></div>
-<div class="h30"></div>
-<div class="footer">
-<div class="h1f"></div>
-<div class="nva"><a href="/about/">¹ØÓÚ±¾Õ¾</a>©®<a href="/about/map.htm">ÍøÕ¾µØÍ¼</a>©®<a href="/about/copyright.html">ÍøÕ¾ÉùÃ÷</a>©®<a href="/about/ads.html">¹ã¸æ·þÎñ</a>©®<a href="/link/">ÓÑÇéÁ´½Ó</a>©®<a href="/about/job/">³ÏÆ¸Ó¢²Å</a>©®<a href="/about/contact.html">ÁªÏµÎÒÃÇ</a>©®<a href="http: //bbs.examw.com/forum-4-1.html">Òâ¼û×ÉÑ¯</a></div>
-<div id="ft_about"></div>
-</div>
-<script language="javascript" src="http://img.examw.com/e.js"></script>
-<script language="javascript" src="img/new.js"></script>
-</body>
+	<head>
+		<title>${exam.name}-è€ƒè¯•é¡µé¢</title>
+		<#--å¤´éƒ¨èµ„æº-->
+		<@header_resources/>
+	</head>
+	<body>
+		<#--top banner-->
+		<@topbox/>
+		<div class="h20"></div>
+		<div class="main">
+			<div class="weizhi fl"><span></span>å½“å‰ä½ç½®ï¼š<a href="#">é¦–é¡µ</a><i>&gt;</i>${exam.name}</div>
+		</div>
+		<div class="h1d"></div>
+		<div class="h1f"></div>
+		<div class="h20"></div>
+		<div class="main">
+			<div class="titbox bulebg fl">å…è´¹ä¸‹è½½è¯•ç”¨</div><div class="titboxbg"></div>
+		    <div class="content yinying">
+		        <div class="porduct-list">
+		            <ul>
+		                <li class="porduct-top">
+		                    <div class="title">
+		                        <em class="txt">äº§å“åç§°</em>
+		                        <span>äº§å“ä»·æ ¼</span>
+		                        <span>ä¼˜æƒ ä»·</span>
+		                        <span>è¯•é¢˜æ•°é‡</span>
+		                        <i>å…è´¹ä½“éªŒ</i>
+		                    </div>
+		                </li>
+	                <#if exam.products??>
+	                <#list exam.products as p>
+	                	<#if (p.status == 1)>
+		                <li class="out" onMouseOver="this.className='over'" onMouseOut="this.className='out'">
+		                    <div class="title">
+		                        <em>&middot;<a href="#" target="_blank" title="${p.name}">${p.name}</a></em>
+		                        <span>${p.price}å…ƒ</span>
+		                        <span class="red">${p.discount}å…ƒ</span>
+		                        <span>${p.itemTotal}é¢˜</span>
+		                        <i><div class="buy"><a href="index-products-buy-${p.id}.html" target="_blank">æˆ‘è¦è´­ä¹°</a></div><div class="tiyan"><a href="index-products-${p.id}.html" target="_blank">å…è´¹ä½“éªŒ</a></div></i>
+		                    </div>
+		                </li>
+		                </#if>
+	                </#list>
+	                </#if>
+		            </ul>
+		        </div>
+		    </div>
+		    <div class="h30"></div>
+		    <div class="titbox bulebg fl">è½¯ä»¶ç‰¹è‰²</div><div class="titboxbg"></div>
+		    <div class="tesebox fl">
+		        <div class="tese btno">
+		        	<div class="pic fl"><img src="http://img.examw.com/test/01.jpg" width="530" height="299" /></div>
+		            <div class="cont fr">
+		            	<div class="one"></div>
+		                <i>å…¨çœŸæ¨¡è€ƒ</i>
+		                <span>ä¾æ‰˜è¡Œä¸šæœ€å…ˆè¿›æ™ºèƒ½ç®—æ³•ï¼Œé…åˆè¡Œä¸šæœ€å…¨é¢è€ƒé¢˜ï¼Œè¯•å·ä¸¥æ ¼æŒ‰ç…§åŽ†å¹´è€ƒè¯•å‡ºé¢˜æƒ…å†µã€çŸ¥è¯†ç‚¹åˆ†å¸ƒæƒ…å†µåŠä»Šå¹´å‘½é¢˜æ–¹å‘åˆ†æžè¿›è¡Œç¼–åˆ¶ï¼Œæ¨¡æ‹ŸçœŸå®žè€ƒè¯•çŽ¯å¢ƒï¼Œè®©è€ƒè¯•ä¸å†é™Œç”Ÿï¼Œè®©ä½ å­¦ä¹ è€ƒè¯•æ›´ç®€å•ï¼</span>
+		                <em><div class="hong-btn"><a href="#">ç«‹å³åšé¢˜</a></div></em>
+		            </div>
+		        </div>
+		        <div class="tese">
+		        	<div class="pic fr"><img src="http://img.examw.com/test/02.jpg" width="530" height="299" /></div>
+		            <div class="cont fl">
+		            	<div class="two"></div>
+		                <i>å¤§æ•°æ®ä¿è¿‡</i>
+		                <span>æ ¹æ®æµ·é‡ç”¨æˆ·åšé¢˜çš„æ™ºèƒ½åŒ–åˆ†æžåˆ¤æ–­æ•°æ®ï¼Œåˆ†æžé”™é¢˜ï¼Œæ˜“é”™çŸ¥è¯†ç‚¹, åŽ†å¹´çœŸé¢˜å‡ºé¢˜æœºçŽ‡ï¼Œç²¾å‡†é¢„æµ‹è€ƒç‚¹ï¼Žè€ƒé¢˜ï¼Žå‘½é¢˜ï¼Œå…¨ç»´åº¦åˆ’å®šå²ä¸Šæœ€å°è€ƒè¯•èŒƒå›´ï¼Œæ— é™æŽ¥è¿‘è€ƒè¯•ï¼Œåšçš„å°±æ˜¯æœ€æŽ¥è¿‘è€ƒè¯•çš„è¯•é¢˜ã€‚</span>
+		                <em><div class="hong-btn"><a href="#">ç«‹å³åšé¢˜</a></div></em>
+		            </div>
+		        </div>
+		        <div class="tese">
+		        	<div class="pic fl"><img src="http://img.examw.com/test/03.jpg" width="530" height="299" /></div>
+		            <div class="cont fr">
+		            	<div class="three"></div>
+		            	<i>è‡ªç”±ç»„å·</i>
+		                <span>è‡ªç”±ç»„å·ï¼Œå¯é€‰é¢˜åž‹ã€éš¾åº¦ã€é”™è¯¯çŽ‡ï¼Œç­‰å¤šç§æ–¹å¼ã€‚ä»ŽåŸºç¡€å­¦ä¹ é˜¶æ®µï¼Œåˆ°å†²åˆºå¤ä¹ é˜¶æ®µï¼Œå†åˆ°è€ƒå‰æ£€æµ‹é˜¶æ®µï¼Œæ‚¨éƒ½èƒ½åœ¨é¢˜åº“å†…æ‰¾åˆ°ç›¸åº”çš„ç»ƒä¹ ï¼Œå¸®åŠ©æ‚¨è¿…é€Ÿæé«˜æˆç»©ã€‚</span>
+		                <em><div class="hong-btn"><a href="#">ç«‹å³åšé¢˜</a></div></em>
+		            </div>
+		        </div>
+		        <div class="tese">
+		        	<div class="pic fr"><img src="http://img.examw.com/test/04.jpg" width="530" height="299" /></div>
+		            <div class="cont fl">
+		            	<div class="four"></div>
+		            	<i>é”™é¢˜æ”¶è—</i>
+		                <span>äº¤å·ä¹‹åŽå¯ç³»ç»Ÿè‡ªåŠ¨æ‰¹æ”¹ï¼Œé”™é¢˜è‡ªåŠ¨è®°å½•å¹¶ä¸”éƒ½æœ‰è¯¦ç»†è§£æžï¼Œ ä¾¿äºŽå¤ä¹ è–„å¼±è€ƒç‚¹ã€‚</span>
+		                <em><div class="hong-btn"><a href="#">ç«‹å³åšé¢˜</a></div></em>
+		            </div>
+		        </div>
+		        <div class="tese">
+		        	<div class="pic fl"><img src="http://img.examw.com/test/05.jpg" width="530" height="299" /></div>
+		            <div class="cont fr">
+		            	<div class="five"></div>
+		            	<i>ä¸“ä¸šç­”ç–‘</i>
+		                <span>å­¦è´µçŸ¥ç–‘ï¼Œå­¦ä¹ ç–‘éš¾é—®è€å¸ˆï¼Œæœ‰ç–‘é—®éšæ—¶æäº¤ï¼Œä¸“ä¸šç­”ç–‘è€å¸ˆè§£å†³ä¸ªæ€§åŒ–å­¦ä¹ éš¾é¢˜ã€‚</span>
+		                <em><div class="hong-btn"><a href="#">ç«‹å³åšé¢˜</a></div></em>
+		            </div>
+		        </div>
+		        <div class="tese bbno">
+		        	<div class="pic fr"><img src="http://img.examw.com/test/06.jpg" width="530" height="299" /></div>
+		            <div class="cont fl">
+		            	<div class="six"></div>
+		            	<i>ç»ˆèº«ä½¿ç”¨</i>
+		                <span>ä¸€æ¬¡è´­ä¹°ï¼Œç»ˆèº«å…è´¹å‡çº§ï¼Œå¹¶æ”¯æŒç”µè„‘ï¼Œæ‰‹æœºç­‰å¤šå¹³å°ä½¿ç”¨ã€‚è€ƒè¯•ä¸€ç‚¹é€šä¸‹è½½å®‰è£…å¹¶æ³¨å†ŒæˆåŠŸä¹‹åŽï¼Œæ‚¨ä¹Ÿå¯ä»¥ç¦»çº¿ä½¿ç”¨å®ƒäº†ï¼Œå……åˆ†åˆ©ç”¨æ‚¨çš„ç¢Žç‰‡åŒ–æ—¶é—´è¿›è¡Œå­¦ä¹ ã€‚</span>
+		                <em><div class="hong-btn"><a href="#">ç«‹å³åšé¢˜</a></div></em>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+		<div class="h30"></div>
+		<div class="h1d"></div>
+		<#--æœ€æ–°è¯•å·ã€æœ€çƒ­è¯•å·ã€å¸¸è§é—®é¢˜-->
+		<@news_hots_question/>
+		<div class="h1d"></div>
+		<div class="h30"></div>
+		<#--footer-->
+		<@footer/>
+	</body>
 </html>
