@@ -81,16 +81,26 @@
     <bean id="templateProcess" abstract="true" class="com.examw.test.service.publish.impl.BaseTemplateProcess">
         <!-- 模版根目录 -->
         <property name="templatesRoot" value="${publish_templates_dir}" />
+        <!-- 试卷发布数据接口 -->
+        <property name="paperReleaseDao" ref="paperReleaseDao" />
+        <!-- 用户试卷记录数据接口 -->
+        <property name="userPaperRecordDao" ref="userPaperRecordDao" />
+        <!-- 常用问题数据接口 -->
+        <property name="questionDao" ref="questionDao" />
     </bean>
     <!-- 首页模版处理器 -->
     <bean id="indexTemplateProcess" class="com.examw.test.service.publish.impl.IndexTemplateProcess" parent="templateProcess">
         <!-- 模版名称 -->
         <property name="templateName" value="${publish_templates_index}" />
+        <!-- 考试类别数据接口 -->
+        <property name="categoryDao" ref="categoryDao" />
     </bean>
     <!-- 考试模版处理器 -->
     <bean id="examTemplateProcess" class="com.examw.test.service.publish.impl.ExamTemplateProcess" parent="templateProcess">
         <!-- 模版名称 -->
         <property name="templateName" value="${publish_templates_exam}" />
+        <!-- 考试数据接口 -->
+        <property name="examDao" ref="examDao" />
     </bean>
     <!-- 产品模版处理器 -->
     <bean id="productTemplateProcess" class="com.examw.test.service.publish.impl.ProductTemplateProcess" parent="templateProcess">

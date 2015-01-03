@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.examw.test.dao.IBaseDao;
+import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.records.UserPaperRecord;
 import com.examw.test.model.records.UserPaperRecordInfo;
 
@@ -78,4 +79,12 @@ public interface IUserPaperRecordDao extends IBaseDao<UserPaperRecord> {
 	 * @return
 	 */
 	Date findRecordLastTime(String productId, String userId, Integer terminalId);
+	/**
+	 * 加载最热的试卷集合。
+	 * @param top
+	 * 试卷套数。
+	 * @return
+	 * 试卷集合。
+	 */
+	List<Paper> loadHotsPapers(Integer top);
 }

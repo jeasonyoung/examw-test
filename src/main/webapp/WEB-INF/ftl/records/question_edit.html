@@ -1,0 +1,14 @@
+<#--常见问题边界页面-->
+<#include "/comm.ftl"/>
+<#assign module = "records_question"/>
+<#assign form = "${module}_edit_form" />
+<form id="${form}" method="POST" style="padding:2px;">
+	<div style="float:left;margin-top:10px;width:100%;">
+		<label style="width:75px;">问题标题：</label>
+		<input name="title" class="easyui-textbox" required="true" missingMessage="请输入常见问题标题" data-options="icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}}]" style="width:498px;"/>
+		<input type="hidden" name="id"/>
+	</div>
+	<div style="float:left;margin-top:8px;margin-left:5px;">
+		<textarea name="content" class="easyui-ueditor" data-options="width:568,height:210"></textarea>
+	</div>
+</form>

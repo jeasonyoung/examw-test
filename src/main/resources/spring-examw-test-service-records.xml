@@ -45,4 +45,9 @@
 	    <!-- 科目服务接口 -->
 	    <property name="subjectService" ref="subjectService" />
 	</bean>
+	<!-- 常用问题服务 -->
+	<bean id="questionService" class="com.examw.test.service.records.impl.QuestionServiceImpl">
+	    <!-- 常用问题数据接口 -->
+	    <property name="questionDao" ref="questionDao" />
+	</bean>
 </beans>
