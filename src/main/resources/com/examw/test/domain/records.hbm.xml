@@ -11,7 +11,7 @@
 	    <!-- 所属试卷 -->
 	    <many-to-one name="paper" column="paper_id" class="com.examw.test.domain.library.Paper" not-null="true"/>
 	    <!-- 所属产品 -->
-	    <many-to-one name="product" column="product_id" class="com.examw.test.domain.products.Product" not-null="true"/>
+	    <many-to-one name="product" column="product_id" class="com.examw.test.domain.products.Product"/>
 	    <!-- 所属终端类型 -->
 	    <many-to-one name="terminal" column="terminal_id" class="com.examw.test.domain.products.SoftwareType" />
 	    <!-- 状态 -->
