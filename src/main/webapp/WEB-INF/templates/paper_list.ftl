@@ -1,207 +1,77 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<#--è¯•å·åˆ—è¡¨-->
+<#include "/inc.ftl" />
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
-<title>ÊÔ¾íÁÐ±í</title>
-<link href="img/pub.css" rel="stylesheet" type="text/css" />
-<link href="img/index.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="http://img.examw.com/jQuery.js"></script>
-</head>
-
-<body>
-<div class="topbox">
-	<div class="main">
-        <div class="top-l">
-            <ul>
-                <li><a class="shy" href="http://www.examw.com/">Ê×Ò³</a></li>
-                <li><a href="/ksbd/fdc/">±¦µä</a></li>
-                <li><a href="/zl/class/">ÍøÐ£</a></li>
-                <li><a href="http://test.examw.com/91/">Ä£¿¼</a></li>
-                <li><a href="http://test.examw.com/91/">ÂÛÌ³</a></li>
-                <li class="brno"><a href="http://book.examw.com/fdc/">Í¼Êé</a></li>
-            </ul>
-        </div>
-        <div class="top-r">
-        	<div class="log"><a href="#" target="_blank">µÇÂ½</a></div>
-            <div class="ge fl">|</div>
-            <div class="log"><a href="#" target="_blank">×¢²á</a></div>
-            <div class="vip fl"><a href="#">¸öÈËÖÐÐÄ</a></div>
-        </div>
-    </div>
-</div>
-<div class="main">
-	<div class="logo fl"><a href="http://www.examw.com/"><img src="http://img.examw.com/index/logo.png" width="281" height="92" /></a></div>
-    <div class="tel">
-        <div class="telnum">4000-525-585</div>
-        <div class="teltime">·þÎñÊ±¼ä&nbsp;&nbsp;08£º30 - 21£º30</div>
-    </div>
-</div>
-<div class="menubox fl bulebg">
-	<div class="menu">
-        <ul>
-            <li><a href="http://test.examw.com/91/">Ê×Ò³</a></li>
-            <li><a href="#">¿¼ÊÔ·ÖÀà</a></li>
-            <li><a href="#">×îÐÂÊÔ¾í</a></li>
-            <li><a href="#">ÊÔ¾íÅÅÐÐ</a></li>
-            <li><a href="#">³£¼ûÎÊÌâ</a></li>
-        </ul>
-        <div class="my"><a href="#" target="_blank"></a></div>
-    </div>
-</div>
-<div class="h20"></div>
-<div class="main">
-	<div class="weizhi fl"><span></span>µ±Ç°Î»ÖÃ£º<a href="#">Ê×Ò³</a><i>&gt;</i>½¨Öþ¹¤³Ì</div>
-</div>
-<div class="h1d"></div>
-<div class="h1f"></div>
-<div class="h20"></div>
-<div class="main">
-	<div class="titbox bulebg fl"><span><div class="cheng-btn"><a href="#">Ñ¡Ôñ²úÆ·</a></div></span>½¨Öþ¹¤³Ì</div><div class="titboxbg"></div>
-    <div class="content yinying">
-        <div class="siftbox fl">
-            <div class="f-l fl">¿ÆÄ¿£º</div>
-            <div class="f-r fr">
-               <div class="list">
-                    <ul>
-                        <li class="bg">È«²¿</li>
-                        <li><a href="#">Ò»¼¶½¨ÔìÊ¦</a></li>
-                        <li><a href="#">¶þ¼¶½¨ÔìÊ¦</a></li>
-                        <li><a href="#">Ôì¼Û¹¤³ÌÊ¦</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="h20"></div>
-    <div class="content yinying">
-        <div class="shjlist">
-            <ul>
-                <li class="shjout" onMouseOver="this.className='shjover'" onMouseOut="this.className='shjout'">
-                    <div class="title">
-                        <em>
-                            <div class="title"><a href="#" target="_blank" title="2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)">2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)ÄêÈËÁ¦×ÊÔ´¹ÜÀíÊ¦</a></div>
-                            <p>×ÜÌâ£º150 Ìâ</p><p>¿¼ÊÔÊ±³¤£º120·ÖÖÓ</p><p>×Ü·Ö£º100·Ö</p><p>ÌâÐÍ£ºÆÕÍ¨Ä£ÄâÌâ</p><p>117ÈË²Î¿¼</p>
-                        </em>
-                        <span>2014-12-15</span>
-                        <b>125½ð±Ò</b>
-                        <div class="buybtn"><div class="hei-btn"><a href="#">½øÈë×öÌâ</a></div></div>
-                    </div>
-                </li>
-                <li class="shjout" onMouseOver="this.className='shjover'" onMouseOut="this.className='shjout'">
-                    <div class="title">
-                        <em>
-                            <div class="title"><a href="#" target="_blank" title="2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)">2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)ÄêÈËÁ¦×ÊÔ´¹ÜÀíÊ¦</a></div>
-                            <p>×ÜÌâ£º150 Ìâ</p><p>¿¼ÊÔÊ±³¤£º120·ÖÖÓ</p><p>×Ü·Ö£º100·Ö</p><p>ÌâÐÍ£ºÆÕÍ¨Ä£ÄâÌâ</p><p>117ÈË²Î¿¼</p>
-                        </em>
-                        <span>2014-12-15</span>
-                        <b>125½ð±Ò</b>
-                        <div class="buybtn"><div class="hei-btn"><a href="#">½øÈë×öÌâ</a></div></div>
-                    </div>
-                </li>
-                <li class="shjout" onMouseOver="this.className='shjover'" onMouseOut="this.className='shjout'">
-                    <div class="title">
-                        <em>
-                            <div class="title"><a href="#" target="_blank" title="2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)">2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)ÄêÈËÁ¦×ÊÔ´¹ÜÀíÊ¦</a></div>
-                            <p>×ÜÌâ£º150 Ìâ</p><p>¿¼ÊÔÊ±³¤£º120·ÖÖÓ</p><p>×Ü·Ö£º100·Ö</p><p>ÌâÐÍ£ºÆÕÍ¨Ä£ÄâÌâ</p><p>117ÈË²Î¿¼</p>
-                        </em>
-                        <span>2014-12-15</span>
-                        <b>125½ð±Ò</b>
-                        <div class="buybtn"><div class="hei-btn"><a href="#">½øÈë×öÌâ</a></div></div>
-                    </div>
-                </li>
-                <li class="shjout" onMouseOver="this.className='shjover'" onMouseOut="this.className='shjout'">
-                    <div class="title">
-                        <em>
-                            <div class="title"><a href="#" target="_blank" title="2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)">2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)ÄêÈËÁ¦×ÊÔ´¹ÜÀíÊ¦</a></div>
-                            <p>×ÜÌâ£º150 Ìâ</p><p>¿¼ÊÔÊ±³¤£º120·ÖÖÓ</p><p>×Ü·Ö£º100·Ö</p><p>ÌâÐÍ£ºÆÕÍ¨Ä£ÄâÌâ</p><p>117ÈË²Î¿¼</p>
-                        </em>
-                        <span>2014-12-15</span>
-                        <b>125½ð±Ò</b>
-                        <div class="buybtn"><div class="hei-btn"><a href="#">½øÈë×öÌâ</a></div></div>
-                    </div>
-                </li>
-                <li class="shjout" onMouseOver="this.className='shjover'" onMouseOut="this.className='shjout'">
-                    <div class="title">
-                        <em>
-                            <div class="title"><a href="#" target="_blank" title="2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)">2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)ÄêÈËÁ¦×ÊÔ´¹ÜÀíÊ¦</a></div>
-                            <p>×ÜÌâ£º150 Ìâ</p><p>¿¼ÊÔÊ±³¤£º120·ÖÖÓ</p><p>×Ü·Ö£º100·Ö</p><p>ÌâÐÍ£ºÆÕÍ¨Ä£ÄâÌâ</p><p>117ÈË²Î¿¼</p>
-                        </em>
-                        <span>2014-12-15</span>
-                        <b>125½ð±Ò</b>
-                        <div class="buybtn"><div class="hei-btn"><a href="#">½øÈë×öÌâ</a></div></div>
-                    </div>
-                </li>
-                <li class="shjout" onMouseOver="this.className='shjover'" onMouseOut="this.className='shjout'">
-                    <div class="title">
-                        <em>
-                            <div class="title"><a href="#" target="_blank" title="2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)">2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)ÄêÈËÁ¦×ÊÔ´¹ÜÀíÊ¦</a></div>
-                            <p>×ÜÌâ£º150 Ìâ</p><p>¿¼ÊÔÊ±³¤£º120·ÖÖÓ</p><p>×Ü·Ö£º100·Ö</p><p>ÌâÐÍ£ºÆÕÍ¨Ä£ÄâÌâ</p><p>117ÈË²Î¿¼</p>
-                        </em>
-                        <span>2014-12-15</span>
-                        <b>125½ð±Ò</b>
-                        <div class="buybtn"><div class="hei-btn"><a href="#">½øÈë×öÌâ</a></div></div>
-                    </div>
-                </li>
-                <li class="shjout" onMouseOver="this.className='shjover'" onMouseOut="this.className='shjout'">
-                    <div class="title">
-                        <em>
-                            <div class="title"><a href="#" target="_blank" title="2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)">2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)ÄêÈËÁ¦×ÊÔ´¹ÜÀíÊ¦</a></div>
-                            <p>×ÜÌâ£º150 Ìâ</p><p>¿¼ÊÔÊ±³¤£º120·ÖÖÓ</p><p>×Ü·Ö£º100·Ö</p><p>ÌâÐÍ£ºÆÕÍ¨Ä£ÄâÌâ</p><p>117ÈË²Î¿¼</p>
-                        </em>
-                        <span>2014-12-15</span>
-                        <b>125½ð±Ò</b>
-                        <div class="buybtn"><div class="hei-btn"><a href="#">½øÈë×öÌâ</a></div></div>
-                    </div>
-                </li>
-                <li class="shjout" onMouseOver="this.className='shjover'" onMouseOut="this.className='shjout'">
-                    <div class="title">
-                        <em>
-                            <div class="title"><a href="#" target="_blank" title="2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)">2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)ÄêÈËÁ¦×ÊÔ´¹ÜÀíÊ¦</a></div>
-                            <p>×ÜÌâ£º150 Ìâ</p><p>¿¼ÊÔÊ±³¤£º120·ÖÖÓ</p><p>×Ü·Ö£º100·Ö</p><p>ÌâÐÍ£ºÆÕÍ¨Ä£ÄâÌâ</p><p>117ÈË²Î¿¼</p>
-                        </em>
-                        <span>2014-12-15</span>
-                        <b>125½ð±Ò</b>
-                        <div class="buybtn"><div class="hei-btn"><a href="#">½øÈë×öÌâ</a></div></div>
-                    </div>
-                </li>
-                <li class="shjout" onMouseOver="this.className='shjover'" onMouseOut="this.className='shjout'">
-                    <div class="title">
-                        <em>
-                            <div class="title"><a href="#" target="_blank" title="2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)">2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)ÄêÈËÁ¦×ÊÔ´¹ÜÀíÊ¦</a></div>
-                            <p>×ÜÌâ£º150 Ìâ</p><p>¿¼ÊÔÊ±³¤£º120·ÖÖÓ</p><p>×Ü·Ö£º100·Ö</p><p>ÌâÐÍ£ºÆÕÍ¨Ä£ÄâÌâ</p><p>117ÈË²Î¿¼</p>
-                        </em>
-                        <span>2014-12-15</span>
-                        <b>125½ð±Ò</b>
-                        <div class="buybtn"><div class="hei-btn"><a href="#">½øÈë×öÌâ</a></div></div>
-                    </div>
-                </li>
-                <li class="shjout" onMouseOver="this.className='shjover'" onMouseOut="this.className='shjout'">
-                    <div class="title">
-                        <em>
-                            <div class="title"><a href="#" target="_blank" title="2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)">2014°æÒ»¼¶½¨ÔìÊ¦(¹«¹²¿ÆÄ¿+ÊÐÕþ¹«ÓÃ¹¤³Ì)ÄêÈËÁ¦×ÊÔ´¹ÜÀíÊ¦</a></div>
-                            <p>×ÜÌâ£º150 Ìâ</p><p>¿¼ÊÔÊ±³¤£º120·ÖÖÓ</p><p>×Ü·Ö£º100·Ö</p><p>ÌâÐÍ£ºÆÕÍ¨Ä£ÄâÌâ</p><p>117ÈË²Î¿¼</p>
-                        </em>
-                        <span>2014-12-15</span>
-                        <b>125½ð±Ò</b>
-                        <div class="buybtn"><div class="hei-btn"><a href="#">½øÈë×öÌâ</a></div></div>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div class="h20"></div>
-        <div class="page fl">
-            <a href="#">1</a><em>...</em><span>8</span><a href="#">9</a><a href="#">10</a><a href="#">11</a><a href="#">12</a><a href="#">13</a><a href="#">14</a><em>...</em><a href="#">28</a><em><b>µÚ 2/69 Ò³</b></em><em><input class="box" type="text" name="input" size="15px"></em><em><a class="txt" href="javascript:void(0)">Ìø×ª</a></em>
-        </div>
-        <div class="h20"></div>
-    </div>
-</div>
-<div class="h30"></div>
-<div class="footer">
-<div class="h1f"></div>
-<div class="nva"><a href="/about/">¹ØÓÚ±¾Õ¾</a>©®<a href="/about/map.htm">ÍøÕ¾µØÍ¼</a>©®<a href="/about/copyright.html">ÍøÕ¾ÉùÃ÷</a>©®<a href="/about/ads.html">¹ã¸æ·þÎñ</a>©®<a href="/link/">ÓÑÇéÁ´½Ó</a>©®<a href="/about/job/">³ÏÆ¸Ó¢²Å</a>©®<a href="/about/contact.html">ÁªÏµÎÒÃÇ</a>©®<a href="http: //bbs.examw.com/forum-4-1.html">Òâ¼û×ÉÑ¯</a></div>
-<div id="ft_about"></div>
-</div>
-<script language="javascript" src="http://img.examw.com/e.js"></script>
-<script language="javascript" src="img/new.js"></script>
-</body>
+	<head>
+		<title>è¯•å·åˆ—è¡¨</title>
+		<#--å¤´éƒ¨èµ„æº-->
+		<@header_resources/>
+	</head>
+	<body>
+		<#--top banner-->
+		<@topbox/>
+		<div class="h20"></div>
+		<div class="main">
+			<div class="weizhi fl"><span></span>å½“å‰ä½ç½®ï¼š<a href="#">é¦–é¡µ</a><i>&gt;</i>å»ºç­‘å·¥ç¨‹</div>
+		</div>
+		<div class="h1d"></div>
+		<div class="h1f"></div>
+		<div class="h20"></div>
+		<div class="main">
+			<div class="titbox bulebg fl"><span><div class="cheng-btn"><a href="#">é€‰æ‹©äº§å“</a></div></span>å»ºç­‘å·¥ç¨‹</div><div class="titboxbg"></div>
+		    <div class="content yinying">
+		        <div class="siftbox fl">
+		            <div class="f-l fl">ç§‘ç›®ï¼š</div>
+		            <div class="f-r fr">
+		               <div class="list">
+		                    <ul>
+		                        <li class="bg">å…¨éƒ¨</li>
+		                        <li><a href="#">ä¸€çº§å»ºé€ å¸ˆ</a></li>
+		                        <li><a href="#">äºŒçº§å»ºé€ å¸ˆ</a></li>
+		                        <li><a href="#">é€ ä»·å·¥ç¨‹å¸ˆ</a></li>
+		                    </ul>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		    <div class="h20"></div>
+		    <div class="content yinying">
+		        <div class="shjlist">
+		            <ul>
+		                <li class="shjout" onMouseOver="this.className='shjover'" onMouseOut="this.className='shjout'">
+		                    <div class="title">
+		                        <em>
+		                            <div class="title"><a href="#" target="_blank" title="2014ç‰ˆä¸€çº§å»ºé€ å¸ˆ(å…¬å…±ç§‘ç›®+å¸‚æ”¿å…¬ç”¨å·¥ç¨‹)">2014ç‰ˆä¸€çº§å»ºé€ å¸ˆ(å…¬å…±ç§‘ç›®+å¸‚æ”¿å…¬ç”¨å·¥ç¨‹)å¹´äººåŠ›èµ„æºç®¡ç†å¸ˆ</a></div>
+		                            <p>æ€»é¢˜ï¼š150 é¢˜</p><p>è€ƒè¯•æ—¶é•¿ï¼š120åˆ†é’Ÿ</p><p>æ€»åˆ†ï¼š100åˆ†</p><p>é¢˜åž‹ï¼šæ™®é€šæ¨¡æ‹Ÿé¢˜</p><p>117äººå‚è€ƒ</p>
+		                        </em>
+		                        <span>2014-12-15</span>
+		                        <b>125é‡‘å¸</b>
+		                        <div class="buybtn"><div class="hei-btn"><a href="#">è¿›å…¥åšé¢˜</a></div></div>
+		                    </div>
+		                </li>
+		            </ul>
+		        </div>
+		        <div class="h20"></div>
+		        <div class="page fl">
+		            <a href="#">1</a>
+		            <em>...</em>
+		            <span>8</span>
+		            <a href="#">9</a>
+		            <a href="#">10</a>
+		            <a href="#">11</a>
+		            <a href="#">12</a>
+		            <a href="#">13</a>
+		            <a href="#">14</a>
+		            <em>...</em>
+		            <a href="#">28</a>
+		            <em><b>ç¬¬ 2/69 é¡µ</b></em>
+		            <em><input class="box" type="text" name="input" size="15px"></em>
+		            <em><a class="txt" href="javascript:void(0)">è·³è½¬</a></em>
+		        </div>
+		        <div class="h20"></div>
+		    </div>
+		</div>
+		<div class="h30"></div>
+		<#--footer-->
+		<@footer/>
+	</body>
 </html>

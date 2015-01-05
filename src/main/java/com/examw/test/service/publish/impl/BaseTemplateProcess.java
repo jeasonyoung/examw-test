@@ -111,6 +111,17 @@ public abstract class BaseTemplateProcess implements ITemplateProcess {
 		return this.engine.analysisTemplate(this.templateName, parameters);
 	}
 	/**
+	 * 加载试卷参考人次。
+	 * @param paperId
+	 * 试卷ID。
+	 * @return
+	 * 参考人次。
+	 */
+	protected int loadPaperUsersTotal(String paperId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［%s］参考人次", paperId));
+		return StringUtils.isEmpty(paperId) ? 0 : this.userPaperRecordDao.findUsersTotal(paperId).intValue();
+	}
+	/**
 	 * 加载最新试卷数据。
 	 * @return 最新试卷数据。
 	 */
@@ -124,7 +135,7 @@ public abstract class BaseTemplateProcess implements ITemplateProcess {
 				Paper paper = null;
 				if(release == null || (paper = release.getPaper()) == null) continue;
 				ViewListData data = new ViewListData(paper.getId(), paper.getName());
-				data.setTotal(this.userPaperRecordDao.findUsersTotal(data.getId()).intValue());
+				data.setTotal(this.loadPaperUsersTotal(data.getId()));
 				list.add(data);
 			}
 		}
@@ -143,7 +154,7 @@ public abstract class BaseTemplateProcess implements ITemplateProcess {
 			for(Paper paper : papers){
 				if(paper == null) continue;
 				ViewListData data = new ViewListData(paper.getId(), paper.getName());
-				data.setTotal(this.userPaperRecordDao.findUsersTotal(data.getId()).intValue());
+				data.setTotal(this.loadPaperUsersTotal(data.getId()));
 				list.add(data);
 			}
 		}

@@ -106,11 +106,17 @@
     <bean id="productTemplateProcess" class="com.examw.test.service.publish.impl.ProductTemplateProcess" parent="templateProcess">
         <!-- 模版名称 -->
         <property name="templateName" value="${publish_templates_product}" />
+        <!-- 产品数据接口 -->
+        <property name="productDao" ref="productDao" />
     </bean>
     <!-- 试卷列表模版处理器 -->
     <bean id="paperListTemplateProcess" class="com.examw.test.service.publish.impl.PaperListTemplateProcess" parent="templateProcess">
         <!-- 模版名称 -->
         <property name="templateName" value="${publish_templates_paper_list}" />
+        <!-- 考试数据接口 -->
+        <property name="examDao" ref="examDao" />
+        <!-- 试卷发布数据接口 -->
+        <property name="paperReleaseDao" ref="paperReleaseDao" />
     </bean>
     <!-- 试卷详细模版处理器 -->
     <bean id="paperDetailTemplateProcess" class="com.examw.test.service.publish.impl.PaperDetailTemplateProcess" parent="templateProcess">

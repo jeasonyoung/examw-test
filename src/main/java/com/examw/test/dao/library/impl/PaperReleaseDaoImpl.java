@@ -11,6 +11,7 @@ import org.springframework.util.StringUtils;
 import com.examw.test.dao.impl.BaseDaoImpl;
 import com.examw.test.dao.library.IPaperReleaseDao;
 import com.examw.test.domain.library.PaperRelease;
+import com.examw.test.model.library.PaperInfo;
 import com.examw.test.service.library.ItemStatus;
 import com.examw.test.service.library.PaperType;
 
@@ -170,5 +171,50 @@ public class PaperReleaseDaoImpl extends BaseDaoImpl<PaperRelease> implements IP
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载最新试卷集合:［%d］...", top));
 		final String hql = "from PaperRelease p order by p.createTime desc";
 		return this.find(hql, null, 0, top == null ? 0 : top);
+	}
+	/*
+	 * 查询试卷发布数据。
+	 * @see com.examw.test.dao.library.IPaperReleaseDao#findPaperReleases(com.examw.test.model.library.PaperInfo)
+	 */
+	@Override
+	public List<PaperRelease> findPaperReleases(PaperInfo info) {
+		if(logger.isDebugEnabled()) logger.debug("查询试卷发布数据...");
+		String hql = "from PaperRelease p where (1 = 1 ) ";
+		Map<String, Object> parameters = new HashMap<>();
+		hql = this.addWhere(info, hql, parameters);
+		if(!StringUtils.isEmpty(info.getSort())){
+			if(StringUtils.isEmpty(info.getOrder())) info.setOrder("asc");
+			hql += String.format(" order by p.%1$s %2$s", info.getSort(), info.getOrder());
+		}
+		return this.find(hql, parameters, info.getPage(), info.getRows());
+	}
+	//添加查询条件
+	private String addWhere(PaperInfo info, String hql, Map<String, Object> parameters){
+		if(info == null) return hql;
+		//试卷类型
+		hql += " and (p.paper.type <= :type) ";
+		parameters.put("type", PaperType.FORECAS.getValue());
+		
+		if(!StringUtils.isEmpty(info.getExamId())){//所属考试ID
+			hql += " and (p.paper.subject.exam.id = :examId) ";
+			parameters.put("examId", info.getExamId());
+		}
+		if(!StringUtils.isEmpty(info.getSubjectId())){//所属科目ID
+			hql += " and (p.paper.subject.id = :subjectId) ";
+			parameters.put("subjectId", info.getSubjectId());
+		}
+		return hql;
+	}
+	/*
+	 *  查询试卷发布数据统计。
+	 * @see com.examw.test.dao.library.IPaperReleaseDao#totalPaperReleases(com.examw.test.model.library.PaperInfo)
+	 */
+	@Override
+	public Long totalPaperReleases(PaperInfo info) {
+		if(logger.isDebugEnabled()) logger.debug("查询试卷发布数据统计...");
+		String hql = "select count(*) from PaperRelease p where (1 = 1) ";
+		Map<String, Object> parameters = new HashMap<>();
+		hql = this.addWhere(info, hql, parameters);
+		return this.count(hql, parameters);
 	}
 }

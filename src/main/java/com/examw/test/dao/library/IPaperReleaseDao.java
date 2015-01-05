@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.examw.test.dao.IBaseDao;
 import com.examw.test.domain.library.PaperRelease;
+import com.examw.test.model.library.PaperInfo;
 /**
  * 试卷发布数据接口。
  * 
@@ -81,4 +82,20 @@ public interface IPaperReleaseDao extends IBaseDao<PaperRelease> {
 	 * 最新试卷集合。
 	 */
 	List<PaperRelease> loadNewsReleases(Integer top);
+	/**
+	 * 查询试卷发布数据。
+	 * @param info
+	 * 查询条件。
+	 * @return
+	 * 数据集合。
+	 */
+	List<PaperRelease> findPaperReleases(PaperInfo info);
+	/**
+	 * 查询试卷发布数据统计。
+	 * @param info
+	 * 查询条件。
+	 * @return
+	 * 试卷发布数据统计。
+	 */
+	Long totalPaperReleases(PaperInfo info);
 }
