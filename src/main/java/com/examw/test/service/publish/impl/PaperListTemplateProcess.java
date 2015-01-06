@@ -97,10 +97,12 @@ public class PaperListTemplateProcess extends BaseTemplateProcess {
 	//创建静态页面
 	private void createStaticPages(String prefix,String path,Map<String, Object> parameters,List<StaticPage> listPages, Integer totalPages, PaperInfo where) throws Exception{
 		if(totalPages == null){
+			parameters.put("current", 1);
 			listPages.add(new StaticPage(prefix +"-1", path, this.createStaticPageContent(parameters)));
 			return;
 		}
 		parameters.put("total", totalPages);
+		parameters.put("prefix", prefix);
 		Paper paper = null;
 		for(int i = 0; i < totalPages; i++){
 			where.setPage(i+1);
