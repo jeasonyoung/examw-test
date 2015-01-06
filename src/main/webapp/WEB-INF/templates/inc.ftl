@@ -55,42 +55,57 @@
 <div class="newbox fl">
 	<div class="main">
         <div class="newshj">
-        	<div class="newtit bulebg fl"><span><a href="index-news-more.html" target="_blank">更多&gt;&gt;</a></span>最新试卷</div><div class="newtitbg"></div>
-            <#if newsPapers??>
-            <ul class="list-shj" id="list-shj">
-            	<#list newsPapers as data>
-                <li>
-                	<p>&middot;<a href="#" title="${data.text}">${data.text}</a></p>
-                    <p class="btn"><span>${data.total}人参与</span><a href="index-papers-${data.id}">免费测试</a></p>
-                </li>
-                </#list>
-			</ul>
-			</#if>
+        	<#--最新试卷-->
+        	<@news_papers />
         </div>
         <div class="newshj">
-        	<div class="newtit bulebg fl"><span><a href="index-hots-more.html" target="_blank">更多&gt;&gt;</a></span>热门试卷</div><div class="newtitbg"></div>
-        	<#if hotsPapers??>
-            <ul class="list-shj" id="list-shj">
-				<#list hotsPapers as data>
-                <li>
-                	<p>&middot;<a href="#" title="${data.text}">${data.text}</a></p>
-                    <p class="btn"><span>${data.total}人参与</span><a href="index-papers-${data.id}">免费测试</a></p>
-                </li>
-                </#list>
-			</ul>
-			</#if>
+        	<#--最热试卷-->
+        	<@hots_papers />
         </div>
-        <div class="new-question">
-        	<div class="newtit bulebg fl"><span><a href="index-questions-more.html" target="_blank">更多&gt;&gt;</a></span>常见问题</div><div class="newtitbg"></div>
-            <#if questions??>
-            <ul class="list">
-            	<#list questions as data>
-                <li>&middot;<a href="index-questions-${data.id}.html" title="${data.text}">${data.text}</a></li>
-                </#list>
-            </ul>
-            </#if>
-        </div>
+        <#--常见问题-->
+        <@questions />
     </div>
+</div>
+</#macro>
+<#--最新试卷-->
+<#macro news_papers>
+<div class="newtit bulebg fl"><span><a href="index-news-more.html" target="_blank">更多&gt;&gt;</a></span>最新试卷</div><div class="newtitbg"></div>
+<#if newsPapers??>
+<ul class="list-shj" id="list-shj">
+	<#list newsPapers as data>
+    <li>
+    	<p>&middot;<a href="#" title="${data.text}">${data.text}</a></p>
+        <p class="btn"><span>${data.total}人参与</span><a href="index-papers-${data.id}">免费测试</a></p>
+    </li>
+    </#list>
+</ul>
+</#if>
+</#macro>
+<#--最热试卷-->
+<#macro hots_papers>
+<div class="newtit bulebg fl"><span><a href="index-hots-more.html" target="_blank">更多&gt;&gt;</a></span>热门试卷</div><div class="newtitbg"></div>
+<#if hotsPapers??>
+<ul class="list-shj" id="list-shj">
+	<#list hotsPapers as data>
+    <li>
+    	<p>&middot;<a href="#" title="${data.text}">${data.text}</a></p>
+        <p class="btn"><span>${data.total}人参与</span><a href="index-papers-${data.id}">免费测试</a></p>
+    </li>
+    </#list>
+</ul>
+</#if>
+</#macro>
+<#--常见问题-->
+<#macro questions>
+<div class="new-question">
+	<div class="newtit bulebg fl"><span><a href="index-questions-more.html" target="_blank">更多&gt;&gt;</a></span>常见问题</div><div class="newtitbg"></div>
+    <#if questions??>
+    <ul class="list">
+    	<#list questions as data>
+        <li>&middot;<a href="index-questions-${data.id}.html" title="${data.text}">${data.text}</a></li>
+        </#list>
+    </ul>
+    </#if>
 </div>
 </#macro>
 <#--友情链接-->

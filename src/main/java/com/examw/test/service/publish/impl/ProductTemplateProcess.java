@@ -72,5 +72,4 @@ public class ProductTemplateProcess extends BaseTemplateProcess {
 		}
 		return list;
 	}
-
 }

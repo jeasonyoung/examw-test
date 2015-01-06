@@ -17,7 +17,6 @@ import com.examw.test.domain.publish.StaticPage;
 import com.examw.test.domain.settings.Exam;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.library.PaperInfo;
-import com.examw.test.model.publish.ViewListData;
 import com.examw.test.model.settings.ExamInfo;
 
 /**
@@ -28,7 +27,6 @@ import com.examw.test.model.settings.ExamInfo;
  */
 public class PaperListTemplateProcess extends BaseTemplateProcess {
 	private static final Logger logger = Logger.getLogger(PaperListTemplateProcess.class);
-	private static final int page_count = 10;
 	private IExamDao examDao;
 	private IPaperReleaseDao paperReleaseDao;
 	/**

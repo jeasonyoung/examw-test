@@ -2,7 +2,7 @@
 <#include "/inc.ftl" />
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>试卷列表</title>
+		<title>${exam.name}试卷列表</title>
 		<#--头部资源-->
 		<@header_resources/>
 		<!--分页资源-->
