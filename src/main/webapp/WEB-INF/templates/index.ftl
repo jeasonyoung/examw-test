@@ -14,15 +14,14 @@
 		<div class="main">
 			<#if categories??>
 			<div class="titbox bulebg fl">考试分类导航</div><div class="titboxbg"></div>
-			<#list categories?keys as key>
+			<#list categories as category>
 				<div class="fenlei fl">
-					<div class="fl-l">${key}</div>
+					<div class="fl-l">${category.text}</div>
 					<div class="fl-r">
-						<#assign exams="${categories[key]}"/>
-						<#if (exams?size>0)>
+						<#if (category.exams??) && (category.exams?size>0)>
 						<ul class="fl-list">
-							<#list exams?keys as k>
-								<li><a href="/index-exams-${exams[k]}.html" target="_blank" title="${k}">${k}</a></li>
+							<#list category.exams as exam>
+								<li><a href="/index-exams-${exam.id}.html" target="_blank" title="${exam.text}">${exam.text}</a></li>
 							</#list>
 						</ul>
 						</#if>

@@ -35,7 +35,7 @@ public class PublishRecord implements Serializable {
 		if(status != null){
 			this.setStatus(status.getValue());
 		}
-		this.setName(String.format("%1$s-%2$s", configuration.getName(), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(this.getEndTime())));
+		this.setName(String.format("%1$s-%2$s", configuration.getName(), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(this.getStartTime())));
 	}
 	/**
 	 * 获取发布ID。

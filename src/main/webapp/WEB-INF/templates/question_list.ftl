@@ -24,7 +24,7 @@
 		    	<div class="zixun fl"><b>— 资讯中心 —</b><a href="#">考试资讯</a><a href="#">常见问题</a></div>
 		    	<div class="tit fl"><b>最新试卷</b></div>
 		        <div class="cont fl">
-		        	<#if newsPapers??>
+		        	<#if (newsPapers??)&&(newsPapers?size>0)>
 		        	<ul class="list-shj" id="list-shj">
 				        <#list newsPapers as data>
 					    <li>
@@ -38,7 +38,7 @@
 		        <div class="h20"></div>
 		        <div class="tit fl"><b>热门试卷</b></div>
 		        <div class="cont fl">
-		            <#if hotsPapers??>
+		            <#if (hotsPapers??)&&(hotsPapers?size>0)>
 		        	<ul class="list-shj" id="list-shj">
 						<#list hotsPapers as data>
 					    <li>
@@ -52,7 +52,7 @@
 		    </div>
 		    <div class="newlist-r fr">
 		    	<div class="tit fl"><b>常见问题</b></div>
-		    	<#if questions??>
+		    	<#if (questions??)&&(questions?size>0)>
 		        <div class="cont fl">
 		        	<ul class="list">
 		            	<#list questions as q>

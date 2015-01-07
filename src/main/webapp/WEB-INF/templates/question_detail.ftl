@@ -20,7 +20,7 @@
 		    <div class="newlist-l fl yinying">
 		    	<div class="tit fl"><b>最新试卷</b></div>
 		        <div class="cont fl">
-		        	<#if newsPapers??>
+		        	<#if (newsPapers??)&&(newsPapers?size>0)>
 		        	<ul class="list-shj" id="list-shj">
 						<#list newsPapers as data>
 					    <li>
@@ -34,7 +34,7 @@
 		        <div class="h20"></div>
 		        <div class="tit fl"><b>热门试卷</b></div>
 		        <div class="cont fl">
-		        	<#if hotsPapers??>
+		        	<#if (hotsPapers??)&&(hotsPapers?size>0)>
 		        	<ul class="list-shj" id="list-shj">
 						<#list hotsPapers as data>
 					    <li>

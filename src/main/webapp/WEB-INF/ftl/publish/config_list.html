@@ -13,6 +13,9 @@
 			<th data-options="field:'statusName',width:10,align:'center',sortable:true">状态</th>
 			<th data-options="field:'createTime',width:20,align:'center',sortable:true">创建时间</th>
 			<th data-options="field:'lastTime',width:20,align:'center',sortable:true">修改时间</th>
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			<th data-options="field:'opt',width:15,align:'center',formatter:function(value,row,index){ return '<a href=\'#\' onclick=${dg}_publish(\'' + row['id'] +'\');>发布</a>'; }">立即发布</th>
+			</@shiro.hasPermission>
 		</tr>
 	</thead>
 </table>
@@ -36,6 +39,27 @@ $(function(){
 			"name":$("#${dg}_toolbar input[name=name]").val()
 		});
 	};
+	<@shiro.hasPermission name="${PER_UPDATE}">
+	var m = false;
+	${dg}_publish = function(configId){
+		if(!configId || configId == ""){
+			$.messager.alert("提示", "配置ID不存在！");
+			return;
+		};
+		if(m)return;
+		m = true;
+		$.messager.progress({"text":"正在发布数据，请稍后..."});
+		$.getJSON("<@s.url '/publish/config/publish/'/>" + configId +"?_=" + Math.random(),function(callback){
+			m = false;
+			$.messager.progress("close");
+			if(callback["success"]){
+				$.messager.alert("提示", "发布成功！");
+			}else{
+				$.messager.alert("错误", callback["msg"] || "未知错误");
+			}
+		});
+	};
+	</@shiro.hasPermission>
 	//edit
 	${module}_edit_window = function(title,index,row){
 		var configurationId = "";

@@ -137,7 +137,7 @@ public class ConfigurationController {
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.PUBLISH_CONFIG + ":" + Right.UPDATE})
-	@RequestMapping(value={"/publish/{configId}"}, method = RequestMethod.POST)
+	@RequestMapping(value={"/publish/{configId}"}, method = RequestMethod.GET)
 	@ResponseBody
 	public Json publish(@PathVariable String configId){
 		Json result = new Json();

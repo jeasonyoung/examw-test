@@ -99,18 +99,20 @@ public class PublishServiceImpl implements IPublishService {
 	}
 	//更新发布。
 	private void updatePublish(Configuration configuration){
+		String error =  null;
 		if(configuration == null){
-			if(logger.isDebugEnabled()) logger.debug("未找到需要发布的配置！");
-			return;
+			error = "未找到需要发布的配置！";
+			if(logger.isDebugEnabled()) logger.debug(error);
+			throw new RuntimeException(error);
 		}
 		ConfigurationTemplateType[] templates = ConfigurationTemplateType.convert(configuration.getTemplate());
 		if(templates == null || templates.length == 0){
-			if(logger.isDebugEnabled()) logger.debug("未配置需要发布的模版！");
-			return;
+			error = "未配置需要发布的模版！";
+			if(logger.isDebugEnabled()) logger.debug(error);
+			throw new RuntimeException(error);
 		}
 		PublishRecord record = new PublishRecord(configuration, Status.DISABLE);
-		this.publishRecordDao.save(record);//
-		String error = null;
+		this.publishRecordDao.save(record);
 		for(ConfigurationTemplateType template : templates){
 			ITemplateProcess process = this.loadProcess(template);
 			if(process == null){

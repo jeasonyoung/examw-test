@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
 
-import org.springframework.core.io.ClassPathResource;
+import org.apache.log4j.Logger;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.StringUtils;
 
 import freemarker.template.Configuration;
@@ -21,11 +22,17 @@ import freemarker.template.TemplateException;
  * @since 2014年12月23日
  */
 public class FreeMakerEngine {
+	private static final  Logger logger = Logger.getLogger(FreeMakerEngine.class);
 	private Configuration config;
+	private ResourceLoader resourceLoader;
 	/**
-	 *  构造函数。
+	 * 构造函数。
+	 * @param resourceLoader
+	 * 资源加载器。
 	 */
-	public FreeMakerEngine(){
+	public FreeMakerEngine(ResourceLoader resourceLoader){
+		if(logger.isDebugEnabled()) logger.debug("构造函数。");
+		this.resourceLoader = resourceLoader;
 		this.config = new Configuration();
 		//设置包装器，并将对象包装为数据模型
 		this.config.setObjectWrapper(new DefaultObjectWrapper());
@@ -37,8 +44,14 @@ public class FreeMakerEngine {
 	 * @throws IOException
 	 */
 	public void setTemplateDir(String templateDir) throws IOException{
+		if(logger.isDebugEnabled()) logger.debug(String.format("注入模版所在目录:%s", templateDir));
 		if(StringUtils.isEmpty(templateDir)) return;
-		Resource resource = new ClassPathResource(templateDir);
+		if(this.resourceLoader == null) throw new IllegalArgumentException("未设置资源加载器！");
+		Resource resource = this.resourceLoader.getResource(templateDir);
+		if(resource.exists()){
+			if(logger.isDebugEnabled()) logger.debug("模版目录:" + resource.getFilename());
+			//resource.getInputStream();
+		}
 		this.config.setDirectoryForTemplateLoading(resource.getFile());
 	}
 	/**

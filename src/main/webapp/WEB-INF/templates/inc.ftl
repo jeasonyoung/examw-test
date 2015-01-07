@@ -63,14 +63,14 @@
         	<@hots_papers />
         </div>
         <#--常见问题-->
-        <@questions />
+        <@questions_list />
     </div>
 </div>
 </#macro>
 <#--最新试卷-->
 <#macro news_papers>
 <div class="newtit bulebg fl"><span><a href="index-news-more.html" target="_blank">更多&gt;&gt;</a></span>最新试卷</div><div class="newtitbg"></div>
-<#if newsPapers??>
+<#if (newsPapers??)>
 <ul class="list-shj" id="list-shj">
 	<#list newsPapers as data>
     <li>
@@ -84,7 +84,7 @@
 <#--最热试卷-->
 <#macro hots_papers>
 <div class="newtit bulebg fl"><span><a href="index-hots-more.html" target="_blank">更多&gt;&gt;</a></span>热门试卷</div><div class="newtitbg"></div>
-<#if hotsPapers??>
+<#if (hotsPapers??)>
 <ul class="list-shj" id="list-shj">
 	<#list hotsPapers as data>
     <li>
@@ -96,10 +96,10 @@
 </#if>
 </#macro>
 <#--常见问题-->
-<#macro questions>
+<#macro questions_list>
 <div class="new-question">
 	<div class="newtit bulebg fl"><span><a href="index-questions-more.html" target="_blank">更多&gt;&gt;</a></span>常见问题</div><div class="newtitbg"></div>
-    <#if questions??>
+    <#if (questions??)>
     <ul class="list">
     	<#list questions as data>
         <li>&middot;<a href="index-questions-${data.id}.html" title="${data.text}">${data.text}</a></li>
