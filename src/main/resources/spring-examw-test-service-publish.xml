@@ -145,7 +145,7 @@
         <property name="questionDao" ref="questionDao" />
     </bean>
     <!-- 常见问题详细模版处理器 -->
-    <bean class="questionDetailTemplateProcess" class="com.examw.test.service.publish.impl.QuestionDetailTemplateProcess" parent="templateProcess">
+    <bean id="questionDetailTemplateProcess" class="com.examw.test.service.publish.impl.QuestionDetailTemplateProcess" parent="templateProcess">
          <!-- 模版名称 -->
         <property name="templateName" value="${publish_templates_question_detail}" />
         <!-- 常用问题数据接口 -->

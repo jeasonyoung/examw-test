@@ -86,7 +86,19 @@ public class PublishServiceImpl implements IPublishService {
 	@Override
 	public synchronized void updatePublish() {
 		if(logger.isDebugEnabled()) logger.debug("=>开始更新发布....");
-		Configuration configuration = this.configurationDao.loadTopConfiguration();
+		this.updatePublish(this.configurationDao.loadTopConfiguration());
+	}
+	/*
+	 * 更新发布指定配置。
+	 * @see com.examw.test.service.publish.IPublishService#updatePublish(java.lang.String)
+	 */
+	@Override
+	public void updatePublish(String configId) {
+		if(logger.isDebugEnabled()) logger.debug("更新发布指定配置...");
+		this.updatePublish(StringUtils.isEmpty(configId) ? null : this.configurationDao.load(Configuration.class, configId));
+	}
+	//更新发布。
+	private void updatePublish(Configuration configuration){
 		if(configuration == null){
 			if(logger.isDebugEnabled()) logger.debug("未找到需要发布的配置！");
 			return;
@@ -127,7 +139,7 @@ public class PublishServiceImpl implements IPublishService {
 		}
 		record.setStatus(Status.ENABLED.getValue());
 		record.setEndTime(new Date());
-		//this.publishRecordDao.saveOrUpdate(record);
+		this.publishRecordDao.saveOrUpdate(record);
 		
 		if(logger.isDebugEnabled()) logger.debug("=>更新发布结束！");
 	}

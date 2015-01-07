@@ -10,4 +10,10 @@ public interface IPublishService {
 	 * 更新发布。
 	 */
 	void updatePublish();
+	/**
+	 * 更新发布。
+	 * @param configId
+	 * 配置ID。
+	 */
+	void updatePublish(String configId);
 }
