@@ -1,6 +1,7 @@
 package com.examw.test.service.publish.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,14 +73,52 @@ public class QuestionListTemplateProcess extends BaseTemplateProcess {
 		for(int i = 0; i < totalPages; i++){
 			where.setPage(i+1);
 			parameters.put("current", i + 1);
-			List<ViewListData> list = new ArrayList<>();
+			List<QuestionListViewData> list = new ArrayList<>();
 			List<Question> questions = this.questionDao.findQuestions(where);
 			for(Question question : questions){
 				if(question == null) continue;
-				list.add(new ViewListData(question.getId(), question.getTitle()));
+				list.add(new QuestionListViewData(question.getId(), question.getTitle(), question.getCreateTime()));
 			}
 			parameters.put("questions", list);
 			listPages.add(new StaticPage(prefix + "-" + where.getPage(), path, this.createStaticPageContent(parameters)));
+		}
+	}
+	/**
+	 * 常见问题列表。
+	 * 
+	 * @author yangyong
+	 * @since 2015年1月7日
+	 */
+	public static class QuestionListViewData extends ViewListData{
+		private static final long serialVersionUID = 1L;
+		private Date createTime;
+		/**
+		 * 构造函数。
+		 * @param id
+		 * 常见问题ID。
+		 * @param text
+		 * 常见问题标题。
+		 * @param createTime
+		 * 创建时间。
+		 */
+		public QuestionListViewData(String id, String text, Date createTime) {
+			super(id, text);
+			this.setCreateTime(createTime);
+		}
+		/**
+		 * 获取创建时间。
+		 * @return 创建时间。
+		 */
+		public Date getCreateTime() {
+			return createTime;
+		}
+		/**
+		 * 设置创建时间。
+		 * @param createTime 
+		 *	  创建时间。
+		 */
+		public void setCreateTime(Date createTime) {
+			this.createTime = createTime;
 		}
 	}
 }

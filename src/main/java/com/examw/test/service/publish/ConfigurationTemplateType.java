@@ -33,7 +33,15 @@ public enum ConfigurationTemplateType {
 	/**
 	 * 试卷详情页面。
 	 */
-	PAPERDETAIL(0x10);
+	PAPERDETAIL(0x10),
+	/**
+	 * 常用问题列表页面。
+	 */
+	QUESTIONLIST(0x20),
+	/**
+	 * 常用问题编辑页面。
+	 */
+	QUESTIONDETAIL(0x30);
 	private int value;
 	/**
 	 * 构造函数。

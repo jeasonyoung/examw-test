@@ -12,6 +12,7 @@ import com.examw.test.dao.records.IQuestionDao;
 import com.examw.test.domain.publish.StaticPage;
 import com.examw.test.domain.records.Question;
 import com.examw.test.model.records.QuestionInfo;
+import com.examw.test.service.publish.impl.QuestionListTemplateProcess.QuestionListViewData;
 
 /**
  * 常见问题详细模版处理。
@@ -55,6 +56,7 @@ public class QuestionDetailTemplateProcess extends BaseTemplateProcess {
 		for(Question question : questions){
 			if(question == null) continue;
 			parameters.put("question", new QuestionViewData(question.getId(), question.getTitle(), question.getContent(), question.getCreateTime()));
+			list.add(new StaticPage(String.format("index-questions-%s", question.getId()), "/questions", this.createStaticPageContent(parameters)));
 		}
 		return list;
 	}
@@ -64,10 +66,9 @@ public class QuestionDetailTemplateProcess extends BaseTemplateProcess {
 	 * @author yangyong
 	 * @since 2015年1月6日
 	 */
-	public static class QuestionViewData extends ViewListData{
+	public static class QuestionViewData extends QuestionListViewData{
 		private static final long serialVersionUID = 1L;
-		private String content;
-		private Date createTime;
+		private String content; 
 		/**
 		 * 构造函数。
 		 * @param id
@@ -80,8 +81,8 @@ public class QuestionDetailTemplateProcess extends BaseTemplateProcess {
 		 * 创建时间。
 		 */
 		public QuestionViewData(String id, String text, String content, Date createTime) {
-			super(id, text);
-			// TODO Auto-generated constructor stub
+			super(id, text,createTime);
+			this.setContent(content);
 		}
 		/**
 		 * 获取常见问题内容。
@@ -97,21 +98,6 @@ public class QuestionDetailTemplateProcess extends BaseTemplateProcess {
 		 */
 		public void setContent(String content) {
 			this.content = content;
-		}
-		/**
-		 * 获取创建时间。
-		 * @return 创建时间。
-		 */
-		public Date getCreateTime() {
-			return createTime;
-		}
-		/**
-		 * 设置创建时间。
-		 * @param createTime 
-		 *	  创建时间。
-		 */
-		public void setCreateTime(Date createTime) {
-			this.createTime = createTime;
 		}
 	}
 }

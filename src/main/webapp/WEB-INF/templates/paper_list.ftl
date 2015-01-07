@@ -5,11 +5,9 @@
 		<title>${exam.name}试卷列表</title>
 		<#--头部资源-->
 		<@header_resources/>
-		<!--分页资源-->
-		<!--
-		<link href="<@s.url "/resources/front-default/pager.css"/>" rel="stylesheet" type="text/css">
-		<script type="text/javascript" src="<@s.url "/resources/jquery.pager.js"/>"></script>
-		-->
+		<#--分页-->
+		<link href="http://img.examw.com/test/pager.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="http://img.examw.com/jquery.pager.js"></script>
 	</head>
 	<body>
 		<#--top banner-->
