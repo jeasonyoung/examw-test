@@ -25,7 +25,7 @@
                 <entry key="0x08" value="${publish_templates_paper_list_name}" />
                 <entry key="0x10" value="${publish_templates_paper_detail_name}" />
                 <entry key="0x20" value="${publish_templates_question_list_name}" />
-                <entry key="0x30" value="${publish_templates_question_detail_name}" />
+                <entry key="0x40" value="${publish_templates_question_detail_name}" />
             </map>
         </property>
     </bean>
@@ -79,7 +79,7 @@
                 <entry key="0x20"><!--常见问题列表页面模版处理 -->
                     <ref local="questionListTemplateProcess"/>
                 </entry>
-                <entry key="0x30"><!--常见问题详细页面模版处理 -->
+                <entry key="0x40"><!--常见问题详细页面模版处理 -->
                     <ref local="questionDetailTemplateProcess"/>
                 </entry>
             </map>
@@ -123,15 +123,11 @@
         <property name="templateName" value="${publish_templates_paper_list}" />
         <!-- 考试数据接口 -->
         <property name="examDao" ref="examDao" />
-        <!-- 试卷发布数据接口 -->
-        <property name="paperReleaseDao" ref="paperReleaseDao" />
     </bean>
     <!-- 试卷详细模版处理器 -->
     <bean id="paperDetailTemplateProcess" class="com.examw.test.service.publish.impl.PaperDetailTemplateProcess" parent="templateProcess">
         <!-- 模版名称 -->
         <property name="templateName" value="${publish_templates_paper_detail}" />
-        <!-- 试卷发布数据接口 -->
-        <property name="paperReleaseDao" ref="paperReleaseDao" />
         <!-- 产品数据接口 -->
         <property name="productDao" ref="productDao" />
         <!-- 试卷服务接口 -->
@@ -141,14 +137,10 @@
     <bean id="questionListTemplateProcess" class="com.examw.test.service.publish.impl.QuestionListTemplateProcess" parent="templateProcess">
         <!-- 模版名称 -->
         <property name="templateName" value="${publish_templates_question_list}" />
-        <!-- 常用问题数据接口 -->
-        <property name="questionDao" ref="questionDao" />
     </bean>
     <!-- 常见问题详细模版处理器 -->
     <bean id="questionDetailTemplateProcess" class="com.examw.test.service.publish.impl.QuestionDetailTemplateProcess" parent="templateProcess">
          <!-- 模版名称 -->
         <property name="templateName" value="${publish_templates_question_detail}" />
-        <!-- 常用问题数据接口 -->
-        <property name="questionDao" ref="questionDao" />
     </bean>
 </beans>

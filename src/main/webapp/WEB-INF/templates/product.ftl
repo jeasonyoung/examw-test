@@ -2,7 +2,7 @@
 <#include "/inc.ftl" />
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head> 
-		<title>产品页面</title>
+		<title>${product.text}产品页面</title>
 		<#--头部资源-->
 		<@header_resources/>
 	</head>
@@ -12,7 +12,7 @@
 		<@topbox/>
 		<div class="h20"></div>
 		<div class="main">
-			<div class="weizhi fl"><span></span>当前位置：<a href="#">首页</a><i>&gt;</i>${product.exam.name}</div>
+			<div class="weizhi fl"><span></span>当前位置：<a href="#">首页</a><i>&gt;</i>${product.examName}</div>
 		</div>
 		<div class="h1d"></div>
 		<div class="h1f"></div>
@@ -21,9 +21,9 @@
 			<div class="content yinying">
 		    	<div class="contbox">
 		        	<div class="downloadbox">
-		            	<div class="pic"><div class="pic-tit">${product.exam.name}</div></div>
+		            	<div class="pic"><div class="pic-tit">${product.examName}</div></div>
 		                <div class="cont fr">
-		                	<h2>${product.name}</h2>
+		                	<h2>${product.text}</h2>
 		                    <div class="name">${product.content}</div>
 		                    <div class="xinxi">
 		                    	<div class="jia">促销：<span>￥</span><i>${product.discount}</i><br />原价：<em>￥${product.price}</em></div>
@@ -37,7 +37,7 @@
 		                    	<li>运行环境：WinXP,Vista,Win7,Win8</li>
 		                        <li>软件大小：207MB</li>
 		                        -->
-		                        <li>题库数量：${product.paperTotal} 试卷，${product.itemTotal} 试题</li>
+		                        <li>题库数量：${product.pages} 试卷，${product.total} 试题</li>
 		                        <li>软件等级：<i> ★ ★ ★ ★ ★</i></li>
 		                        <#--
 		                        <li>文件类型：.exe</li>

@@ -56,7 +56,7 @@
 		        <div class="cont fl">
 		        	<ul class="list">
 		            	<#list questions as q>
-		                <li><i>${q.createTime?string("yyyy-MM-dd")}</i>&middot;<a href="#" title="${q.text}">${q.text}</a></li>
+		                <li><i>${q.createTime?string("yyyy-MM-dd")}</i>&middot;<a href="index-questions-${q.id}.html" title="${q.text}">${q.text}</a></li>
 		            	</#list>
 		            </ul>
 		        </div>

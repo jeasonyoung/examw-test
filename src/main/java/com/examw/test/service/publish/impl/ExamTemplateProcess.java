@@ -64,12 +64,12 @@ public class ExamTemplateProcess extends BaseTemplateProcess {
 		for(Exam exam : exams){
 			if(exam == null) continue;
 			parameters.put("examName", exam.getName());//考试名称
-			List<ProductViewData> products = null;
+			List<ProductListViewData> products = null;
 			if(exam.getProducts() != null && exam.getProducts().size() > 0){
 				products = new ArrayList<>();
 				for(Product p : exam.getProducts()){
 					if(p == null || p.getStatus() == Status.DISABLE.getValue()) continue;
-					products.add(new ProductViewData(p.getId(),p.getName(), p.getItemTotal(), p.getPrice(), p.getDiscount()));
+					products.add(new ProductListViewData(p.getId(),p.getName(), p.getItemTotal(), p.getPrice(), p.getDiscount()));
 				}
 			}
 			parameters.put("products", products);
@@ -87,7 +87,7 @@ public class ExamTemplateProcess extends BaseTemplateProcess {
 	 * @author yangyong
 	 * @since 2015年1月6日
 	 */
-	public static class ProductViewData extends ViewListData{
+	public static class ProductListViewData extends ViewListData{
 		private static final long serialVersionUID = 1L;
 		private BigDecimal price,discount;
 		/**
@@ -103,7 +103,7 @@ public class ExamTemplateProcess extends BaseTemplateProcess {
 		 * @param discount
 		 * 优惠价。
 		 */
-		public ProductViewData(String id, String text, Integer total, BigDecimal price, BigDecimal discount) {
+		public ProductListViewData(String id, String text, Integer total, BigDecimal price, BigDecimal discount) {
 			super(id, text, total);
 			this.setPrice(price);
 			this.setDiscount(discount);

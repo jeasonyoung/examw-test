@@ -2,35 +2,37 @@
 <#include "/inc.ftl" />
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>${exam.name}试卷列表</title>
+		<title>${examName}试卷列表</title>
 		<#--头部资源-->
 		<@header_resources/>
 		<#--分页-->
 		<link href="http://img.examw.com/test/pager.css" rel="stylesheet" type="text/css" />
-		<script type="text/javascript" src="http://img.examw.com/jquery.pager.js"></script>
+		<script type="text/javascript" src="http://img.examw.com/test/jquery.pager.js"></script>
 	</head>
 	<body>
 		<#--top banner-->
 		<@topbox/>
 		<div class="h20"></div>
 		<div class="main">
-			<div class="weizhi fl"><span></span>当前位置：<a href="#">首页</a><i>&gt;</i>${exam.name}</div>
+			<div class="weizhi fl"><span></span>当前位置：<a href="#">首页</a><i>&gt;</i>${examName}</div>
 		</div>
 		<div class="h1d"></div>
 		<div class="h1f"></div>
 		<div class="h20"></div>
 		<div class="main">
-			<div class="titbox bulebg fl"><span><div class="cheng-btn"><a href="#">选择产品</a></div></span>${exam.name}</div><div class="titboxbg"></div>
+			<div class="titbox bulebg fl"><span><div class="cheng-btn"><a href="#">选择产品</a></div></span>${examName}</div><div class="titboxbg"></div>
 		    <div class="content yinying">
 		        <div class="siftbox fl">
 		            <div class="f-l fl">科目：</div>
 		            <div class="f-r fr">
 		               <div class="list">
 		                    <ul>
-		                        <li <#if (current == 1)>class="bg">全部<#else>><a href="index-exams-${exam.abbr}-papers-1.html">全部</a></#if></li>
-		                        <#list exam.subjects as s>
-		                        <li <#if (subject??)&&(subject.id == s.id)>class="bg">${s.name}<#else>><a href="index-exams-${exam.abbr}-${s.code}-papers-1.html">${s.name}</a></#if></li>
+		                        <li <#if (subjectCode??) && (subjectCode?length==0)>class="bg">全部<#else>><a href="index-exams-${examAbbr}-papers-1.html">全部</a></#if></li>
+		                        <#if (subjects??)&&(subjects?size>0)>
+		                        <#list subjects as s>
+		                        <li <#if (subjectCode??)&&(subjectCode==s.id)>class="bg">${s.text}<#else>><a href="index-exams-${examAbbr}-${s.id}-papers-1.html">${s.text}</a></#if></li>
 		                        </#list>
+		                        </#if>
 		                    </ul>
 		                </div>
 		            </div>
@@ -58,11 +60,11 @@
 		        </div>
 		        <div class="h20"></div>
 		        <div style="width:100%;">
-		        	<div id="${exam.id}_paper" class="pager-plugin"></div>
+		        	<div id="${examAbbr}_paper" class="pager-plugin"></div>
 		        	<script type="text/javascript" language="javascript">
 		        	<!--
 		        	$(function(){
-		        		$("#${exam.id}_paper").pager({ 
+		        		$("#${examAbbr}_paper").pager({ 
 		        			pagenumber: ${current}, 
 		        			pagecount: ${total}, 
 		        			buttonClickCallback:function(index){

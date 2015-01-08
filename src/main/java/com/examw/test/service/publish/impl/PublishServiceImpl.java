@@ -114,6 +114,7 @@ public class PublishServiceImpl implements IPublishService {
 		PublishRecord record = new PublishRecord(configuration, Status.DISABLE);
 		this.publishRecordDao.save(record);
 		for(ConfigurationTemplateType template : templates){
+			if(template == ConfigurationTemplateType.NONE) continue;
 			ITemplateProcess process = this.loadProcess(template);
 			if(process == null){
 				if(logger.isDebugEnabled()) logger.debug(String.format("模版［%s］未配置！", template));

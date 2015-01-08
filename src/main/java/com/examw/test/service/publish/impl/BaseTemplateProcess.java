@@ -32,9 +32,9 @@ public abstract class BaseTemplateProcess implements ITemplateProcess,ResourceLo
 	private String templatesRoot,templateName;
 	private ResourceLoader resourceLoader;
 	private FreeMakerEngine engine;
-	private IPaperReleaseDao paperReleaseDao;
 	private IUserPaperRecordDao userPaperRecordDao;
-	private IQuestionDao questionDao;
+	protected IPaperReleaseDao paperReleaseDao;
+	protected IQuestionDao questionDao;
 	/*
 	 * 设置资源加载器。
 	 * @see org.springframework.context.ResourceLoaderAware#setResourceLoader(org.springframework.core.io.ResourceLoader)
@@ -263,7 +263,7 @@ public abstract class BaseTemplateProcess implements ITemplateProcess,ResourceLo
 		 *	  统计数值。
 		 */
 		public void setTotal(Integer total) {
-			this.total = total;
+			this.total = (total == null ? 0 : total);
 		}
 	}
 }

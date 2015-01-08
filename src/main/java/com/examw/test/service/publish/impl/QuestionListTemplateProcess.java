@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.examw.test.dao.records.IQuestionDao;
 import com.examw.test.domain.publish.StaticPage;
 import com.examw.test.domain.records.Question;
 import com.examw.test.model.records.QuestionInfo;
@@ -21,16 +20,6 @@ import com.examw.test.model.records.QuestionInfo;
  */
 public class QuestionListTemplateProcess extends BaseTemplateProcess {
 	private static final Logger logger = Logger.getLogger(QuestionListTemplateProcess.class);
-	private IQuestionDao questionDao;
-	/**
-	 * 设置常见问题数据接口。
-	 * @param questionDao 
-	 *	  常见问题数据接口。
-	 */
-	public void setQuestionDao(IQuestionDao questionDao) {
-		if(logger.isDebugEnabled()) logger.debug("注入常见问题数据接口...");
-		this.questionDao = questionDao;
-	}
 	/*
 	 * 模版处理。
 	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#templateProcess()
@@ -48,7 +37,7 @@ public class QuestionListTemplateProcess extends BaseTemplateProcess {
 		
 		QuestionInfo where = new QuestionInfo();
 		where.setRows(page_count);
-		where.setSort("lastTime");
+		where.setSort("createTime");
 		where.setOrder("desc");
 		String prefix = "index-questions", path = "/questions";
 		if(count == null || count == 0){

@@ -75,7 +75,7 @@
 	<#list newsPapers as data>
     <li>
     	<p>&middot;<a href="#" title="${data.text}">${data.text}</a></p>
-        <p class="btn"><span>${data.total}人参与</span><a href="index-papers-${data.id}">免费测试</a></p>
+        <p class="btn"><span>${data.total}人参与</span><a href="index-papers-${data.id}.html">免费测试</a></p>
     </li>
     </#list>
 </ul>
@@ -89,7 +89,7 @@
 	<#list hotsPapers as data>
     <li>
     	<p>&middot;<a href="#" title="${data.text}">${data.text}</a></p>
-        <p class="btn"><span>${data.total}人参与</span><a href="index-papers-${data.id}">免费测试</a></p>
+        <p class="btn"><span>${data.total}人参与</span><a href="index-papers-${data.id}.html">免费测试</a></p>
     </li>
     </#list>
 </ul>
@@ -98,7 +98,7 @@
 <#--常见问题-->
 <#macro questions_list>
 <div class="new-question">
-	<div class="newtit bulebg fl"><span><a href="index-questions-more.html" target="_blank">更多&gt;&gt;</a></span>常见问题</div><div class="newtitbg"></div>
+	<div class="newtit bulebg fl"><span><a href="index-questions-1.html" target="_blank">更多&gt;&gt;</a></span>常见问题</div><div class="newtitbg"></div>
     <#if (questions??)>
     <ul class="list">
     	<#list questions as data>
@@ -122,6 +122,6 @@
 	<div class="nva"><a href="/about/">关于本站</a>┊<a href="/about/map.htm">网站地图</a>┊<a href="/about/copyright.html">网站声明</a>┊<a href="/about/ads.html">广告服务</a>┊<a href="/link/">友情链接</a>┊<a href="/about/job/">诚聘英才</a>┊<a href="/about/contact.html">联系我们</a>┊<a href="http: //bbs.examw.com/forum-4-1.html">意见咨询</a></div>
 	<div id="ft_about"></div>
 </div>
-<script language="javascript" src="http://img.examw.com/e.js"></script>
-<script language="javascript" src="http://img.examw.com/test/c.js"></script>
+<script type="text/javascript" language="javascript" src="http://img.examw.com/e.js"></script>
+<script type="text/javascript" language="javascript" src="http://img.examw.com/test/c.js"></script>
 </#macro>

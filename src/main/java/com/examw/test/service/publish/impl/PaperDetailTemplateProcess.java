@@ -9,7 +9,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.examw.service.Status;
-import com.examw.test.dao.library.IPaperReleaseDao;
 import com.examw.test.dao.products.IProductDao;
 import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.library.PaperRelease;
@@ -19,7 +18,7 @@ import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.library.PaperInfo;
 import com.examw.test.model.products.ProductInfo;
 import com.examw.test.service.library.IPaperService;
-import com.examw.test.service.publish.impl.ExamTemplateProcess.ProductViewData;
+import com.examw.test.service.publish.impl.ExamTemplateProcess.ProductListViewData;
 
 /**
  * 试卷详细模版处理。
@@ -29,18 +28,8 @@ import com.examw.test.service.publish.impl.ExamTemplateProcess.ProductViewData;
  */
 public class PaperDetailTemplateProcess extends BaseTemplateProcess {
 	private static final Logger logger = Logger.getLogger(PaperDetailTemplateProcess.class);
-	private IPaperReleaseDao paperReleaseDao;
 	private IProductDao productDao;
 	private IPaperService paperService;
-	/**
-	 * 设置试卷发布数据接口。
-	 * @param paperReleaseDao 
-	 *	  试卷发布数据接口。
-	 */
-	public void setPaperReleaseDao(IPaperReleaseDao paperReleaseDao) {
-		if(logger.isDebugEnabled()) logger.debug("注入试卷发布数据接口...");
-		this.paperReleaseDao = paperReleaseDao;
-	}
 	/**
 	 * 设置产品数据接口。
 	 * @param productDao 
@@ -74,8 +63,14 @@ public class PaperDetailTemplateProcess extends BaseTemplateProcess {
 			public String getOrder() { return "desc";}
 		});
 		if(paperReleases == null || paperReleases.size() == 0) return null;
-		List<StaticPage> list = new ArrayList<>();
+		
 		Map<String, Object> parameters = new HashMap<String, Object>();
+		//最新试卷
+		parameters.put("newsPapers", this.loadNewsPapers());
+		//最热试卷
+		parameters.put("hotsPapers", this.loadHotsPapers());
+				
+		List<StaticPage> list = new ArrayList<>();
 		Paper paper = null;
 		Subject subject = null;
 		for(PaperRelease release : paperReleases){
@@ -92,7 +87,7 @@ public class PaperDetailTemplateProcess extends BaseTemplateProcess {
 			parameters.put("total", release.getTotal());
 			parameters.put("time", paper.getTime());
 			
-			List<ProductViewData> products = null;
+			List<ProductListViewData> products = null;
 			if(subject != null && subject.getExam() != null){
 				final String examId = subject.getExam().getId();
 				List<Product> listProducts = this.productDao.findProducts(new ProductInfo(){
@@ -106,7 +101,7 @@ public class PaperDetailTemplateProcess extends BaseTemplateProcess {
 					products = new ArrayList<>();
 					for(Product p : listProducts){
 						if(p == null) continue;
-						products.add(new ProductViewData(p.getId(), p.getName(), p.getItemTotal(), p.getPrice(), p.getDiscount()));
+						products.add(new ProductListViewData(p.getId(), p.getName(), p.getItemTotal(), p.getPrice(), p.getDiscount()));
 					}
 				}
 			}
