@@ -45,6 +45,20 @@ public class StaticPageServiceImpl extends BaseDataServiceImpl<StaticPage, Stati
 		this.publishRecordDao = publishRecordDao;
 	}
 	/*
+	 * 加载静态页面内容。
+	 * @see com.examw.test.service.publish.IStaticPageService#loadPageContent(java.lang.String)
+	 */
+	@Override
+	public String loadPageContent(String pageId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载静态页面内容:%s...", pageId)); 
+		StaticPage page = StringUtils.isEmpty(pageId) ? null : this.staticPageDao.load(StaticPage.class, pageId);
+		if(page == null){
+			if(logger.isDebugEnabled()) logger.debug(String.format("静态页面［%s］不存在！", pageId));
+			return null;
+		}
+		return page.getContent();
+	}
+	/*
 	 * 查询数据。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#find(java.lang.Object)
 	 */

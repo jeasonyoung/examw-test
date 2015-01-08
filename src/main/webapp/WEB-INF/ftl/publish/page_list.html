@@ -12,6 +12,7 @@
 			<th data-options="field:'publishName',width:25,align:'left',sortable:true">所属发布记录</th>
 			<th data-options="field:'createTime',width:20,align:'center',sortable:true">开始时间</th>
 			<th data-options="field:'lastTime',width:20,align:'center',sortable:true">结束时间</th>
+			<th data-options="field:'opt2',width:15,align:'center',formatter:function(val,row,index){return '<a href=\'<@s.url '/publish/page/preview/'/>'+ row['id'] + ' \' target=\'_blank\'>[预览]</a>';}">预览</th>
 		</tr>
 	</thead>
 </table>

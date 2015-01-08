@@ -43,7 +43,7 @@
             <li><a href="#">考试分类</a></li>
             <li><a href="#">最新试卷</a></li>
             <li><a href="#">试卷排行</a></li>
-            <li><a href="#">常见问题</a></li>
+            <li><a href="index-questions-1.html">常见问题</a></li>
         </ul>
         <div class="my"><a href="#" target="_blank"></a></div>
     </div>
