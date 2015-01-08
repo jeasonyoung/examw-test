@@ -1,7 +1,6 @@
 package com.examw.test.service.publish.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +10,8 @@ import org.apache.log4j.Logger;
 import com.examw.service.Status;
 import com.examw.test.dao.products.IProductDao;
 import com.examw.test.domain.products.Product;
-import com.examw.test.domain.publish.StaticPage;
 import com.examw.test.model.products.ProductInfo;
+import com.examw.test.service.publish.impl.ExamTemplateProcess.ProductListViewData;
 
 /**
  * 产品模版处理。
@@ -33,11 +32,11 @@ public class ProductTemplateProcess extends BaseTemplateProcess {
 		this.productDao = productDao;
 	}
 	/*
-	 * 模版处理。
-	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#templateProcess()
+	 * 模版静态化处理。
+	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#addTemplateProcess()
 	 */
 	@Override
-	protected List<StaticPage> templateProcess() throws Exception {
+	protected int addTemplateProcess() throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("模版处理...");
 		List<Product> products = this.productDao.findProducts(new ProductInfo(){
 			private static final long serialVersionUID = 1L;
@@ -48,7 +47,7 @@ public class ProductTemplateProcess extends BaseTemplateProcess {
 			@Override
 			public String getOrder() { return "desc";}
 		});
-		if(products == null || products.size() == 0) return null;
+		if(products == null || products.size() == 0) return 0;
 		Map<String, Object>  parametersMap = new HashMap<>();
 		//最新试卷
 		parametersMap.put("newsPapers", this.loadNewsPapers());
@@ -56,21 +55,98 @@ public class ProductTemplateProcess extends BaseTemplateProcess {
 		parametersMap.put("hotsPapers", this.loadHotsPapers());
 		//常见问题
 		parametersMap.put("questions", this.loadQuestions());
-		
-		List<StaticPage> list = new ArrayList<>();
+		int total = 0;
 		for(Product product : products){
 			if(product == null) continue;
 			Map<String, Object> parameters = new HashMap<>();
 			parameters.putAll(parametersMap);
-			parameters.put("product", product);
+			parameters.put("product", new ProductDetailViewData(product.getId(), (product.getExam() == null ? "" : product.getExam().getName()), 
+													product.getName(), product.getContent(), product.getPaperTotal(), product.getItemTotal(), product.getPrice(), product.getDiscount()));
 			
-			StaticPage page = new StaticPage(String.format("index-products-%s", product.getId()),"/products");
-			page.setContent(this.createStaticPageContent(parameters));
-			page.setLastTime(new Date());
-			
-			list.add(page);
+			this.updateStaticPage(String.format("index-products-%s", product.getId()), "/products", this.createStaticPageContent(parameters));
+			total += 1;
 		}
-		return list;
+		return total;
 	}
-
+	/**
+	 * 产品详细信息。
+	 * 
+	 * @author yangyong
+	 * @since 2015年1月8日
+	 */
+	public static class ProductDetailViewData extends ProductListViewData{
+		private static final long serialVersionUID = 1L;
+		private String examName,content;
+		private Integer pages;
+		/**
+		 * 构造函数。
+		 * @param id
+		 * 产品ID。
+		 * @param examName
+		 * 所属考试名称。
+		 * @param text
+		 * 产品名称。
+		 * @param content
+		 * 产品描述。
+		 * @param pages
+		 * 包含试卷总数。
+		 * @param total
+		 * 包含试题总数。
+		 * @param price
+		 * 价格。
+		 * @param discount
+		 * 优惠价。
+		 */
+		public ProductDetailViewData(String id, String examName, String text, String content, Integer pages, Integer total, BigDecimal price, BigDecimal discount) {
+			super(id, text, total, price, discount);
+			this.setExamName(examName);
+			this.setContent(content);
+			this.setPages(pages);
+		}
+		/**
+		 * 获取所属考试名称。
+		 * @return 所属考试名称。
+		 */
+		public String getExamName() {
+			return examName;
+		}
+		/**
+		 * 设置所属考试名称。
+		 * @param examName 
+		 *	  所属考试名称。
+		 */
+		public void setExamName(String examName) {
+			this.examName = examName;
+		}
+		/**
+		 * 获取产品介绍。
+		 * @return 产品介绍。
+		 */
+		public String getContent() {
+			return content;
+		}
+		/**
+		 * 设置产品介绍。
+		 * @param content 
+		 *	  产品介绍。
+		 */
+		public void setContent(String content) {
+			this.content = content;
+		}
+		/**
+		 * 获取试卷总数。
+		 * @return 试卷总数。
+		 */
+		public Integer getPages() {
+			return pages;
+		}
+		/**
+		 * 设置试卷总数。
+		 * @param pages 
+		 *	  试卷总数。
+		 */
+		public void setPages(Integer pages) {
+			this.pages = (pages == null ? 0 : pages);
+		}
+	}
 }

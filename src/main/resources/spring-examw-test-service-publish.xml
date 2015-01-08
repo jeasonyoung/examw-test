@@ -18,12 +18,14 @@
         <!-- 模版值名称集合 -->
         <property name="templateMap">
             <map>
-                <entry key="0x00" value="空" />
-                <entry key="0x01" value="首页" />
-                <entry key="0x02" value="考试页面" />
-                <entry key="0x04" value="产品页面" />
-                <entry key="0x08" value="试卷列表页面" />
-                <entry key="0x10" value="试卷详情页面" />
+                <entry key="0x00" value=" " />
+                <entry key="0x01" value="${publish_templates_index_name}" />
+                <entry key="0x02" value="${publish_templates_exam_name}" />
+                <entry key="0x04" value="${publish_templates_product_name}" />
+                <entry key="0x08" value="${publish_templates_paper_list_name}" />
+                <entry key="0x10" value="${publish_templates_paper_detail_name}" />
+                <entry key="0x20" value="${publish_templates_question_list_name}" />
+                <entry key="0x40" value="${publish_templates_question_detail_name}" />
             </map>
         </property>
     </bean>
@@ -54,25 +56,29 @@
         <property name="configurationDao" ref="configurationDao" />
         <!-- 发布记录数据接口 -->
         <property name="publishRecordDao" ref="publishRecordDao" />
-        <!-- 静态页面数据接口 -->
-        <property name="staticPageDao" ref="staticPageDao" />
         <!--  模版处理配置集合 -->
         <property name="processes">
             <map>
-                <entry key="0x01">
-                    <ref local="indexTemplateProcess"/><!-- 首页模版处理 -->
+                <entry key="0x01"><!-- 首页模版处理 -->
+                    <ref local="indexTemplateProcess"/>
                 </entry>
-                <entry key="0x02">
-                    <ref local="examTemplateProcess"/><!-- 考试页面模版处理 -->
+                <entry key="0x02"><!-- 考试页面模版处理 -->
+                    <ref local="examTemplateProcess"/>
                 </entry>
-                <entry key="0x04">
-                    <ref local="productTemplateProcess"/><!-- 产品页面模版处理 -->
+                <entry key="0x04"><!-- 产品页面模版处理 -->
+                    <ref local="productTemplateProcess"/>
                 </entry>
-                <entry key="0x08">
-                    <ref local="paperListTemplateProcess"/><!-- 试卷列表页面模版处理 -->
+                <entry key="0x08"><!-- 试卷列表页面模版处理 -->
+                    <ref local="paperListTemplateProcess"/>
                 </entry>
-                <entry key="0x10">
-                    <ref local="paperDetailTemplateProcess"/><!-- 试卷详情页面模版处理 -->
+                <entry key="0x10"><!-- 试卷详情页面模版处理 -->
+                    <ref local="paperDetailTemplateProcess"/>
+                </entry>
+                <entry key="0x20"><!--常见问题列表页面模版处理 -->
+                    <ref local="questionListTemplateProcess"/>
+                </entry>
+                <entry key="0x40"><!--常见问题详细页面模版处理 -->
+                    <ref local="questionDetailTemplateProcess"/>
                 </entry>
             </map>
         </property>
@@ -87,6 +93,8 @@
         <property name="userPaperRecordDao" ref="userPaperRecordDao" />
         <!-- 常用问题数据接口 -->
         <property name="questionDao" ref="questionDao" />
+        <!-- 静态页面数据接口 -->
+        <property name="staticPageDao" ref="staticPageDao" />
     </bean>
     <!-- 首页模版处理器 -->
     <bean id="indexTemplateProcess" class="com.examw.test.service.publish.impl.IndexTemplateProcess" parent="templateProcess">
@@ -106,15 +114,33 @@
     <bean id="productTemplateProcess" class="com.examw.test.service.publish.impl.ProductTemplateProcess" parent="templateProcess">
         <!-- 模版名称 -->
         <property name="templateName" value="${publish_templates_product}" />
+        <!-- 产品数据接口 -->
+        <property name="productDao" ref="productDao" />
     </bean>
     <!-- 试卷列表模版处理器 -->
     <bean id="paperListTemplateProcess" class="com.examw.test.service.publish.impl.PaperListTemplateProcess" parent="templateProcess">
         <!-- 模版名称 -->
         <property name="templateName" value="${publish_templates_paper_list}" />
+        <!-- 考试数据接口 -->
+        <property name="examDao" ref="examDao" />
     </bean>
     <!-- 试卷详细模版处理器 -->
     <bean id="paperDetailTemplateProcess" class="com.examw.test.service.publish.impl.PaperDetailTemplateProcess" parent="templateProcess">
         <!-- 模版名称 -->
         <property name="templateName" value="${publish_templates_paper_detail}" />
+        <!-- 产品数据接口 -->
+        <property name="productDao" ref="productDao" />
+        <!-- 试卷服务接口 -->
+        <property name="paperService" ref="paperService" />
+    </bean>
+    <!-- 常见问题列表模版处理器 -->
+    <bean id="questionListTemplateProcess" class="com.examw.test.service.publish.impl.QuestionListTemplateProcess" parent="templateProcess">
+        <!-- 模版名称 -->
+        <property name="templateName" value="${publish_templates_question_list}" />
+    </bean>
+    <!-- 常见问题详细模版处理器 -->
+    <bean id="questionDetailTemplateProcess" class="com.examw.test.service.publish.impl.QuestionDetailTemplateProcess" parent="templateProcess">
+         <!-- 模版名称 -->
+        <property name="templateName" value="${publish_templates_question_detail}" />
     </bean>
 </beans>

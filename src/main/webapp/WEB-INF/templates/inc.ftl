@@ -43,7 +43,7 @@
             <li><a href="#">考试分类</a></li>
             <li><a href="#">最新试卷</a></li>
             <li><a href="#">试卷排行</a></li>
-            <li><a href="#">常见问题</a></li>
+            <li><a href="index-questions-1.html">常见问题</a></li>
         </ul>
         <div class="my"><a href="#" target="_blank"></a></div>
     </div>
@@ -55,42 +55,57 @@
 <div class="newbox fl">
 	<div class="main">
         <div class="newshj">
-        	<div class="newtit bulebg fl"><span><a href="index-news-more.html" target="_blank">更多&gt;&gt;</a></span>最新试卷</div><div class="newtitbg"></div>
-            <#if newsPapers??>
-            <ul class="list-shj" id="list-shj">
-            	<#list newsPapers as data>
-                <li>
-                	<p>&middot;<a href="#" title="${data.text}">${data.text}</a></p>
-                    <p class="btn"><span>${data.total}人参与</span><a href="index-papers-${data.id}">免费测试</a></p>
-                </li>
-                </#list>
-			</ul>
-			</#if>
+        	<#--最新试卷-->
+        	<@news_papers />
         </div>
         <div class="newshj">
-        	<div class="newtit bulebg fl"><span><a href="index-hots-more.html" target="_blank">更多&gt;&gt;</a></span>热门试卷</div><div class="newtitbg"></div>
-        	<#if hotsPapers??>
-            <ul class="list-shj" id="list-shj">
-				<#list hotsPapers as data>
-                <li>
-                	<p>&middot;<a href="#" title="${data.text}">${data.text}</a></p>
-                    <p class="btn"><span>${data.total}人参与</span><a href="index-papers-${data.id}">免费测试</a></p>
-                </li>
-                </#list>
-			</ul>
-			</#if>
+        	<#--最热试卷-->
+        	<@hots_papers />
         </div>
-        <div class="new-question">
-        	<div class="newtit bulebg fl"><span><a href="index-questions-more.html" target="_blank">更多&gt;&gt;</a></span>常见问题</div><div class="newtitbg"></div>
-            <#if questions??>
-            <ul class="list">
-            	<#list questions as data>
-                <li>&middot;<a href="index-questions-${data.id}.html" title="${data.text}">${data.text}</a></li>
-                </#list>
-            </ul>
-            </#if>
-        </div>
+        <#--常见问题-->
+        <@questions_list />
     </div>
+</div>
+</#macro>
+<#--最新试卷-->
+<#macro news_papers>
+<div class="newtit bulebg fl"><span><a href="index-news-more.html" target="_blank">更多&gt;&gt;</a></span>最新试卷</div><div class="newtitbg"></div>
+<#if (newsPapers??)>
+<ul class="list-shj" id="list-shj">
+	<#list newsPapers as data>
+    <li>
+    	<p>&middot;<a href="#" title="${data.text}">${data.text}</a></p>
+        <p class="btn"><span>${data.total}人参与</span><a href="index-papers-${data.id}.html">免费测试</a></p>
+    </li>
+    </#list>
+</ul>
+</#if>
+</#macro>
+<#--最热试卷-->
+<#macro hots_papers>
+<div class="newtit bulebg fl"><span><a href="index-hots-more.html" target="_blank">更多&gt;&gt;</a></span>热门试卷</div><div class="newtitbg"></div>
+<#if (hotsPapers??)>
+<ul class="list-shj" id="list-shj">
+	<#list hotsPapers as data>
+    <li>
+    	<p>&middot;<a href="#" title="${data.text}">${data.text}</a></p>
+        <p class="btn"><span>${data.total}人参与</span><a href="index-papers-${data.id}.html">免费测试</a></p>
+    </li>
+    </#list>
+</ul>
+</#if>
+</#macro>
+<#--常见问题-->
+<#macro questions_list>
+<div class="new-question">
+	<div class="newtit bulebg fl"><span><a href="index-questions-1.html" target="_blank">更多&gt;&gt;</a></span>常见问题</div><div class="newtitbg"></div>
+    <#if (questions??)>
+    <ul class="list">
+    	<#list questions as data>
+        <li>&middot;<a href="index-questions-${data.id}.html" title="${data.text}">${data.text}</a></li>
+        </#list>
+    </ul>
+    </#if>
 </div>
 </#macro>
 <#--友情链接-->
@@ -107,6 +122,6 @@
 	<div class="nva"><a href="/about/">关于本站</a>┊<a href="/about/map.htm">网站地图</a>┊<a href="/about/copyright.html">网站声明</a>┊<a href="/about/ads.html">广告服务</a>┊<a href="/link/">友情链接</a>┊<a href="/about/job/">诚聘英才</a>┊<a href="/about/contact.html">联系我们</a>┊<a href="http: //bbs.examw.com/forum-4-1.html">意见咨询</a></div>
 	<div id="ft_about"></div>
 </div>
-<script language="javascript" src="http://img.examw.com/e.js"></script>
-<script language="javascript" src="http://img.examw.com/test/c.js"></script>
+<script type="text/javascript" language="javascript" src="http://img.examw.com/e.js"></script>
+<script type="text/javascript" language="javascript" src="http://img.examw.com/test/c.js"></script>
 </#macro>

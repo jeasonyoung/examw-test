@@ -91,21 +91,13 @@ public class ConfigurationServiceImpl extends BaseDataServiceImpl<Configuration,
 	//分离模版值
 	private Integer[] splitTemplateValue(Integer template){
 		List<Integer> list = new ArrayList<>();
-		if((template & ConfigurationTemplateType.HOME.getValue()) == ConfigurationTemplateType.HOME.getValue()){//首页
-			list.add(ConfigurationTemplateType.HOME.getValue());
-		}
-		if((template & ConfigurationTemplateType.EXAM.getValue()) == ConfigurationTemplateType.EXAM.getValue()){//考试
-			list.add(ConfigurationTemplateType.EXAM.getValue());
-		}
-		if((template & ConfigurationTemplateType.PRODUCT.getValue()) == ConfigurationTemplateType.PRODUCT.getValue()){//产品
-			list.add(ConfigurationTemplateType.PRODUCT.getValue());
-		}
-		if((template & ConfigurationTemplateType.PAPERLIST.getValue()) == ConfigurationTemplateType.PAPERLIST.getValue()){//试卷列表
-			list.add(ConfigurationTemplateType.PAPERLIST.getValue());
-		}
-		if((template & ConfigurationTemplateType.PAPERDETAIL.getValue()) == ConfigurationTemplateType.PAPERDETAIL.getValue()){//试卷详细
-			list.add(ConfigurationTemplateType.PAPERDETAIL.getValue());
-		}
+		ConfigurationTemplateType[] templateTypes = ConfigurationTemplateType.convert(template);
+		if(templateTypes != null && templateTypes.length > 0){
+			for(int i = 0; i < templateTypes.length; i++){
+				if(templateTypes[i] == ConfigurationTemplateType.NONE) continue;
+				list.add(templateTypes[i].getValue());
+			}
+		} 
 		return list.toArray(new Integer[0]);
 	}
 	//合并模版值

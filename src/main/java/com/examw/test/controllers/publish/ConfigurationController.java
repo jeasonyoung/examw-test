@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,6 +23,7 @@ import com.examw.test.domain.security.Right;
 import com.examw.test.model.publish.ConfigurationInfo;
 import com.examw.test.service.publish.ConfigurationTemplateType;
 import com.examw.test.service.publish.IConfigurationService;
+import com.examw.test.service.publish.IPublishService;
 import com.examw.test.support.EnumMapUtils;
 
 /**
@@ -37,6 +39,9 @@ public class ConfigurationController {
 	//注入发布配置服务接口。
 	@Resource
 	private IConfigurationService configurationService;
+	//注入发布服务接口。
+	@Resource
+	private IPublishService publishService;
 	/**
 	 * 加载列表页面。
 	 * @param model
@@ -122,6 +127,27 @@ public class ConfigurationController {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
 			logger.error(String.format("更新数据发生异常:%s", e.getMessage()),e);
+		}
+		return result;
+	}
+	/**
+	 * 模版发布。
+	 * @param configId
+	 * 配置ID。
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.PUBLISH_CONFIG + ":" + Right.UPDATE})
+	@RequestMapping(value={"/publish/{configId}"}, method = RequestMethod.GET)
+	@ResponseBody
+	public Json publish(@PathVariable String configId){
+		Json result = new Json();
+		try {
+			this.publishService.updatePublish(configId);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error(String.format("模版发生异常:%s", e.getMessage()),e);
 		}
 		return result;
 	}

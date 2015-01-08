@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,7 +44,20 @@ public class StaticPageController {
 		if(logger.isDebugEnabled()) logger.debug("加载列表页面...");
 		model.addAttribute("PER_UPDATE", ModuleConstant.PUBLISH_CONFIG + ":" + Right.UPDATE);
 		model.addAttribute("PER_DELETE", ModuleConstant.PUBLISH_CONFIG + ":" + Right.DELETE);
-		return "publish/page_list";
+		return "/publish/page_list";
+	}
+	/**
+	 * 加载静态页面预览。
+	 * @param pageId
+	 * @param model
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.PUBLISH_PAGE + ":" + Right.VIEW})
+	@RequestMapping(value={"/preview/{pageId}"}, method = RequestMethod.GET)
+	public String preview(@PathVariable String pageId, Model model){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载静态页面［%s］预览...", pageId));
+		model.addAttribute("content", this.staticPageService.loadPageContent(pageId));
+		return "/publish/page_preview";
 	}
 	/**
 	 * 加载列表数据。

@@ -1,5 +1,6 @@
 package com.examw.test.service.publish.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -45,6 +46,20 @@ public class StaticPageServiceImpl extends BaseDataServiceImpl<StaticPage, Stati
 		this.publishRecordDao = publishRecordDao;
 	}
 	/*
+	 * 加载静态页面内容。
+	 * @see com.examw.test.service.publish.IStaticPageService#loadPageContent(java.lang.String)
+	 */
+	@Override
+	public String loadPageContent(String pageId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载静态页面内容:%s...", pageId)); 
+		StaticPage page = StringUtils.isEmpty(pageId) ? null : this.staticPageDao.load(StaticPage.class, pageId);
+		if(page == null){
+			if(logger.isDebugEnabled()) logger.debug(String.format("静态页面［%s］不存在！", pageId));
+			return null;
+		}
+		return page.getContent();
+	}
+	/*
 	 * 查询数据。
 	 * @see com.examw.test.service.impl.BaseDataServiceImpl#find(java.lang.Object)
 	 */
@@ -59,13 +74,19 @@ public class StaticPageServiceImpl extends BaseDataServiceImpl<StaticPage, Stati
 	 */
 	@Override
 	protected StaticPageInfo changeModel(StaticPage data) {
+		return this.changeModel(data, true);
+	}
+	//数据模型转换。
+	private StaticPageInfo changeModel(StaticPage data, boolean isPublishRecord){
 		if(logger.isDebugEnabled()) logger.debug("数据模型转换：StaticPage => StaticPageInfo ...");
 		StaticPageInfo info = new StaticPageInfo();
 		BeanUtils.copyProperties(data, info);
-		PublishRecord p = null;
-		if((p = data.getPublish()) != null){
-			info.setPublishId(p.getId());
-			info.setPublishName(p.getName());
+		if(isPublishRecord){
+			PublishRecord p = null;
+			if((p = data.getPublish()) != null){
+				info.setPublishId(p.getId());
+				info.setPublishName(p.getName());
+			}
 		}
 		return info;
 	}
@@ -115,5 +136,31 @@ public class StaticPageServiceImpl extends BaseDataServiceImpl<StaticPage, Stati
 				this.staticPageDao.delete(data);
 			}
 		}
+	}
+	/*
+	 * 加载静态页面总数。
+	 * @see com.examw.test.service.publish.IStaticPageService#loadTotal(com.examw.test.model.publish.StaticPageInfo)
+	 */
+	@Override
+	public Long loadTotal(StaticPageInfo info) {
+		if(logger.isDebugEnabled()) logger.debug("加载静态页面总数....");
+		return this.staticPageDao.total(info);
+	}
+	/*
+	 * 加载静态页面数据。
+	 * @see com.examw.test.service.publish.IStaticPageService#loadPages(com.examw.test.model.publish.StaticPageInfo)
+	 */
+	@Override
+	public List<StaticPageInfo> loadPages(StaticPageInfo info) {
+		if(logger.isDebugEnabled()) logger.debug("加载静态页面数据...");
+		List<StaticPageInfo> list = new ArrayList<>();
+		List<StaticPage> pages = this.staticPageDao.findPages(info);
+		if(pages != null && pages.size() > 0){
+			for(StaticPage page : pages){
+				if(page == null) continue;
+				list.add(this.changeModel(page, false));
+			}
+		}
+		return list;
 	}
 }

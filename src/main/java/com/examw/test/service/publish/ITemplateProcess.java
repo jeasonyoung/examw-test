@@ -1,8 +1,6 @@
 package com.examw.test.service.publish;
 
-import java.util.List;
-
-import com.examw.test.domain.publish.StaticPage;
+import com.examw.test.domain.publish.PublishRecord;
 
 /**
  * 发布模版处理接口。
@@ -12,9 +10,15 @@ import com.examw.test.domain.publish.StaticPage;
  */
 public interface ITemplateProcess {
 	/**
-	 * 模版处理入口。
-	 * @return
+	 * 模版静态化处理入口。
+	 * @param record
+	 * 发布记录。
+	 * @return 生成页面数。
 	 * @throws Exception
 	 */
-	List<StaticPage> process() throws Exception;
+	int addProcess(PublishRecord record) throws Exception;
+	/**
+	 * 清除缓存。
+	 */
+	void cleanCache();
 }

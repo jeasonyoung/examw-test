@@ -33,7 +33,15 @@ public enum ConfigurationTemplateType {
 	/**
 	 * 试卷详情页面。
 	 */
-	PAPERDETAIL(0x10);
+	PAPERDETAIL(0x10),
+	/**
+	 * 常用问题列表页面。
+	 */
+	QUESTIONLIST(0x20),
+	/**
+	 * 常用问题编辑页面。
+	 */
+	QUESTIONDETAIL(0x40);
 	private int value;
 	/**
 	 * 构造函数。
@@ -59,8 +67,8 @@ public enum ConfigurationTemplateType {
 	public static final ConfigurationTemplateType[] convert(int value){
 		List<ConfigurationTemplateType> list = new ArrayList<>();
 		for(ConfigurationTemplateType type : ConfigurationTemplateType.values()){
-			if(type == null) continue;
-			if((type.getValue() | value) == type.getValue()){
+			if(type == ConfigurationTemplateType.NONE) continue;
+			if((type.getValue() & value) == type.getValue()){
 				list.add(type);
 			}
 		}

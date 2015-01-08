@@ -49,7 +49,7 @@ public class StaticPageDaoImpl extends BaseDaoImpl<StaticPage> implements IStati
 	@Override
 	public Long total(StaticPageInfo info) {
 		if(logger.isDebugEnabled()) logger.debug("查询页面数据统计...");
-		String hql = "from StaticPage sp where (1 = 1) ";
+		String hql = "select count(*) from StaticPage sp where (1 = 1) ";
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		if(logger.isDebugEnabled()) logger.debug(hql);

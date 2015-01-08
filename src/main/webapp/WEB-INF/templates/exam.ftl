@@ -2,7 +2,7 @@
 <#include "/inc.ftl" />
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>${exam.name}-考试页面</title>
+		<title>${examName}-考试页面</title>
 		<#--头部资源-->
 		<@header_resources/>
 	</head>
@@ -11,7 +11,7 @@
 		<@topbox/>
 		<div class="h20"></div>
 		<div class="main">
-			<div class="weizhi fl"><span></span>当前位置：<a href="#">首页</a><i>&gt;</i>${exam.name}</div>
+			<div class="weizhi fl"><span></span>当前位置：<a href="#">首页</a><i>&gt;</i>${examName}</div>
 		</div>
 		<div class="h1d"></div>
 		<div class="h1f"></div>
@@ -30,19 +30,17 @@
 		                        <i>免费体验</i>
 		                    </div>
 		                </li>
-	                <#if exam.products??>
-	                <#list exam.products as p>
-	                	<#if (p.status == 1)>
+	                <#if products??>
+	                <#list products as p>
 		                <li class="out" onMouseOver="this.className='over'" onMouseOut="this.className='out'">
 		                    <div class="title">
-		                        <em>&middot;<a href="#" target="_blank" title="${p.name}">${p.name}</a></em>
+		                        <em>&middot;<a href="#" target="_blank" title="${p.text}">${p.text}</a></em>
 		                        <span>${p.price}元</span>
 		                        <span class="red">${p.discount}元</span>
-		                        <span>${p.itemTotal}题</span>
+		                        <span>${p.total}题</span>
 		                        <i><div class="buy"><a href="index-products-buy-${p.id}.html" target="_blank">我要购买</a></div><div class="tiyan"><a href="index-products-${p.id}.html" target="_blank">免费体验</a></div></i>
 		                    </div>
 		                </li>
-		                </#if>
 	                </#list>
 	                </#if>
 		            </ul>
