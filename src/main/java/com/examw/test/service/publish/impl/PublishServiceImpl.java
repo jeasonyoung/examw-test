@@ -1,9 +1,7 @@
 package com.examw.test.service.publish.impl;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
@@ -11,10 +9,8 @@ import org.springframework.util.StringUtils;
 import com.examw.service.Status;
 import com.examw.test.dao.publish.IConfigurationDao;
 import com.examw.test.dao.publish.IPublishRecordDao;
-import com.examw.test.dao.publish.IStaticPageDao;
 import com.examw.test.domain.publish.Configuration;
 import com.examw.test.domain.publish.PublishRecord;
-import com.examw.test.domain.publish.StaticPage;
 import com.examw.test.service.publish.ConfigurationTemplateType;
 import com.examw.test.service.publish.IPublishService;
 import com.examw.test.service.publish.ITemplateProcess;
@@ -29,7 +25,6 @@ public class PublishServiceImpl implements IPublishService {
 	private static final Logger logger = Logger.getLogger(PublishServiceImpl.class);
 	private IConfigurationDao configurationDao;
 	private IPublishRecordDao publishRecordDao;
-	private IStaticPageDao staticPageDao;
 	private Map<Integer, ITemplateProcess> processes;
 	/**
 	 * 设置发布配置数据接口。
@@ -48,15 +43,6 @@ public class PublishServiceImpl implements IPublishService {
 	public void setPublishRecordDao(IPublishRecordDao publishRecordDao) {
 		if(logger.isDebugEnabled()) logger.debug("注入发布记录数据接口...");
 		this.publishRecordDao = publishRecordDao;
-	}
-	/**
-	 * 设置静态页面数据接口。
-	 * @param staticPageDao 
-	 *	  静态页面数据接口。
-	 */
-	public void setStaticPageDao(IStaticPageDao staticPageDao) {
-		if(logger.isDebugEnabled()) logger.debug("注入静态页面数据接口...");
-		this.staticPageDao = staticPageDao;
 	}
 	/**
 	 * 设置模版处理器集合。
@@ -106,44 +92,46 @@ public class PublishServiceImpl implements IPublishService {
 			throw new RuntimeException(error);
 		}
 		ConfigurationTemplateType[] templates = ConfigurationTemplateType.convert(configuration.getTemplate());
-		if(templates == null || templates.length == 0){
+		int count = 0;
+		if(templates == null || (count = templates.length) == 0){
 			error = "未配置需要发布的模版！";
 			if(logger.isDebugEnabled()) logger.debug(error);
 			throw new RuntimeException(error);
 		}
+		//发布记录
 		PublishRecord record = new PublishRecord(configuration, Status.DISABLE);
 		this.publishRecordDao.save(record);
-		for(ConfigurationTemplateType template : templates){
-			if(template == ConfigurationTemplateType.NONE) continue;
-			ITemplateProcess process = this.loadProcess(template);
+		int total = 0;
+		for(int i = 0; i < count; i++){
+			if(templates[i] == ConfigurationTemplateType.NONE) continue;
+			ITemplateProcess process = this.loadProcess(templates[i]);
 			if(process == null){
-				if(logger.isDebugEnabled()) logger.debug(String.format("模版［%s］未配置！", template));
+				if(logger.isDebugEnabled()) logger.debug(String.format("模版［%s］未配置！", templates[i]));
 				continue;
 			}
 			try {
-				List<StaticPage> listPages = process.process();
-				if(listPages == null || listPages.size() == 0) throw new Exception("没有生成静态页面!");
-				for(StaticPage page : listPages){
-					if(page == null) continue;
-					if(StringUtils.isEmpty(page.getId())){
-						page.setId(UUID.randomUUID().toString());
-					}
-					page.setCreateTime(new Date());
-					page.setPublish(record);
-					this.staticPageDao.saveOrUpdate(page);
+				if(i == 0){//第一个模版运行前清空缓存。
+					process.cleanCache();
 				}
+				if(logger.isDebugEnabled()) logger.debug(String.format("开始生成模版［％s］页面...",  templates[i]));
+				int pages = process.addProcess(record);
+				total += pages;
+				if(logger.isDebugEnabled()) logger.debug(String.format("生成模版［%1$s］页面［%2$d］，完成！", templates[i], pages));
 			} catch (Exception e) {
 				error = e.getMessage();
 				logger.error(String.format("处理模版［%1$s］时发生异常：%2$s", templates,  e.getMessage()), e);
 			}
-		}
+			if(i == count - 1){//最后一个模版运行后清空缓存
+				process.cleanCache();
+			}
+		} 
 		if(!StringUtils.isEmpty(error)){
 			record.setName(error);
 		}
+		record.setName(String.format("%1$s:%2$d", record.getName(), total));
 		record.setStatus(Status.ENABLED.getValue());
 		record.setEndTime(new Date());
 		this.publishRecordDao.saveOrUpdate(record);
-		
 		if(logger.isDebugEnabled()) logger.debug("=>更新发布结束！");
 	}
 }

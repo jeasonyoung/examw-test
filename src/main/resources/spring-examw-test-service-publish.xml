@@ -56,8 +56,6 @@
         <property name="configurationDao" ref="configurationDao" />
         <!-- 发布记录数据接口 -->
         <property name="publishRecordDao" ref="publishRecordDao" />
-        <!-- 静态页面数据接口 -->
-        <property name="staticPageDao" ref="staticPageDao" />
         <!--  模版处理配置集合 -->
         <property name="processes">
             <map>
@@ -95,6 +93,8 @@
         <property name="userPaperRecordDao" ref="userPaperRecordDao" />
         <!-- 常用问题数据接口 -->
         <property name="questionDao" ref="questionDao" />
+        <!-- 静态页面数据接口 -->
+        <property name="staticPageDao" ref="staticPageDao" />
     </bean>
     <!-- 首页模版处理器 -->
     <bean id="indexTemplateProcess" class="com.examw.test.service.publish.impl.IndexTemplateProcess" parent="templateProcess">

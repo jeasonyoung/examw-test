@@ -2,7 +2,6 @@ package com.examw.test.service.publish.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +11,6 @@ import org.apache.log4j.Logger;
 import com.examw.service.Status;
 import com.examw.test.dao.settings.IExamDao;
 import com.examw.test.domain.products.Product;
-import com.examw.test.domain.publish.StaticPage;
 import com.examw.test.domain.settings.Exam;
 import com.examw.test.model.settings.ExamInfo;
 
@@ -35,12 +33,12 @@ public class ExamTemplateProcess extends BaseTemplateProcess {
 		this.examDao = examDao;
 	}
 	/*
-	 * 模版处理。
-	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#templateProcess()
+	 *  模版静态化处理。
+	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#addTemplateProcess()
 	 */
 	@Override
-	protected List<StaticPage> templateProcess() throws Exception {
-		if(logger.isDebugEnabled()) logger.debug("模版处理...");
+	protected int addTemplateProcess() throws Exception {
+		if(logger.isDebugEnabled()) logger.debug("考试模版处理...");
 		List<Exam> exams = this.examDao.findExams(new ExamInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -50,7 +48,7 @@ public class ExamTemplateProcess extends BaseTemplateProcess {
 			@Override
 			public String getOrder() { return "desc";}
 		});
-		if(exams == null || exams.size()  == 0) return null;
+		if(exams == null || exams.size()  == 0) return 0;
 		
 		Map<String, Object>  parameters = new HashMap<>();
 		//最新试卷
@@ -60,7 +58,7 @@ public class ExamTemplateProcess extends BaseTemplateProcess {
 		//常见问题
 		parameters.put("questions", this.loadQuestions());
 		
-		List<StaticPage> list = new ArrayList<>();
+		int total = 0;
 		for(Exam exam : exams){
 			if(exam == null) continue;
 			parameters.put("examName", exam.getName());//考试名称
@@ -73,13 +71,10 @@ public class ExamTemplateProcess extends BaseTemplateProcess {
 				}
 			}
 			parameters.put("products", products);
-			StaticPage page = new StaticPage(String.format("index-exams-%s", exam.getAbbr()),"/exams");
-			page.setContent(this.createStaticPageContent(parameters));
-			page.setLastTime(new Date());
-			
-			list.add(page);
+			this.updateStaticPage(String.format("index-exams-%s", exam.getAbbr()), "/exams", this.createStaticPageContent(parameters));
+			total += 1;
 		}
-		return list;
+		return total;
 	}
 	/**
 	 * 产品显示数据。

@@ -15,36 +15,6 @@ public class StaticPage implements Serializable {
 	private PublishRecord publish;
 	private Date createTime,lastTime;
 	/**
-	 * 构造函数。
-	 */
-	public StaticPage(){}
-	/**
-	 * 构造函数。
-	 * @param id
-	 * 页面ID。
-	 * @param path
-	 * 页面路径。
-	 */
-	public StaticPage(String id,String path){
-		this(id, path, null);
-	}
-	/**
-	 * 构造函数。
-	 * @param id
-	 * 页面ID。
-	 * @param path
-	 * 页面路径。
-	 * @param content
-	 * 页面内容。
-	 */
-	public StaticPage(String id,String path, String content){
-		this.setId(id);
-		this.setPath(path);
-		this.setContent(content);
-		this.setCreateTime(new Date());
-		this.setLastTime(new Date());
-	}
-	/**
 	 * 获取页面ID。
 	 * @return 页面ID。
 	 */

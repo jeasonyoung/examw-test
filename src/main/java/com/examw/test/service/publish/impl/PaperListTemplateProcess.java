@@ -12,7 +12,6 @@ import com.examw.service.Status;
 import com.examw.test.dao.settings.IExamDao;
 import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.library.PaperRelease;
-import com.examw.test.domain.publish.StaticPage;
 import com.examw.test.domain.settings.Exam;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.library.PaperInfo;
@@ -38,18 +37,18 @@ public class PaperListTemplateProcess extends BaseTemplateProcess {
 	}
 	/*
 	 * 模版处理。
-	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#templateProcess()
+	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#addTemplateProcess()
 	 */
 	@Override
-	protected List<StaticPage> templateProcess() throws Exception {
+	protected int addTemplateProcess() throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("试卷列表模版处理...");
 		List<Exam> exams = this.examDao.findExams(new ExamInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Integer getStatus() { return Status.ENABLED.getValue();}
 		});
-		if(exams == null || exams.size() == 0) return null;
-		List<StaticPage> listPages = new ArrayList<>();
+		if(exams == null || exams.size() == 0) return 0;
+		int total = 0;
 		for(Exam exam : exams){
 			if(exam == null) continue;
 			PaperInfo where = new PaperInfo();
@@ -74,9 +73,9 @@ public class PaperListTemplateProcess extends BaseTemplateProcess {
 			parameters.put("subjectCode", "");
 			Long count = this.paperReleaseDao.totalPaperReleases(where);
 			if(count  == null || count == 0){
-				this.createStaticPages(prefix, path,parameters, listPages, null, where);
+				this.createStaticPages(prefix, path,parameters, null, where);
 			}else{
-				this.createStaticPages(prefix, path, parameters, listPages, (int)(count / page_count) + ((count % page_count) > 0 ? 1 : 0), where);
+				this.createStaticPages(prefix, path, parameters, (int)(count / page_count) + ((count % page_count) > 0 ? 1 : 0), where);
 				if(exam.getSubjects() != null && exam.getSubjects().size() > 0){
 					for(Subject subject : exam.getSubjects()){
 						if(subject == null) continue;
@@ -85,25 +84,26 @@ public class PaperListTemplateProcess extends BaseTemplateProcess {
 						path =  String.format("/exams/%1$s/%2$d/papers", exam.getAbbr(), subject.getCode());
 						where.setSubjectId(subject.getId());
 						count = this.paperReleaseDao.totalPaperReleases(where);
-						this.createStaticPages(prefix, path, parameters, listPages, (count == null) ? null : (int)(count / page_count) + ((count % page_count) > 0 ? 1 : 0), where);
+						total += this.createStaticPages(prefix, path, parameters, (count == null) ? null : (int)(count / page_count) + ((count % page_count) > 0 ? 1 : 0), where);
 					}
 				}
 			}
 		}
-		return listPages;
+		return total;
 	}
 	//创建静态页面
-	private void createStaticPages(String prefix,String path,Map<String, Object> parameters,List<StaticPage> listPages, Integer totalPages, PaperInfo where) throws Exception{
+	private int createStaticPages(String prefix,String path,Map<String, Object> parameters, Integer totalPages, PaperInfo where) throws Exception{
 		List<PaperListViewData> papers = null;
 		if(totalPages == null || totalPages <= 0){
 			parameters.put("current", 1);
-			parameters.put("papers", papers);
-			listPages.add(new StaticPage(prefix +"-1", path, this.createStaticPageContent(parameters)));
-			return;
+			parameters.put("papers", papers); 
+			this.updateStaticPage(prefix +"-1", path, this.createStaticPageContent(parameters));
+			return 1;
 		}
 		parameters.put("total", totalPages);
 		parameters.put("prefix", prefix);
 		Paper paper = null;
+		int total = 0;
 		for(int i = 0; i < totalPages; i++){
 			where.setPage(i+1);
 			parameters.put("current", i + 1);
@@ -118,8 +118,10 @@ public class PaperListTemplateProcess extends BaseTemplateProcess {
 				papers.add(pv);
 			}
 			parameters.put("papers", papers);
-			listPages.add(new StaticPage(prefix + "-" + where.getPage(), path, this.createStaticPageContent(parameters)));
+			this.updateStaticPage(prefix + "-" + where.getPage(), path, this.createStaticPageContent(parameters));
+			total += 1;
 		}
+		return total;
 	}
 	/**
 	 * 试卷列表。

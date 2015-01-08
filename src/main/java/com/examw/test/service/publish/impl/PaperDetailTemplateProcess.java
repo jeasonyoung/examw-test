@@ -1,7 +1,6 @@
 package com.examw.test.service.publish.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +12,6 @@ import com.examw.test.dao.products.IProductDao;
 import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.library.PaperRelease;
 import com.examw.test.domain.products.Product;
-import com.examw.test.domain.publish.StaticPage;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.library.PaperInfo;
 import com.examw.test.model.products.ProductInfo;
@@ -50,11 +48,11 @@ public class PaperDetailTemplateProcess extends BaseTemplateProcess {
 	}
 	/*
 	 * 模版处理。
-	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#templateProcess()
+	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#addTemplateProcess()
 	 */
 	@Override
-	protected List<StaticPage> templateProcess() throws Exception {
-		if(logger.isDebugEnabled()) logger.debug("模版处理...");
+	protected int addTemplateProcess() throws Exception {
+		if(logger.isDebugEnabled()) logger.debug("试卷详细模版处理...");
 		List<PaperRelease> paperReleases = this.paperReleaseDao.findPaperReleases(new PaperInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -62,17 +60,17 @@ public class PaperDetailTemplateProcess extends BaseTemplateProcess {
 			@Override
 			public String getOrder() { return "desc";}
 		});
-		if(paperReleases == null || paperReleases.size() == 0) return null;
+		if(paperReleases == null || paperReleases.size() == 0) return 0;
 		
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		//最新试卷
 		parameters.put("newsPapers", this.loadNewsPapers());
 		//最热试卷
 		parameters.put("hotsPapers", this.loadHotsPapers());
-				
-		List<StaticPage> list = new ArrayList<>();
+		
 		Paper paper = null;
 		Subject subject = null;
+		int total = 0;
 		for(PaperRelease release : paperReleases){
 			if(release == null || (paper = release.getPaper()) == null) continue;
 			subject = paper.getSubject();
@@ -105,14 +103,11 @@ public class PaperDetailTemplateProcess extends BaseTemplateProcess {
 					}
 				}
 			}
-			parameters.put("products", products);
+			parameters.put("products", products); 
 			
-			StaticPage page = new StaticPage(String.format("index-papers-%s", paper.getId()),"/papers");
-			page.setContent(this.createStaticPageContent(parameters));
-			page.setLastTime(new Date());
-			
-			list.add(page);
+			this.updateStaticPage(String.format("index-papers-%s", paper.getId()), "/papers", this.createStaticPageContent(parameters)); 
+			total += 1;
 		}
-		return list;
+		return total;
 	}
 }

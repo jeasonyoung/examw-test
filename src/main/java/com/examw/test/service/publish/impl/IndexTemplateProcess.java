@@ -1,7 +1,6 @@
 package com.examw.test.service.publish.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +8,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.examw.test.dao.settings.ICategoryDao;
-import com.examw.test.domain.publish.StaticPage;
 import com.examw.test.domain.settings.Category;
 import com.examw.test.domain.settings.Exam;
 
@@ -33,17 +31,13 @@ public class IndexTemplateProcess extends BaseTemplateProcess {
 	}
 	/*
 	 * 模版处理。
-	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#templateProcess()
+	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#addTemplateProcess()
 	 */
 	@Override
-	protected List<StaticPage> templateProcess() throws Exception {
-		if(logger.isDebugEnabled()) logger.debug("模版处理...");
-		List<StaticPage> list = new ArrayList<>();
-		StaticPage page = new StaticPage("index","/");
-		page.setContent(this.createStaticPageContent(this.createParameters()));
-		page.setLastTime(new Date());
-		list.add(page);
-		return list;
+	protected int addTemplateProcess() throws Exception {
+		if(logger.isDebugEnabled()) logger.debug("首页模版处理...");
+		this.updateStaticPage("index","/", this.createStaticPageContent(this.createParameters()));
+		return 1;
 	}
 	//构建参数集合。
 	private Map<String, Object> createParameters(){
