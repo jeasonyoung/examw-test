@@ -115,10 +115,12 @@
 <#-- 共享题干题  -->
 <#macro item_share_title i index>
 	<div class="fenxiti fl" fenxi_item_id = "${i.id}"><i>${i.typeName}</i><em><#if i.content?matches("\\s*[(][一二三四五六七八九十]{1}[)][\\W\\w]*")>${(i.content?trim)?substring(3)}<#else>${i.content}</#if></em></div>
+		<#if i.children??>
 		<#list i.children?sort_by(["orderNo"]) as child>
         	<@show_item null child index+child_index/>
         </#list>
         <#assign xuhao = xuhao + i.children?size />
+        <#if>
 </#macro>
 <#-- 共享答案题   -->
 <#macro item_share_answer i index>
@@ -126,11 +128,13 @@
 		<i>${i.typeName}</i>
 		<em>${i.content}<br/>
 		<div class="share_answer">
+		<#if i.children??>
 		<#list i.children?sort_by(["orderNo"]) as child>
 			<#if child_index != (i.children?size - 1)>
 				<@option_flag child_index/>. ${child.content}<br/>
 			</#if>
 		</#list>
+		</#if>
 		</div>
 		</em>
 	</div>
@@ -139,32 +143,40 @@
     <#assign xuhao = xuhao + share_answer_item.children?size />
 </#macro>
 <#macro item_share_answer_content i>
+	<#if i.children??>
 	<#list i.children?sort_by(["orderNo"]) as child>
 		<#if child_index != (i.children?size - 1)>
 			<@option_flag child_index/>. ${child.content}<br/>
 		</#if>
 	</#list>
+	</#if>
 </#macro>
 <#macro show_share_answer_item items parent index>
+	<#if items.children??>
 	<#list items.children as i>
 		<@show_item parent i index+i_index/>
 	</#list>
+	</#if>
 </#macro>
 <#-- 计算正确答案 -->
 <#macro calculate_right_answer parent i>
 	 <em class="dui">
 	 <#if parent??>	<#-- 共享答案题  -->
+	 	<#if parent.children??>
 	 	<#list parent.children?sort_by(["orderNo"]) as option>
         	<#if i.answer?index_of(option.id)!=-1>
           		<@option_flag option_index/> 
         	</#if>
      	</#list>
+     	</#if>
 	 <#else>
+	 	<#if i.children??>
      	<#list i.children?sort_by(["orderNo"]) as option>
         	<#if i.answer?index_of(option.id)!=-1>
           		<@option_flag option_index/> 
         	</#if>
      	</#list>
+     	</#if>
      </#if>
      </em>
 </#macro>
