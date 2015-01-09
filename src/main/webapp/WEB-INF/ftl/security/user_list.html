@@ -2,6 +2,40 @@
 <#include "/comm.ftl"/>
 <#assign module="security_user"/>
 <#assign dg="${module}_list_dg"/>
+<table id="${dg}" class="easyui-datagrid" data-options="url:'<@s.url '/security/user/datagrid'/>',fit:true,fitColumns:true,rownumbers:true,border:true,striped:true,
+		pagination:true,pagePosition:'bottom',pageSize:20, pageList:[20,30,40],idField:'id',sortName:'createTime',sortOrder:'desc',toolbar:'#${dg}_toolbar',onLoadError:function(e){ <@error_dialog 'e'/> },
+		onDblClickRow:function(rowIndex,rowData){ ${module}_edit_window('编辑用户',rowIndex,rowData); }">
+	<thead>
+		<tr>
+			<th data-options="field:'id',checkbox:true"></th>
+			<th data-options="field:'name',width:15,align:'left',sortable:true">用户姓名</th>
+			<th data-options="field:'account',width:15,align:'left',sortable:true">用户账号</th>
+			<th data-options="field:'roleName',width:40,align:'left',sortable:true">所属角色</th>
+			<th data-options="field:'nickName',width:15,align:'left',sortable:true">用户昵称</th>
+			<th data-options="field:'genderName',width:10,align:'center' ">性别</th>
+			<th data-options="field:'statusName',width:10,align:'center' ">状态</th>
+			<th data-options="field:'createTime',width:15,align:'center',sortable:true">创建时间</th>
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			<th data-options="field:'opt',width:12,align:'center',formatter:function(value,row,index){return '<a href=\'#\' onclick=${dg}_reset_userpwd(\''+row['id']+'\');>重置密码</a>'}"></th>
+			</@shiro.hasPermission>
+		</tr>
+	</thead>		
+</table>
+<div id="${dg}_toolbar">
+	<@shiro.hasPermission name="${PER_UPDATE}">
+	<a href="#" class="easyui-linkbutton" onclick="${module}_edit_window('新增用户',0,null);" data-options="iconCls:'icon-add',plain:true" style="float:left;">添加</a>
+	</@shiro.hasPermission>
+	<span>|</span>
+	<@shiro.hasPermission name="${PER_DELETE}">
+	<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
+	</@shiro.hasPermission>
+	<label style="margin-top:3px;margin-left:12px;">状态：</label>
+	<#list statusMap?keys as key>
+	<label style="padding-top:0px;<#if (key_index > 0)>margin-left:2px;</#if>"><input type="radio" name="status" value="${key}" />${statusMap[key]} </label>
+	</#list>
+	<label style="margin-left:12px;"><input name="name" class="easyui-textbox" data-options="prompt:'用户账号',icons:[{iconCls:'icon-clear',handler:function(e){ $(e.data.target).textbox('clear');}},{
+		iconCls:'icon-search',handler:function(e){$('#${dg}').datagrid('load',{'name':$(e.data.target).textbox('getValue'),'status':$('#${dg}_toolbar input[name=status]:checked').val()});}}]" style="width:298px;"/></label>
+</div>
 <script type="text/javascript">
 <!--
 $(function(){
@@ -51,6 +85,27 @@ $(function(){
 			}
 	  });
 	};
+	<@shiro.hasPermission name="${PER_UPDATE}">
+	//modify pwd
+	${dg}_reset_userpwd = function(userId){
+		$.messager.prompt("重置密码","请输入新密码(输入为空时密码不重置):",function(r){
+			if(r){
+				$.ajax({
+					url:"<@s.url '/security/user/'/>" + userId + "/modifyPwd" ,type:"POST",data:{password:r},dataType:"json",
+					error:function(e){$.messager.progress("close"); <@error_dialog "e"/> },
+					success:function(data,textStatus){
+						$.messager.progress("close");
+						if(data.success){
+							$.messager.show({ title:"提示", msg:"密码重置成功！" });
+						}else{
+							$.messager.show({ title:"提示", msg:data.msg });
+						}
+					}
+				});
+			}
+		});
+	};
+	</@shiro.hasPermission>
 	<@shiro.hasPermission name="${PER_DELETE}">
 	//delete
 	${dg}_delete = function(){
@@ -82,33 +137,3 @@ $(function(){
 });
 //-->
 </script>
-<table id="${dg}" class="easyui-datagrid" data-options="url:'<@s.url '/security/user/datagrid'/>',fit:true,fitColumns:true,rownumbers:true,border:true,striped:true,
-		pagination:true,pagePosition:'bottom',pageSize:20, pageList:[20,30,40],idField:'id',sortName:'createTime',sortOrder:'desc',toolbar:'#${dg}_toolbar',onLoadError:function(e){ <@error_dialog 'e'/> },
-		onDblClickRow:function(rowIndex,rowData){ ${module}_edit_window('编辑用户',rowIndex,rowData); }">
-	<thead>
-		<tr>
-			<th data-options="field:'id',checkbox:true"></th>
-			<th data-options="field:'name',width:15,align:'left',sortable:true">用户姓名</th>
-			<th data-options="field:'account',width:15,align:'left',sortable:true">用户账号</th>
-			<th data-options="field:'nickName',width:15,align:'left',sortable:true">用户昵称</th>
-			<th data-options="field:'genderName',width:10,align:'center' ">性别</th>
-			<th data-options="field:'createTime',width:15,align:'center',sortable:true">创建时间</th>
-			<th data-options="field:'statusName',width:10,align:'center' ">状态</th>
-		</tr>
-	</thead>		
-</table>
-<div id="${dg}_toolbar">
-	<@shiro.hasPermission name="${PER_UPDATE}">
-	<a href="#" class="easyui-linkbutton" onclick="${module}_edit_window('新增用户',0,null);" data-options="iconCls:'icon-add',plain:true" style="float:left;">添加</a>
-	</@shiro.hasPermission>
-	<span>|</span>
-	<@shiro.hasPermission name="${PER_DELETE}">
-	<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
-	</@shiro.hasPermission>
-	<label style="margin-top:3px;margin-left:12px;">状态：</label>
-	<#list statusMap?keys as key>
-	<label style="padding-top:0px;<#if (key_index > 0)>margin-left:2px;</#if>"><input type="radio" name="status" value="${key}" />${statusMap[key]} </label>
-	</#list>
-	<label style="margin-left:12px;"><input name="name" class="easyui-textbox" data-options="prompt:'用户账号',icons:[{iconCls:'icon-clear',handler:function(e){ $(e.data.target).textbox('clear');}},{
-		iconCls:'icon-search',handler:function(e){$('#${dg}').datagrid('load',{'name':$(e.data.target).textbox('getValue'),'status':$('#${dg}_toolbar input[name=status]:checked').val()});}}]" style="width:298px;"/></label>
-</div> 

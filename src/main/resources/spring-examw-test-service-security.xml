@@ -66,6 +66,8 @@
 		<property name="userDao"  ref="userDao" />
 		<!-- 角色数据接口 -->
 		<property name="roleDao"  ref="roleDao" />
+		<!-- 用户缓存接口 -->
+		<property name="userCache" ref="userRealm" />
 		<!-- 性别 -->
 		<property name="genderNameMap">
 			<map>

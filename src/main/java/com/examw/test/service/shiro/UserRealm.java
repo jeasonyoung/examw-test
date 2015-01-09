@@ -11,7 +11,9 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.util.ByteSource;
+import org.springframework.util.StringUtils;
 
 import com.examw.service.Status;
 import com.examw.test.domain.security.User;
@@ -23,24 +25,26 @@ import com.examw.test.support.PasswordHelper;
  * @author yangyong.
  * @since 2014-05-13.
  */
-public class UserRealm extends AuthorizingRealm implements IShiroCacheClear {
-	private static Logger logger = Logger.getLogger(UserRealm.class);
+public class UserRealm extends AuthorizingRealm implements IUserCache {
+	private static final Logger logger = Logger.getLogger(UserRealm.class);
 	private IUserAuthorization userAuthorization;
 	private PasswordHelper passwordHelper;
 	/**
-	 * 设置用户服务。
+	 * 设置用户授权服务接口。
 	 * @param userAuthorization
+	 * 用户授权服务接口。
 	 */
 	public void setUserAuthorization(IUserAuthorization userAuthorization) {
-		if(logger.isDebugEnabled()) logger.debug("设置用户服务接口...");
+		if(logger.isDebugEnabled()) logger.debug("注入用户授权服务接口...");
 		this.userAuthorization = userAuthorization;
 	}
 	/**
 	 * 设置密码工具。
 	 * @param passwordHelper
+	 * 密码工具。
 	 */
 	public void setPasswordHelper(PasswordHelper passwordHelper) {
-		if(logger.isDebugEnabled()) logger.debug("设置密码工具对象...");
+		if(logger.isDebugEnabled()) logger.debug("注入密码工具...");
 		this.passwordHelper = passwordHelper;
 	}
 	/*
@@ -51,21 +55,19 @@ public class UserRealm extends AuthorizingRealm implements IShiroCacheClear {
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
 		if(logger.isDebugEnabled()) logger.debug("执行获取授权信息...");
 		String account = (String)principals.getPrimaryPrincipal();
-		if(logger.isDebugEnabled()) logger.debug("account=" + account);
 		SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
 		authorizationInfo.setRoles(this.userAuthorization.findRolesByAccount(account));
 		authorizationInfo.setStringPermissions(this.userAuthorization.findPermissionsByAccount(account));
 		return authorizationInfo;
 	}
 	/*
-	 * 获得认证信息。
+	 * 执行获得认证信息。
 	 * @see org.apache.shiro.realm.AuthenticatingRealm#doGetAuthenticationInfo(org.apache.shiro.authc.AuthenticationToken)
 	 */
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-		if(logger.isDebugEnabled()) logger.debug("获取认证信息...");
+		if(logger.isDebugEnabled()) logger.debug("执行获得认证信息...");
 		String account = (String)token.getPrincipal();
-		if(logger.isDebugEnabled()) logger.debug("account=" + account);
 		User user = this.userAuthorization.loadUserByAccount(account);
 		if(user == null) throw new UnknownAccountException();//没找到账号。
 		if(user.getStatus() == Status.DISABLE.getValue()){
@@ -82,56 +84,26 @@ public class UserRealm extends AuthorizingRealm implements IShiroCacheClear {
 		
 		return authenticationInfo;
 	}
+    /*
+     * 移除用户缓存。
+     * @see com.examw.netplatform.shiro.IShiroUserCache#removeUserCache(java.lang.String)
+     */
+	@Override
+	public void removeUserCache(String account) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("移除用户［account ＝ %s］缓存...", account));
+		if(StringUtils.isEmpty(account)) return;
+		SimplePrincipalCollection pc = new SimplePrincipalCollection();
+		pc.add(account, this.getName());
+		this.clearCachedAuthorizationInfo(pc);
+		this.clearCachedAuthenticationInfo(pc);
+	}
 	/*
-	 * 清除缓存授权信息。
-	 * @see org.apache.shiro.realm.AuthorizingRealm#clearCachedAuthorizationInfo(org.apache.shiro.subject.PrincipalCollection)
+	 * 移除全部授权缓存。
+	 * @see com.examw.netplatform.shiro.IShiroUserCache#removeAuthorizationCache()
 	 */
 	@Override
-    public void clearCachedAuthorizationInfo(PrincipalCollection principals) {
-		if(logger.isDebugEnabled()) logger.debug("清除授权缓存...");
-        super.clearCachedAuthorizationInfo(principals);
-    }
-	/*
-	 * 清除缓存认证信息。
-	 * @see org.apache.shiro.realm.AuthenticatingRealm#clearCachedAuthenticationInfo(org.apache.shiro.subject.PrincipalCollection)
-	 */
-    @Override
-    public void clearCachedAuthenticationInfo(PrincipalCollection principals) {
-    	if(logger.isDebugEnabled()) logger.debug("清除认证缓存...");
-        super.clearCachedAuthenticationInfo(principals);
-    }
-    /*
-     * 清除缓存。
-     * @see org.apache.shiro.realm.CachingRealm#clearCache(org.apache.shiro.subject.PrincipalCollection)
-     */
-    @Override
-    public void clearCache(PrincipalCollection principals) {
-    	if(logger.isDebugEnabled()) logger.debug("清空缓存...");
-        super.clearCache(principals);
-    }
-    /*
-     * 清空授权信息缓存。
-     * @see com.examw.oa.service.shiro.IShiroCacheClear#clearAllCachedAuthorizationInfo()
-     */
-    @Override
-    public void clearAllCachedAuthorizationInfo() {
-        getAuthorizationCache().clear();
-    }
-    /*
-     * 清空认证信息缓存。
-     * @see com.examw.oa.service.shiro.IShiroCacheClear#clearAllCachedAuthenticationInfo()
-     */
-    @Override
-    public void clearAllCachedAuthenticationInfo() {
-        getAuthenticationCache().clear();
-    }
-    /*
-     * 清空所有缓存。
-     * @see com.examw.oa.service.shiro.IShiroCacheClear#clearAllCache()
-     */
-   @Override
-    public void clearAllCache() {
-        clearAllCachedAuthenticationInfo();
-        clearAllCachedAuthorizationInfo();
-    }
+	public void removeAuthorizationCache() {
+		if(logger.isDebugEnabled()) logger.debug("移除全部授权缓存...");
+		this.getAuthorizationCache().clear();
+	}
 }

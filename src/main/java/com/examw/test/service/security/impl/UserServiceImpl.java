@@ -23,6 +23,7 @@ import com.examw.test.model.security.UserInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.security.IUserAuthorization;
 import com.examw.test.service.security.IUserService;
+import com.examw.test.service.shiro.IUserCache;
 import com.examw.test.support.PasswordHelper;
 
 /**
@@ -34,6 +35,7 @@ public class UserServiceImpl extends BaseDataServiceImpl<User, UserInfo> impleme
 	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
 	private IUserDao userDao;
 	private IRoleDao roleDao; 
+	private IUserCache userCache;
 	private Map<Integer, String> genderNameMap,statusNameMap;
 	private PasswordHelper passwordHelper;
 	/**
@@ -53,6 +55,15 @@ public class UserServiceImpl extends BaseDataServiceImpl<User, UserInfo> impleme
 	public void setRoleDao(IRoleDao roleDao) {
 		if(logger.isDebugEnabled()) logger.debug("注入角色数据接口...");
 		this.roleDao = roleDao;
+	}
+	/**
+	* 设置用户缓存。
+	* @param userCache
+	* 用户缓存。
+	*/
+	public void setUserCache(IUserCache userCache) {
+		if(logger.isDebugEnabled()) logger.debug("注入用户缓存...");
+		this.userCache = userCache;
 	}
 	/**
 	 * 设置密码工具。
@@ -208,6 +219,8 @@ public class UserServiceImpl extends BaseDataServiceImpl<User, UserInfo> impleme
 		if(isAdded){
 			user.setPassword(this.passwordHelper.encryptAESPassword(info));
 			this.userDao.save(user);
+		}else{
+			this.userCache.removeUserCache(user.getAccount());//清除用户账号缓存信息。
 		}
 		return user;
 	}
@@ -225,6 +238,7 @@ public class UserServiceImpl extends BaseDataServiceImpl<User, UserInfo> impleme
 			 if(data != null){
 				 if(logger.isDebugEnabled()) logger.debug("删除数据：" + ids[i]);
 				 this.userDao.delete(data);
+				 this.userCache.removeUserCache(data.getAccount());//清除用户账号缓存信息。
 			 }
 		 }
 	}
@@ -236,17 +250,20 @@ public class UserServiceImpl extends BaseDataServiceImpl<User, UserInfo> impleme
 	public void modifyPassword(String userId,String oldPassword,String newPassword) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug(String.format("更新用户［%1$s］密码:［%1$s］ =>［％2$s］", userId,oldPassword,newPassword));
 		if(StringUtils.isEmpty(userId)) throw new Exception("用户ID为空！");
-		if(StringUtils.isEmpty(oldPassword)) throw new Exception("旧密码为空！");
+		//if(StringUtils.isEmpty(oldPassword)) throw new Exception("旧密码为空！");
 		if(StringUtils.isEmpty(newPassword)) throw new Exception("新密码为空！");
 		User user = this.userDao.load(User.class, userId);
 		if(user == null) throw new Exception(String.format("用户［％s］不存在！", userId));
-		String old_pwd = this.passwordHelper.decryptAESPassword(user);
-		if(!oldPassword.equalsIgnoreCase(old_pwd)) throw new Exception("旧密码错误！");
+		if(!StringUtils.isEmpty(oldPassword)){//验证旧密码
+			String old_pwd = this.passwordHelper.decryptAESPassword(user);
+			if(!oldPassword.equalsIgnoreCase(old_pwd)) throw new Exception("旧密码错误！");
+		}
 		UserInfo info = new UserInfo();
 		BeanUtils.copyProperties(user, info, new String[]{"password"});
 		info.setPassword(newPassword);
 		user.setPassword(this.passwordHelper.encryptAESPassword(info));
 		if(logger.isDebugEnabled()) logger.debug("密码修改成功！");
+		this.userCache.removeUserCache(user.getAccount());//清除用户账号缓存信息。
 	}
 	/*
 	 * 根据账号加载用户。
@@ -317,5 +334,6 @@ public class UserServiceImpl extends BaseDataServiceImpl<User, UserInfo> impleme
 		info.setStatus(Status.ENABLED.getValue());
 		this.updateUser(info);
 		if(logger.isDebugEnabled()) logger.debug("初始化用户完成。");
+		this.userCache.removeAuthorizationCache();
 	}
 }
