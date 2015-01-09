@@ -16,7 +16,7 @@
 			<th data-options="field:'statusName',width:10,align:'center' ">状态</th>
 			<th data-options="field:'createTime',width:15,align:'center',sortable:true">创建时间</th>
 			<@shiro.hasPermission name="${PER_UPDATE}">
-			<th data-options="field:'opt',width:12,align:'center',formatter:function(value,row,index){return '<a href=\'#\' onclick=${dg}_reset_userpwd(\''+row['id']+'\');>重置密码</a>'}"></th>
+			<th data-options="field:'opt',width:8,align:'center',formatter:function(value,row,index){return '<a href=\'#\' onclick=${dg}_reset_userpwd(\''+row['id']+'\');>重置密码</a>'}"></th>
 			</@shiro.hasPermission>
 		</tr>
 	</thead>		
