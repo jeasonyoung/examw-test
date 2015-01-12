@@ -238,7 +238,7 @@
 	    <many-to-one name="softwareType" column="type_id" class="SoftwareType" />
 	    <!-- 设备机器码 -->
 	    <property name="machine" type="string" length="512" />
-	    <!-- 绑定次数 -->
+	    <!-- 重复绑定次数[卸载了重装] -->
 	    <property name="times" type="integer" />
 	    <!-- 创建时间 -->
 		<property name="createTime" type="timestamp" />

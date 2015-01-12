@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.examw.model.Json;
 import com.examw.test.model.library.FrontPaperInfo;
 import com.examw.test.model.library.ItemInfo;
 import com.examw.test.model.library.PaperPreview;
 import com.examw.test.model.products.FrontProductInfo;
+import com.examw.test.model.records.FeedBackInfo;
 import com.examw.test.model.settings.AreaInfo;
 import com.examw.test.model.settings.ExamInfo;
 import com.examw.test.model.settings.FrontCategoryInfo;
@@ -27,6 +29,7 @@ import com.examw.test.model.syllabus.ChapterKnowledgeInfo;
 import com.examw.test.model.syllabus.SyllabusInfo;
 import com.examw.test.service.library.IFrontPaperService;
 import com.examw.test.service.products.IFrontProductService;
+import com.examw.test.service.records.IFeedBackService;
 import com.examw.test.service.settings.ExamStatus;
 import com.examw.test.service.settings.IExamService;
 import com.examw.test.service.settings.IFrontCategoryService;
@@ -61,6 +64,8 @@ public class FrontController {
 	//注入前端试卷服务接口。
 	@Resource
 	private IFrontPaperService frontPaperService;
+	@Resource
+	private IFeedBackService feedBackService;
 	/**
 	 * 加载考试类别集合。
 	 * @return
@@ -285,5 +290,20 @@ public class FrontController {
 	{
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载大纲下[%1$s]试题的集合...", syllabusId));
 		return this.syllabusService.loadSyllabusItems(syllabusId);
+	}
+	//2015.01.12 增加反馈
+	@RequestMapping(value = {"/feedback/add"}, method = { RequestMethod.POST })
+	@ResponseBody
+	public Json addFeedBack(@PathVariable FeedBackInfo feedBack)
+	{
+		Json json = new Json();
+		try
+		{
+			this.feedBackService.update(feedBack);
+		}catch(Exception e)
+		{
+			json.setSuccess(false);
+		}
+		return json;
 	}
 }
