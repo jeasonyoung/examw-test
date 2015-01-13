@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -294,11 +295,12 @@ public class FrontController {
 	//2015.01.12 增加反馈
 	@RequestMapping(value = {"/feedback/add"}, method = { RequestMethod.POST })
 	@ResponseBody
-	public Json addFeedBack(@PathVariable FeedBackInfo feedBack)
+	public Json addFeedBack(@RequestBody FeedBackInfo feedBack)
 	{
 		Json json = new Json();
 		try
 		{
+			json.setSuccess(true);
 			this.feedBackService.update(feedBack);
 		}catch(Exception e)
 		{

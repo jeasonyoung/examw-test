@@ -241,7 +241,7 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	 * @see com.examw.test.service.library.IPaperService#updateStatus(java.lang.String, com.examw.test.service.library.PaperStatus)
 	 */
 	@Override
-	public void updateStatus(String paperId, PaperStatus status) {
+	public void updateStatus(String paperId, PaperStatus status,boolean needCheck) {
 		if (logger.isDebugEnabled())logger.debug(String.format("更新状态：%1$s -> %2$s", paperId, status));
 		String msg = null;
 		if (StringUtils.isEmpty(paperId)) {
@@ -254,7 +254,10 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 			msg = String.format("试卷［paperId=%s］不存在！", paperId);
 			throw new RuntimeException(msg);
 		}
-		this.updatePaperStatus(data, status);
+		//2015.01.13修改
+		if(needCheck)this.updatePaperStatus(data, status);
+		//直接修改状态
+		data.setStatus(status.getValue());
 	}
 	/**
 	 * 更新试卷状态。

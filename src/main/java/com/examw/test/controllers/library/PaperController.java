@@ -205,7 +205,7 @@ public class PaperController implements IUserAware {
 		if(logger.isDebugEnabled()) logger.debug("审核试卷［"+ paperId +"］...");
 		Json result = new Json();
 		try {
-			this.paperService.updateStatus(paperId, PaperStatus.AUDIT);
+			this.paperService.updateStatus(paperId, PaperStatus.AUDIT,true);
 			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);
@@ -227,12 +227,34 @@ public class PaperController implements IUserAware {
 		if(logger.isDebugEnabled()) logger.debug("反审核试卷［"+ paperId +"］...");
 		Json result = new Json();
 		try {
-			this.paperService.updateStatus(paperId, PaperStatus.NONE);
+			this.paperService.updateStatus(paperId, PaperStatus.NONE,true);
 			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
 			logger.error("反审核试卷数据["+paperId+"]时发生异常:", e);
+		}
+		return result;
+	}
+	
+	/**
+	 * 直接修改试卷的状态
+	 * @param paperId
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE})
+	@RequestMapping(value="/changeStatus/{paperId}", method = RequestMethod.POST)
+	@ResponseBody
+	public Json changeStatus(@PathVariable String paperId,Integer status){
+		if(logger.isDebugEnabled()) logger.debug("修改试卷状态［"+ paperId +"］...");
+		Json result = new Json();
+		try {
+			this.paperService.updateStatus(paperId, PaperStatus.convert(status),false);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("审核试卷数据["+paperId+"]时发生异常:", e);
 		}
 		return result;
 	}

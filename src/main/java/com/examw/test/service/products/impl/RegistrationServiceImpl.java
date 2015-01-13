@@ -392,4 +392,13 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 		}
 		return this.formatCode(code);
 	}
+	
+	/*
+	 * 加载注册码对象
+	 */
+	@Override
+	public Registration loadRegistration(String code) {
+		if(code == null)	return null;
+		return this.registrationDao.loadRegistration(this.cleanCodeFormat(code));
+	}
 }

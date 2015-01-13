@@ -129,5 +129,17 @@
 	    <!-- 注册码代码服务接口 -->
 	    <property name="registrationCodeService" ref="registrationService" />
 	</bean> 
+	
+	<!-- 注册码注册检验服务  2015.01.13-->
+	<bean id="productRegisterService" class="com.examw.test.service.products.impl.ProductRegisterServiceImpl">
+	    <!-- 注册码绑定数据接口 -->
+	    <property name="registrationBindingDao" ref="registrationBindingDao" />
+	    <!-- 注册码数据接口 -->
+	    <property name="softwareTypeDao" ref="softwareTypeDao" />
+	    <!-- 产品用户数据接口 -->
+	    <property name="productUserDao" ref="productUserDao" />
+	    <!-- 注册码代码服务接口 -->
+	    <property name="registrationService" ref="registrationService" />
+	</bean> 
 	<!-- 产品管理  服务接口实现 end -->
 </beans>

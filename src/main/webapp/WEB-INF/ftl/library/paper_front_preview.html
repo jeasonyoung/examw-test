@@ -29,6 +29,10 @@
                 	<a href="javascript:void(0)" onclick="audit(this,'${PAPER.id}')"><#if PAPER.status == paper_status_none_value>审核<#else>反审核</#if></a>
                 </div>
                 <div class="h10"></div>
+                <div class="jiaojuan-botton" id="changeStatus" style="display:none"> 
+                	<a href="javascript:void(0)" onclick="modifyStatus('${PAPER.id}')">直接修改状态</a>
+                </div>
+                <div class="h10"></div>
             </div>
         </div>
         <div class="cont-r fr f-f14" id="paper_body">
@@ -65,7 +69,7 @@
                 	<p>${PAPER.description}</p>
                 </div>
                 </#if>
-                <div class="tixing fl">
+                <div class="tixing fl" id="structures">
                 	<div class="list">
                 		<#if PAPER.structures?? && (PAPER.structures?size>0)>
                     	<ul>
@@ -160,6 +164,7 @@ $(function(){
 	var totalNum = Number("${PAPER.total}");
 	$("#answerCard").smartFloat(false);	//答题卡浮动
 	$("#leftArea").smartFloat(1);//左侧浮动
+	$("#structures").smartFloat(1);
 	//<!-- 答题卡点击显示  -->
 	$("#answerCard div").first().click(function(){
 		var card = $(this).siblings("div").last();
@@ -251,9 +256,52 @@ $(function(){
 						}
 					}else{
 						alert($(obj).html()+"失败,提示:"+data.msg);
+						$("#changeStatus").show();
 					}
 				}
 			});
+		}
+	}
+	modifyStatus = function(paperId){
+		var t = confirm("您是否确认进行试卷状态的修改,请先仔细审核试卷再做此操作!!");
+		if(t)
+		{
+			var d = dialog({
+				id:'nexttimeDialog',
+				title: '修改试卷状态',
+				drag: true,
+		        content: "<div><b>修改试卷状态</b><p><label><input type='radio' name='status' value='${paper_status_none_value}'/>未审核</label></p><p><label><input type='radio' name='status' value='${paper_status_done_value}'/>审核</label></p></div></div>",
+		        button: [
+		 	    {
+		 	        value: '取消'
+		 	    },
+		 	     {
+		 	        value: '确定',
+		 	        callback: function () {
+		 	           var dialog = this;
+		 	           var status = $("input[name='status']:checked").val();
+		 	           if(status == undefined){
+		 	        	   alert("请选择状态!");return;
+		 	           }
+		 	           var data = {"status":status};
+		 	           $.ajax({
+		 	        	   type:"POST",
+		 	               url:'<@s.url "/library/paper/changeStatus/"/>'+paperId,
+		 	               data:data,
+		 	               dataType:'json',
+		 	               success:function(data){
+		 	            	   if(data.success){
+		 	            		   d.close();
+		 	            		   d.remove();
+		 	            		   alert("修改成功,在列表页刷新状态");
+		 	            	   }
+		 	               }
+		 	           });
+		 	          return false;
+		 	         },
+		 	          autofocus: true
+		 	      }]
+		 	   }).showModal();	
 		}
 	}
 });
