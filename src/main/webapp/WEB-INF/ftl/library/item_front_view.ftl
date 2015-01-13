@@ -120,7 +120,7 @@
         	<@show_item null child index+child_index/>
         </#list>
         <#assign xuhao = xuhao + i.children?size />
-        <#if>
+        </#if>
 </#macro>
 <#-- 共享答案题   -->
 <#macro item_share_answer i index>

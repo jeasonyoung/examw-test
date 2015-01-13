@@ -32,7 +32,7 @@ public interface IPaperService extends IBaseDataService<PaperInfo> {
 	 * @param status
 	 * 试卷状态。
 	 */
-	void updateStatus(String paperId,PaperStatus status);
+	void updateStatus(String paperId,PaperStatus status,boolean needCheck);
 	/**
 	 *  加载试卷基本数据。
 	 * @param paperId

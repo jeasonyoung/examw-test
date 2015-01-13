@@ -94,4 +94,18 @@
 	    <!-- 创建时间 -->
 	    <property name="createTime" column="create_time" type="timestamp" />
 	</class>
+	<!-- 用户意见反馈 -->
+	<class name="FeedBack" table="tbl_Examw_Test_Records_FeedBack">
+	    <cache usage="read-write" />
+	    <!-- 问题ID -->
+	    <id name="id" type="string" length="64" />
+	    <!-- 问题内容 -->
+	    <property name="content" type="text" />
+	    <!-- 创建时间 -->
+	    <property name="createTime" column="create_time" type="timestamp" />
+	    <!-- 创建人[记录用户名也有可能匿名反馈] -->
+	    <property name="username" type="string" length="128"/>
+	    <!-- 所属终端类型 -->
+	    <many-to-one name="terminal" column="terminal_id" class="com.examw.test.domain.products.SoftwareType" />
+	</class>
 </hibernate-mapping>

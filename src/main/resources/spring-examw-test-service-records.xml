@@ -50,4 +50,11 @@
 	    <!-- 常用问题数据接口 -->
 	    <property name="questionDao" ref="questionDao" />
 	</bean>
+	<!-- 常用问题服务 -->
+	<bean id="feedBackService" class="com.examw.test.service.records.impl.FeedBackServiceImpl">
+	    <!-- 常用问题数据接口 -->
+	    <property name="feedBackDao" ref="feedBackDao" />
+	    <!-- 终端类型数据接口 -->
+	    <property name="softwareTypeDao" ref="softwareTypeDao" />
+	</bean>
 </beans>

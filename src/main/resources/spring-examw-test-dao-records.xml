@@ -20,6 +20,10 @@
 	<bean id="questionDao" class="com.examw.test.dao.records.impl.QuestionDaoImpl">
 	    <property name="sessionFactory"  ref="sessionFactory" />
 	</bean>
+	<!-- 意见反馈数据接口 -->
+	<bean id="feedBackDao" class="com.examw.test.dao.records.impl.FeedBackDaoImpl">
+	    <property name="sessionFactory"  ref="sessionFactory" />
+	</bean>
 	
 	<!-- 用户记录   数据接口实现 end -->
 </beans>

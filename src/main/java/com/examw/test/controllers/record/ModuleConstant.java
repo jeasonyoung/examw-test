@@ -13,4 +13,8 @@ public final class ModuleConstant {
 	 * 常见问题ID。
 	 */
 	public static final String PAPER_QUESTION = "ETS0000206";
+	/**
+	 * 意见反馈ID
+	 */
+	public static final String PAPER_FEEDBACK = "ETS0000306";
 }

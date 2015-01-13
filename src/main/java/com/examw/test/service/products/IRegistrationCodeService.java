@@ -1,4 +1,7 @@
 package com.examw.test.service.products;
+
+import com.examw.test.domain.products.Registration;
+
 /**
  * 注册码服务接口。
  * 
@@ -55,4 +58,10 @@ public interface IRegistrationCodeService {
 	 * 去除格式后注册码。
 	 */
 	String cleanCodeFormat(String code);
+	/**
+	 * 加载注册码对象
+	 * @param code
+	 * @return
+	 */
+	Registration loadRegistration(String code);
 }

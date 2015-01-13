@@ -66,6 +66,7 @@ public class PaperPreviewController {
 		PaperItemUtils.addItemJudgeAnswers(this.itemService, model);
 		model.addAttribute("ITEMLIST",this.findItemsList(paperPreview));
 		model.addAttribute("paper_status_none_value", PaperStatus.NONE.getValue());
+		model.addAttribute("paper_status_done_value", PaperStatus.AUDIT.getValue());
 		return "library/paper_front_preview";
 	}
 	private List<StructureItemInfo> findItemsList(PaperPreview paper){
