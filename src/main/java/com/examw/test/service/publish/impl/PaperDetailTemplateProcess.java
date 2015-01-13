@@ -12,6 +12,7 @@ import com.examw.test.dao.products.IProductDao;
 import com.examw.test.domain.library.Paper;
 import com.examw.test.domain.library.PaperRelease;
 import com.examw.test.domain.products.Product;
+import com.examw.test.domain.settings.Exam;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.library.PaperInfo;
 import com.examw.test.model.products.ProductInfo;
@@ -70,12 +71,16 @@ public class PaperDetailTemplateProcess extends BaseTemplateProcess {
 		
 		Paper paper = null;
 		Subject subject = null;
+		Exam exam = null;
 		int total = 0;
 		for(PaperRelease release : paperReleases){
 			if(release == null || (paper = release.getPaper()) == null) continue;
 			subject = paper.getSubject();
 			parameters.put("subjectName", subject == null ? null : subject.getName());
-			parameters.put("examName", (subject == null || subject.getExam() == null) ?  null : subject.getExam().getName());
+			exam = subject.getExam();
+			parameters.put("examName", exam.getName());
+			String abbr = exam.getAbbr();
+			parameters.put("abbr", abbr);
 			//parameters.put("paperId", paper.getId());
 			parameters.put("paperName", paper.getName());
 			parameters.put("price", paper.getPrice());
@@ -104,8 +109,8 @@ public class PaperDetailTemplateProcess extends BaseTemplateProcess {
 				}
 			}
 			parameters.put("products", products); 
-			
-			this.updateStaticPage(String.format("index-papers-%s", paper.getId()), "/papers", this.createStaticPageContent(parameters)); 
+			this.updateStaticPage(String.format("%1$s-%2$d-%3$s", abbr, subject.getCode(), paper.getId()), 
+					String.format("/%1$s/%2$d/%3$s.html", abbr, subject.getCode(), paper.getId()), this.createStaticPageContent(parameters)); 
 			total += 1;
 		}
 		return total;

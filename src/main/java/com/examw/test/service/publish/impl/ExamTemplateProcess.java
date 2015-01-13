@@ -61,6 +61,7 @@ public class ExamTemplateProcess extends BaseTemplateProcess {
 		int total = 0;
 		for(Exam exam : exams){
 			if(exam == null) continue;
+			parameters.put("abbr", exam.getAbbr());//考试简称
 			parameters.put("examName", exam.getName());//考试名称
 			List<ProductListViewData> products = null;
 			if(exam.getProducts() != null && exam.getProducts().size() > 0){
@@ -71,7 +72,8 @@ public class ExamTemplateProcess extends BaseTemplateProcess {
 				}
 			}
 			parameters.put("products", products);
-			this.updateStaticPage(String.format("index-exams-%s", exam.getAbbr()), "/exams", this.createStaticPageContent(parameters));
+			String abbr = exam.getAbbr();
+			this.updateStaticPage(String.format("%s-index", abbr), String.format("/%s/index.html", abbr), this.createStaticPageContent(parameters));
 			total += 1;
 		}
 		return total;

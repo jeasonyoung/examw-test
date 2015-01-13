@@ -27,10 +27,10 @@
 		            <div class="f-r fr">
 		               <div class="list">
 		                    <ul>
-		                        <li <#if (subjectCode??) && (subjectCode?length==0)>class="bg">全部<#else>><a href="index-exams-${examAbbr}-papers-1.html">全部</a></#if></li>
+		                        <li <#if (subjectCode??) && (subjectCode?length==0)>class="bg">全部<#else>><a href="/${examAbbr}/list/index.html">全部</a></#if></li>
 		                        <#if (subjects??)&&(subjects?size>0)>
 		                        <#list subjects as s>
-		                        <li <#if (subjectCode??)&&(subjectCode==s.id)>class="bg">${s.text}<#else>><a href="index-exams-${examAbbr}-${s.id}-papers-1.html">${s.text}</a></#if></li>
+		                        <li <#if (subjectCode??)&&(subjectCode==s.id)>class="bg">${s.text}<#else>><a href="/${examAbbr}/${s.id}/list/index.html">${s.text}</a></#if></li>
 		                        </#list>
 		                        </#if>
 		                    </ul>
@@ -52,7 +52,7 @@
 		                        </em>
 		                        <span>${p.createTime?string("yyyy-MM-dd")}</span>
 		                        <b>${p.price}金币</b>
-		                        <div class="buybtn"><div class="hei-btn"><a href="index-papers-${p.id}">进入做题</a></div></div>
+		                        <div class="buybtn"><div class="hei-btn"><a href="/${examAbbr}/${p.category}/${p.id}.html">进入做题</a></div></div>
 		                    </div>
 		                </li>
 		                </#list>
@@ -68,7 +68,11 @@
 		        			pagenumber: ${current}, 
 		        			pagecount: ${total}, 
 		        			buttonClickCallback:function(index){
-		        				window.location.href="${prefix}-" + index +".html";
+		        				if(index == 1){
+		        					window.location.href="${path}/index.html";
+		        				}else{
+		        					window.location.href="${path}/" + index +".html";
+		        				}
 		        			}
 		        		});
 		        	});

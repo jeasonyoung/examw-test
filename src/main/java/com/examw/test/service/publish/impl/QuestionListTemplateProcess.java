@@ -37,7 +37,7 @@ public class QuestionListTemplateProcess extends BaseTemplateProcess {
 		where.setRows(page_count);
 		where.setSort("createTime");
 		where.setOrder("desc");
-		String prefix = "index-questions", path = "/questions";
+		String prefix = "questions-list", path = "/questions/list";
 		
 		int total = 0;
 		if(count == null || count == 0){
@@ -54,11 +54,12 @@ public class QuestionListTemplateProcess extends BaseTemplateProcess {
 	private int createStaticPages(String prefix,String path,Map<String, Object> parameters, Integer totalPages, QuestionInfo where) throws Exception {
 		if(totalPages == null || totalPages == 0){
 			parameters.put("current", 1);
-			this.updateStaticPage(prefix +"-1", path, this.createStaticPageContent(parameters));
+			this.updateStaticPage(prefix +"-index", path + "/index.html", this.createStaticPageContent(parameters));
 			return 1;
 		}
 		parameters.put("total", totalPages);
 		parameters.put("prefix", prefix);
+		parameters.put("path", path);
 		int total = 0;
 		for(int i = 0; i < totalPages; i++){
 			where.setPage(i+1);
@@ -70,7 +71,9 @@ public class QuestionListTemplateProcess extends BaseTemplateProcess {
 				list.add(new QuestionListViewData(question.getId(), question.getTitle(), question.getCreateTime()));
 			}
 			parameters.put("questions", list);
-			this.updateStaticPage(prefix + "-" + where.getPage(), path, this.createStaticPageContent(parameters));
+			this.updateStaticPage(prefix + "-" + ( i == 0 ? "index" : where.getPage()),
+					(i == 0) ? String.format("%s/index.html", path) : String.format("%1$s/%2$d.html", path, where.getPage()), 
+							this.createStaticPageContent(parameters));
 			total += 1;
 		}
 		return total;

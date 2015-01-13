@@ -22,33 +22,11 @@
 		<div class="main">
 		    <div class="newlist-l fl yinying">
 		    	<div class="zixun fl"><b>— 资讯中心 —</b><a href="#">考试资讯</a><a href="#">常见问题</a></div>
-		    	<div class="tit fl"><b>最新试卷</b></div>
-		        <div class="cont fl">
-		        	<#if (newsPapers??)&&(newsPapers?size>0)>
-		        	<ul class="list-shj" id="list-shj">
-				        <#list newsPapers as data>
-					    <li>
-					    	<p>&middot;<a href="#" title="${data.text}">${data.text}</a></p>
-					        <p class="btn"><span>${data.total}人参与</span><a href="index-papers-${data.id}">免费测试</a></p>
-					    </li>
-					    </#list>
-					</ul>
-					</#if>
-		        </div>
+		    	<#--最新试卷-->
+		    	<@question_list_news_papers />
 		        <div class="h20"></div>
-		        <div class="tit fl"><b>热门试卷</b></div>
-		        <div class="cont fl">
-		            <#if (hotsPapers??)&&(hotsPapers?size>0)>
-		        	<ul class="list-shj" id="list-shj">
-						<#list hotsPapers as data>
-					    <li>
-					    	<p>&middot;<a href="#" title="${data.text}">${data.text}</a></p>
-					        <p class="btn"><span>${data.total}人参与</span><a href="index-papers-${data.id}">免费测试</a></p>
-					    </li>
-					    </#list>
-					</ul>
-					</#if>
-		        </div>
+		       <#--最热试卷-->
+		       <@question_list_hots_papers />
 		    </div>
 		    <div class="newlist-r fr">
 		    	<div class="tit fl"><b>常见问题</b></div>
@@ -56,7 +34,7 @@
 		        <div class="cont fl">
 		        	<ul class="list">
 		            	<#list questions as q>
-		                <li><i>${q.createTime?string("yyyy-MM-dd")}</i>&middot;<a href="index-questions-${q.id}.html" title="${q.text}">${q.text}</a></li>
+		                <li><i>${q.createTime?string("yyyy-MM-dd")}</i>&middot;<a href="/questions/${q.id}.html" title="${q.text}">${q.text}</a></li>
 		            	</#list>
 		            </ul>
 		        </div>
@@ -66,7 +44,15 @@
 		        	<script type="text/javascript" language="javascript">
 		        	<!--
 		        	$(function(){
-		        		$("#${prefix}_paper").pager({pagenumber:${current},pagecount:${total},buttonClickCallback:function(index){ window.location.href="${prefix}-" + index +".html"; } });
+		        		$("#${prefix}_paper").pager({pagenumber:${current},pagecount:${total},buttonClickCallback:function(index){
+		        		 	var  url = "${path}";
+		        		 	if(index == 1){
+		        		 		url += "/index.html";
+		        		 	}else{
+		        		 		url += "/" + index + ".html";
+		        		 	}
+		        		 	window.location.href = url;
+		        		} });
 		        	});
 		        	//-->
 		        	</script>

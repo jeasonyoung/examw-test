@@ -48,22 +48,24 @@ public class ProductTemplateProcess extends BaseTemplateProcess {
 			public String getOrder() { return "desc";}
 		});
 		if(products == null || products.size() == 0) return 0;
-		Map<String, Object>  parametersMap = new HashMap<>();
+		Map<String, Object>  parameters = new HashMap<>();
 		//最新试卷
-		parametersMap.put("newsPapers", this.loadNewsPapers());
+		parameters.put("newsPapers", this.loadNewsPapers());
 		//最热试卷
-		parametersMap.put("hotsPapers", this.loadHotsPapers());
+		parameters.put("hotsPapers", this.loadHotsPapers());
 		//常见问题
-		parametersMap.put("questions", this.loadQuestions());
+		parameters.put("questions", this.loadQuestions());
 		int total = 0;
 		for(Product product : products){
 			if(product == null) continue;
-			Map<String, Object> parameters = new HashMap<>();
-			parameters.putAll(parametersMap);
+			//parameters.put("abbr", product.getExam().getAbbr());
 			parameters.put("product", new ProductDetailViewData(product.getId(), (product.getExam() == null ? "" : product.getExam().getName()), 
 													product.getName(), product.getContent(), product.getPaperTotal(), product.getItemTotal(), product.getPrice(), product.getDiscount()));
+			String abbr = product.getExam().getAbbr();
 			
-			this.updateStaticPage(String.format("index-products-%s", product.getId()), "/products", this.createStaticPageContent(parameters));
+			this.updateStaticPage(String.format("%1$s-%2$s",abbr, product.getId()), 
+					String.format("/%1$s/%2$s.html",abbr, product.getId()), 
+					this.createStaticPageContent(parameters));
 			total += 1;
 		}
 		return total;

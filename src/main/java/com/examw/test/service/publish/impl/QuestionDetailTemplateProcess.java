@@ -44,7 +44,8 @@ public class QuestionDetailTemplateProcess extends BaseTemplateProcess {
 		for(Question question : questions){
 			if(question == null) continue;
 			parameters.put("question", new QuestionViewData(question.getId(), question.getTitle(), question.getContent(), question.getCreateTime()));
-			this.updateStaticPage(String.format("index-questions-%s", question.getId()), "/questions", this.createStaticPageContent(parameters));
+			this.updateStaticPage(String.format("questions-%s", question.getId()), 
+					String.format("/questions/%s.html", question.getId()), this.createStaticPageContent(parameters));
 			total += 1;
 		}
 		return total;

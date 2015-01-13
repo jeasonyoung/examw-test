@@ -18,33 +18,11 @@
 		<div class="h20"></div>
 		<div class="main">
 		    <div class="newlist-l fl yinying">
-		    	<div class="tit fl"><b>最新试卷</b></div>
-		        <div class="cont fl">
-		        	<#if (newsPapers??)&&(newsPapers?size>0)>
-		        	<ul class="list-shj" id="list-shj">
-						<#list newsPapers as data>
-					    <li>
-					    	<p>&middot;<a href="#" title="${data.text}">${data.text}</a></p>
-					    	<p class="btn"><span>${data.total}人参与</span><a href="index-papers-${data.id}">免费测试</a></p>
-					    </li>
-					    </#list>
-					</ul>
-					</#if>
-		        </div>
+		    	<#--最新试卷-->
+		    	<@question_detail_news_papers />
 		        <div class="h20"></div>
-		        <div class="tit fl"><b>热门试卷</b></div>
-		        <div class="cont fl">
-		        	<#if (hotsPapers??)&&(hotsPapers?size>0)>
-		        	<ul class="list-shj" id="list-shj">
-						<#list hotsPapers as data>
-					    <li>
-					    	<p>&middot;<a href="#" title="${data.text}">${data.text}</a></p>
-					        <p class="btn"><span>${data.total}人参与</span><a href="index-papers-${data.id}">免费测试</a></p>
-					    </li>
-					    </#list>
-					</ul>
-					</#if>
-		        </div>
+		        <#--最热试卷-->
+		        <@question_detail_hots_papers />
 		    </div>
 		    <div class="newlist-r fr">
 		    	<div class="tit fl"><b>常见问题</b></div>

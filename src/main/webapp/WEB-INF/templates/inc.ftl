@@ -40,10 +40,10 @@
 	<div class="menu">
         <ul>
             <li class="cur"><a href="http://test.examw.com/91/">首页</a></li>
-            <li><a href="#">考试分类</a></li>
+            <li><a href="/index.html">考试分类</a></li>
             <li><a href="#">最新试卷</a></li>
             <li><a href="#">试卷排行</a></li>
-            <li><a href="index-questions-1.html">常见问题</a></li>
+            <li><a href="/questions/list/index.html">常见问题</a></li>
         </ul>
         <div class="my"><a href="#" target="_blank"></a></div>
     </div>
@@ -67,33 +67,56 @@
     </div>
 </div>
 </#macro>
-<#--最新试卷-->
-<#macro news_papers>
-<div class="newtit bulebg fl"><span><a href="index-news-more.html" target="_blank">更多&gt;&gt;</a></span>最新试卷</div><div class="newtitbg"></div>
-<#if (newsPapers??)>
+<#--试卷列表显示-->
+<#macro papers_list_views papers>
+<#if (papers??)&&(papers?size>0)>
 <ul class="list-shj" id="list-shj">
-	<#list newsPapers as data>
+	<#list papers as data>
     <li>
     	<p>&middot;<a href="#" title="${data.text}">${data.text}</a></p>
-        <p class="btn"><span>${data.total}人参与</span><a href="index-papers-${data.id}.html">免费测试</a></p>
+        <p class="btn"><span>${data.total}人参与</span><a href="/${data.category}/${data.id}.html">免费测试</a></p>
     </li>
     </#list>
 </ul>
 </#if>
 </#macro>
+<#--最新试卷-->
+<#macro news_papers>
+<div class="newtit bulebg fl"><span><a href="#" target="_blank">更多&gt;&gt;</a></span>最新试卷</div><div class="newtitbg"></div>
+<@papers_list_views newsPapers/>
+</#macro>
+<#--常见问题列表－最新试卷 -->
+<#macro question_list_news_papers>
+<div class="tit fl"><b>最新试卷</b></div>
+<div class="cont fl">
+	<@papers_list_views newsPapers/>
+</div>
+</#macro>
+<#--常见问题明细－最新试卷 -->
+<#macro question_detail_news_papers>
+<div class="tit fl"><b>最新试卷</b></div>
+<div class="cont fl">
+	<@papers_list_views newsPapers/>
+</div>
+</#macro>
 <#--最热试卷-->
 <#macro hots_papers>
-<div class="newtit bulebg fl"><span><a href="index-hots-more.html" target="_blank">更多&gt;&gt;</a></span>热门试卷</div><div class="newtitbg"></div>
-<#if (hotsPapers??)>
-<ul class="list-shj" id="list-shj">
-	<#list hotsPapers as data>
-    <li>
-    	<p>&middot;<a href="#" title="${data.text}">${data.text}</a></p>
-        <p class="btn"><span>${data.total}人参与</span><a href="index-papers-${data.id}.html">免费测试</a></p>
-    </li>
-    </#list>
-</ul>
-</#if>
+<div class="newtit bulebg fl"><span><a href="#" target="_blank">更多&gt;&gt;</a></span>热门试卷</div><div class="newtitbg"></div>
+<@papers_list_views hotsPapers/>
+</#macro>
+<#--常见问题列表－最热试卷-->
+<#macro question_list_hots_papers>
+<div class="tit fl"><b>热门试卷</b></div>
+<div class="cont fl">
+    <@papers_list_views hotsPapers/>
+</div>
+</#macro>
+<#--常见问题详细－最热试卷-->
+<#macro question_detail_hots_papers>
+<div class="tit fl"><b>热门试卷</b></div>
+<div class="cont fl">
+	<@papers_list_views hotsPapers/>
+</div>
 </#macro>
 <#--常见问题-->
 <#macro questions_list>
@@ -102,7 +125,7 @@
     <#if (questions??)>
     <ul class="list">
     	<#list questions as data>
-        <li>&middot;<a href="index-questions-${data.id}.html" title="${data.text}">${data.text}</a></li>
+        <li>&middot;<a href="/questions/${data.id}.html" title="${data.text}">${data.text}</a></li>
         </#list>
     </ul>
     </#if>

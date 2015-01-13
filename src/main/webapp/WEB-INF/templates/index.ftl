@@ -21,7 +21,7 @@
 						<#if (category.exams??) && (category.exams?size>0)>
 						<ul class="fl-list">
 							<#list category.exams as exam>
-								<li><a href="index-exams-${exam.id}.html" target="_blank" title="${exam.text}">${exam.text}</a></li>
+								<li><a href="/${exam.id}/index.html" target="_blank" title="${exam.text}">${exam.text}</a></li>
 							</#list>
 						</ul>
 						</#if>

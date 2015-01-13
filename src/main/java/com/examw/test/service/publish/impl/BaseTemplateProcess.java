@@ -22,6 +22,7 @@ import com.examw.test.domain.library.PaperRelease;
 import com.examw.test.domain.publish.PublishRecord;
 import com.examw.test.domain.publish.StaticPage;
 import com.examw.test.domain.records.Question;
+import com.examw.test.domain.settings.Subject;
 import com.examw.test.service.publish.ITemplateProcess;
 import com.examw.test.support.FreeMakerEngine;
 
@@ -186,8 +187,12 @@ public abstract class BaseTemplateProcess implements ITemplateProcess,ResourceLo
 			if(releases != null && releases.size() > 0){
 				for(PaperRelease release : releases){
 					Paper paper = null;
+					Subject subject =  null;
 					if(release == null || (paper = release.getPaper()) == null) continue;
 					ViewListData data = new ViewListData(paper.getId(), paper.getName());
+					if((subject = paper.getSubject()) != null){
+						data.setCategory(String.format("/%1$s/%2$s", subject.getExam().getAbbr(), subject.getCode()));
+					}
 					data.setTotal(this.loadPaperUsersTotal(data.getId()));
 					list.add(data);
 				}
@@ -210,7 +215,11 @@ public abstract class BaseTemplateProcess implements ITemplateProcess,ResourceLo
 			if(papers != null && papers.size() > 0){
 				for(Paper paper : papers){
 					if(paper == null) continue;
+					Subject subject =  null;
 					ViewListData data = new ViewListData(paper.getId(), paper.getName());
+					if((subject = paper.getSubject()) != null){
+						data.setCategory(String.format("/%1$s/%2$s", subject.getExam().getAbbr(), subject.getCode()));
+					}
 					data.setTotal(this.loadPaperUsersTotal(data.getId()));
 					list.add(data);
 				}
@@ -258,8 +267,23 @@ public abstract class BaseTemplateProcess implements ITemplateProcess,ResourceLo
 	 */
 	public static class ViewListData implements Serializable {
 		private static final long serialVersionUID = 1L;
-		private String id,text;
+		private String id,text,category;
 		private Integer total;
+		/**
+		 * 构造函数。
+		 * @param id
+		 * 数据ID。
+		 * @param text
+		 * 显示内容。
+		 * @param category
+		 * 类别。
+		 * @param total
+		 * 统计。
+		 */
+		public ViewListData(String id, String text,String category, Integer total){
+			this(id, text, total);
+			this.setCategory(category);
+		}
 		/**
 		 * 构造函数。
 		 * @param id
@@ -313,6 +337,21 @@ public abstract class BaseTemplateProcess implements ITemplateProcess,ResourceLo
 		 */
 		public void setText(String text) {
 			this.text = text;
+		}
+		/**
+		 * 获取类别。
+		 * @return 类别
+		 */
+		public String getCategory() {
+			return category;
+		}
+		/**
+		 * 设置类别
+		 * @param category 
+		 *	  类别
+		 */
+		public void setCategory(String category) {
+			this.category = category;
 		}
 		/**
 		 * 获取统计数值。

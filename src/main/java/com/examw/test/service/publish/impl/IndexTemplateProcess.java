@@ -36,7 +36,7 @@ public class IndexTemplateProcess extends BaseTemplateProcess {
 	@Override
 	protected int addTemplateProcess() throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("首页模版处理...");
-		this.updateStaticPage("index","/", this.createStaticPageContent(this.createParameters()));
+		this.updateStaticPage("index","/index.html", this.createStaticPageContent(this.createParameters()));
 		return 1;
 	}
 	//构建参数集合。
@@ -54,7 +54,9 @@ public class IndexTemplateProcess extends BaseTemplateProcess {
 					this.buildCategoryExams(category, examViewDatas);
 					categoryViewData.setExams(examViewDatas);
 				}
-				categories.add(categoryViewData);
+				if(categoryViewData.getExams() != null && categoryViewData.getExams().size() > 0){
+					categories.add(categoryViewData);
+				}
 			}
 			parametersMap.put("categories", categories);
 		}

@@ -57,8 +57,8 @@ public class PaperListTemplateProcess extends BaseTemplateProcess {
 			where.setRows(page_count);
 			where.setSort("createTime");
 			where.setOrder("desc");
-			String prefix =  String.format("index-exams-%s-papers", exam.getAbbr()),
-					  path = String.format("/exams/%s/papers", exam.getAbbr());
+			String prefix =  String.format("%s-list", exam.getAbbr()),
+					  path = String.format("/%s/list", exam.getAbbr());
 			Map<String, Object> parameters = new HashMap<>();
 			parameters.put("examName", exam.getName());
 			parameters.put("examAbbr", exam.getAbbr());
@@ -69,19 +69,23 @@ public class PaperListTemplateProcess extends BaseTemplateProcess {
 					subjects.add(new ViewListData(String.format("%d",subject.getCode()), subject.getName()));
 				}
 			}
+			//科目数量
 			parameters.put("subjects", subjects);
 			parameters.put("subjectCode", "");
+			//获取试卷数量
 			Long count = this.paperReleaseDao.totalPaperReleases(where);
-			if(count  == null || count == 0){
+			if(count  == null || count == 0){//没有试卷
 				this.createStaticPages(prefix, path,parameters, null, where);
 			}else{
+				//全部试卷
 				this.createStaticPages(prefix, path, parameters, (int)(count / page_count) + ((count % page_count) > 0 ? 1 : 0), where);
+				//分科目下的试卷
 				if(exam.getSubjects() != null && exam.getSubjects().size() > 0){
 					for(Subject subject : exam.getSubjects()){
 						if(subject == null) continue;
 						parameters.put("subjectCode",String.format("%d",subject.getCode()));
-						prefix =  String.format("index-exams-%1$s-%2$d-papers", exam.getAbbr(), subject.getCode());
-						path =  String.format("/exams/%1$s/%2$d/papers", exam.getAbbr(), subject.getCode());
+						prefix =  String.format("%1$s-%2$d-list", exam.getAbbr(), subject.getCode());
+						path =  String.format("/%1$s/%2$d/list/", exam.getAbbr(), subject.getCode());
 						where.setSubjectId(subject.getId());
 						count = this.paperReleaseDao.totalPaperReleases(where);
 						total += this.createStaticPages(prefix, path, parameters, (count == null) ? null : (int)(count / page_count) + ((count % page_count) > 0 ? 1 : 0), where);
@@ -97,11 +101,12 @@ public class PaperListTemplateProcess extends BaseTemplateProcess {
 		if(totalPages == null || totalPages <= 0){
 			parameters.put("current", 1);
 			parameters.put("papers", papers); 
-			this.updateStaticPage(prefix +"-1", path, this.createStaticPageContent(parameters));
+			this.updateStaticPage(prefix +"-1", path + "/index.html", this.createStaticPageContent(parameters));
 			return 1;
 		}
 		parameters.put("total", totalPages);
 		parameters.put("prefix", prefix);
+		parameters.put("path", path);
 		Paper paper = null;
 		int total = 0;
 		for(int i = 0; i < totalPages; i++){
@@ -113,12 +118,15 @@ public class PaperListTemplateProcess extends BaseTemplateProcess {
 				if(release == null || (paper = release.getPaper()) == null) continue;
 				PaperListViewData pv = new PaperListViewData(paper.getId(), paper.getName(), release.getTotal(), paper.getTime(),
 						(paper.getScore() == null ? 0 : paper.getScore().intValue()), paper.getPrice());
+				pv.setCategory(String.format("%d",paper.getSubject().getCode()));
 				pv.setCreateTime(paper.getCreateTime());
 				pv.setUsers(this.loadPaperUsersTotal(pv.getId()));
 				papers.add(pv);
 			}
 			parameters.put("papers", papers);
-			this.updateStaticPage(prefix + "-" + where.getPage(), path, this.createStaticPageContent(parameters));
+			this.updateStaticPage(prefix + "-" + ((i == 0) ? "index": where.getPage()),
+					(i == 0) ? String.format("%s/index.html", path) : String.format("%1$s/%2$d.html", path, where.getPage()),
+							this.createStaticPageContent(parameters));
 			total += 1;
 		}
 		return total;
