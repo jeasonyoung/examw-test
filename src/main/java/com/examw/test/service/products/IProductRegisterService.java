@@ -1,5 +1,7 @@
 package com.examw.test.service.products;
 
+import java.math.BigDecimal;
+
 import com.examw.model.Json;
 
 /**
@@ -27,4 +29,14 @@ public interface IProductRegisterService {
 	 */
 	Json verify(String code, String userId, String productId, String machine,
 			Integer terminalCode);
+	/**
+	 * 生成注册码
+	 * @param productId
+	 * @param channelId
+	 * @param price
+	 * @param limit
+	 * @return
+	 */
+	Json generateCode(String productId, String channelId, BigDecimal price,
+			Integer limit);
 }

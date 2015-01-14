@@ -1,28 +1,37 @@
 package com.examw.test.service.products.impl;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
 
 import com.examw.model.Json;
+import com.examw.test.dao.products.IProductDao;
 import com.examw.test.dao.products.IProductUserDao;
 import com.examw.test.dao.products.IRegistrationBindingDao;
 import com.examw.test.dao.products.ISoftwareTypeDao;
+import com.examw.test.domain.products.Product;
 import com.examw.test.domain.products.ProductUser;
 import com.examw.test.domain.products.Registration;
 import com.examw.test.domain.products.RegistrationBinding;
 import com.examw.test.domain.products.SoftwareType;
 import com.examw.test.domain.products.SoftwareTypeLimit;
 import com.examw.test.model.products.RegistrationBindingInfo;
+import com.examw.test.model.products.RegistrationInfo;
+import com.examw.test.model.products.RegistrationLimitInfo;
+import com.examw.test.model.products.SoftwareTypeInfo;
 import com.examw.test.service.products.IProductRegisterService;
 import com.examw.test.service.products.IRegistrationService;
 import com.examw.test.service.products.RegistrationStatus;
 
 /**
- * 
+ * 产品注册服务实现类
  * @author fengwei.
  * @since 2015年1月13日 下午3:24:34.
  */
@@ -32,9 +41,10 @@ public class ProductRegisterServiceImpl implements IProductRegisterService{
 	private ISoftwareTypeDao softwareTypeDao;
 	private IRegistrationBindingDao registrationBindingDao;
 	private IProductUserDao productUserDao;
+	private IProductDao productDao;
 	
 	/**
-	 * 设置 
+	 * 设置 注册码服务接口
 	 * @param registrationService
 	 * 
 	 */
@@ -43,7 +53,7 @@ public class ProductRegisterServiceImpl implements IProductRegisterService{
 	}
 
 	/**
-	 * 设置 
+	 * 设置 软件类型数据接口
 	 * @param softwareTypeDao
 	 * 
 	 */
@@ -52,7 +62,7 @@ public class ProductRegisterServiceImpl implements IProductRegisterService{
 	}
 
 	/**
-	 * 设置 
+	 * 设置 注册码绑定数据接口
 	 * @param registrationBindingDao
 	 * 
 	 */
@@ -62,12 +72,21 @@ public class ProductRegisterServiceImpl implements IProductRegisterService{
 	}
 
 	/**
-	 * 设置 
+	 * 设置 产品用户数据接口
 	 * @param productUserDao
 	 * 
 	 */
 	public void setProductUserDao(IProductUserDao productUserDao) {
 		this.productUserDao = productUserDao;
+	}
+	
+	/**
+	 * 设置 产品数据接口
+	 * @param productDao
+	 * 
+	 */
+	public void setProductDao(IProductDao productDao) {
+		this.productDao = productDao;
 	}
 
 	/*
@@ -146,6 +165,10 @@ public class ProductRegisterServiceImpl implements IProductRegisterService{
 		}
 		return json;
 	}
+	
+	/*
+	 * 添加注册码绑定
+	 */
 	private void addRegisterBind(Registration data,Integer softwareTypeCode,String userId,String machine)throws Exception
 	{
 		SoftwareType softwareType = null;
@@ -192,7 +215,10 @@ public class ProductRegisterServiceImpl implements IProductRegisterService{
 			dataBinding.setUser(StringUtils.isEmpty(userId) ? null : this.productUserDao.load(ProductUser.class, userId));
 			this.registrationBindingDao.save(dataBinding);
 	}
-	
+	/*
+	 * 验证注册码
+	 * @see com.examw.test.service.products.IProductRegisterService#verify(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Integer)
+	 */
 	@Override
 	public Json verify(String code, String userId, String productId,
 			String machine, Integer terminalCode) {
@@ -226,6 +252,75 @@ public class ProductRegisterServiceImpl implements IProductRegisterService{
 			json.setSuccess(false);
 			json.setMsg(e.getMessage());
 		}
+		return json;
+	}
+	/**
+	 * 生成注册码
+	 */
+	@Override
+	public Json generateCode(String productId, String channelId,BigDecimal price, Integer limit) {
+		Json json = new Json();
+		boolean flag = false;
+		String msg = null;
+		if(StringUtils.isEmpty(productId))
+		{
+			msg = "产品ID为空!";
+		}else
+		{
+			Product product = this.productDao.load(Product.class, productId);
+			if(product == null)
+			{
+				msg = "没有此产品的信息";
+			}
+			//TODO
+			else if(product.getDiscount().compareTo(price)>0)
+			{
+				msg = "产品的价格与支付价格不一致";
+			}
+			else
+			{
+				//生成注册码
+				RegistrationInfo info = new RegistrationInfo();
+				info.setProductId(productId);
+				//TODO 是否默认渠道
+				info.setChannelId(channelId);
+				info.setPrice(price);
+				info.setLimits(limit);
+				//增加默认的软件限制
+				List<SoftwareType> types = this.softwareTypeDao.findSoftwareTypes(new SoftwareTypeInfo(){
+					private static final long serialVersionUID = 1L;
+					@Override
+					public String getSort(){ return "code"; }
+					@Override
+					public String getOrder() { return "asc"; }
+				});
+				if(types!=null)
+				{
+					Set<RegistrationLimitInfo> limits = new HashSet<RegistrationLimitInfo>();
+					for(SoftwareType type:types)
+					{
+						RegistrationLimitInfo limitInfo = new RegistrationLimitInfo();
+						limitInfo.setSoftwareTypeId(type.getId());
+						limitInfo.setTimes(1); //默认一次
+						
+					}
+					info.setTypeLimits(limits);
+				}
+				//生成
+				RegistrationInfo data = this.registrationService.update(info);
+				if(data != null)
+				{
+					flag = true;
+					msg = "生成成功";
+					json.setData(data.getCode());
+				}else
+				{
+					msg = "注册码生成失败";
+				}
+			}
+		}
+		json.setMsg(msg);
+		json.setSuccess(flag);
 		return json;
 	}
 }
