@@ -46,7 +46,7 @@
 		                    </ul>
 		                    <div class="tishi">一点通服务：由<a href="http://www.examw.com/" target="_blank">中华考试网</a>提供在线咨询、购买安装指导、售后服务</div>
 		                    <div class="btn"><div class="hong-btn"><a href="#">立即下载</a></div></div>
-		                    <div class="btn"><div class="lv-btn"><a href="#">立即购买</a></div></div>
+		                    <div class="btn"><div class="lv-btn"><a name="index-products-buy"  id="${product.id}" Price="${product.price}" GoodPrice="${product.discount}" Title="${product.text}" href="#">立即购买</a></div></div>
 		                </div>
 		                <div class="h30"></div>
 		                <div class="phonebox fl">

@@ -81,7 +81,7 @@ public class PaperDetailTemplateProcess extends BaseTemplateProcess {
 			parameters.put("examName", exam.getName());
 			String abbr = exam.getAbbr();
 			parameters.put("abbr", abbr);
-			//parameters.put("paperId", paper.getId());
+			parameters.put("paperId", paper.getId());
 			parameters.put("paperName", paper.getName());
 			parameters.put("price", paper.getPrice());
 			parameters.put("year", paper.getYear());

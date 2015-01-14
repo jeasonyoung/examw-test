@@ -35,8 +35,8 @@
 		                    </ul>
 		                </div>
 		                <div class="botton-box">
-		                    <div class="botton"><div class="cheng-btn"><a href="#">普通模考</a></div></div>
-		                    <div class="botton"><div class="hong-btn"><a href="#">全真模考</a></div></div>
+		                    <div class="botton"><div class="cheng-btn"><a href="http://tiku.examw.com/library/paper/do/multi/${paperId}">普通模考</a></div></div>
+		                    <div class="botton"><div class="hong-btn"><a href="http://tiku.examw.com/library/paper/do/single/${paperId}">全真模考</a></div></div>
 		                </div>
 		            </div>
 		        </div>
@@ -63,7 +63,7 @@
 		                        <span>${p.price}元</span>
 		                        <span class="red">${p.discount}元</span>
 		                        <span>${p.total}题</span>
-		                        <i><div class="buy"><a href="index-products-buy-${p.id}.html" target="_blank">我要购买</a></div><div class="tiyan"><a href="/${abbr}/${p.id}.html" target="_blank">免费体验</a></div></i>
+		                        <i><div class="buy"><a name="index-products-buy"  id="${p.id}" Price="${p.price}" GoodPrice="${p.discount}" Title="${p.text}" href="#" target="_blank">我要购买</a></div><div class="tiyan"><a href="/${abbr}/${p.id}.html" target="_blank">免费体验</a></div></i>
 		                    </div>
 		                </li>
 		                </#list>
