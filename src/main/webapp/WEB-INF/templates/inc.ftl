@@ -45,7 +45,7 @@
             <li><a href="#">试卷排行</a></li>
             <li><a href="/questions/list/index.html">常见问题</a></li>
         </ul>
-        <div class="my"><a href="#" target="_blank"></a></div>
+        <div class="my"><a href="http://tiku.examw.com/" target="_blank"></a></div>
     </div>
 </div>
 </#macro>
@@ -74,7 +74,7 @@
 	<#list papers as data>
     <li>
     	<p>&middot;<a href="#" title="${data.text}">${data.text}</a></p>
-        <p class="btn"><span>${data.total}人参与</span><a href="/${data.category}/${data.id}.html">免费测试</a></p>
+        <p class="btn"><span>${data.total}人参与</span><a href="${data.category}/${data.id}.html">免费测试</a></p>
     </li>
     </#list>
 </ul>
@@ -121,7 +121,7 @@
 <#--常见问题-->
 <#macro questions_list>
 <div class="new-question">
-	<div class="newtit bulebg fl"><span><a href="index-questions-1.html" target="_blank">更多&gt;&gt;</a></span>常见问题</div><div class="newtitbg"></div>
+	<div class="newtit bulebg fl"><span><a href="/questions/list/index.html" target="_blank">更多&gt;&gt;</a></span>常见问题</div><div class="newtitbg"></div>
     <#if (questions??)>
     <ul class="list">
     	<#list questions as data>

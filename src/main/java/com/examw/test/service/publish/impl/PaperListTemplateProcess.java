@@ -85,7 +85,7 @@ public class PaperListTemplateProcess extends BaseTemplateProcess {
 						if(subject == null) continue;
 						parameters.put("subjectCode",String.format("%d",subject.getCode()));
 						prefix =  String.format("%1$s-%2$d-list", exam.getAbbr(), subject.getCode());
-						path =  String.format("/%1$s/%2$d/list/", exam.getAbbr(), subject.getCode());
+						path =  String.format("/%1$s/%2$d/list", exam.getAbbr(), subject.getCode());
 						where.setSubjectId(subject.getId());
 						count = this.paperReleaseDao.totalPaperReleases(where);
 						total += this.createStaticPages(prefix, path, parameters, (count == null) ? null : (int)(count / page_count) + ((count % page_count) > 0 ? 1 : 0), where);
