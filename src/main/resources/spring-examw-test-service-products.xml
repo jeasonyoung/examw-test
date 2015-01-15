@@ -112,6 +112,9 @@
 		        <entry key="3" value="${registration_status_logoff}"/>
 		    </map>
 		</property>
+		<!-- 自动生成注册码时,默认期限和软件限制默认绑定次数 -->
+		<property name="limitTime" value="${limitTime}"></property>
+		<property name="bingTimes" value="${bingTimes}"></property>
 	</bean>
 	<!-- 注册码软件类型限制服务 -->
 	<bean id="softwareTypeLimitService" class="com.examw.test.service.products.impl.SoftwareTypeLimitServiceImpl">
@@ -123,21 +126,19 @@
 	    <!-- 注册码绑定数据接口 -->
 	    <property name="registrationBindingDao" ref="registrationBindingDao" />
 	    <!-- 注册码数据接口 -->
-	    <property name="registrationDao" ref="registrationDao" />
+	    <!-- <property name="registrationDao" ref="registrationDao" /> -->
 	    <!-- 产品用户数据接口 -->
 	    <property name="productUserDao" ref="productUserDao" />
 	    <!-- 注册码代码服务接口 -->
 	    <property name="registrationCodeService" ref="registrationService" />
 	</bean> 
 	
-	<!-- 注册码注册检验服务  2015.01.13-->
+	<!-- 注册码检验服务  2015.01.13-->
 	<bean id="productRegisterService" class="com.examw.test.service.products.impl.ProductRegisterServiceImpl">
 	    <!-- 注册码绑定数据接口 -->
 	    <property name="registrationBindingDao" ref="registrationBindingDao" />
 	    <!-- 注册码数据接口 -->
 	    <property name="softwareTypeDao" ref="softwareTypeDao" />
-	    <!-- 产品用户数据接口 -->
-	    <property name="productUserDao" ref="productUserDao" />
 	    <!-- 注册码代码服务接口 -->
 	    <property name="registrationService" ref="registrationService" />
 	</bean> 

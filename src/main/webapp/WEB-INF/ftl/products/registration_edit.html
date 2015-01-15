@@ -18,7 +18,7 @@
 		</div>
 		<div style="float:left;margin-top:12px;width:100%;">
 			<label style="width:75px;">所属产品：</label>
-			<input id="${form}_productId" name="productId" class="easyui-combobox" data-options="url:'<@s.url '${product_query_url}${current_exam_id}'/>',valueField:'id',textField:'name',onLoadError:function(e){ <@error_dialog 'e'/> },
+			<input id="${form}_productId" name="productId" class="easyui-combobox" required="true" data-options="url:'<@s.url '${product_query_url}${current_exam_id}'/>',valueField:'id',textField:'name',onLoadError:function(e){ <@error_dialog 'e'/> },
 				onSelect:function(record){$('#${form}_price').numberbox('setValue',record['price']); },icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).combobox('clear');$('#${form}_price').numberbox('clear'); }}]" style="width:480px;"/>
 		</div>
 		<div style="float:left;margin-top:12px;width:100%;">

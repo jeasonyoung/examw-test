@@ -10,7 +10,6 @@ import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.products.IProductUserDao;
 import com.examw.test.dao.products.IRegistrationBindingDao;
-import com.examw.test.dao.products.IRegistrationDao;
 import com.examw.test.domain.products.ProductUser;
 import com.examw.test.domain.products.Registration;
 import com.examw.test.domain.products.RegistrationBinding;
@@ -18,6 +17,7 @@ import com.examw.test.domain.products.SoftwareType;
 import com.examw.test.domain.products.SoftwareTypeLimit;
 import com.examw.test.model.products.RegistrationBindingInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
+import com.examw.test.service.products.IProductRegisterService.ProductRegister;
 import com.examw.test.service.products.IRegistrationBindingService;
 import com.examw.test.service.products.IRegistrationCodeService;
 
@@ -29,7 +29,6 @@ import com.examw.test.service.products.IRegistrationCodeService;
 public class RegistrationBindingServiceImpl extends BaseDataServiceImpl<RegistrationBinding,RegistrationBindingInfo> implements IRegistrationBindingService{
 	private static final Logger logger = Logger.getLogger(RegistrationBindingServiceImpl.class);
 	private IRegistrationBindingDao registrationBindingDao;
-	private IRegistrationDao registrationDao;
 	private IProductUserDao productUserDao;
 	private IRegistrationCodeService registrationCodeService;
 	/**
@@ -40,15 +39,6 @@ public class RegistrationBindingServiceImpl extends BaseDataServiceImpl<Registra
 	public void setRegistrationBindingDao(IRegistrationBindingDao registrationBindingDao) {
 		if(logger.isDebugEnabled()) logger.debug("注入注册码绑定数据接口...");
 		this.registrationBindingDao = registrationBindingDao;
-	}
-	/**
-	 * 设置注册码数据接口。
-	 * @param registrationDao 
-	 *	  注册码数据接口。
-	 */
-	public void setRegistrationDao(IRegistrationDao registrationDao) {
-		if(logger.isDebugEnabled()) logger.debug("注入注册码数据接口...");
-		this.registrationDao = registrationDao;
 	}
 	/**
 	 * 设置产品用户数据接口。
@@ -151,7 +141,7 @@ public class RegistrationBindingServiceImpl extends BaseDataServiceImpl<Registra
 		if(StringUtils.isEmpty(registerCode)) throw new Exception("注册码为空！");
 		if(StringUtils.isEmpty(machine)) throw new Exception("设备机器标示为空！");
 		if(this.registrationCodeService.validation(registerCode)){//验证注册码合法性
-			Registration registration = this.registrationDao.loadRegistration(this.registrationCodeService.cleanCodeFormat(registerCode));
+			Registration registration = this.registrationCodeService.loadRegistration(registerCode);
 			if(registration == null) throw new Exception("加载注册码对象失败！");
 			SoftwareType softwareType = null;
 			SoftwareTypeLimit softwareTypeLimit = null;
@@ -189,6 +179,67 @@ public class RegistrationBindingServiceImpl extends BaseDataServiceImpl<Registra
  			dataBinding.setSoftwareType(softwareType);
  			dataBinding.setMachine(machine);
  			dataBinding.setUser(StringUtils.isEmpty(userId) ? null : this.productUserDao.load(ProductUser.class, userId));
+ 			this.registrationBindingDao.save(dataBinding);
+ 			return true;
+		}
+		return false;
+	}
+	
+	/*
+	 * 绑定注册码
+	 * @see com.examw.test.service.products.IRegistrationBindingService#addBinding(com.examw.test.service.products.IProductRegisterService.ProductRegister)
+	 */
+	@Override
+	public boolean addBinding(ProductRegister data) throws Exception {
+		if(data == null)
+		return false;
+		if(data.check())
+		{
+			if(logger.isDebugEnabled()) logger.debug(String.format("添加注册码绑定:%s",data.toString()));
+			String code = this.registrationCodeService.cleanCodeFormat(data.getCode());
+			if(!this.registrationCodeService.validation(code)){
+				throw new Exception("注册码不合法");
+			}
+			Registration registration = this.registrationCodeService.loadRegistration(code);
+			if(registration == null) throw new Exception("加载注册码对象失败！");
+			if(!registration.getProduct().getId().equals(data.getProductId()))
+				throw new Exception("产品ID与注册码不匹配!");
+			SoftwareType softwareType = null;
+			SoftwareTypeLimit softwareTypeLimit = null;
+			if(registration.getSoftwareTypeLimits() != null){//查找软件类型限制。
+				for(SoftwareTypeLimit limit : registration.getSoftwareTypeLimits()){
+					if(limit == null || (softwareType = limit.getSoftwareType()) == null) continue;
+					if(softwareType.getCode() == data.getTerminalCode()){
+						softwareTypeLimit = limit;
+						break;
+					}
+				}
+			}
+			if(softwareTypeLimit == null) throw  new Exception("注册码未设置使用此终端软件类型！");
+			final String reg_id = registration.getId(), type_id = softwareType.getId();
+			//是否重复绑定
+			RegistrationBinding dataBinding = this.registrationBindingDao.loadBinding(reg_id, type_id, data.getMachine());
+			if(dataBinding != null){
+				dataBinding.setLastTime(new Date());
+				dataBinding.setTimes(dataBinding.getTimes() + 1);
+				dataBinding.setUser(StringUtils.isEmpty(data.getUserId()) ? null : this.productUserDao.load(ProductUser.class, data.getUserId()));
+				return true;
+			}
+			int times = 0;
+			if((times = softwareTypeLimit.getTimes()) <= 0) throw new Exception(String.format("注册码不允许在软件类型［%1$d:%2$s］上使用！", softwareType.getCode(),softwareType.getName()));
+			long total = this.registrationBindingDao.total(new RegistrationBindingInfo(){
+				private static final long serialVersionUID = 1L;
+				@Override
+				public String getRegistrationId() { return reg_id; }
+				@Override
+				public String getSoftwareTypeId() { return type_id;}
+			});
+			if(total > times) throw new Exception("注册码已超过了允许绑定设备机器的上限！");
+			dataBinding = new RegistrationBinding();
+ 			dataBinding.setRegistration(registration);
+ 			dataBinding.setSoftwareType(softwareType);
+ 			dataBinding.setMachine(data.getMachine());
+ 			dataBinding.setUser(StringUtils.isEmpty(data.getUserId()) ? null : this.productUserDao.load(ProductUser.class, data.getUserId()));
  			this.registrationBindingDao.save(dataBinding);
  			return true;
 		}
