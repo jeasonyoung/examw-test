@@ -14,6 +14,7 @@
 		<div class="main">
 			<#if categories??>
 			<div class="titbox bulebg fl">考试分类导航</div><div class="titboxbg"></div>
+			<a id="category" name="category"></a>
 			<#list categories as category>
 				<div class="fenlei fl">
 					<div class="fl-l">${category.text}</div>

@@ -29,9 +29,9 @@ public class QuestionListTemplateProcess extends BaseTemplateProcess {
 		Long count = this.questionDao.total(new QuestionInfo()); 
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		//最新试卷
-		parameters.put("newsPapers", this.loadNewsPapers());
+		parameters.put("newsPapers", this.loadNewsPapers(null));
 		//最热试卷
-		parameters.put("hotsPapers", this.loadHotsPapers());
+		parameters.put("hotsPapers", this.loadHotsPapers(null));
 		
 		QuestionInfo where = new QuestionInfo();
 		where.setRows(page_count);

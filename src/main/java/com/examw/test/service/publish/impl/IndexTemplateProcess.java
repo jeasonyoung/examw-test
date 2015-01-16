@@ -61,9 +61,9 @@ public class IndexTemplateProcess extends BaseTemplateProcess {
 			parametersMap.put("categories", categories);
 		}
 		//最新试卷
-		parametersMap.put("newsPapers", this.loadNewsPapers());
+		parametersMap.put("newsPapers", this.loadNewsPapers(null));
 		//最热试卷
-		parametersMap.put("hotsPapers", this.loadHotsPapers());
+		parametersMap.put("hotsPapers", this.loadHotsPapers(null));
 		//常见问题
 		parametersMap.put("questions", this.loadQuestions());
 		

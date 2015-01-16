@@ -51,16 +51,17 @@ public class ExamTemplateProcess extends BaseTemplateProcess {
 		if(exams == null || exams.size()  == 0) return 0;
 		
 		Map<String, Object>  parameters = new HashMap<>();
-		//最新试卷
-		parameters.put("newsPapers", this.loadNewsPapers());
-		//最热试卷
-		parameters.put("hotsPapers", this.loadHotsPapers());
 		//常见问题
 		parameters.put("questions", this.loadQuestions());
 		
 		int total = 0;
 		for(Exam exam : exams){
 			if(exam == null) continue;
+			//最新试卷
+			parameters.put("newsPapers", this.loadNewsPapers(exam.getId()));
+			//最热试卷
+			parameters.put("hotsPapers", this.loadHotsPapers(exam.getId()));
+			
 			parameters.put("abbr", exam.getAbbr());//考试简称
 			parameters.put("examName", exam.getName());//考试名称
 			List<ProductListViewData> products = null;
@@ -105,6 +106,10 @@ public class ExamTemplateProcess extends BaseTemplateProcess {
 			this.setPrice(price);
 			this.setDiscount(discount);
 		}
+		/**
+		 * 构造函数。
+		 */
+		public ProductListViewData(){}
 		/**
 		 * 获取定价。
 		 * @return 定价。

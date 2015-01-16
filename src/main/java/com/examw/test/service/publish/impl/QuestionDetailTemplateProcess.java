@@ -37,9 +37,9 @@ public class QuestionDetailTemplateProcess extends BaseTemplateProcess {
 		
 		Map<String, Object> parameters = new HashMap<String, Object>();
 		//最新试卷
-		parameters.put("newsPapers", this.loadNewsPapers());
+		parameters.put("newsPapers", this.loadNewsPapers(null));
 		//最热试卷
-		parameters.put("hotsPapers", this.loadHotsPapers());
+		parameters.put("hotsPapers", this.loadHotsPapers(null));
 		int total = 0;
 		for(Question question : questions){
 			if(question == null) continue;

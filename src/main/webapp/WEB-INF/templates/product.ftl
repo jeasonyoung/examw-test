@@ -1,5 +1,6 @@
 <#--产品页面-->
 <#include "/inc.ftl" />
+<#assign do_product_url = "http://tiku.examw.com/library/${product.id}"/><#--链接到考试前台产品界面-->
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head> 
 		<title>${product.text}产品页面</title>
@@ -12,7 +13,7 @@
 		<@topbox/>
 		<div class="h20"></div>
 		<div class="main">
-			<div class="weizhi fl"><span></span>当前位置：<a href="#">首页</a><i>&gt;</i>${product.examName}</div>
+			<div class="weizhi fl"><span></span>当前位置：<a href="/">首页</a><i>&gt;</i><a href="/${product.examAbbr}">${product.examName}</a></div>
 		</div>
 		<div class="h1d"></div>
 		<div class="h1f"></div>
@@ -26,18 +27,16 @@
 		                	<h2>${product.text}</h2>
 		                    <div class="name">${product.content}</div>
 		                    <div class="xinxi">
-		                    	<div class="jia">促销：<span>￥</span><i>${product.discount}</i><br />原价：<em>￥${product.price}</em></div>
-		                        <#--
-		                        <div class="box"><i>1688</i><br />已销售</div>
-		                        <div class="box"><i>128</i><br />积分</div>
-		                        -->
+		                    	<div class="jia">促销：<span>￥</span><i>${product.discount?string("###")}</i><br />原价：<em>￥${product.price?string("###")}</em></div>
 		                    </div>
 		                    <ul class="list">
 		                    	<#--
 		                    	<li>运行环境：WinXP,Vista,Win7,Win8</li>
 		                        <li>软件大小：207MB</li>
 		                        -->
-		                        <li>题库数量：${product.pages} 试卷，${product.total} 试题</li>
+		                        <li>解题思路：${product.analysisTypeName}</li>
+		                        <li>历年真题：${product.realTypeName}</li>
+		                        <li>试题数量：${product.total?string("###")} 题</li>
 		                        <li>软件等级：<i> ★ ★ ★ ★ ★</i></li>
 		                        <#--
 		                        <li>文件类型：.exe</li>
@@ -45,7 +44,7 @@
 		                        -->
 		                    </ul>
 		                    <div class="tishi">一点通服务：由<a href="http://www.examw.com/" target="_blank">中华考试网</a>提供在线咨询、购买安装指导、售后服务</div>
-		                    <div class="btn"><div class="hong-btn"><a href="#">立即下载</a></div></div>
+		                    <div class="btn"><div class="hong-btn"><a href="${do_product_url}">立即做题</a></div></div>
 		                    <div class="btn"><div class="lv-btn"><a name="index-products-buy"  id="${product.id}" Price="${product.price}" GoodPrice="${product.discount}" Title="${product.text}" href="#">立即购买</a></div></div>
 		                </div>
 		                <div class="h30"></div>
@@ -104,7 +103,7 @@
 		            	<div class="one"></div>
 		                <i>全真模考</i>
 		                <span>依托行业最先进智能算法，配合行业最全面考题，试卷严格按照历年考试出题情况、知识点分布情况及今年命题方向分析进行编制，模拟真实考试环境，让考试不再陌生，让你学习考试更简单！</span>
-		                <em><div class="hong-btn"><a href="#">立即做题</a></div></em>
+		                <em><div class="hong-btn"><a href="${do_product_url}">立即做题</a></div></em>
 		            </div>
 		        </div>
 		        <div class="tese">
@@ -113,7 +112,7 @@
 		            	<div class="two"></div>
 		                <i>大数据保过</i>
 		                <span>根据海量用户做题的智能化分析判断数据，分析错题，易错知识点, 历年真题出题机率，精准预测考点．考题．命题，全维度划定史上最小考试范围，无限接近考试，做的就是最接近考试的试题。</span>
-		                <em><div class="hong-btn"><a href="#">立即做题</a></div></em>
+		                <em><div class="hong-btn"><a href="${do_product_url}">立即做题</a></div></em>
 		            </div>
 		        </div>
 		        <div class="tese">
@@ -122,7 +121,7 @@
 		            	<div class="three"></div>
 		            	<i>自由组卷</i>
 		                <span>自由组卷，可选题型、难度、错误率，等多种方式。从基础学习阶段，到冲刺复习阶段，再到考前检测阶段，您都能在题库内找到相应的练习，帮助您迅速提高成绩。</span>
-		                <em><div class="hong-btn"><a href="#">立即做题</a></div></em>
+		                <em><div class="hong-btn"><a href="${do_product_url}">立即做题</a></div></em>
 		            </div>
 		        </div>
 		        <div class="tese">
@@ -131,7 +130,7 @@
 		            	<div class="four"></div>
 		            	<i>错题收藏</i>
 		                <span>交卷之后可系统自动批改，错题自动记录并且都有详细解析， 便于复习薄弱考点。</span>
-		                <em><div class="hong-btn"><a href="#">立即做题</a></div></em>
+		                <em><div class="hong-btn"><a href="${do_product_url}">立即做题</a></div></em>
 		            </div>
 		        </div>
 		        <div class="tese">
@@ -140,7 +139,7 @@
 		            	<div class="five"></div>
 		            	<i>专业答疑</i>
 		                <span>学贵知疑，学习疑难问老师，有疑问随时提交，专业答疑老师解决个性化学习难题。</span>
-		                <em><div class="hong-btn"><a href="#">立即做题</a></div></em>
+		                <em><div class="hong-btn"><a href="${do_product_url}">立即做题</a></div></em>
 		            </div>
 		        </div>
 		        <div class="tese bbno">
@@ -149,7 +148,7 @@
 		            	<div class="six"></div>
 		            	<i>终身使用</i>
 		                <span>一次购买，终身免费升级，并支持电脑，手机等多平台使用。考试一点通下载安装并注册成功之后，您也可以离线使用它了，充分利用您的碎片化时间进行学习。</span>
-		                <em><div class="hong-btn"><a href="#">立即做题</a></div></em>
+		                <em><div class="hong-btn"><a href="${do_product_url}">立即做题</a></div></em>
 		            </div>
 		        </div>
 		    </div>

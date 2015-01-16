@@ -7,6 +7,11 @@
 <link href="http://img.examw.com/test/index.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="http://img.examw.com/jQuery.js"></script>
 </#macro>
+<#--头部资源－分页脚本-->
+<#macro header_resources_paging>
+<link href="http://img.examw.com/test/pager.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="http://img.examw.com/test/jquery.pager.js"></script>
+</#macro>
 <#--topbox-->
 <#macro topbox>
 <div class="topbox">
@@ -22,10 +27,10 @@
             </ul>
         </div>
         <div class="top-r">
-        	<div class="log"><a href="#" target="_blank">登陆</a></div>
+        	<div class="log"><a href="http://test.examw.com/class?DoMain=test" target="_blank">登陆</a></div>
             <div class="ge fl">|</div>
-            <div class="log"><a href="#" target="_blank">注册</a></div>
-            <div class="vip fl"><a href="#">个人中心</a></div>
+            <div class="log"><a href="http://test.examw.com/class?DoMain=test" target="_blank">注册</a></div>
+            <div class="vip fl"><a href="http://test.examw.com/user/UserCenter">个人中心</a></div>
         </div>
     </div>
 </div>
@@ -39,11 +44,11 @@
 <div class="menubox fl bulebg">
 	<div class="menu">
         <ul>
-            <li class="cur"><a href="http://test.examw.com/91/">首页</a></li>
-            <li><a href="/index.html">考试分类</a></li>
-            <li><a href="#">最新试卷</a></li>
-            <li><a href="#">试卷排行</a></li>
-            <li><a href="/questions/list/index.html">常见问题</a></li>
+            <li class="cur"><a href="/">首页</a></li>
+            <li><a href="/#category">考试分类</a></li>
+            <li><a href="/news">最新试卷</a></li>
+            <li><a href="/hots">试卷排行</a></li>
+            <li><a href="/questions/list">常见问题</a></li>
         </ul>
         <div class="my"><a href="http://tiku.examw.com/" target="_blank"></a></div>
     </div>
@@ -73,7 +78,7 @@
 <ul class="list-shj" id="list-shj">
 	<#list papers as data>
     <li>
-    	<p>&middot;<a href="#" title="${data.text}">${data.text}</a></p>
+    	<p>&middot;<a href="${data.category}/${data.id}.html" title="${data.text}">${data.text}</a></p>
         <p class="btn"><span>${data.total}人参与</span><a href="${data.category}/${data.id}.html">免费测试</a></p>
     </li>
     </#list>
@@ -135,7 +140,7 @@
 <#macro friend_link>
 <div class="link">
 	<h4><a href="javascript:void(0)">友情链接</a><span>QQ：712931605</span></h4>
-	<div class="box fl">{%=FriendLink(111,"")%}</div>
+	<div class="box fl">$FriendLink$</div>
 </div>
 </#macro>
 <#--footer-->

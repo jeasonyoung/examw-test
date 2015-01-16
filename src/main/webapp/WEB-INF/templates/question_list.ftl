@@ -6,8 +6,7 @@
 		<#--头部资源-->
 		<@header_resources/>
 		<#--分页-->
-		<link href="http://img.examw.com/test/pager.css" rel="stylesheet" type="text/css" />
-		<script type="text/javascript" src="http://img.examw.com/jquery.pager.js"></script>
+		<@header_resources_paging/>
 	</head>
 	<body>
 		<#--top banner-->

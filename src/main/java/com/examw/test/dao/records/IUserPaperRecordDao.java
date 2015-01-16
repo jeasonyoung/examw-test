@@ -81,10 +81,12 @@ public interface IUserPaperRecordDao extends IBaseDao<UserPaperRecord> {
 	Date findRecordLastTime(String productId, String userId, Integer terminalId);
 	/**
 	 * 加载最热的试卷集合。
+	 * @param examId
+	 * 所属试卷ID。
 	 * @param top
 	 * 试卷套数。
 	 * @return
 	 * 试卷集合。
 	 */
-	List<Paper> loadHotsPapers(Integer top);
+	List<Paper> loadHotsPapers(String examId, Integer top);
 }

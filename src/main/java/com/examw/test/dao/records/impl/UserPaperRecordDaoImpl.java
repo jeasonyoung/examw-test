@@ -137,8 +137,7 @@ public class UserPaperRecordDaoImpl extends BaseDaoImpl<UserPaperRecord> impleme
 	 * @see com.examw.test.dao.records.IUserPaperRecordDao#findLastedPaperRecordsOfProduct(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<UserPaperRecord> findLastedPaperRecordsOfProduct(String userId,
-			String productId) {
+	public List<UserPaperRecord> findLastedPaperRecordsOfProduct(String userId, String productId) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载用户［userId ＝ %1$s］产品［ productId= %2$s］的最新记录集合...",userId,productId));
 		final String hql = "from UserPaperRecord u where (u.user.id = :userId) and (u.product.id = :productId) order by u.lastTime desc,u.createTime desc";
 		Map<String, Object> parameters = new HashMap<>();
@@ -146,7 +145,6 @@ public class UserPaperRecordDaoImpl extends BaseDaoImpl<UserPaperRecord> impleme
 		parameters.put("productId", productId);
 		return this.find(hql, parameters, null, null);
 	}
-	
 	/*
 	 * 查询某产品下用户当天不同每日一练记录的总数
 	 * @see com.examw.test.dao.records.IUserPaperRecordDao#findTotalUserDailyPaperRecords(java.lang.String, java.lang.String)
@@ -181,13 +179,24 @@ public class UserPaperRecordDaoImpl extends BaseDaoImpl<UserPaperRecord> impleme
 	}
 	/*
 	 * 加载最热的试卷集合。
-	 * @see com.examw.test.dao.records.IUserPaperRecordDao#loadHotsPapers(java.lang.Integer)
+	 * @see com.examw.test.dao.records.IUserPaperRecordDao#loadHotsPapers(java.lang.String, java.lang.Integer)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Paper> loadHotsPapers(Integer top) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("加载最热的［%d］试卷集合...", top));
-		final String hql = "select u.paper from UserPaperRecord u group by u.paper.id order by count(u.id) desc ";
-		return this.query(hql, null, 0, top == null ? null : top);
+	public List<Paper> loadHotsPapers(String examId, Integer top) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载最热的［%1$s - %2$d］试卷集合...", examId, top));
+		if(top == null) return  null;
+		StringBuilder hqlBuilder = new StringBuilder();
+		hqlBuilder.append("select u.paper from UserPaperRecord u ");
+		Map<String, Object> parameters = new HashMap<>();
+		if(!StringUtils.isEmpty(examId)){
+			 hqlBuilder.append(" where ")
+			 				.append(" (u.paper.id in (select p.id from Paper p where p.subject.exam.id = :examId)) ");
+			 parameters.put("examId", examId);
+		}
+		hqlBuilder.append(" group by u.paper.id ")
+						.append(" order by count(u.id) desc");
+		if(logger.isDebugEnabled()) logger.debug(hqlBuilder);
+		return this.query(hqlBuilder.toString(), parameters, 0, top); 
 	}
 }

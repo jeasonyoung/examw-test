@@ -75,7 +75,7 @@ public class PaperListTemplateProcess extends BaseTemplateProcess {
 			//获取试卷数量
 			Long count = this.paperReleaseDao.totalPaperReleases(where);
 			if(count  == null || count == 0){//没有试卷
-				this.createStaticPages(prefix, path,parameters, null, where);
+				total += this.createStaticPages(prefix, path,parameters, null, where);
 			}else{
 				//全部试卷
 				this.createStaticPages(prefix, path, parameters, (int)(count / page_count) + ((count % page_count) > 0 ? 1 : 0), where);
@@ -101,14 +101,14 @@ public class PaperListTemplateProcess extends BaseTemplateProcess {
 		if(totalPages == null || totalPages <= 0){
 			parameters.put("current", 1);
 			parameters.put("papers", papers); 
-			this.updateStaticPage(prefix +"-1", path + "/index.html", this.createStaticPageContent(parameters));
+			this.updateStaticPage(prefix +"-index", path + "/index.html", this.createStaticPageContent(parameters));
 			return 1;
 		}
 		parameters.put("total", totalPages);
 		parameters.put("prefix", prefix);
 		parameters.put("path", path);
-		Paper paper = null;
 		int total = 0;
+		Paper paper = null;
 		for(int i = 0; i < totalPages; i++){
 			where.setPage(i+1);
 			parameters.put("current", i + 1);
@@ -137,7 +137,7 @@ public class PaperListTemplateProcess extends BaseTemplateProcess {
 	 * @author yangyong
 	 * @since 2015年1月5日
 	 */
-	public class PaperListViewData extends ViewListData{
+	public static class PaperListViewData extends ViewListData{
 		private static final long serialVersionUID = 1L;
 		private Integer items,times,users,price;
 		private Date createTime;

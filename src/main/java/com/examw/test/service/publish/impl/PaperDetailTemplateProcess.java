@@ -64,11 +64,6 @@ public class PaperDetailTemplateProcess extends BaseTemplateProcess {
 		if(paperReleases == null || paperReleases.size() == 0) return 0;
 		
 		Map<String, Object> parameters = new HashMap<String, Object>();
-		//最新试卷
-		parameters.put("newsPapers", this.loadNewsPapers());
-		//最热试卷
-		parameters.put("hotsPapers", this.loadHotsPapers());
-		
 		Paper paper = null;
 		Subject subject = null;
 		Exam exam = null;
@@ -80,6 +75,11 @@ public class PaperDetailTemplateProcess extends BaseTemplateProcess {
 			exam = subject.getExam();
 			parameters.put("examName", exam.getName());
 			String abbr = exam.getAbbr();
+			//最新试卷
+			parameters.put("newsPapers", this.loadNewsPapers(exam.getId()));
+			//最热试卷
+			parameters.put("hotsPapers", this.loadHotsPapers(exam.getId()));
+			
 			parameters.put("abbr", abbr);
 			parameters.put("paperId", paper.getId());
 			parameters.put("paperName", paper.getName());

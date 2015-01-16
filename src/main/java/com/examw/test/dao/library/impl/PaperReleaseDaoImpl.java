@@ -164,13 +164,25 @@ public class PaperReleaseDaoImpl extends BaseDaoImpl<PaperRelease> implements IP
 	}
 	/*
 	 * 加载最新试卷集合。
-	 * @see com.examw.test.dao.library.IPaperReleaseDao#loadNewsReleases(java.lang.Integer)
+	 * @see com.examw.test.dao.library.IPaperReleaseDao#loadNewsReleases(java.lang.String, java.lang.Integer)
 	 */
 	@Override
-	public List<PaperRelease> loadNewsReleases(Integer top) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("加载最新试卷集合:［%d］...", top));
-		final String hql = "from PaperRelease p order by p.createTime desc";
-		return this.find(hql, null, 0, top == null ? 0 : top);
+	public List<PaperRelease> loadNewsReleases(final String examId,final Integer top) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载最新试卷集合:［%1$s - %2$d］...", examId, top));
+		if(top == null) return null;
+		return this.findPaperReleases(new PaperInfo(){
+			private static final long serialVersionUID = 1L;
+			@Override
+			public String getExamId() { return examId;}
+			@Override
+			public String getSort() { return "createTime";}
+			@Override
+			public String getOrder() { return "desc";}
+			@Override
+			public Integer getPage() { return 0;}
+			@Override
+			public Integer getRows() { return top;}
+		});
 	}
 	/*
 	 * 查询试卷发布数据。

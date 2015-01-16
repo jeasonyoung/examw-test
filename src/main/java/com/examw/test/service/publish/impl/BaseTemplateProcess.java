@@ -178,12 +178,13 @@ public abstract class BaseTemplateProcess implements ITemplateProcess,ResourceLo
 	 * 加载最新试卷数据。
 	 * @return 最新试卷数据。
 	 */
-	protected synchronized List<ViewListData> loadNewsPapers(){
+	protected synchronized List<ViewListData> loadNewsPapers(String examId){
 		if(logger.isDebugEnabled()) logger.debug("加载最新试卷数据...");
-		List<ViewListData> list =  view_data_cache.get("news");//从缓存中获取数据。
+		String key = String.format("news-%s", StringUtils.isEmpty(examId) ? "all" : examId);
+		List<ViewListData> list =  view_data_cache.get(key);//从缓存中获取数据。
 		if(list == null){
 			list = new ArrayList<>();
-			List<PaperRelease> releases = this.paperReleaseDao.loadNewsReleases(list_max_top);
+			List<PaperRelease> releases = this.paperReleaseDao.loadNewsReleases(examId,list_max_top);
 			if(releases != null && releases.size() > 0){
 				for(PaperRelease release : releases){
 					Paper paper = null;
@@ -198,20 +199,23 @@ public abstract class BaseTemplateProcess implements ITemplateProcess,ResourceLo
 				}
 			}
 			//存入缓存。
-			view_data_cache.put("news", list);
+			view_data_cache.put(key, list);
 		}
 		return list;
 	}
 	/**
 	 * 加载最热试卷数据。
+	 * @param examId
+	 * 所属考试ID
 	 * @return 最热试卷数据。
 	 */
-	protected synchronized List<ViewListData> loadHotsPapers(){
+	protected synchronized List<ViewListData> loadHotsPapers(String examId){
 		if(logger.isDebugEnabled()) logger.debug("加载最热试卷数据...");
-		List<ViewListData> list = view_data_cache.get("hots");//从缓存中获取数据。
+		String key = String.format("hots-%s", StringUtils.isEmpty(examId) ?  "all" : examId);
+		List<ViewListData> list = view_data_cache.get(key);//从缓存中获取数据。
 		if(list == null){
 			list = new ArrayList<>();
-			List<Paper> papers = this.userPaperRecordDao.loadHotsPapers(list_max_top);
+			List<Paper> papers = this.userPaperRecordDao.loadHotsPapers(examId, list_max_top);
 			if(papers != null && papers.size() > 0){
 				for(Paper paper : papers){
 					if(paper == null) continue;
@@ -225,7 +229,7 @@ public abstract class BaseTemplateProcess implements ITemplateProcess,ResourceLo
 				}
 			}
 			//存入缓存
-			view_data_cache.put("hots", list);
+			view_data_cache.put(key, list);
 		}
 		return list;
 	}
@@ -307,6 +311,12 @@ public abstract class BaseTemplateProcess implements ITemplateProcess,ResourceLo
 		 */
 		public ViewListData(String id, String text){
 			this(id, text, 0);
+		}
+		/**
+		 * 构造函数。
+		 */
+		public ViewListData(){
+			this(null, null);
 		}
 		/**
 		 * 获取数据ID。
