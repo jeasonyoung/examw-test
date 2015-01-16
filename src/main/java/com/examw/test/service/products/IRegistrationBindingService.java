@@ -2,6 +2,7 @@ package com.examw.test.service.products;
 
 import com.examw.test.model.products.RegistrationBindingInfo;
 import com.examw.test.service.IBaseDataService;
+import com.examw.test.service.products.IProductRegisterService.ProductRegister;
 
 /**
  * 注册码绑定服务接口。
@@ -22,4 +23,12 @@ public interface IRegistrationBindingService extends IBaseDataService<Registrati
 	 * @throws Exception
 	 */
 	boolean addBinding(String registerCode,int softwareTypeCode,String machine,String userId) throws Exception;
+	
+	/**
+	 * 添加注册码绑定
+	 * @param data 
+	 * @return
+	 * @throws Exception
+	 */
+	boolean addBinding(ProductRegister data) throws Exception;
 }
