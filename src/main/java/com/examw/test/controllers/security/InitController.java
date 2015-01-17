@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.examw.test.controllers.HelperController;
 import com.examw.test.service.security.IMenuRightService;
 import com.examw.test.service.security.IMenuService;
 import com.examw.test.service.security.IRightService;
@@ -46,12 +47,13 @@ public class InitController {
 	public String goalInit(HttpServletRequest request, Model model){
 		StringBuilder msgBuilder = new StringBuilder();
 		try{
-			String clientIP = request.getRemoteAddr(), hostIP = request.getLocalAddr();
-			String msg = null;
-			if(logger.isDebugEnabled()) logger.debug(String.format("［服务器IP：%1$s］［客户端IP：%2$s］", hostIP, clientIP));
-			if(!clientIP.equalsIgnoreCase(hostIP)){
-				throw new Exception("为安全考虑，本请求只能在服务器上操作！");
+			String client = HelperController.getRemoteAddr(request);
+			msgBuilder.append("client:").append(client).append("\r\n");
+			if(logger.isDebugEnabled()) logger.debug(String.format("［ client => %s］", client));
+			if(!"127.0.0.1".equalsIgnoreCase(client) && !"localhost".equalsIgnoreCase(client)){
+				throw new Exception(String.format("为安全考虑，本请求只能在服务器上操作！(client => %s)", client));
 			}
+			String msg = null;
 			logger.info(msg = "权限初始化开始....");
 			msgBuilder.append(msg).append("\r\n");
 			logger.info(msg = "开始初始化菜单数据...");

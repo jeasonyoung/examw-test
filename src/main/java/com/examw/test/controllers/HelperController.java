@@ -2,7 +2,10 @@ package com.examw.test.controllers;
 
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -44,5 +47,25 @@ public class HelperController {
 		if(length == null){ length = 6; }
 		
 		return new String[] { VerifyCodeUtil.generateTextCode(codeType.getValue(), length, null) };
+	}
+	/**
+	 * 获取客户端IP地址。
+	 * @param request
+	 * 客户端请求对象。
+	 * @return 客户端IP地址。
+	 */
+	public static String getRemoteAddr(HttpServletRequest request){
+		if(request == null) throw new IllegalArgumentException("request");
+		String client =  request.getHeader("x-forwarded-for");
+		if(StringUtils.isEmpty(client) || "unknown".equalsIgnoreCase(client)){
+			client =  request.getHeader("Proxy-Client-IP");
+		}
+		if(StringUtils.isEmpty(client) || "unknown".equalsIgnoreCase(client)){
+			client  = request.getHeader("WL-Proxy-Client-IP");
+		}
+		if(StringUtils.isEmpty(client) || "unknown".equalsIgnoreCase(client)){
+			client = request.getRemoteAddr();
+		}
+		return client;
 	}
 }
