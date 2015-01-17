@@ -35,11 +35,12 @@ import com.examw.test.support.FreeMakerEngine;
 public abstract class BaseTemplateProcess implements ITemplateProcess,ResourceLoaderAware {
 	private static final Logger logger = Logger.getLogger(BaseTemplateProcess.class);
 	private static final Map<String, List<ViewListData>> view_data_cache = new HashMap<String, List<ViewListData>>();
+	private static final Map<String, Integer> papers_data_cache = new HashMap<>();
 	protected static final int list_max_top = 10, page_count = 10;
 	private String templatesRoot,templateName;
 	private ResourceLoader resourceLoader;
 	private FreeMakerEngine engine;
-	private IUserPaperRecordDao userPaperRecordDao;
+	protected IUserPaperRecordDao userPaperRecordDao;
 	private IStaticPageDao staticPageDao;
 	protected IPaperReleaseDao paperReleaseDao;
 	protected IQuestionDao questionDao;
@@ -170,9 +171,33 @@ public abstract class BaseTemplateProcess implements ITemplateProcess,ResourceLo
 	 * @return
 	 * 参考人次。
 	 */
-	protected int loadPaperUsersTotal(String paperId){
+	protected synchronized int loadPaperUsersTotal(String paperId){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［%s］参考人次", paperId));
-		return StringUtils.isEmpty(paperId) ? 0 : this.userPaperRecordDao.findUsersTotal(paperId).intValue();
+		if(StringUtils.isEmpty(paperId)) return 0; 
+		String key = String.format("paperUsersTotal-%s", paperId);
+		Integer total =  papers_data_cache.get(key);
+		if(total == null){
+			Long count = this.userPaperRecordDao.findUsersTotal(paperId);
+			total = (count == null) ? 0 : count.intValue();
+			papers_data_cache.put(key, total);
+		}
+		return total; 
+	}
+	/**
+	 * 加载试卷
+	 * @param paperId
+	 * @return
+	 */
+	protected synchronized int loadItemsCount(String paperId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［%s］试题数目", paperId));
+		if(StringUtils.isEmpty(paperId)) return 0; 
+		String key = String.format("paperItems-%s", paperId);
+		Integer total =  papers_data_cache.get(key);
+		if(total == null){
+			total = this.paperReleaseDao.loadItemsCount(paperId);
+			papers_data_cache.put(key, total);
+		}
+		return total; 
 	}
 	/**
 	 * 加载最新试卷数据。
@@ -215,7 +240,7 @@ public abstract class BaseTemplateProcess implements ITemplateProcess,ResourceLo
 		List<ViewListData> list = view_data_cache.get(key);//从缓存中获取数据。
 		if(list == null){
 			list = new ArrayList<>();
-			List<Paper> papers = this.userPaperRecordDao.loadHotsPapers(examId, list_max_top);
+			List<Paper> papers = this.userPaperRecordDao.loadHotsPapers(examId, null, list_max_top);
 			if(papers != null && papers.size() > 0){
 				for(Paper paper : papers){
 					if(paper == null) continue;
@@ -262,6 +287,7 @@ public abstract class BaseTemplateProcess implements ITemplateProcess,ResourceLo
 	public void cleanCache(){
 		if(logger.isDebugEnabled()) logger.debug("清除缓存....");
 		view_data_cache.clear();
+		papers_data_cache.clear();
 	}
 	/**
 	 * 列表数据。

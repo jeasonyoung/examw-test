@@ -68,6 +68,14 @@ public interface IPaperReleaseDao extends IBaseDao<PaperRelease> {
 	 */
 	Integer loadItemsCount(Integer[] paperType,String[] subjectsId,String areaId);
 	/**
+	 * 加载试卷下试题数量。
+	 * @param paperId
+	 * 试卷ID。
+	 * @return
+	 * 试题数量。
+	 */
+	Integer loadItemsCount(String paperId);
+	/**
 	 * 是否包含真题试卷。
 	 * @param subjectsId
 	 * 科目ID集合。

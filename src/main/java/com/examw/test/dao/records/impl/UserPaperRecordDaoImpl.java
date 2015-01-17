@@ -179,24 +179,42 @@ public class UserPaperRecordDaoImpl extends BaseDaoImpl<UserPaperRecord> impleme
 	}
 	/*
 	 * 加载最热的试卷集合。
-	 * @see com.examw.test.dao.records.IUserPaperRecordDao#loadHotsPapers(java.lang.String, java.lang.Integer)
+	 * @see com.examw.test.dao.records.IUserPaperRecordDao#loadHotsPapers(java.lang.String, java.lang.Integer, java.lang.Integer)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Paper> loadHotsPapers(String examId, Integer top) {
-		if(logger.isDebugEnabled()) logger.debug(String.format("加载最热的［%1$s - %2$d］试卷集合...", examId, top));
-		if(top == null) return  null;
-		StringBuilder hqlBuilder = new StringBuilder();
-		hqlBuilder.append("select u.paper from UserPaperRecord u ");
+	public List<Paper> loadHotsPapers(String examId, Integer page, Integer rows) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载最热的［%1$s - %2$d - %3$d］试卷集合...", examId, page, rows));
+		if(rows == null) return  null;
+		 
 		Map<String, Object> parameters = new HashMap<>();
+		String hql =  this.addHotsPapersWhere(" select u.paper ", parameters, examId); 
+		
+		return this.query(hql, parameters, page, rows);
+	}
+	//
+	private String addHotsPapersWhere(String hql, Map<String, Object> parameters, String examId){
+		StringBuilder hqlBuilder = new StringBuilder();
+		hqlBuilder.append(hql).append(" ");
+		hqlBuilder.append(" from UserPaperRecord u ");
 		if(!StringUtils.isEmpty(examId)){
 			 hqlBuilder.append(" where ")
 			 				.append(" (u.paper.id in (select p.id from Paper p where p.subject.exam.id = :examId)) ");
 			 parameters.put("examId", examId);
 		}
-		hqlBuilder.append(" group by u.paper.id ")
-						.append(" order by count(u.id) desc");
+		hqlBuilder.append(" group by u.paper.id ").append(" order by count(u.id) desc ");
 		if(logger.isDebugEnabled()) logger.debug(hqlBuilder);
-		return this.query(hqlBuilder.toString(), parameters, 0, top); 
+		return hqlBuilder.toString();
+	}
+	/*
+	 * 统计最热的试卷集合。
+	 * @see com.examw.test.dao.records.IUserPaperRecordDao#totalHotsPapers(java.lang.String)
+	 */
+	@Override
+	public Long totalHotsPapers(String examId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("统计最热的试卷集合:-考试:%s", examId));
+		Map<String, Object> parameters = new HashMap<>();
+		String hql = this.addHotsPapersWhere(" select count(u.paper.id) ", parameters, examId);
+		return this.count(hql, parameters);
 	}
 }

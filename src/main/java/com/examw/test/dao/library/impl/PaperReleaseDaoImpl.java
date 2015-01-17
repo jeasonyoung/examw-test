@@ -137,6 +137,24 @@ public class PaperReleaseDaoImpl extends BaseDaoImpl<PaperRelease> implements IP
 		return obj == null ? 0 : (int)((long)obj);
 	}
 	/*
+	 * 加载试卷下的试题数目。
+	 * @see com.examw.test.dao.library.IPaperReleaseDao#loadItemsCount(java.lang.String)
+	 */
+	@Override
+	public Integer loadItemsCount(String paperId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载试卷［%s］下的试题数目...", paperId));
+		if(!StringUtils.isEmpty(paperId)){
+			final String hql = "from PaperRelease p where p.paper.id = :paperId order by p.createTime desc ";
+			Map<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put("paperId", paperId);
+			List<PaperRelease> paperReleases = this.find(hql, parameters, 0, 1);
+			if(paperReleases != null && paperReleases.size() > 0){
+				return paperReleases.get(0).getTotal();
+			}
+		}
+		return 0;
+	}
+	/*
 	 * 加载科目是否有真题。[前台使用]
 	 * @see com.examw.test.dao.library.IPaperReleaseDao#hasRealItem(java.lang.String[])
 	 */

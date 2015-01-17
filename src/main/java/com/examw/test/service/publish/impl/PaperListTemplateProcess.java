@@ -142,9 +142,13 @@ public class PaperListTemplateProcess extends BaseTemplateProcess {
 		private Integer items,times,users,price;
 		private Date createTime;
 		/**
-		 * 构造函数。
+		 *  构造函数。
 		 * @param id
 		 * @param text
+		 * @param items
+		 * @param times
+		 * @param total
+		 * @param price
 		 */
 		public PaperListViewData(String id, String text, Integer items, Integer times, Integer total, Integer price) {
 			super(id, text, total);

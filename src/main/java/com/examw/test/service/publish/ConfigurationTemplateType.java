@@ -13,35 +13,43 @@ public enum ConfigurationTemplateType {
 	/**
 	 * 空。
 	 */
-	NONE(0x00),
+	NONE(0x0000),
 	/**
 	 * 首页。
 	 */
-	HOME(0x01),
+	HOME(0x0001),
 	/**
 	 * 考试页面。
 	 */
-	EXAM(0x02),
+	EXAM(0x0002),
 	/**
 	 * 产品页面。
 	 */
-	PRODUCT(0x04),
+	PRODUCT(0x0004),
 	/**
 	 * 试卷列表页面。
 	 */
-	PAPERLIST(0x08),
+	PAPERLIST(0x0008),
 	/**
 	 * 试卷详情页面。
 	 */
-	PAPERDETAIL(0x10),
+	PAPERDETAIL(0x0010),
 	/**
 	 * 常用问题列表页面。
 	 */
-	QUESTIONLIST(0x20),
+	QUESTIONLIST(0x0020),
 	/**
 	 * 常用问题编辑页面。
 	 */
-	QUESTIONDETAIL(0x40);
+	QUESTIONDETAIL(0x0040),
+	/**
+	 * 最新试卷列表页面。
+	 */
+	NEWSPAPERLIST(0x0080),
+	/**
+	 * 最热试卷列表页面。
+	 */
+	HOTSPAPERLIST(0x0100);
 	private int value;
 	/**
 	 * 构造函数。

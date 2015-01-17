@@ -46,11 +46,11 @@
 		                <li class="shjout" onMouseOver="this.className='shjover'" onMouseOut="this.className='shjout'">
 		                    <div class="title">
 		                        <em>
-		                            <div class="title"><a href="#" target="_blank" title="${p.text}">${p.text}</a></div>
-		                            <p>总题：${p.items} 题</p><p>考试时长：${p.times}分钟</p><p>总分：${p.total}分</p><#--<p>题型：普通模拟题</p>--><p>${p.users}人次参考</p>
+		                            <div class="title"><a href="/${examAbbr}/${p.category}/${p.id}.html" target="_blank" title="${p.text}">${p.text}</a></div>
+		                            <p>总题：${p.items?string("###")} 题</p><p>考试时长：${p.times?string("###")}分钟</p><p>总分：${p.total?string("###")}分</p><#--<p>题型：普通模拟题</p>--><p>${p.users?string("###")}人次参考</p>
 		                        </em>
 		                        <span>${p.createTime?string("yyyy-MM-dd")}</span>
-		                        <b>${p.price}金币</b>
+		                        <b>${p.price?string("###")}考试币</b>
 		                        <div class="buybtn"><div class="hei-btn"><a href="/${examAbbr}/${p.category}/${p.id}.html">进入做题</a></div></div>
 		                    </div>
 		                </li>

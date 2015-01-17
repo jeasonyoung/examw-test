@@ -18,14 +18,16 @@
         <!-- 模版值名称集合 -->
         <property name="templateMap">
             <map>
-                <entry key="0x00" value=" " />
-                <entry key="0x01" value="${publish_templates_index_name}" />
-                <entry key="0x02" value="${publish_templates_exam_name}" />
-                <entry key="0x04" value="${publish_templates_product_name}" />
-                <entry key="0x08" value="${publish_templates_paper_list_name}" />
-                <entry key="0x10" value="${publish_templates_paper_detail_name}" />
-                <entry key="0x20" value="${publish_templates_question_list_name}" />
-                <entry key="0x40" value="${publish_templates_question_detail_name}" />
+                <entry key="0x0000" value=" " />
+                <entry key="0x0001" value="${publish_templates_index_name}" />
+                <entry key="0x0002" value="${publish_templates_exam_name}" />
+                <entry key="0x0004" value="${publish_templates_product_name}" />
+                <entry key="0x0008" value="${publish_templates_paper_list_name}" />
+                <entry key="0x0010" value="${publish_templates_paper_detail_name}" />
+                <entry key="0x0020" value="${publish_templates_question_list_name}" />
+                <entry key="0x0040" value="${publish_templates_question_detail_name}" />
+                <entry key="0x0080" value="${publish_templates_paper_news_name}" />
+                <entry key="0x0100" value="${publish_templates_paper_hots_name}" />
             </map>
         </property>
     </bean>
@@ -59,26 +61,32 @@
         <!--  模版处理配置集合 -->
         <property name="processes">
             <map>
-                <entry key="0x01"><!-- 首页模版处理 -->
+                <entry key="0x0001"><!-- 首页模版处理 -->
                     <ref local="indexTemplateProcess"/>
                 </entry>
-                <entry key="0x02"><!-- 考试页面模版处理 -->
+                <entry key="0x0002"><!-- 考试页面模版处理 -->
                     <ref local="examTemplateProcess"/>
                 </entry>
-                <entry key="0x04"><!-- 产品页面模版处理 -->
+                <entry key="0x0004"><!-- 产品页面模版处理 -->
                     <ref local="productTemplateProcess"/>
                 </entry>
-                <entry key="0x08"><!-- 试卷列表页面模版处理 -->
+                <entry key="0x0008"><!-- 试卷列表页面模版处理 -->
                     <ref local="paperListTemplateProcess"/>
                 </entry>
-                <entry key="0x10"><!-- 试卷详情页面模版处理 -->
+                <entry key="0x0010"><!-- 试卷详情页面模版处理 -->
                     <ref local="paperDetailTemplateProcess"/>
                 </entry>
-                <entry key="0x20"><!--常见问题列表页面模版处理 -->
+                <entry key="0x0020"><!--常见问题列表页面模版处理 -->
                     <ref local="questionListTemplateProcess"/>
                 </entry>
-                <entry key="0x40"><!--常见问题详细页面模版处理 -->
+                <entry key="0x0040"><!--常见问题详细页面模版处理 -->
                     <ref local="questionDetailTemplateProcess"/>
+                </entry>
+                <entry key="0x0080"><!-- 最新试卷列表页面模版处理 -->
+                    <ref local="newsPaperTemplateProcess" />
+                </entry>
+                <entry key="0x0100"><!-- 最热试卷列表页面模版处理 -->
+                    <ref local="hotsPaperTemplateProcess"/>
                 </entry>
             </map>
         </property>
@@ -144,5 +152,17 @@
     <bean id="questionDetailTemplateProcess" class="com.examw.test.service.publish.impl.QuestionDetailTemplateProcess" parent="templateProcess">
          <!-- 模版名称 -->
         <property name="templateName" value="${publish_templates_question_detail}" />
+    </bean>
+    <!-- 最新试卷列表模版处理 -->
+    <bean id="newsPaperTemplateProcess" class="com.examw.test.service.publish.impl.NewsPaperTemplateProcess" parent="templateProcess">
+        <!-- 模版名称 -->
+        <property name="templateName" value="${publish_templates_paper_news}" />
+        <!-- 最大显示试卷数量 -->
+        <property name="maxPaperCount" value="${publish_templates_paper_news_hots_max}" />
+    </bean>
+    <!-- 最热考试列表模版处理 -->
+    <bean id="hotsPaperTemplateProcess" class="com.examw.test.service.publish.impl.HotsPaperTemplateProcess" parent="newsPaperTemplateProcess">
+        <!-- 模版名称 -->
+        <property name="templateName" value="${publish_templates_paper_hots}" />
     </bean>
 </beans>

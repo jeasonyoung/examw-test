@@ -83,10 +83,19 @@ public interface IUserPaperRecordDao extends IBaseDao<UserPaperRecord> {
 	 * 加载最热的试卷集合。
 	 * @param examId
 	 * 所属试卷ID。
-	 * @param top
-	 * 试卷套数。
+	 * @param page
+	 * 数据分页。
+	 * @param rows
+	 * 每页数据数量。
 	 * @return
 	 * 试卷集合。
 	 */
-	List<Paper> loadHotsPapers(String examId, Integer top);
+	List<Paper> loadHotsPapers(String examId, Integer page, Integer rows);
+	/**
+	 * 统计最热试卷总数。
+	 * @param examId
+	 * 所属考试。
+	 * @return
+	 */
+	Long totalHotsPapers(String examId);
 }
