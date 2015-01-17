@@ -1,6 +1,7 @@
 package com.examw.test.controllers.security;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -41,11 +42,16 @@ public class InitController {
 	/**
 	 * 初始化。
 	 */
-	@RequestMapping(value = {"","/"}, method={RequestMethod.GET, RequestMethod.POST})
-	public String goalInit(Model model){
+	@RequestMapping(value = {"","/"}, method={ RequestMethod.GET })
+	public String goalInit(HttpServletRequest request, Model model){
 		StringBuilder msgBuilder = new StringBuilder();
 		try{
+			String clientIP = request.getRemoteAddr(), hostIP = request.getLocalAddr();
 			String msg = null;
+			if(logger.isDebugEnabled()) logger.debug(String.format("［服务器IP：%1$s］［客户端IP：%2$s］", hostIP, clientIP));
+			if(!clientIP.equalsIgnoreCase(hostIP)){
+				throw new Exception("为安全考虑，本请求只能在服务器上操作！");
+			}
 			logger.info(msg = "权限初始化开始....");
 			msgBuilder.append(msg).append("\r\n");
 			logger.info(msg = "开始初始化菜单数据...");
