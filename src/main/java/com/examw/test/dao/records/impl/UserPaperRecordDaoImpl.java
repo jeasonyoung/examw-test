@@ -215,6 +215,8 @@ public class UserPaperRecordDaoImpl extends BaseDaoImpl<UserPaperRecord> impleme
 		if(logger.isDebugEnabled()) logger.debug(String.format("统计最热的试卷集合:-考试:%s", examId));
 		Map<String, Object> parameters = new HashMap<>();
 		String hql = this.addHotsPapersWhere(" select count(u.paper.id) ", parameters, examId);
-		return this.count(hql, parameters);
+		List<?> list = this.query(hql, parameters, null, null);
+		if(list == null) return 0L;
+		return (long)list.size();
 	}
 }
