@@ -12,13 +12,13 @@
 		<@topbox/>
 		<div class="h20"></div>
 		<div class="main">
-			<div class="weizhi fl"><span></span>当前位置：<a href="#">首页</a><i>&gt;</i>${examName}<i>&gt;</i>${subjectName}</div>
+			<div class="weizhi fl"><span></span>当前位置：<a href="/">首页</a><i>&gt;</i><a href="/${abbr}">${examName}</a><i>&gt;</i><a href="#">${subjectName}</a></div>
 		</div>
 		<div class="h1d"></div>
 		<div class="h1f"></div>
 		<div class="h20"></div>
 		<div class="main">
-			<div class="titbox bulebg fl"><span><div class="cheng-btn"><a href="#">选择产品</a></div></span>${subjectName}</div><div class="titboxbg"></div>
+			<div class="titbox bulebg fl"><span><div class="cheng-btn"><a href="/${abbr}">选择产品</a></div></span>${subjectName}</div><div class="titboxbg"></div>
 		    <div class="content yinying">
 		        <div class="tx fl">
 		            <div class="tx-pic"><img src="http://img.examw.com/test/tx-pic.png" width="350" height="330"></div>

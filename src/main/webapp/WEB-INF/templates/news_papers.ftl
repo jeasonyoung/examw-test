@@ -51,7 +51,7 @@
 		        			pagecount: ${total}, 
 		        			buttonClickCallback:function(index){
 		        				if(index == 1){
-		        					window.location.href="${path}/index.html";
+		        					window.location.href="${path}/";
 		        				}else{
 		        					window.location.href="${path}/" + index +".html";
 		        				}
