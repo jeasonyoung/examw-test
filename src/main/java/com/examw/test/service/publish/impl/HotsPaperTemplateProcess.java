@@ -67,6 +67,7 @@ public class HotsPaperTemplateProcess  extends NewsPaperTemplateProcess {
 						String exam_prefix = "hots-"+exam.getAbbr(),exam_path = "/hots/"+exam.getAbbr();
 						Map<String, Object> exam_parameters = new HashMap<>();
 						exam_parameters.put("abbr", exam.getAbbr());//考试简称
+						exam_parameters.put("examName", exam.getName());//考试名称
 						if(count == 0){
 							this.createStaticPages(prefix, path,parameters, null);
 						}else{

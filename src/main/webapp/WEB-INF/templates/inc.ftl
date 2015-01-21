@@ -50,7 +50,8 @@
             <li><a href="/hots">试卷排行</a></li>
             <li><a href="/questions/list">常见问题</a></li>
         </ul>
-        <div class="my"><a href="http://tiku.examw.com/" target="_blank"></a></div>
+        <#-- 暂时默认的是[一建工程经济产品] -->
+        <div class="my"><a href="http://tiku.examw.com/library/da629068-6f9d-4dee-9dd7-52989544a565" target="_blank"></a></div>
     </div>
 </div>
 </#macro>
@@ -114,7 +115,7 @@
 </#macro>
 <#--最热试卷-->
 <#macro hots_papers>
-<div class="newtit bulebg fl"><span><a href="#" target="_blank">更多&gt;&gt;</a></span>热门试卷</div><div class="newtitbg"></div>
+<div class="newtit bulebg fl"><span><a <#if abbr??>href="/hots/${abbr}"<#else>href="/hots/"</#if> target="_blank">更多&gt;&gt;</a></span>热门试卷</div><div class="newtitbg"></div>
 <@papers_list_views hotsPapers/>
 </#macro>
 <#--常见问题列表－最热试卷-->
