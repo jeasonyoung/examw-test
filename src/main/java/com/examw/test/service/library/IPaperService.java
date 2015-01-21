@@ -45,4 +45,10 @@ public interface IPaperService extends IBaseDataService<PaperInfo> {
 	 * @return
 	 */
 	PaperInfo conversion(Paper paper);
+	/**
+	 * 2015.1.21 增加修改科目的同时修改旗下包含题目的科目
+	 * @param info
+	 * @return
+	 */
+	PaperInfo updateWithItem(PaperInfo info);
 }
