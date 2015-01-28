@@ -45,6 +45,8 @@
 		                    </div>
 		                </li>
 	                </#list>
+	                <#else>
+	                	<li class="out" onMouseOver="this.className='over'" onMouseOut="this.className='out'">暂无产品信息</li>
 	                </#if>
 		            </ul>
 		        </div>

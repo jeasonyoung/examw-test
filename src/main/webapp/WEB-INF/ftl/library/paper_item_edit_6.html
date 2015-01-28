@@ -19,6 +19,87 @@ $(function(){
 			${module}_edit_window("新增共享题干子试题［"+$(item).text()+"］",0,{"id":data[0]},$(item).attr("value"));
 		});
 	};
+	//modify children type 修改子类题型[只能是不定项改成单选]
+	${dg}_change_child_type = function()
+	{
+		var rows = $("#${dg}").datagrid("getChecked");
+		if(rows && rows.length > 0){
+			var ids = [];
+			$.each(rows,function(i,n){ids.push(n.id);});
+			var d = $("<div/>").dialog({
+				title:"修改子题题型",width:400,height:150,modal:true,
+				content:$("#${dg}_type_dialog").html(),
+				buttons:[
+				<@shiro.hasPermission name="${PER_UPDATE}">
+				{
+					text:"仅页面修改",iconCls:"icon-save",
+					handler:function(){
+						var type = $("input[name='${dg}_children_type']:checked").val();
+						var typeName = $("input[name='${dg}_children_type']:checked").attr("title");
+						$.each(rows,function(i,n){
+							n.type = type;
+							n.typeName = typeName;
+							$('#${dg}').datagrid('updateRow',{
+								index: $('#${dg}').datagrid('getRowIndex',n),
+								row: n
+							});
+						});
+						d.dialog("close");
+					}
+				},
+				{
+					text:"强制修改",iconCls:"icon-save",
+					handler:function(){
+						var type = $("input[name='${dg}_children_type']:checked").val();
+						var typeName = $("input[name='${dg}_children_type']:checked").attr("title");
+						$.ajax({
+							type:"POST",
+							url:"<@s.url '/library/item/changeChildrenType'/>",
+							data:{"ids":ids.join(','),"type":type},
+							dataType:"json",
+							error:function(e){
+								$.messager.progress("close");
+								<@error_dialog "e"/>
+							},
+							success:function(data){
+								if(data.success && data.data)
+								{
+									$.each(rows,function(i,n){
+										if(data.data.indexOf(n.id)!=-1)
+										{
+											n.type = type;
+											n.typeName = typeName;
+											$('#${dg}').datagrid('updateRow',{
+												index: $('#${dg}').datagrid('getRowIndex',n),
+												row: n
+											});
+										}
+									});
+									$.messager.show({title:"提示",msg:"修改成功"});
+								}else{
+									var msg = data.msg;
+									if(!data.data)
+									{
+										msg = "强制修改,只能将不定项改成单选";	
+									}
+									$.messager.show({title:"提示",msg:msg});
+								}
+							}
+						});
+						d.dialog("close");
+					}
+				},
+				</@shiro.hasPermission>
+				{
+					text:"关闭",iconCls:"icon-cancel",
+					handler:function(){d.dialog("close");}
+				}],
+				onClose:function(){$(this).dialog("destroy");}
+			});
+		}else{
+			$.messager.alert("提示","未选中子题数据！");
+		}
+	};
 	</@shiro.hasPermission>
 	//child item edit window
 	${module}_edit_window = function(title,index,row,type){
@@ -78,7 +159,13 @@ $(function(){
 	//============================================================================================
 		//load
 		${module}_load = function(row){
-			if(!row)return;
+			if(!row){
+				$("#${dg}_extra").hide();
+				return;
+			}
+			if(!row.id){
+				$("#${dg}_extra").hide();
+			}
 			$("#${form}").form("load",row);
 			if(row.children && $.isArray(row.children)){
 				$.each(row.children,function(i,n){
@@ -170,6 +257,18 @@ $(function(){
 			<@shiro.hasPermission name="${PER_DELETE}">
 			<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
 			</@shiro.hasPermission>
+			<div id="${dg}_extra" style="display:inline">
+			<span>|</span>
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			<a href="#" class="easyui-linkbutton" onclick="${dg}_change_child_type()" data-options="iconCls:'icon-edit',plain:true">修改子题题型</a>
+			</@shiro.hasPermission>
+			</div>
 		</div>
 	</div>
 </form>
+<div style="display:none" id="${dg}_type_dialog">
+	<div style="color:red;margin:5px">强制修改仅限将不定项选择题换成单选题</div>
+	<#list ItemTypeMaps?keys as key>
+		<label><input name="${dg}_children_type" type="radio" value="${key}" title="${ItemTypeMaps[key]}"/>${ItemTypeMaps[key]}</label>
+	</#list>
+</div>

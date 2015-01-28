@@ -409,4 +409,26 @@ public class ItemController implements IUserAware {
 		return json;
 	}
 	
+	/**
+	 * 修改符合题型子题的题型
+	 * 2015.01.28
+	 * @param id
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.LIBRARY_ITEM + ":" + Right.UPDATE})
+	@RequestMapping(value="/changeChildrenType", method = RequestMethod.POST)
+	@ResponseBody
+	public Json changeChildrenType(String ids,Integer type){
+		if(logger.isDebugEnabled()) logger.debug("修改子题题型数据［"+ ids +"］...");
+		Json result = new Json();
+		try {
+			result.setData(this.itemService.changeChildrenType(ids.split(","),type));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("修改子题题型数据["+ids+"]时发生异常:", e);
+		}
+		return result;
+	}
 }

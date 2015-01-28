@@ -109,4 +109,12 @@ public interface IItemService extends IBaseDataService<ItemInfo> {
 	 * @return 剩余批次。
 	 */
 	int resetCheckCode(Integer rows,Integer page);
+	
+	/**
+	 * 强制修改子题的题型
+	 * @param split
+	 * @param type
+	 * 2015.01.28
+	 */
+	String changeChildrenType(String[] split, Integer type);
 }

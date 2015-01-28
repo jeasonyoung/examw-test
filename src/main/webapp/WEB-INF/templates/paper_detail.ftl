@@ -27,7 +27,7 @@
 		                <div class="list">
 		                    <ul>
 		                        <li>考试币：<span>${price}个</span></li>
-		                        <li>年份：${year}年</li>
+		                        <li>年份：${year?c}年</li>
 		                        <li>类型：${typeName}</li>
 		                        <li>总分：${score}分</li>
 		                        <li>总题数：${total}题</li>

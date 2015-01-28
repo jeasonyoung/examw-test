@@ -26,11 +26,11 @@
                 <li class="brno"><a href="http://book.examw.com/fdc/">图书</a></li>
             </ul>
         </div>
-        <div class="top-r">
+        <script type="text/javascript">var LoginAStr = "<div class=\"log\">欢迎您 <a target=\"_blank\" href=\"http://test.examw.com/user/UserCenter\" style=\"color:#cc0000\">$LoginName$</a></div><div class=\"vip fl\"><a href=\"http://test.examw.com/user/UserCenter\">个人中心</a></div>	<div class=\"vip fl\"><a href=\"http://test.examw.com/user/Login/CheckUser.asp?CheckType=Logout\">安全退出</a></div>";</script>
+        <div class="top-r" id="LoginA">
         	<div class="log"><a href="http://test.examw.com/class?DoMain=test" target="_blank">登陆</a></div>
             <div class="ge fl">|</div>
             <div class="log"><a href="http://test.examw.com/class?DoMain=test" target="_blank">注册</a></div>
-            <div class="vip fl"><a href="http://test.examw.com/user/UserCenter">个人中心</a></div>
         </div>
     </div>
 </div>

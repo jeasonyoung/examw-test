@@ -25,6 +25,7 @@ import com.examw.test.service.library.IItemService;
 import com.examw.test.service.library.IPaperService;
 import com.examw.test.service.library.ItemParser;
 import com.examw.test.service.library.ItemStatus;
+import com.examw.test.service.library.ItemType;
 import com.examw.test.service.library.PaperStatus;
 /**
  * 题目服务接口实现类。
@@ -445,5 +446,28 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 			item.setCheckCode(checkCode);
 		}
 		return checkCode;
+	}
+	/*
+	 * 强制修改子题题型
+	 * 2015.01.28
+	 * @see com.examw.test.service.library.IItemService#changeChildrenType(java.lang.String[], java.lang.Integer)
+	 */
+	@Override
+	public String changeChildrenType(String[] ids, Integer type) {
+		if(logger.isDebugEnabled()) logger.debug("修改子题题型...");
+		if(ids == null || ids.length == 0 || type==null) return "";
+		String changedIds = "";
+		for(int i = 0; i < ids.length; i++){
+			if(StringUtils.isEmpty(ids[i])) continue;
+			Item data = this.itemDao.load(Item.class, ids[i]);
+			if(data != null){
+				if(data.getType().equals(ItemType.UNCERTAIN.getValue()) && type.equals(ItemType.SINGLE.getValue()))
+				{
+					changedIds += data.getId()+",";
+					data.setType(type);
+				}
+			}
+		}
+		return changedIds;
 	}
 }
