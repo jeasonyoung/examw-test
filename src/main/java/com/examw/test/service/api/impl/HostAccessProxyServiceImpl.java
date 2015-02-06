@@ -1,10 +1,15 @@
 package com.examw.test.service.api.impl;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.util.StringUtils;
 
 import com.examw.test.model.api.LoginUser;
@@ -100,10 +105,16 @@ public class HostAccessProxyServiceImpl implements IHostAccessProxyService {
 		if(StringUtils.isEmpty(this.registerUrl)) throw new Exception("未配置注册用户URL！");
 		if(registerUser == null) throw new Exception("注册用户信息为空！");
 		StringBuilder postBuilder = new StringBuilder(), checkBuilder = new StringBuilder();
-		checkBuilder.append(registerUser.getAccount()).append("#").append(registerUser.getPassword()).append("#")
-							.append(registerUser.getPassword()).append("#").append(registerUser.getEmail()).append("#")
-							.append(this.clientKey).append(registerUser.getUsername()).append("#").append(registerUser.getPhone()).append("#")
-							.append(registerUser.getChannel()).append("#").append(this.source).append("#").append(registerUser.getClientId());
+		checkBuilder.append(registerUser.getAccount()).append("#")
+							.append(registerUser.getPassword()).append("#")
+							.append(registerUser.getPassword()).append("#")
+							.append(registerUser.getEmail()).append("#")
+							.append(this.clientKey).append("#")
+							.append(registerUser.getUsername()).append("#")
+							.append(registerUser.getPhone()).append("#")
+							.append(registerUser.getChannel()).append("#")
+							.append(this.source).append("#")
+							.append(registerUser.getClientId());
 		
 		postBuilder.append("UserName=").append(registerUser.getAccount()).append("&")
 						  .append("PassWord=").append(registerUser.getPassword()).append("&")
@@ -118,7 +129,7 @@ public class HostAccessProxyServiceImpl implements IHostAccessProxyService {
 						  .append("Version=").append(registerUser.getClientVersion()).append("&")
 						  //.append("ClientKey=").append(this.clientKey).append("&")
 						  .append("CheckType=RegUser").append("&")
-						 .append("Md5Str=").append(MD5Util.MD5(checkBuilder.toString()));
+						 .append("Md5Str=").append(MD5Util.MD5(checkBuilder.toString(),Charset.forName("GBK")));
 		//访问中华考试网注册
 		String callback =  HttpUtil.sendRequest(this.registerUrl, "POST", postBuilder.toString());
 		if(callback.indexOf(callback_perfix) > -1){
@@ -142,8 +153,10 @@ public class HostAccessProxyServiceImpl implements IHostAccessProxyService {
 		StringBuilder postBuilder = new StringBuilder(),checkBuilder = new StringBuilder();
 		
 		checkBuilder.append(loginUser.getAccount()).append("#")
-							.append(loginUser.getPassword()).append(this.clientKey).append("#")
-							.append(this.source).append("#").append(loginUser.getClientId());
+							.append(loginUser.getPassword()).append("#")
+							.append(this.clientKey).append("#")
+							.append(this.source).append("#")
+							.append(loginUser.getClientId());
 		
 		postBuilder.append("SubSource=").append(this.source).append("&")
 						  .append("ClientNo=").append(loginUser.getClientId()).append("&")
@@ -151,13 +164,23 @@ public class HostAccessProxyServiceImpl implements IHostAccessProxyService {
 						  .append("CheckType=Login").append("&")
 						  .append("UserName=").append(loginUser.getAccount()).append("&")
 						  .append("PassWord=").append(loginUser.getPassword()).append("&")
-						  .append("Md5Str=").append(MD5Util.MD5(checkBuilder.toString()));
+						  .append("Md5Str=").append(MD5Util.MD5(checkBuilder.toString(),Charset.forName("GBK")));
 		//登录中华考试网
-		String callback = HttpUtil.sendRequest(this.loginUrl, "POST", postBuilder.toString());
+		String callback = HttpUtil.sendRequest(this.loginUrl, "POST", postBuilder.toString(),"GBK");
+		logger.debug(String.format("post-URL:%1$s?%2$s", this.loginUrl, postBuilder.toString()));
 		if(callback.indexOf(callback_perfix) > -1){
+			Matcher m = Pattern.compile(callback_perfix +"\\((\\{.+?\\})\\)").matcher(callback);
+			Map<String, String> callback_map =  null;
+			if(m.find()){
+				String p = m.group(1);
+				logger.debug(String.format("calback=>%s", p));
+				callback_map = this.callbackParameters(p);
+			}
 			FrontUserInfo info = new FrontUserInfo();
-			info.setCode(this.getParameter(callback, "uid"));
-			info.setName(this.getParameter(callback, "UserName"));
+			if(callback_map != null){
+				info.setCode(callback_map.get("uid"));
+				info.setName(callback_map.get("UserName"));
+			}
 			if(StringUtils.isEmpty(info.getCode()) || StringUtils.isEmpty(info.getName())){
 				throw new Exception(String.format("未能从考试系统接口获取正确数据:%s", callback));
 			}
@@ -171,24 +194,14 @@ public class HostAccessProxyServiceImpl implements IHostAccessProxyService {
 		}
 		throw new Exception(StringUtils.isEmpty(callback) ? "考试网未反馈数据!" : callback);
 	}
-	//获取参数
-	private String getParameter(String authz,String name){
-		if(StringUtils.isEmpty(authz) || StringUtils.isEmpty(name)) return null;
-		String regex = name + "=((.+?,)|((.+?)$))";
-		Matcher m = Pattern.compile(regex).matcher(authz);
-		if(m.find()){
-			String p = m.group(1);
-			if(!StringUtils.isEmpty(p)){
-				if(p.endsWith(",")){
-					p = p.substring(0, p.length() - 1);
-				}
-				if(p.startsWith("\"")){
-					p = p.substring(1);
-				}
-				if(p.endsWith("\"")){
-					p = p.substring(0, p.length() - 1);
-				}
-				return p;
+	//将反馈数据转换为Map
+	@SuppressWarnings("unchecked")
+	private Map<String, String> callbackParameters(String callback) throws JsonParseException, JsonMappingException, IOException{
+		if(!StringUtils.isEmpty(callback)){
+			ObjectMapper mapper = new ObjectMapper();
+			Map<String, String> parameters = mapper.readValue(callback, Map.class);
+			if(parameters != null && parameters.size() > 0){
+				return parameters;
 			}
 		}
 		return null;
