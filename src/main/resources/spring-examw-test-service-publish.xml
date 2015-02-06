@@ -157,6 +157,8 @@
     <bean id="newsPaperTemplateProcess" class="com.examw.test.service.publish.impl.NewsPaperTemplateProcess" parent="templateProcess">
         <!-- 模版名称 -->
         <property name="templateName" value="${publish_templates_paper_news}" />
+         <!-- 考试数据接口 -->
+        <property name="examDao" ref="examDao" />
         <!-- 最大显示试卷数量 -->
         <property name="maxPaperCount" value="${publish_templates_paper_news_hots_max}" />
     </bean>
@@ -164,5 +166,7 @@
     <bean id="hotsPaperTemplateProcess" class="com.examw.test.service.publish.impl.HotsPaperTemplateProcess" parent="newsPaperTemplateProcess">
         <!-- 模版名称 -->
         <property name="templateName" value="${publish_templates_paper_hots}" />
+         <!-- 考试数据接口 -->
+        <property name="examDao" ref="examDao" />
     </bean>
 </beans>

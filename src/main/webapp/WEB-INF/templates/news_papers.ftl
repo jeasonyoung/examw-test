@@ -13,7 +13,7 @@
 		<@topbox/>
 		<div class="h20"></div>
 		<div class="main">
-			<div class="weizhi fl"><span></span>当前位置：<a href="/">首页</a><i>&gt;</i>最新试卷排行</div>
+			<div class="weizhi fl"><span></span>当前位置：<a href="/">首页</a><i>&gt;</i><#if examName??>${examName}</#if>最新试卷排行</div>
 		</div>
 		<div class="h1d"></div>
 		<div class="h1f"></div>
@@ -51,7 +51,7 @@
 		        			pagecount: ${total}, 
 		        			buttonClickCallback:function(index){
 		        				if(index == 1){
-		        					window.location.href="${path}/index.html";
+		        					window.location.href="${path}/";
 		        				}else{
 		        					window.location.href="${path}/" + index +".html";
 		        				}

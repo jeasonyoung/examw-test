@@ -12,13 +12,13 @@
 		<@topbox/>
 		<div class="h20"></div>
 		<div class="main">
-			<div class="weizhi fl"><span></span>当前位置：<a href="#">首页</a><i>&gt;</i>${examName}<i>&gt;</i>${subjectName}</div>
+			<div class="weizhi fl"><span></span>当前位置：<a href="/">首页</a><i>&gt;</i><a href="/${abbr}">${examName}</a><i>&gt;</i><a href="#">${subjectName}</a></div>
 		</div>
 		<div class="h1d"></div>
 		<div class="h1f"></div>
 		<div class="h20"></div>
 		<div class="main">
-			<div class="titbox bulebg fl"><span><div class="cheng-btn"><a href="#">选择产品</a></div></span>${subjectName}</div><div class="titboxbg"></div>
+			<div class="titbox bulebg fl"><span><div class="cheng-btn"><a href="/${abbr}">选择产品</a></div></span>${subjectName}</div><div class="titboxbg"></div>
 		    <div class="content yinying">
 		        <div class="tx fl">
 		            <div class="tx-pic"><img src="http://img.examw.com/test/tx-pic.png" width="350" height="330"></div>
@@ -27,7 +27,7 @@
 		                <div class="list">
 		                    <ul>
 		                        <li>考试币：<span>${price}个</span></li>
-		                        <li>年份：${year}年</li>
+		                        <li>年份：${year?c}年</li>
 		                        <li>类型：${typeName}</li>
 		                        <li>总分：${score}分</li>
 		                        <li>总题数：${total}题</li>
@@ -63,7 +63,10 @@
 		                        <span>${p.price}元</span>
 		                        <span class="red">${p.discount}元</span>
 		                        <span>${p.total}题</span>
-		                        <i><div class="buy"><a name="index-products-buy"  id="${p.id}" Price="${p.price}" GoodPrice="${p.discount}" Title="${p.text}" href="#" target="_blank">我要购买</a></div><div class="tiyan"><a href="/${abbr}/${p.id}.html" target="_blank">免费体验</a></div></i>
+		                        <i>
+		                        <#-- <div class="buy"><a name="index-products-buy"  id="${p.id}" Price="${p.price}" GoodPrice="${p.discount}" Title="${p.text}" href="#" target="_blank">我要购买</a></div> -->
+		                        <div class="tiyan"><a href="/${abbr}/${p.id}.html" target="_blank">免费体验</a></div>
+		                        </i>
 		                    </div>
 		                </li>
 		                </#list>

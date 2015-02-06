@@ -150,20 +150,26 @@ public class PaperController implements IUserAware {
 		return "library/paper_edit";
 	}
 	/**
-	 * 更新数据。
+	 * 更新数据。 
+	 * 2015.1.21 增加修改科目的同时修改旗下包含题目的科目
 	 * @param info
 	 * @return
 	 */
 	@RequiresPermissions({ModuleConstant.LIBRARY_PAPER + ":" + Right.UPDATE})
 	@RequestMapping(value="/update", method = RequestMethod.POST)
 	@ResponseBody
-	public Json update(PaperInfo info){
+	public Json update(PaperInfo info, Integer updateItemSubject){
 		if(logger.isDebugEnabled()) logger.debug("更新数据...");
 		Json result = new Json();
 		try {
 			info.setUserId(this.currentUserId);
 			info.setUserName(this.currentUserName); 
-			result.setData(this.paperService.update(info));
+			if(updateItemSubject!=null && updateItemSubject == 1)
+			{
+				//2015.1.21 增加修改科目的同时修改旗下包含题目的科目
+				result.setData(this.paperService.updateWithItem(info));
+			}else
+				result.setData(this.paperService.update(info));
 			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);

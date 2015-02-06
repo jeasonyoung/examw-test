@@ -11,7 +11,7 @@
 		<@topbox/>
 		<div class="h20"></div>
 		<div class="main">
-			<div class="weizhi fl"><span></span>当前位置：<a href="#">首页</a><i>&gt;</i>常见问题</div>
+			<div class="weizhi fl"><span></span>当前位置：<a href="/">首页</a><i>&gt;</i>常见问题</div>
 		</div>
 		<div class="h1d"></div>
 		<div class="h1f"></div>

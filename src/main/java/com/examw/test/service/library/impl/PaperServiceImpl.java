@@ -192,6 +192,24 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 	 */
 	@Override
 	public PaperInfo update(PaperInfo info) {
+		return updateBase(info, false);
+	}
+	/*
+	 * 更新带题目的数据
+	 */
+	@Override
+	public PaperInfo updateWithItem(PaperInfo info) {
+		
+		return updateBase(info, true);
+	}
+	/**
+	 * 更新的基础方法
+	 * @param info
+	 * @param updateItem
+	 * @return
+	 */
+	private PaperInfo updateBase(PaperInfo info ,boolean updateItem)
+	{
 		if (logger.isDebugEnabled()) logger.debug("更新数据...");
 		if (info == null) return null;
 		boolean isAdded = false;
@@ -213,12 +231,43 @@ public class PaperServiceImpl extends BaseDataServiceImpl<Paper, PaperInfo> impl
 		BeanUtils.copyProperties(info, data);
 		//科目。
 		data.setSubject(StringUtils.isEmpty(info.getSubjectId()) ?  null : this.subjectDao.load(Subject.class,info.getSubjectId()));
+		if(updateItem)
+		{
+			if (logger.isDebugEnabled()) logger.debug("同时更新试卷下题目的所属科目数据...");
+			//更新试卷下面题目的科目
+			updatePaperItemSubject(data);
+		}
 		//来源。
 		data.setSource(StringUtils.isEmpty(info.getSourceId()) ?  null : this.sourceDao.load(Source.class, info.getSourceId()));
 		//地区
 		data.setArea(StringUtils.isEmpty(info.getAreaId()) ?  null : this.areaDao.load(Area.class, info.getAreaId()));
 		if (isAdded)this.paperDao.save(data);
 		return this.changeModel(data);
+	}
+	/**
+	 * 更新试卷题目的科目
+	 * @param data
+	 */
+	private void updatePaperItemSubject(Paper data) {
+		Subject subject = data.getSubject();
+		if(subject.getChildren()!=null && subject.getChildren().size()>0)
+			throw new RuntimeException("科目下还有子科目不允许这么修改!");
+		Set<Structure> set = data.getStructures();
+		if(set!=null && set.size()>0)
+		{
+			for(Structure stru:set)
+			{
+				if(stru == null) continue;
+				Set<StructureItem> items = stru.getItems();
+				if(items!=null && items.size() > 0)
+				{
+					for(StructureItem item:items)
+					{
+						item.getItem().setSubject(subject);
+					}
+				}
+			}
+		}
 	}
 	/*
 	 * 删除数据。
