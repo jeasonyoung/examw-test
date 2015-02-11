@@ -14,6 +14,7 @@ import com.examw.test.domain.publish.PublishRecord;
 import com.examw.test.service.publish.ConfigurationTemplateType;
 import com.examw.test.service.publish.IPublishService;
 import com.examw.test.service.publish.ITemplateProcess;
+import com.examw.utils.HttpUtil;
 
 /**
  * 发布服务接口实现类。
@@ -26,6 +27,8 @@ public class PublishServiceImpl implements IPublishService {
 	private IConfigurationDao configurationDao;
 	private IPublishRecordDao publishRecordDao;
 	private Map<Integer, ITemplateProcess> processes;
+	//远程生成页面地址
+	private String remoteCreatePagesUrl; 
 	/**
 	 * 设置发布配置数据接口。
 	 * @param configurationDao 
@@ -53,6 +56,15 @@ public class PublishServiceImpl implements IPublishService {
 		if(logger.isDebugEnabled()) logger.debug("注入模版处理器集合...");
 		this.processes = processes;
 	}
+	
+	/**
+	 * 设置 生成页面的远程调用地址
+	 * @param remoteCreatePagesUrl
+	 * 
+	 */
+	public void setRemoteCreatePagesUrl(String remoteCreatePagesUrl) {
+		this.remoteCreatePagesUrl = remoteCreatePagesUrl;
+	}
 	/**
 	 * 加载模版类型处理器。
 	 * @param templateType
@@ -73,6 +85,22 @@ public class PublishServiceImpl implements IPublishService {
 	public synchronized void updatePublish() {
 		if(logger.isDebugEnabled()) logger.debug("=>开始更新发布....");
 		this.updatePublish(this.configurationDao.loadTopConfiguration());
+		if(StringUtils.isEmpty(remoteCreatePagesUrl)) return;
+		//远程调用生成页面
+		int times = 1;
+		while(times < 4)
+		{
+			try{
+				if(logger.isDebugEnabled()) logger.debug("=>开始生成页面....");
+				String response = HttpUtil.sendRequest(remoteCreatePagesUrl, "GET", null);
+				if(logger.isDebugEnabled()) logger.debug(response);
+				break;
+			}catch(Exception e)
+			{
+				logger.error(String.format("第%1$d次生成失败:%2$s", times,e.getMessage()));
+				times++;
+			}
+		}
 	}
 	/*
 	 * 更新发布指定配置。
