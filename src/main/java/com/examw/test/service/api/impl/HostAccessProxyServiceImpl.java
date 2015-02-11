@@ -132,7 +132,9 @@ public class HostAccessProxyServiceImpl implements IHostAccessProxyService {
 						 .append("Md5Str=").append(MD5Util.MD5(checkBuilder.toString(),Charset.forName("GBK")));
 		//访问中华考试网注册
 		String callback =  HttpUtil.sendRequest(this.registerUrl, "POST", postBuilder.toString());
-		if(callback.indexOf(callback_perfix) > -1){
+		if(logger.isDebugEnabled()) logger.debug(String.format("post-URL:%1$s?%2$s", this.registerUrl, postBuilder.toString()));
+		if(logger.isDebugEnabled()) logger.debug(String.format("calback=>%s", callback));
+		if(callback.indexOf("#") > -1){
 			return;
 		}
 		if(!StringUtils.isEmpty(callback) && this.registerErrors != null){
