@@ -14,7 +14,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class AppClient implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String clientId,clientName,clientVersion;
+	private String clientId,clientName,clientVersion,clientTypeCode,clientMachine,productId;
 	/**
 	 * 获取客户端ID。
 	 * @return 客户端ID。
@@ -59,5 +59,61 @@ public class AppClient implements Serializable {
 	 */
 	public void setClientVersion(String clientVersion) {
 		this.clientVersion = clientVersion;
+	}
+	/**
+	 * 获取客户端软件类型代码。
+	 * @return 客户端软件类型代码。
+	 */
+	public String getClientTypeCode() {
+		return clientTypeCode;
+	}
+	/**
+	 * 设置客户端软件类型代码。
+	 * @param clientTypeCode
+	 *	  客户端软件类型类型代码。。
+	 */
+	public void setClientTypeCode(String clientTypeCode) {
+		this.clientTypeCode = clientTypeCode;
+	}
+	/**
+	 * 获取客户端机器码。
+	 * @return 客户端机器码。
+	 */
+	public String getClientMachine() {
+		return clientMachine;
+	}
+	/**
+	 * 设置客户端机器码。
+	 * @param clientMachine 
+	 *	  客户端机器码。
+	 */
+	public void setClientMachine(String clientMachine) {
+		this.clientMachine = clientMachine;
+	}
+	/**
+	 * 获取产品ID。
+	 * @return 产品ID。
+	 */
+	public String getProductId() {
+		return productId;
+	}
+	/**
+	 * 设置产品ID。
+	 * @param productId 
+	 *	  产品ID。
+	 */
+	public void setProductId(String productId) {
+		this.productId = productId;
+	}
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("clientId").append("=").append(this.clientId).append(",")
+				   .append("clientName").append("=").append(this.clientName).append(",")
+				   .append("clientVersion").append("=").append(this.clientVersion).append(",")
+				   .append("clientTypeCode").append("=").append(this.clientTypeCode).append(",")
+				   .append("clientMachine").append("=").append(this.clientMachine).append(",")
+				   .append("productId").append("=").append(this.productId);
+		return builder.toString();
 	}
 }

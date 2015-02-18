@@ -52,4 +52,13 @@
 	        </map>
 	    </property>
 	</bean>
+	<!-- 注册码服务 -->
+	<bean id="hostRegisterService" class="com.examw.test.service.api.impl.HostRegisterServiceImpl">
+	    <!-- 软件类型限制数据接口 -->
+	    <property name="softwareTypeLimitDao" ref="softwareTypeLimitDao" />
+	    <!-- 注册码服务接口 -->
+	    <property name="registrationCodeService" ref="registrationService" />
+	    <!-- 注册码绑定服务接口 -->
+	    <property name="registrationBindingService" ref="registrationBindingService"/>
+	</bean>
 </beans>

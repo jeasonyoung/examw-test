@@ -132,13 +132,14 @@ public class RegistrationBindingServiceImpl extends BaseDataServiceImpl<Registra
 	}
 	/*
 	 *  添加注册码绑定。
-	 * @see com.examw.test.service.products.IRegistrationBindingService#addBinding(java.lang.String, int, java.lang.String, java.lang.String)
+	 * @see com.examw.test.service.products.IRegistrationBindingService#addBinding(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public boolean addBinding(String registerCode, int softwareTypeCode,String machine, String userId) throws Exception {
+	public boolean addBinding(String registerCode, String softwareTypeCode,String machine, String userId) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug(String.format("添加注册码绑定:[registerCode=％1$s][softwareTypeCode=%2$d][machine=%3$s][userId=%4$s]",
 							registerCode,softwareTypeCode,machine,userId));
 		if(StringUtils.isEmpty(registerCode)) throw new Exception("注册码为空！");
+		if(StringUtils.isEmpty(softwareTypeCode)) throw new Exception("软件类型代码为空！");
 		if(StringUtils.isEmpty(machine)) throw new Exception("设备机器标示为空！");
 		if(this.registrationCodeService.validation(registerCode)){//验证注册码合法性
 			Registration registration = this.registrationCodeService.loadRegistration(registerCode);
@@ -148,7 +149,7 @@ public class RegistrationBindingServiceImpl extends BaseDataServiceImpl<Registra
 			if(registration.getSoftwareTypeLimits() != null){//查找软件类型限制。
 				for(SoftwareTypeLimit limit : registration.getSoftwareTypeLimits()){
 					if(limit == null || (softwareType = limit.getSoftwareType()) == null) continue;
-					if(softwareType.getCode() == softwareTypeCode){
+					if(softwareTypeCode.equalsIgnoreCase(softwareType.getCode().toString())){
 						softwareTypeLimit = limit;
 						break;
 					}

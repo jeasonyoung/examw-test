@@ -47,4 +47,13 @@ public interface ISoftwareTypeLimitDao extends IBaseDao<SoftwareTypeLimit> {
 	 * 限制次数。
 	 */
 	SoftwareTypeLimit update(Registration register,SoftwareType type, Integer times);
+	/**
+	 * 加载软件类型和注册码的限制次数。
+	 * @param softwareTypeCode
+	 * 软件类型代码。
+	 * @param registrationCode
+	 * 注册码。
+	 * @return 限制次数。
+	 */
+	Integer limits(String softwareTypeCode, String registrationCode)throws Exception;
 }

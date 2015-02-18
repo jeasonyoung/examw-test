@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.impl.BaseDaoImpl;
@@ -105,5 +106,20 @@ public class SoftwareTypeLimitDaoImpl extends BaseDaoImpl<SoftwareTypeLimit> imp
 			this.update(limit);
 		} 
 		return limit;
+	}
+	/*
+	 * 加载软件类型和注册码的限制次数。
+	 * @see com.examw.test.dao.products.ISoftwareTypeLimitDao#limits(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Integer limits(String softwareTypeCode, String registrationCode) throws Exception {
+		Assert.isTrue(!StringUtils.isEmpty(softwareTypeCode), "软件类型代码为空！");
+		Assert.isTrue(!StringUtils.isEmpty(registrationCode),"注册码为空！");
+		final String hql = "select st.times  from SoftwareTypeLimit st where st.softwareType.code = :softwareTypeCode and st.register.code = :registrationCode order by st.createTime desc ";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("softwareTypeCode", softwareTypeCode);
+		parameters.put("registrationCode", registrationCode);
+		Object obj = this.uniqueResult(hql, parameters);
+		return obj == null ? null : (Integer)obj;
 	}
 }

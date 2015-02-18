@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.model.Json;
+import com.examw.test.model.api.AppRegister;
 import com.examw.test.model.api.LoginUser;
 import com.examw.test.model.api.RegisterUser;
 import com.examw.test.service.api.IHostAccessProxyService;
+import com.examw.test.service.api.IHostRegisterService;
 
 /**
  * 移动接口控制器。
@@ -24,9 +26,10 @@ import com.examw.test.service.api.IHostAccessProxyService;
 @RequestMapping(value = { "/api/m" })
 public class MobileController {
 	private static final Logger logger = Logger.getLogger(MobileController.class);
-	//注入访问中华考试网代理服务接口。
-	@Resource
+	@Resource//注入访问中华考试网代理服务接口。
 	private IHostAccessProxyService  hostAccessProxyService;
+	@Resource//注入注册码服务接口
+	private IHostRegisterService hostRegisterService;
 	/**
 	 * 注册新用户
 	 * @param info
@@ -64,6 +67,25 @@ public class MobileController {
 				result.setData(this.hostAccessProxyService.login(info));
 				result.setSuccess(true);
 			}
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+		}
+		return result;
+	}
+	/**
+	 * 应用注册。
+	 * @param register
+	 * 注册信息。
+	 * @return 应用注册结果。
+	 */
+	@RequestMapping(value = {"/app/register"}, method = {RequestMethod.POST})
+	@ResponseBody
+	public Json appRegister(@RequestBody AppRegister register){
+		if(logger.isDebugEnabled()) logger.debug("应用注册...");
+		Json result = new Json();
+		try {
+			result.setSuccess(this.hostRegisterService.verifyAppRegister(register));
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
