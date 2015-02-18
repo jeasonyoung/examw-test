@@ -202,4 +202,23 @@ public class SyllabusInfo extends BaseSyllabusInfo implements Comparable<Syllabu
 		this.areaName = areaName;
 	}
 	
+	//2015.02.11 增加一个层级属性,用于前台展现
+	private Integer level;
+	/**
+	 * 获取 层级
+	 * @return level
+	 * 
+	 */
+	public Integer getLevel() {
+		return level;
+	}
+	/**
+	 * 设置 层级
+	 * @param level
+	 * 
+	 */
+	public void setLevel(Integer level) {
+		this.level = level;
+	}
+	
 }

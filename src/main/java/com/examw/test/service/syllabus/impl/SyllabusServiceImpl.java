@@ -107,7 +107,7 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 	@Override
 	protected SyllabusInfo changeModel(Syllabus data) {
 		if(logger.isDebugEnabled()) logger.debug(" 数据模型转换 Syllabus => SyllabusInfo ...");
-		return this.changeModel(data, false);
+		return this.changeModel(data,0, false);
 	}
 	/*
 	 * 数据模型转换。
@@ -116,10 +116,10 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 	@Override
 	public SyllabusInfo conversion(Syllabus syllabus) {
 		if(logger.isDebugEnabled()) logger.debug("数据模型转换 Syllabus => SyllabusInfo ...");
-		return this.changeModel(syllabus, true);
+		return this.changeModel(syllabus,0, true);
 	}
 	//数据模型转换。
-	private SyllabusInfo changeModel(Syllabus source,boolean hasChild){
+	private SyllabusInfo changeModel(Syllabus source,Integer level,boolean hasChild){
 		if(source == null) return null;
 		SyllabusInfo target = new SyllabusInfo();
 		BeanUtils.copyProperties(source, target, new String[]{"children"}); 
@@ -134,6 +134,7 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 				target.setExamName(source.getSubject().getExam().getName());
 			}
 		}
+		target.setLevel(level);
 		if(!hasChild){	//不查子类就是顶级
 			if(source.getAreas() != null && source.getAreas().size() > 0){
 				List<String> list_ids = new ArrayList<>(), list_names = new ArrayList<>();
@@ -150,7 +151,7 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 			Set<SyllabusInfo> children = new TreeSet<>();
 			for(Syllabus syllabus : source.getChildren()){
 				if(syllabus == null) continue;
-				SyllabusInfo e = this.changeModel(syllabus, hasChild);
+				SyllabusInfo e = this.changeModel(syllabus,target.getLevel()+1, hasChild);
 				if(e != null){
 					e.setPid(target.getId());
 					children.add(e);
