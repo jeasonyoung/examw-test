@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.model.Json;
+import com.examw.test.model.api.AppClientSync;
 import com.examw.test.model.api.AppRegister;
 import com.examw.test.model.api.LoginUser;
 import com.examw.test.model.api.RegisterUser;
+import com.examw.test.service.api.IDataSyncService;
 import com.examw.test.service.api.IHostAccessProxyService;
 import com.examw.test.service.api.IHostRegisterService;
 
@@ -30,6 +32,8 @@ public class MobileController {
 	private IHostAccessProxyService  hostAccessProxyService;
 	@Resource//注入注册码服务接口
 	private IHostRegisterService hostRegisterService;
+	@Resource//注入数据同步服务接口
+	private IDataSyncService dataSyncService;
 	/**
 	 * 注册新用户
 	 * @param info
@@ -86,6 +90,25 @@ public class MobileController {
 		Json result = new Json();
 		try {
 			result.setSuccess(this.hostRegisterService.verifyAppRegister(register));
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+		}
+		return result;
+	}
+	/**
+	 * 同步考试科目数据。
+	 * @param req
+	 * @return
+	 */
+	@RequestMapping(value = {"/sync/exams"}, method = {RequestMethod.POST})
+	@ResponseBody
+	public Json syncExam(@RequestBody AppClientSync req){
+		if(logger.isDebugEnabled()) logger.debug("同步考试科目数据...");
+		Json result = new Json();
+		try {
+			result.setData(this.dataSyncService.syncExams(req));
+			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
