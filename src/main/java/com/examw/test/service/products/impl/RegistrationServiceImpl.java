@@ -338,7 +338,7 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 		boolean result = this.verificationFormat(code);
 		if(!result) throw new Exception("注册码错误！");
 		Registration data = this.registrationDao.loadRegistration(code);
-		if(data == null) throw new Exception("注册码未登记！");
+		if(data == null) throw new Exception(String.format("注册码未登记！"));
 		if(data.getStatus() != RegistrationStatus.ACTIVE.getValue()){
 			throw new Exception(String.format("注册码：%s!", this.loadStatusName(data.getStatus())));
 		}

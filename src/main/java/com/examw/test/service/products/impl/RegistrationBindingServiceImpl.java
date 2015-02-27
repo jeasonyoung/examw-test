@@ -136,7 +136,7 @@ public class RegistrationBindingServiceImpl extends BaseDataServiceImpl<Registra
 	 */
 	@Override
 	public boolean addBinding(String registerCode, String softwareTypeCode,String machine, String userId) throws Exception {
-		if(logger.isDebugEnabled()) logger.debug(String.format("添加注册码绑定:[registerCode=％1$s][softwareTypeCode=%2$d][machine=%3$s][userId=%4$s]",
+		if(logger.isDebugEnabled()) logger.debug(String.format("添加注册码绑定:[registerCode=％1$s][softwareTypeCode=%2$s][machine=%3$s][userId=%4$s]",
 							registerCode,softwareTypeCode,machine,userId));
 		if(StringUtils.isEmpty(registerCode)) throw new Exception("注册码为空！");
 		if(StringUtils.isEmpty(softwareTypeCode)) throw new Exception("软件类型代码为空！");
@@ -149,7 +149,7 @@ public class RegistrationBindingServiceImpl extends BaseDataServiceImpl<Registra
 			if(registration.getSoftwareTypeLimits() != null){//查找软件类型限制。
 				for(SoftwareTypeLimit limit : registration.getSoftwareTypeLimits()){
 					if(limit == null || (softwareType = limit.getSoftwareType()) == null) continue;
-					if(softwareTypeCode.equalsIgnoreCase(softwareType.getCode().toString())){
+					if(Integer.parseInt(softwareTypeCode) ==  softwareType.getCode()){
 						softwareTypeLimit = limit;
 						break;
 					}

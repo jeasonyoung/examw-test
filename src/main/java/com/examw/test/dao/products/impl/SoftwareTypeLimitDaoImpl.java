@@ -117,7 +117,7 @@ public class SoftwareTypeLimitDaoImpl extends BaseDaoImpl<SoftwareTypeLimit> imp
 		Assert.isTrue(!StringUtils.isEmpty(registrationCode),"注册码为空！");
 		final String hql = "select st.times  from SoftwareTypeLimit st where st.softwareType.code = :softwareTypeCode and st.register.code = :registrationCode order by st.createTime desc ";
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("softwareTypeCode", softwareTypeCode);
+		parameters.put("softwareTypeCode", Integer.parseInt(softwareTypeCode));
 		parameters.put("registrationCode", registrationCode);
 		Object obj = this.uniqueResult(hql, parameters);
 		return obj == null ? null : (Integer)obj;

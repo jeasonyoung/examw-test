@@ -1,6 +1,7 @@
 package com.examw.test.service.api.impl;
 
 import org.apache.log4j.Logger;
+import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.products.ISoftwareTypeLimitDao;
 import com.examw.test.domain.products.Product;
@@ -55,15 +56,17 @@ public class HostRegisterServiceImpl implements IHostRegisterService {
 	public boolean verifyAppRegister(AppRegister appRegister) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug(String.format("验证应用注册码:%s", appRegister));
 		if(appRegister == null) throw new IllegalArgumentException("注册信息为空！");
-		if(this.registrationCodeService.validation(appRegister.getCode())){//检测注册码是否合法
-			Registration registration = this.registrationCodeService.loadRegistration(appRegister.getCode());
+		String reg_code = this.registrationCodeService.cleanCodeFormat(appRegister.getCode());
+		if(StringUtils.isEmpty(reg_code)) throw new Exception("注册码为空！");
+		if(this.registrationCodeService.validation(reg_code)){//检测注册码是否合法
+			Registration registration = this.registrationCodeService.loadRegistration(reg_code);
 			Product product = null;
 			if(registration != null && (product =  registration.getProduct()) != null){
 				if(!product.getId().equalsIgnoreCase(appRegister.getProductId())){//检查注册码所属产品是否一致
-					throw new Exception(String.format("注册码［%1$s］所属于产品：%2$s", appRegister.getCode(),  product.getName()));
+					throw new Exception(String.format("注册码［%1$s］所属于产品：%2$s", reg_code,  product.getName()));
 				}
 				//获取限制
-				Integer limits =  this.softwareTypeLimitDao.limits(appRegister.getClientTypeCode(), appRegister.getCode());
+				Integer limits =  this.softwareTypeLimitDao.limits(appRegister.getClientTypeCode(), reg_code);
 				if(limits == null) throw new Exception("未设置注册码限制！");
 				//判断限制
 				int count = 0;
@@ -71,7 +74,7 @@ public class HostRegisterServiceImpl implements IHostRegisterService {
 					throw new Exception(String.format("注册码绑定［%1$d］已超过限制［%2$d］", count, limits));
 				}
 				//添加绑定
-				return this.registrationBindingService.addBinding(appRegister.getCode(), 
+				return this.registrationBindingService.addBinding(reg_code, 
 						appRegister.getClientTypeCode(),
 						appRegister.getClientMachine(),
 						appRegister.getUserId());

@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.springframework.util.StringUtils;
 
 import com.examw.test.domain.products.Product;
 import com.examw.test.domain.products.Registration;
@@ -65,13 +66,15 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	private Product validationSyncReq(AppClientSync req) throws Exception{
 		if(logger.isDebugEnabled()) logger.debug("验证同步请求的合法性...");
 		if(req == null) throw new IllegalArgumentException("同步请求为空！");
-		if(this.registrationCodeService.validation(req.getCode())){
-			Registration reg = this.registrationCodeService.loadRegistration(req.getCode());
-			if(reg == null) throw new Exception(String.format("加载注册码对象失败! %s", req.getCode()));
+		String reg_code =  this.registrationCodeService.cleanCodeFormat(req.getCode());
+		if(StringUtils.isEmpty(reg_code)) throw new Exception("注册码为空！");
+		if(this.registrationCodeService.validation(reg_code)){
+			Registration reg = this.registrationCodeService.loadRegistration(reg_code);
+			if(reg == null) throw new Exception(String.format("加载注册码对象失败! %s", reg_code));
 			Product p = reg.getProduct();
 			if(p == null) throw new Exception("加载产品信息失败！");
 			if(!p.getId().equalsIgnoreCase(req.getProductId())){
-				throw new Exception(String.format("注册码［%1$s］属于产品［%2$s］与App应用产品不符!", req.getCode(), p.getName()));
+				throw new Exception(String.format("注册码［%1$s］属于产品［%2$s］与App应用产品不符!", reg_code, p.getName()));
 			}
 			return p;
 		}
