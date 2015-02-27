@@ -207,7 +207,9 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 			if(info.getCreateTime() == null) info.setCreateTime(new Date());
 		}
 		info.setLastTime(new Date());
-		if(info.getStatus() == null) info.setStatus(RegistrationStatus.NONE.getValue());
+		if(info.getStatus() == null){
+			info.setStatus(RegistrationStatus.NONE.getValue());
+		}
 		try {
 			if(!this.verificationFormat(info.getCode())){
 				throw new Exception(String.format("非法注册码:%s", info.getCode()));
@@ -217,7 +219,7 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 			throw new RuntimeException(e.getMessage());
 		}
 		//创建注册码激活
-		if(info.getLimits() > 0 && info.getStatus() == RegistrationStatus.ACTIVE.getValue() && (data.getStatus() != RegistrationStatus.ACTIVE.getValue() || data.getStartTime() == null)){
+		if(info.getLimits() > 0 && info.getStatus() == RegistrationStatus.ACTIVE.getValue()){
 			data.setStartTime(new Date());//激活时间
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(data.getStartTime());
