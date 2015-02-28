@@ -65,5 +65,7 @@
 	<bean id="dataSyncService" class="com.examw.test.service.api.impl.DataSyncServiceImpl">
 	    <!-- 注册码服务接口 -->
 	    <property name="registrationCodeService" ref="registrationService" />
+	    <!-- 试卷发布数据接口 -->
+	    <property name="paperReleaseDao" ref="paperReleaseDao" />
 	</bean>
 </beans>

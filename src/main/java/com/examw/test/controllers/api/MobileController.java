@@ -115,4 +115,23 @@ public class MobileController {
 		}
 		return result;
 	}
+	/**
+	 * 同步试卷数据。
+	 * @param req
+	 * @return
+	 */
+	@RequestMapping(value = {"/sync/papers"}, method = {RequestMethod.POST})
+	@ResponseBody
+	public Json syncPapers(@RequestBody AppClientSync req){
+		if(logger.isDebugEnabled()) logger.debug("同步试卷数据...");
+		Json result = new Json();
+		try {
+			result.setData(this.dataSyncService.syncPapers(req));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+		}
+		return result;
+	}
 }

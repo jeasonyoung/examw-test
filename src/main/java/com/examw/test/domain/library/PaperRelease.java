@@ -31,16 +31,19 @@ public class PaperRelease implements Serializable {
 	 * 试卷发布标题。
 	 * @param paper
 	 * 所属试卷。
+	 * @param content
+	 * 试卷内容。
 	 * @param createTime
 	 * 发布时间。
 	 * @param  total
 	 * 试卷试题数。
 	 */
-	public PaperRelease(String id,String title,Paper paper, Date createTime,Integer total){
+	public PaperRelease(String id,String title,Paper paper,String content, Date createTime,Integer total){
 		this();
 		this.setId(id);
 		this.setTitle(title);
 		this.setPaper(paper);
+		this.setContent(content);
 		this.setCreateTime(createTime);
 		this.setTotal(total);
 	}
