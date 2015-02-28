@@ -32,7 +32,7 @@ public class PaperReleaseDaoImpl extends BaseDaoImpl<PaperRelease> implements IP
 	public List<PaperRelease> loadReleases(Integer[] paperType,String[] subjectsId, String[] areasId,Date createTime,Integer page,Integer rows){
 		if(logger.isDebugEnabled()) logger.debug(String.format("按试卷类型［%1$s］科目［%2$s］地区［%3$s］加载已发布的试卷集合［page=%4$d,rows=%5$d］...", paperType, subjectsId,areasId,page,rows));
 		StringBuilder hqlBuilder = new StringBuilder();
-		hqlBuilder.append("select new PaperRelease(p.id,p.title,p.paper,p.createTime,p.total) from PaperRelease p where (1=1) ");
+		hqlBuilder.append("select new PaperRelease(p.id,p.title,p.paper,p.content, p.createTime,p.total) from PaperRelease p where (1=1) ");
 		Map<String, Object> parameters = new HashMap<>();
 		if(paperType != null && paperType.length > 0){
 			hqlBuilder.append(" and (p.paper.type in (:paperType)) ");

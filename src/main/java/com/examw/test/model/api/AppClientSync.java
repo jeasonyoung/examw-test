@@ -11,7 +11,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 @JsonSerialize(include = Inclusion.NON_NULL)
 public class AppClientSync extends AppClient {
 	private static final long serialVersionUID = 1L;
-	private String code;
+	private String code,startTime;
 	/**
 	 * 获取注册码。
 	 * @return 注册码。
@@ -26,5 +26,20 @@ public class AppClientSync extends AppClient {
 	 */
 	public void setCode(String code) {
 		this.code = code;
+	}
+	/**
+	 * 获取同步起始时间。
+	 * @return 同步起始时间。
+	 */
+	public String getStartTime() {
+		return startTime;
+	}
+	/**
+	 * 设置同步起始时间。
+	 * @param startTime 
+	 *	  同步起始时间。
+	 */
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
 	}
 }
