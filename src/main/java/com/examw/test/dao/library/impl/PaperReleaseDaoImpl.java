@@ -46,9 +46,8 @@ public class PaperReleaseDaoImpl extends BaseDaoImpl<PaperRelease> implements IP
 			hqlBuilder.append(" and  (p.paper.area.id in (:areaId)) ");
 			parameters.put("areaId", areasId);
 		}
-		if(createTime !=null)	//增加时间的条件查询
-		{
-			hqlBuilder.append(" and  (p.createTime >= :createTime) ");
+		if(createTime !=null){	//增加时间的条件查询
+			hqlBuilder.append(" and  (p.createTime > :createTime) ");
 			parameters.put("createTime", createTime);
 		}
 		hqlBuilder.append(" order by p.createTime desc");
