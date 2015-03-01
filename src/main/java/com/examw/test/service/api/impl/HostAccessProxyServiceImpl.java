@@ -120,7 +120,8 @@ public class HostAccessProxyServiceImpl implements IHostAccessProxyService {
 						  .append("PassWord=").append(registerUser.getPassword()).append("&")
 						  .append("repsw=").append(registerUser.getPassword()).append("&")
 						  .append("e_mail=").append(registerUser.getEmail()).append("&")
-						  .append("r_name=").append(registerUser.getUsername()).append("&")
+						  //修改了数据
+						  .append("r_name=").append(toUnicodeString(registerUser.getUsername())).append("&")
 						  .append("Mobile=").append(registerUser.getPhone()).append("&")
 						  .append("DoMain=").append(registerUser.getChannel()).append("&")
 						  .append("SubSource=").append(this.source).append("&")
@@ -208,4 +209,18 @@ public class HostAccessProxyServiceImpl implements IHostAccessProxyService {
 		}
 		return null;
 	}
+	//注册名字有点问题,必须要转一下码才行
+	private String toUnicodeString(String s) {
+		   StringBuffer sb = new StringBuffer();
+		   for (int i = 0; i < s.length(); i++) {
+		     char c = s.charAt(i);
+		     if (c >= 0 && c <= 255) {
+		       sb.append(c);
+		     }
+		     else {
+		      sb.append("\\u"+Integer.toHexString(c));
+		     }
+		   }
+		   return sb.toString();
+		 }
 }
