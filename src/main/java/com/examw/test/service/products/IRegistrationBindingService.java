@@ -22,7 +22,7 @@ public interface IRegistrationBindingService extends IBaseDataService<Registrati
 	 * 产品用户。
 	 * @throws Exception
 	 */
-	boolean addBinding(String registerCode,int softwareTypeCode,String machine,String userId) throws Exception;
+	boolean addBinding(String registerCode,String softwareTypeCode,String machine,String userId) throws Exception;
 	
 	/**
 	 * 添加注册码绑定
