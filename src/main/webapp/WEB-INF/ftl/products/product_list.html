@@ -13,10 +13,10 @@
 			<thead>
 				<tr>
 					<th data-options="field:'id',checkbox:true"></th>
-					<th width="298px" data-options="field:'name',align:'left',sortable:true">产品名称</th>
+					<th width="298px" data-options="field:'name',align:'left',sortable:true,formatter:function(value,row,index){ return '<span title=\''+value+'\'>'+value+'</span>';}">产品名称</th>
 					<th width="128px" data-options="field:'examName',align:'left',sortable:true">所属考试</th>
 					<th width="268px" data-options="field:'subjectName',align:'left' ">所属科目</th>
-					<th width="100px" data-options="field:'areaName',align:'center',sortable:true">所属地区</th>
+					<th width="100px" data-options="field:'areaName',align:'center',sortable:true,formatter:function(value,row,index){ return '<span title=\''+value+'\'>'+value+'</span>';}">所属地区</th>
 					<th width="80px" data-options="field:'price',align:'right',sortable:true">定价</th>
 					<th width="80px"  data-options="field:'discount',align:'right',sortable:true">优惠价</th>
 					<th width="70px"  data-options="field:'analysisTypeName',align:'center',sortable:true">解题思路</th>

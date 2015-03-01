@@ -324,6 +324,11 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		this.itemDao.saveOrUpdate(data);
 		return data;
 	}
+	/*
+	 * 试题纠错完成,修改关联试卷的状态,[重新发布]
+	 * [Add by FW 2014.10.05 纠错时调用]
+	 * @see com.examw.test.service.library.IItemService#recorveryItemError(com.examw.test.model.library.BaseItemInfo)
+	 */
 	@Override
 	public void recorveryItemError(BaseItemInfo<?> info) {
 		Item item = this.updateItem(info, true);

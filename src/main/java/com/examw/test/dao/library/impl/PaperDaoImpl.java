@@ -79,7 +79,8 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 		if(paperTypes != null && paperTypes.length > 0){
 			hql += " and (p.type in (:type)) ";
 			parameters.put("type", paperTypes);
-		}else if(info.getType() != null){
+		}
+		if(info.getType() != null){
 			hql += " and (p.type = :type) ";
 			parameters.put("type", info.getType());
 		}

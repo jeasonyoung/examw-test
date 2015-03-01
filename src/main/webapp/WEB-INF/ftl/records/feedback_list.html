@@ -8,7 +8,7 @@
 		<thead>
 			<tr>
 				<th data-options="field:'id',checkbox:true"></th>
-				<th data-options="field:'content',width:100,align:'left'">反馈内容</th>
+				<th data-options="field:'content',width:100,align:'left',formatter:function(value,row,index){ return '<span title=\''+value+'\'>'+value+'</span>';}">反馈内容</th>
 				<th data-options="field:'terminalName',width:30,align:'left'">来自终端</th>
 				<th data-options="field:'createTime',width:30,align:'center',sortable:true">创建时间</th>
 			</tr>

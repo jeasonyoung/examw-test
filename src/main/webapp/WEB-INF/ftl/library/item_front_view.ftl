@@ -1,8 +1,10 @@
+<#-- 试题显示函数 -->
 <#assign answerflag=["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]/>
 <#assign xuhao = 0/>	<#-- 计算序号 -->
 <#assign total = 0/>	<#-- 总数 -->
+<#-- 选项ABCD的显示 -->
 <#macro option_flag index>${answerflag[index]}</#macro>
-
+<#-- 试题显示 -->
 <#macro show_item father item index>
 	<#if item.type == 1>	<#--单选-->
 		<@item_choose parent=father i=item input="radio" index=index/>
@@ -19,6 +21,7 @@
 	<#else>
 	</#if>
 </#macro>
+<#-- 选择题显示 -->
 <#macro item_choose parent i input index>
 	<div name="item_whole" class="box fl" item_type="${i.type}" item_id="${i.id}" >
        <div class="timu fl" ><a name="1" id="1"></a>
@@ -51,6 +54,7 @@
          <@item_analysis i index/>
     </div>
 </#macro>
+<#-- 判断题显示 -->
 <#macro item_judge parent i index>
 	<div class="box fl" item_type="${i.type}" item_id="${i.id}" item_status="${i.answerStatus}">
 		<#if MODEL != "multi" && i.parentContent??>
@@ -180,7 +184,7 @@
      </#if>
      </em>
 </#macro>
-
+<#-- 试题解析 -->
 <#macro item_analysis i index>
 	<div class="jiexi-box fl" name="jiexi" item_id="${(i.id)}" >
               <div class="cankaobox fl">

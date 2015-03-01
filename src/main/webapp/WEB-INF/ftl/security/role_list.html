@@ -17,7 +17,7 @@ $(function(){
 				handler:function(){
 					$.messager.progress();
 					$("#${module}_edit_form").form("submit",{
-						url:"<@s.url '/admin/security/role/update'/>",
+						url:"<@s.url '/security/role/update'/>",
 						onSubmit: function(){
 							var isValid = $(this).form("validate");
 							if (!isValid)$.messager.progress("close");

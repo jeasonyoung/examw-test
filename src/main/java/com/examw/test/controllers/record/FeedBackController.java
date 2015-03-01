@@ -44,7 +44,7 @@ public class FeedBackController {
 		if(logger.isDebugEnabled()) logger.debug("加载列表页面...");
 		model.addAttribute("PER_UPDATE", ModuleConstant.PAPER_FEEDBACK + ":" + Right.UPDATE);
 		model.addAttribute("PER_DELETE", ModuleConstant.PAPER_FEEDBACK + ":" + Right.DELETE);
-		return "records/FeedBack_list";
+		return "records/feedBack_list";
 	}
 	/**
 	 * 加载列表页面数据。
@@ -67,7 +67,7 @@ public class FeedBackController {
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
 	public String edit(Model model){
 		if(logger.isDebugEnabled()) logger.debug("加载编辑页面...");
-		return "records/FeedBack_edit";
+		return "records/feedBack_edit";
 	}
 	/**
 	 * 更新数据。

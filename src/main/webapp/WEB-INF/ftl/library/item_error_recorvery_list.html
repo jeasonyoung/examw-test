@@ -1,4 +1,4 @@
-<#--渠道列表-->
+<#--试题纠错列表-->
 <#include "comm.ftl"/>
 <#assign module="item_error_recorvery"/>
 <#assign dg="${module}_list_dg"/>
@@ -44,7 +44,8 @@ $(function(){
 			title:"错误描述",
 			field:"content",
 			width:30,
-			align:"left"
+			align:"left",
+			formatter:function(value,row,index){ return '<span title=\''+value+'\'>'+value+'</span>';}
 		},{
 			title:"状态",
 			field:"statusName",
