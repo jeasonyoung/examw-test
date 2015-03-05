@@ -162,7 +162,7 @@
 			<one-to-many class="Item"/>
 		</set>
 		<!-- 大纲要点集合 -->
-		<set name="syllabuses" inverse="false" cascade="save-update" table="tbl_Examw_Test_Library_ItemSyllabuses">
+		<set name="syllabuses" inverse="false" cascade="none" table="tbl_Examw_Test_Library_ItemSyllabuses">
 			<key column="item_id" />
 			<many-to-many class="com.examw.test.domain.syllabus.Syllabus" column="syllabus_id" />
 		</set>

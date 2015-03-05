@@ -89,6 +89,32 @@ $(function(){
 			onClose:function(){ $(this).dialog("destroy");}
 		});
 	};
+	//syllabus_item 试题关联
+	${dg}_syllabus_items = function(id,title){
+		title = "要点试题关联［" + title +"］";
+		var d = $("<div/>").dialog({
+			title:title,width:900, height:600,modal:true,
+			href:"<@s.url '/syllabus/syllabus/'/>"+id + "/points_items",
+			buttons:[{
+				text:"关闭",iconCls:"icon-cancel",
+				handler:function(){ d.dialog("close"); }
+			}],
+			onClose:function(){ $(this).dialog("destroy");}
+		});
+	};
+	//syllabus points
+	${dg}_syllabus_points = function(id,title){
+		title = "考试大纲要点［" + title +"］";
+		var d = $("<div/>").dialog({
+			title:title,width:800, height:600,modal:true,
+			href:"<@s.url '/syllabus/syllabus/'/>"+id + "/points_list",
+			buttons:[{
+				text:"关闭",iconCls:"icon-cancel",
+				handler:function(){ d.dialog("close"); }
+			}],
+			onClose:function(){ $(this).dialog("destroy");}
+		});
+	};
 	//search
 	${dg}_search = function(){
 		var exam_id = "",subject_id = "";
@@ -102,7 +128,7 @@ $(function(){
 				exam_id =  node["id"];
 			} 
 		}
-		$("#${dg}").datagrid("load",{ "examId":exam_id, "subId":subject_id, title:$("#${dg}_toobar input[name='title']").val() });
+		$("#${dg}").datagrid("load",{ "examId":exam_id, "subjectId":subject_id, title:$("#${dg}_toobar input[name='title']").val() });
 	};
 	<@shiro.hasPermission name="${PER_DELETE}">
 	//delete
@@ -154,7 +180,7 @@ $(function(){
 					<th data-options="field:'statusName',width:10,align:'left',sortable:true">状态</th>
 					<th data-options="field:'year',width:10,align:'left'">年份</th>
 					<th data-options="field:'areaName',width:60,align:'left'">所属地区</th>
-					<th data-options="field:'opt',width:20,align:'center',formatter:function(value,row,index){ return '<a href=\'#\' onclick=${dg}_syllabus_points(\''+row['id'] +'\',\'' +row['title']+ '\');>［要点管理］</a>'; }">操作</th>
+					<th data-options="field:'opt',width:45,align:'center',formatter:function(value,row,index){ return '<a href=\'#\' onclick=${dg}_syllabus_points(\''+row['id'] +'\',\'' +row['title']+ '\');>［要点管理］</a><a href=\'#\' onclick=${dg}_syllabus_items(\''+row['id'] +'\',\'' +row['title']+ '\');>［关联试题］</a>'; }">操作</th>
 				</tr>
 			</thead>
 		</table>

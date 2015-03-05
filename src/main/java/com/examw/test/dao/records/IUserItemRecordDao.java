@@ -47,4 +47,12 @@ public interface IUserItemRecordDao extends IBaseDao<UserItemRecord> {
 	 * @param itemRecords
 	 */
 	void batchSaveItemRecord(UserItemRecord[] itemRecords);
+	/**
+	 * 查询某大纲条目下用户的题目记录
+	 * @param userId		用户ID
+	 * @param syllabusId	大纲ID
+	 * @param status		状态[已做(包含做对做错),做错]
+	 * @return
+	 */
+	Long totalUserSyllabusItemRecord(String userId,String syllabusId,Integer...status);
 }

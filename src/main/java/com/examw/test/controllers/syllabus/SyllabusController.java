@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -24,6 +25,7 @@ import com.examw.model.Json;
 import com.examw.model.TreeNode;
 import com.examw.test.domain.security.Right;
 import com.examw.test.domain.syllabus.Syllabus;
+import com.examw.test.model.library.ItemInfo;
 import com.examw.test.model.syllabus.SyllabusInfo;
 import com.examw.test.service.syllabus.ISyllabusService;
 import com.examw.test.service.syllabus.SyllabusStatus;
@@ -92,6 +94,23 @@ public class SyllabusController {
 		return "syllabus/syllabus_points_list";
 	}
 	/**
+	 * 加载考试大纲要点列表页面。
+	 * @param syllabusId
+	 * @param model
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.SYLLABUSS_SYLLABUS+ ":" + Right.VIEW})
+	@RequestMapping(value = {"/{syllabusId}/points_items"}, method = RequestMethod.GET)
+	public String pointsItemsPage(@PathVariable String syllabusId,Model model){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试大纲要点［syllabusId = %s］列表页面...",syllabusId));
+		model.addAttribute("PER_UPDATE",ModuleConstant.SYLLABUSS_SYLLABUS + ":" + Right.UPDATE);
+		model.addAttribute("PER_DELETE",ModuleConstant.SYLLABUSS_SYLLABUS + ":" + Right.DELETE);
+		
+		model.addAttribute("current_syllabus_id", syllabusId);
+		
+		return "syllabus/syllabus_link_item";
+	}
+	/**
 	 * 加载考试大纲要点编辑页面。
 	 * @param syllabusId
 	 * @param model
@@ -129,6 +148,41 @@ public class SyllabusController {
 	public DataGrid<SyllabusInfo> datagrid(SyllabusInfo info){
 		if(logger.isDebugEnabled()) logger.debug("加载列表数据...");
 		return this.syllabusService.datagrid(info);
+	}
+	/**
+	 * 查询与试题的关联。
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.SYLLABUSS_SYLLABUS + ":" + Right.VIEW})
+	@RequestMapping(value="/{syllabusId}/items", method = RequestMethod.POST)
+	@ResponseBody
+	public DataGrid<ItemInfo> items(@PathVariable String syllabusId){
+		if(logger.isDebugEnabled()) logger.debug("加载列表数据...");
+		if(StringUtils.isEmpty(syllabusId)) return null;
+		DataGrid<ItemInfo> result = new DataGrid<ItemInfo>();
+		List<ItemInfo> list = this.syllabusService.loadSyllabusItems(syllabusId);
+		result.setRows(list);
+		result.setTotal((long) list.size());
+		return result;
+	}
+	/**
+	 * 
+	 * @param syllabusId
+	 * @param model
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.SYLLABUSS_SYLLABUS+ ":" + Right.VIEW})
+	@RequestMapping(value = {"/{syllabusId}/points_items_search"}, method = RequestMethod.GET)
+	public String pointsItemsSearchPage(@PathVariable String syllabusId,Model model){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载大纲关键字搜索［syllabusId = %s］列表页面...",syllabusId));
+		model.addAttribute("current_syllabus_id", syllabusId);
+		Syllabus data = this.syllabusService.loadSyllabus(syllabusId);
+		if(data!=null)
+		{
+			model.addAttribute("subject_id", data.getSubject().getId());
+		}else
+			throw new RuntimeException("该大纲不存在");
+		return "syllabus/points_items_search";
 	}
 	/**
 	 * 加载考试大纲树数据。
@@ -249,5 +303,48 @@ public class SyllabusController {
 	public List<SyllabusInfo> loadAllSyllabuses(@PathVariable String subjectId){
 		if(logger.isDebugEnabled()) logger.debug(String.format(" 加载科目［subjectId = %s］下的考试大纲集合...", subjectId));
 		return this.syllabusService.loadAllSyllabuses(subjectId);
+	}
+	
+	/**
+	 * 更新题目关联
+	 * @param info
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.SYLLABUSS_SYLLABUS+ ":" + Right.VIEW})
+	@RequestMapping(value="/updateItemLink", method = RequestMethod.POST)
+	@ResponseBody
+	public Json updateItemLink(String syllabusId,String itemId){
+		if(logger.isDebugEnabled()) logger.debug("更新数据...");
+		Json result = new Json();
+		try {
+			this.syllabusService.updateSyllabusItems(syllabusId, itemId.split("\\|"),false); 
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("更新大纲数据发生异常", e);
+		}
+		return result;
+	}
+	/**
+	 * 更新题目关联
+	 * @param info
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.SYLLABUSS_SYLLABUS+ ":" + Right.VIEW})
+	@RequestMapping(value="/deleteItemLink", method = RequestMethod.POST)
+	@ResponseBody
+	public Json deleteItemLink(String syllabusId,String itemId){
+		if(logger.isDebugEnabled()) logger.debug("删除关联数据...");
+		Json result = new Json();
+		try {
+			this.syllabusService.updateSyllabusItems(syllabusId, itemId.split("\\|"),true); 
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("删除关联数据发生异常", e);
+		}
+		return result;
 	}
 }
