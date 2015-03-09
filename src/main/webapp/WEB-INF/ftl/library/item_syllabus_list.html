@@ -170,7 +170,15 @@ $(function(){
 });
 //-->
 </script>
-<table id="${dg}" class="easyui-datagrid" data-options="url:'<@s.url '/library/item/syllabus/${ITEMID}/datagrid'/>',fit:true,fitColumns:true,rownumbers:true,border:true,striped:true,
+<div class="easyui-layout" data-options="fit:true">
+	<div data-options="region:'west',
+					title:'试题详情',
+					split:true,
+					href:'<@s.url '/library/item/preview/${ITEMID}'/>'
+					"  style="padding:5px;width:295px;">
+	</div>
+	<div data-options="region:'center',title:'关联试题列表'">
+		<table id="${dg}" class="easyui-datagrid" data-options="url:'<@s.url '/library/item/syllabus/${ITEMID}/datagrid'/>',fit:true,fitColumns:true,rownumbers:true,border:true,striped:true,
 		pagination:false,pagePosition:'bottom',pageSize:20,pageList:[20,30,40],idField:'id',sortName:'code',sortOrder:'asc',toolbar:'#${dg}_toobar',
 		onLoadError:function(e){<@error_dialog 'e'/> }">
 		<thead>
@@ -179,17 +187,19 @@ $(function(){
 				<th data-options="field:'fullTitle',width:120,align:'left',sortable:true">要点名称</th>
 			</tr>
 		</thead>
-</table>
-<div id="${dg}_toobar">
-	<@shiro.hasPermission name="${PER_UPDATE}">
-	<a href="#" class="easyui-menubutton" data-options="iconCls:'icon-add',menu:'#${dg}_toobar_menu_add',plain:true" style="float:left;">添加关联</a>
-	<div id="${dg}_toobar_menu_add" style="width:168px;">
-		<div onclick="${dg}_add(this)" value="fromSyllabus">从考试大纲中选取添加</div>
-		<div onclick="${dg}_add(this)" value="fromKnowledge">搜索知识点内容添加</div>
+		</table>
+		<div id="${dg}_toobar">
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			<a href="#" class="easyui-menubutton" data-options="iconCls:'icon-add',menu:'#${dg}_toobar_menu_add',plain:true" style="float:left;">添加关联</a>
+			<div id="${dg}_toobar_menu_add" style="width:168px;">
+			<div onclick="${dg}_add(this)" value="fromSyllabus">从考试大纲中选取添加</div>
+			<div onclick="${dg}_add(this)" value="fromKnowledge">搜索知识点内容添加</div>
+			</div>
+			</@shiro.hasPermission>
+			<span>|</span>
+			<@shiro.hasPermission name="${PER_DELETE}">
+			<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除关联</a>
+			</@shiro.hasPermission>
+		</div>
 	</div>
-	</@shiro.hasPermission>
-	<span>|</span>
-	<@shiro.hasPermission name="${PER_DELETE}">
-	<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除关联</a>
-	</@shiro.hasPermission>
 </div>

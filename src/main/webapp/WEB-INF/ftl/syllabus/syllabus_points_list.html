@@ -29,7 +29,7 @@ $(function(){
 			if(node){ pid = node["id"]; }
 		}
 		var d = $("<div/>").dialog({
-			title:title,width:600, height:160,modal:true,
+			title:title,width:600, height:460,modal:true,
 			href:"<@s.url '/syllabus/syllabus/'/>"+pid + "/points_edit",
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
@@ -103,15 +103,46 @@ $(function(){
 			if(id){
 				var node1 = $("#${module}_tree").tree("find",id);
 				$("#${module}_tree").tree("scrollTo",node1.target);
+				$('#${module}_loading').hide();
 				return;
 			}
 		}});
 	};
+	//导入已经加了的知识点的内容
+	${module}_importKnowledgeContent = function()
+	{
+		var node = $("#${module}_tree").tree("getSelected");
+		if(!node) return;
+		var p = $('#${module}_tree').tree('getParent',node.target); 
+ 		if(p != null) 
+ 		{
+ 			$.messager.alert("提示","请选择最顶级节点");
+ 			return;
+ 		}
+		//获取顶点的大纲ID
+		$.messager.progress();
+		$.ajax({
+			url:"<@s.url '/syllabus/syllabus/importContent/'/>"+node.id,
+			type:"POST",
+			success:function(data)
+			{
+				$.messager.progress("close");
+				if(data.success){
+					${module}_reload(node.id);
+				}else{
+					$.messager.show({ title:"提示",msg:"导入成功" });
+				}
+			}
+		});
+	}
 });
 //-->
 </script>
+<div id="${module}_loading" class="panel-loading">Loading...</div>
 <ul id="${module}_tree" class="easyui-tree" data-options="
 			url:'<@s.url '/syllabus/syllabus/${current_syllabus_id}/tree'/>', 
+			onBeforeLoad:function(){$('#${module}_loading').show();},
+		    onLoadSuccess:function(){$('#${module}_loading').hide();},
 			onContextMenu:function(e,node){
 		 		e.preventDefault();
 		 		$('#${module}_tree').tree('select',node.target);
@@ -130,4 +161,6 @@ $(function(){
 	<div onclick="${module}_remove()" data-options="iconCls:'icon-remove'">移除大纲要点</div>
 	</@shiro.hasPermission>
 	<div onclick="${module}_reload()" data-options="iconCls:'icon-reload'">刷新</div>
+	<!-- 导入已经加入教材的内容 -->
+	<div onclick="${module}_importKnowledgeContent()" data-options="iconCls:'icon-reload'">导入已加内容</div>
 </div>

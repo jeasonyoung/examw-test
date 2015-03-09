@@ -64,6 +64,9 @@ public class ExamTemplateProcess extends BaseTemplateProcess {
 			
 			parameters.put("abbr", exam.getAbbr());//考试简称
 			parameters.put("examName", exam.getName());//考试名称
+			parameters.put("title", exam.getTitle());//标题
+			parameters.put("keywords", exam.getKeywords());//关键字
+			parameters.put("descritpion", exam.getDescription());//描述
 			List<ProductListViewData> products = null;
 			if(exam.getProducts() != null && exam.getProducts().size() > 0){
 				products = new ArrayList<>();

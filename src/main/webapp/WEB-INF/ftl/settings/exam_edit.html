@@ -1,7 +1,8 @@
 <#--考试设置编辑页面-->
 <#include "comm.ftl"/>
 <#assign module="settings_exam_edit"/>
-<form id="${module}_form" method="POST" style="padding:10px;">
+<form id="${module}_form" method="POST"  class="easyui-tabs">
+<div title="基础信息">
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">所属类别：</label>
 		<input name="categoryId" class="easyui-combotree" data-options="url:'<@s.url '/settings/category/tree'/>',required:true,
@@ -40,4 +41,21 @@
 		</label>
 		</#list>
 	</div>
+</div>
+<div title="页面显示信息">
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">页面标题：</label>
+		<input type="text" name="title" class="easyui-textbox" style="width:464px;" />
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">关键字：</label>
+		<input type="text" name="keywords" class="easyui-textbox" style="width:464px;" />
+	</div>
+	<div style="float:left; margin-top:12px; width:100%;">
+		<label style="width:75px;">描述：</label>
+		<div style="float:left;margin-left:12px;">
+			<textarea name="description" class="easyui-ueditor" data-options="width:460,height:100"></textarea>
+		</div>
+    </div>
+</div>
 </form>

@@ -38,7 +38,7 @@ $(function(){
 			}
 		}
 		var d = $("<div/>").dialog({
-			title:title,width:498,height:300,modal:true,
+			title:title,width:498,height:360,modal:true,
 			href:"<@s.url '/settings/subject/edit'/>?categoryId=" + catalog_id + "&examId=" + exam_id+"&subjectId="+subject_id,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
@@ -164,6 +164,7 @@ $(function(){
 						<th data-options="field:'fullName',width:50,align:'left'">科目全称</th>
 						<th data-options="field:'name',width:50,align:'left',sortable:true">科目名称</th>
 						<th data-options="field:'areaName',width:80,align:'left'">所属地区</th>
+						<th data-options="field:'keywords',width:60,align:'left'">关键字</th>
 					</tr>
 				</thead>
 		</table>

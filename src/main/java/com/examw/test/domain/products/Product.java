@@ -25,6 +25,8 @@ public class Product implements Serializable,Comparable<Product> {
 	private Set<Software> softwares;
 	private Set<Registration> registrations;
 	private Date createTime,lastTime;
+	//2015.03.09添加属性
+	private String title,keywords,description;
 	/**
 	 * 获取产品ID。
 	 * @return 产品ID。
@@ -326,5 +328,53 @@ public class Product implements Serializable,Comparable<Product> {
 			}
 		}
 		return index;
+	}
+	/**
+	 * 获取 标题
+	 * @return title
+	 * 标题
+	 */
+	public String getTitle() {
+		return title;
+	}
+	/**
+	 * 设置 标题
+	 * @param title
+	 * 标题
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	/**
+	 * 获取 关键字
+	 * @return keywords
+	 * 关键字
+	 */
+	public String getKeywords() {
+		return keywords;
+	}
+	/**
+	 * 设置 关键字
+	 * @param keywords
+	 * 关键字
+	 */
+	public void setKeywords(String keywords) {
+		this.keywords = keywords;
+	}
+	/**
+	 * 获取 描述
+	 * @return description
+	 * 描述
+	 */
+	public String getDescription() {
+		return description;
+	}
+	/**
+	 * 设置 描述
+	 * @param description
+	 * 描述
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

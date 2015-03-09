@@ -15,13 +15,14 @@ $(function(){
 			return;
 		}
 		var syllabusId = node.id;
+		var row = {"description":node.attributes.description};
 		//查询到顶级节点
 		while($("#${module}_tree").tree("getParent",node.target)!=null)
 		{
 			node =  $("#${module}_tree").tree("getParent",node.target); 	
 		}
 		var d = $("<div/>").dialog({
-			title:"搜索试题",width:700, height:400,modal:true,
+			title:"搜索试题",width:700, height:600,modal:true,
 			href:"<@s.url '/syllabus/syllabus/'/>"+node.id+"/points_items_search",
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">    
@@ -55,7 +56,8 @@ $(function(){
 				text:"关闭",iconCls:"icon-cancel",
 				handler:function(){ d.dialog("close"); }
 			}],
-			onClose:function(){ $(this).dialog("destroy");}
+			onClose:function(){ $(this).dialog("destroy");},
+			onLoad:function(){ if(row)$("#${module}_form").form("load",row); }
 	  });
 	}
 	//删除关联

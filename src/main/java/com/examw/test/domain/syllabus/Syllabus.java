@@ -194,4 +194,23 @@ public class Syllabus implements Serializable {
 		this.items = items;
 	}
 	
+	//2015.03.06 添加一个内容字段
+	private String description;		//描述
+	/**
+	 * 获取 描述
+	 * @return description
+	 * 描述
+	 */
+	public String getDescription() {
+		return description;
+	}
+	/**
+	 * 设置 描述
+	 * @param description
+	 * 描述
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
 }

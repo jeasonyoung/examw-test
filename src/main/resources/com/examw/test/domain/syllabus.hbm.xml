@@ -53,6 +53,8 @@
 			<key column="syllabus_id" />
 			<many-to-many class="com.examw.test.domain.library.Item" column="item_id" />
 		</set>
+		<!-- 2015.03.06	大纲描述 -->
+	    <property name="description" type="text" />
 	</class>
 	<!-- 教材 -->
 	<class name="Book" table="tbl_Examw_Test_Syllabus_Books">

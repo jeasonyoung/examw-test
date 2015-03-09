@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -233,6 +232,7 @@ public class SyllabusController {
 		attributes.put("id", root.getId());
 		attributes.put("title", root.getTitle());
 		attributes.put("orderNo", root.getOrderNo());
+		attributes.put("description", root.getDescription());
 		node.setAttributes(attributes);
 		if(root.getChildren() != null && root.getChildren().size() > 0){
 			List<TreeNode> childrenNodes = new ArrayList<>();
@@ -246,6 +246,9 @@ public class SyllabusController {
 			if(childrenNodes.size() > 0){
 				node.setChildren(childrenNodes);
 			}
+		}else
+		{
+			node.setText(root.getTitle()+(StringUtils.isEmpty(root.getDescription())?"":"[已加]"));
 		}
 		return node;
 	}
@@ -344,6 +347,27 @@ public class SyllabusController {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
 			logger.error("删除关联数据发生异常", e);
+		}
+		return result;
+	}
+	/**
+	 * 导入知识点数据
+	 * @param syllabusId	大纲ID
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.SYLLABUSS_SYLLABUS+ ":" + Right.VIEW})
+	@RequestMapping(value="/importContent/{syllabusId}", method = RequestMethod.POST)
+	@ResponseBody
+	public Json importSyllabusContent(@PathVariable String syllabusId){
+		if(logger.isDebugEnabled()) logger.debug("导入知识点数据...");
+		Json result = new Json();
+		try {
+			this.syllabusService.importBookContentIntoSyllabusPoint(syllabusId);
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error("导入知识点数据发生异常", e);
 		}
 		return result;
 	}

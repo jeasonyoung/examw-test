@@ -3,8 +3,14 @@
 <#assign do_product_url = "http://tiku.examw.com/library/${product.id}"/><#--链接到考试前台产品界面-->
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head> 
-		<title>${product.text}产品页面</title>
+		<title><#if product.title??>${product.title}<#else>${product.text}产品页面</#if></title>
 		<#--头部资源-->
+		<#if product.keywords??>
+			<meta name="keywords" content="${product.keywords}" >
+		</#if>
+		<#if product.description??>
+			<meta name="description" content="${product.description}">
+		</#if>
 		<@header_resources/>
 	</head>
 

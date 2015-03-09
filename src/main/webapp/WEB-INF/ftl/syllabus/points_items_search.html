@@ -12,6 +12,11 @@ $(function(){
 })
 //-->
 </script>
+<form id="${module}_form" method="POST">
+<div style="float:left;margin-left:12px;">
+	<textarea name="description" class="easyui-ueditor" data-options="width:600,height:100"></textarea>
+</div>
+</form>
 <table id="${dg}" class="easyui-datagrid" data-options="url:'<@s.url '/library/item/datagrid'/>',fit:true,fitColumns:true,rownumbers:true,
 		border:true,striped:true,idField:'id',sortName:'createTime',toolbar:'#${dg}_toobar',queryParams: {
 			subjectId:'${subject_id}',
