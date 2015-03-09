@@ -36,11 +36,11 @@ public class PaperListTemplateProcess extends BaseTemplateProcess {
 		this.examDao = examDao;
 	}
 	/*
-	 * 模版处理。
-	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#addTemplateProcess()
+	 *  模版处理。
+	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#addTemplateProcess(java.util.Date)
 	 */
 	@Override
-	protected int addTemplateProcess() throws Exception {
+	protected int addTemplateProcess(Date startTime) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("试卷列表模版处理...");
 		List<Exam> exams = this.examDao.findExams(new ExamInfo(){
 			private static final long serialVersionUID = 1L;
@@ -60,6 +60,7 @@ public class PaperListTemplateProcess extends BaseTemplateProcess {
 			String prefix =  String.format("%s-list", exam.getAbbr()),
 					  path = String.format("/%s/list", exam.getAbbr());
 			Map<String, Object> parameters = new HashMap<>();
+			parameters.put("updateTime", startTime);
 			parameters.put("examName", exam.getName());
 			parameters.put("examAbbr", exam.getAbbr());
 			List<ViewListData> subjects = new ArrayList<>();

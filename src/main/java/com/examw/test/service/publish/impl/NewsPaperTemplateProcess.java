@@ -1,6 +1,7 @@
 package com.examw.test.service.publish.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,11 +54,11 @@ public class NewsPaperTemplateProcess extends BaseTemplateProcess {
 		this.maxPaperCount = maxPaperCount;
 	}
 	/*
-	 * 模版静态化处理。。
-	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#addTemplateProcess()
+	 * 模版静态化处理。
+	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#addTemplateProcess(java.util.Date)
 	 */
 	@Override
-	protected int addTemplateProcess() throws Exception {
+	protected int addTemplateProcess(Date startTime) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("执行最新试卷模版处理...");
 		PaperInfo where = new PaperInfo();
 		where.setSort("createTime");
@@ -67,6 +68,7 @@ public class NewsPaperTemplateProcess extends BaseTemplateProcess {
 		int total = 0;
 		String prefix = "news",path = "/news";
 		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("updateTime", startTime);
 		if(count == 0){
 			total += this.createStaticPages(prefix, path,parameters, null, where);
 		}else{

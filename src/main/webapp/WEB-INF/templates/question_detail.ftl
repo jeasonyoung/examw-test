@@ -3,6 +3,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title>${question.text}</title> 
+		<meta name="keywords" Content=""/>
+		<meta name="Description" Content=""/>
+		<meta name="UpdateTime" Content="${updateTime?string("yyyy-MM-dd HH:mm:ss")}"/>
 		<#--头部资源-->
 		<@header_resources/>
 	</head>

@@ -2,6 +2,7 @@ package com.examw.test.service.publish.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,11 +34,11 @@ public class ExamTemplateProcess extends BaseTemplateProcess {
 		this.examDao = examDao;
 	}
 	/*
-	 *  模版静态化处理。
-	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#addTemplateProcess()
+	 * 模版静态化处理。
+	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#addTemplateProcess(java.util.Date)
 	 */
 	@Override
-	protected int addTemplateProcess() throws Exception {
+	protected int addTemplateProcess(Date startTime) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("考试模版处理...");
 		List<Exam> exams = this.examDao.findExams(new ExamInfo(){
 			private static final long serialVersionUID = 1L;
@@ -51,6 +52,7 @@ public class ExamTemplateProcess extends BaseTemplateProcess {
 		if(exams == null || exams.size()  == 0) return 0;
 		
 		Map<String, Object>  parameters = new HashMap<>();
+		parameters.put("updateTime", startTime);
 		//常见问题
 		parameters.put("questions", this.loadQuestions());
 		

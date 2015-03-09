@@ -21,10 +21,10 @@ public class QuestionDetailTemplateProcess extends BaseTemplateProcess {
 	private static final Logger logger = Logger.getLogger(QuestionDetailTemplateProcess.class);
 	/*
 	 * 模版静态化处理。
-	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#addTemplateProcess()
+	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#addTemplateProcess(java.util.Date)
 	 */
 	@Override
-	protected int addTemplateProcess() throws Exception {
+	protected int addTemplateProcess(Date startTime) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("常见问题详细模版处理...");
 		List<Question> questions = this.questionDao.findQuestions(new QuestionInfo(){
 			private static final long serialVersionUID = 1L;
@@ -36,6 +36,7 @@ public class QuestionDetailTemplateProcess extends BaseTemplateProcess {
 		if(questions == null || questions.size() == 0) return 0; 
 		
 		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("updateTime", startTime);
 		//最新试卷
 		parameters.put("newsPapers", this.loadNewsPapers(null));
 		//最热试卷

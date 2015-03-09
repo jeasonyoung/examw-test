@@ -1,6 +1,7 @@
 package com.examw.test.service.publish.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,10 +50,10 @@ public class PaperDetailTemplateProcess extends BaseTemplateProcess {
 	}
 	/*
 	 * 模版处理。
-	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#addTemplateProcess()
+	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#addTemplateProcess(java.util.Date)
 	 */
 	@Override
-	protected int addTemplateProcess() throws Exception {
+	protected int addTemplateProcess(Date startTime) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("试卷详细模版处理...");
 		List<PaperRelease> paperReleases = this.paperReleaseDao.findPaperReleases(new PaperInfo(){
 			private static final long serialVersionUID = 1L;
@@ -64,6 +65,7 @@ public class PaperDetailTemplateProcess extends BaseTemplateProcess {
 		if(paperReleases == null || paperReleases.size() == 0) return 0;
 		
 		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("updateTime", startTime);
 		Paper paper = null;
 		Subject subject = null;
 		Exam exam = null;

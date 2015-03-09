@@ -1,6 +1,7 @@
 package com.examw.test.service.publish.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,17 +32,18 @@ public class IndexTemplateProcess extends BaseTemplateProcess {
 	}
 	/*
 	 * 模版处理。
-	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#addTemplateProcess()
+	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#addTemplateProcess(java.util.Date)
 	 */
 	@Override
-	protected int addTemplateProcess() throws Exception {
+	protected int addTemplateProcess(Date startTime) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("首页模版处理...");
-		this.updateStaticPage("index","/index.html", this.createStaticPageContent(this.createParameters()));
+		this.updateStaticPage("index","/index.html", this.createStaticPageContent(this.createParameters(startTime)));
 		return 1;
 	}
 	//构建参数集合。
-	private Map<String, Object> createParameters(){
+	private Map<String, Object> createParameters(Date startTime){
 		Map<String, Object> parametersMap = new HashMap<>();
+		parametersMap.put("updateTime", startTime);
 		//考试分类
 		List<Category> topCategories = this.categoryDao.loadTopCategories();
 		if(topCategories != null && topCategories.size() > 0){

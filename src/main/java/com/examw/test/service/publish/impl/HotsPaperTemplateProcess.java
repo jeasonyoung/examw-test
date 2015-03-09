@@ -1,6 +1,7 @@
 package com.examw.test.service.publish.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,15 +34,16 @@ public class HotsPaperTemplateProcess  extends NewsPaperTemplateProcess {
 	}
 	/*
 	 * 试卷模版处理。
-	 * @see com.examw.test.service.publish.impl.NewsPaperTemplateProcess#addTemplateProcess()
+	 * @see com.examw.test.service.publish.impl.NewsPaperTemplateProcess#addTemplateProcess(java.util.Date)
 	 */
 	@Override
-	protected int addTemplateProcess() throws Exception {
+	protected int addTemplateProcess(Date startTime) throws Exception {
 		if(logger.isDebugEnabled())logger.debug("最热试卷模版处理...");
 		long count =  this.userPaperRecordDao.totalHotsPapers(null);
 		int total = 0;
 		String prefix = "hots",path = "/hots";
 		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("updateTime", startTime);
 		if(count == 0){
 			total += this.createStaticPages(prefix, path,parameters, null);
 		}else{
