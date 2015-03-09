@@ -112,4 +112,20 @@ public class UserItemRecordDaoImpl extends BaseDaoImpl<UserItemRecord> implement
 			throw e;
 		}
 	}
+	/*
+	 * 查询某大纲条目下用户的题目记录数
+	 * @see com.examw.test.dao.records.IUserItemRecordDao#totalUserSyllabusItemRecord(java.lang.String, java.lang.String, java.lang.Integer[])
+	 */
+	@Override
+	public Long totalUserSyllabusItemRecord(String userId, String syllabusId, Integer... status) {
+		if(StringUtils.isEmpty(userId) || StringUtils.isEmpty(syllabusId))
+			return 0L;
+		String hql = "select count(distinct u.itemId) from UserItemRecord u where u.paperRecord.user.id = :userId and u.status in (:status) and u.itemId in (select i.id from Item i inner join i.syllabuses as s where s.id=:syllabusId)";
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("userId", userId);
+		parameters.put("syllabusId", syllabusId);
+		parameters.put("status", status);
+		Object  obj = this.uniqueResult(hql, parameters);
+		return obj == null ? null : (long)obj;
+	}
 }

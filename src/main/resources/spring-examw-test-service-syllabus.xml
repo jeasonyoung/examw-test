@@ -25,6 +25,8 @@
 		</property>
 		<!-- 题目服务接口 2014.12.28 -->
 		<property name="itemService" ref="itemService"/>
+		<!-- 题目数据接口 2015.03.05 -->
+		<property name="itemDao" ref="itemDao"/>
 	</bean>
 	<!-- 教材服务接口 -->
 	<bean id="bookService" class="com.examw.test.service.syllabus.impl.BookServiceImpl">
@@ -63,6 +65,14 @@
 	    <property name="bookChapterDao" ref="bookChapterDao" />
 	    <!-- 考试大纲数据接口 -->
 	    <property name="syllabusDao" ref="syllabusDao" />
+	</bean>
+	
+	<!-- ##########前台大纲服务######## -->
+	<bean id="frontSyllabusService" class="com.examw.test.service.syllabus.impl.FrontSyllabusServiceImpl">
+		<!-- 大纲数据接口 -->
+		<property name="syllabusDao" ref="syllabusDao"/>
+		<!-- 用户做题记录数据接口 -->
+		<property name="userItemRecordDao" ref="userItemRecordDao"/>
 	</bean>
 	<!-- 考试大纲 服务接口实现 end-->
 </beans>

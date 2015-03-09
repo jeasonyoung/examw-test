@@ -86,4 +86,12 @@ public interface IItemDao extends IBaseDao<Item> {
 	 * 试题总数。
 	 */
 	Integer totalItems(String[] subjectIds,String areaId);
+	
+	/**
+	 * 根据ID查询试题
+	 * @param itemId
+	 * @return
+	 * 2015.03.05
+	 */
+	List<Item> findItems(String[] itemId);
 }

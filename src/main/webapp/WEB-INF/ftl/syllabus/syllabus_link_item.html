@@ -1,0 +1,168 @@
+<#--大纲列表-->
+<#include "comm.ftl"/>
+<#assign module="syllabus_syllabus_items"/>
+<#assign dg="${module}_dg"/>
+<script type="text/javascript">
+<!--
+$(function(){
+	//添加关联
+	syllabus_syllabus_items_dg_add = function()
+	{
+		//获取左边选中的知识点id
+		var node = $("#${module}_tree").tree("getSelected");
+		if(!node) {
+			$.messager.alert('提示','请选择大纲知识点');
+			return;
+		}
+		var syllabusId = node.id;
+		//查询到顶级节点
+		while($("#${module}_tree").tree("getParent",node.target)!=null)
+		{
+			node =  $("#${module}_tree").tree("getParent",node.target); 	
+		}
+		var d = $("<div/>").dialog({
+			title:"搜索试题",width:700, height:400,modal:true,
+			href:"<@s.url '/syllabus/syllabus/'/>"+node.id+"/points_items_search",
+			buttons:[
+			<@shiro.hasPermission name="${PER_UPDATE}">    
+			{
+				text:"保存",iconCls:"icon-save",
+				handler:function(){
+					$.messager.progress();
+					//获取要添加的试题
+					var rows = $("#${module}_dg_items").datagrid("getChecked");
+					var ids = [];
+					for(var i = 0; i < rows.length; i++){ ids.push(rows[i].id); }
+					$.ajax({
+						url:"<@s.url '/syllabus/syllabus/updateItemLink'/>",
+						type:"POST", data:{ syllabusId:syllabusId,itemId:ids.join("|") }, dataType:"json",
+						error:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
+						success:function(data,textStatus){
+							$.messager.progress("close");
+							if(data.success){
+								$("#${dg}").datagrid("load"); $("#${dg}").datagrid("unselectAll");
+								d.dialog("close");
+							}else{
+								$.messager.show({ title:"提示", msg:data.msg });
+								d.dialog("close");
+							}
+						}
+					});
+				}
+			},
+			</@shiro.hasPermission>
+			{
+				text:"关闭",iconCls:"icon-cancel",
+				handler:function(){ d.dialog("close"); }
+			}],
+			onClose:function(){ $(this).dialog("destroy");}
+	  });
+	}
+	//删除关联
+	${dg}_delete = function()
+	{
+		//获取左边选中的知识点id
+		var node = $("#${module}_tree").tree("getSelected");
+		if(!node) {
+			$.messager.alert('提示','请选择大纲知识点');
+			return;
+		}
+		//获取右边选中的试题id
+		var rows = $("#${dg}").datagrid("getChecked");
+		if(rows && rows.length > 0){
+			$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
+				if(!r)return;
+				$.messager.progress();
+				var ids = [];
+				for(var i = 0; i < rows.length; i++){
+					ids.push(rows[i].id);
+				}
+				$.ajax({
+					url:"<@s.url '/syllabus/syllabus/deleteItemLink'/>",
+					type:"POST",dataType:"json",
+					data:{ syllabusId:node.id,itemId:ids.join("|")},
+					error:function(e){
+						$.messager.progress("close");
+						<@error_dialog "e"/>
+					},
+					success:function(data,textStatus){
+						$.messager.progress("close");
+						if(data.success){
+							$("#${dg}").datagrid("load");
+							$("#${dg}").datagrid("unselectAll");
+						}else{
+							$.messager.show({ title:"提示", msg:data.msg});
+						}
+					}
+				});
+			});
+		}else{
+			$.messager.alert("提示","未选中须删除的数据！");
+		}
+	}
+	//search
+	${dg}_search = function(){
+		var exam_id = "",subject_id = "";
+		var node = $("#${module}_exam_tree").tree("getSelected");
+		if(node){
+			if(node.attributes.type =="subject"){
+				subject_id = node["id"];
+				var parent = $("#${module}_exam_tree").tree("getParent",node.target);
+				if(parent) exam_id = parent["id"];
+			}else{
+				exam_id =  node["id"];
+			} 
+		}
+		$("#${dg}").datagrid("load",{ "examId":exam_id, "subjectId":subject_id, title:$("#${dg}_toobar input[name='title']").val() });
+	};
+});
+//-->
+</script>
+<div class="easyui-layout" data-options="fit:true">
+	<div data-options="region:'west',title:'所属科目',split:true,tools:[{iconCls:'icon-reload',handler:function(){$('#${module}_tree').tree('reload'); } }]"  style="padding:5px;width:295px;">
+		<ul id="${module}_tree" class="easyui-tree" data-options="
+			url:'<@s.url '/syllabus/syllabus/${current_syllabus_id}/tree'/>',
+			onBeforeSelect:function(node){ 
+		 		if(!$('#${module}_tree').tree('isLeaf',node.target))
+		 		{
+		 			$.messager.alert('提示','请选择叶子节点');
+		 			return false;
+		 		} 
+		 	},
+		 	onLoadSuccess:function(){
+		 		$('#${module}_loading').hide();
+		 	},
+		 	onSelect:function(node)
+		 	{
+		 		//加载已经关联的试题
+		 		$('#${dg}').datagrid({url:'<@s.url '/syllabus/syllabus/'/>'+node.id+'/items'});
+		 	}
+			"></ul>
+		<div id="${module}_loading">加载中,请稍后...</div>
+	</div>
+	<div data-options="region:'center',title:'关联试题列表'">
+		<table id="${dg}" class="easyui-datagrid" data-options="fit:true,fitColumns:true,rownumbers:true,border:true,striped:true,idField:'id',
+			pagination:true,pagePosition:'bottom',pageSize:20,pageList:[20,30,40],sortName:'orderNo',sortOrder:'asc',toolbar:'#${dg}_toobar',
+			onLoadError:function(e){ <@error_dialog 'e'/> } 
+			">
+			<thead>
+				<tr>
+					<th data-options="field:'id',checkbox:true"></th>
+					<th data-options="field:'content',width:60,align:'left',sortable:false,formatter:function(value,row,index){ value = value.replace(/<[^>]*>/g,'');  return  '<span title=\''+ value +'\'>' + value + '</span>'; }">试题</th>
+					<th data-options="field:'typeName',width:12,align:'center',sortable:true">题型</th>
+				</tr>
+			</thead>
+		</table>
+		<div id="${dg}_toobar">
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true"  onclick="${dg}_add()" style="float:left;">新增关联</a>
+			</@shiro.hasPermission>
+			<span>|</span>
+			<@shiro.hasPermission name="${PER_DELETE}">
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="${dg}_delete()">删除关联</a>
+			</@shiro.hasPermission>
+			<label>关键字：<input name="title" type="text" style="width:198px;"/></label>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" onclick="${dg}_search()" style="margin-left:10px;">查询</a>
+		</div>
+	</div>
+</div>

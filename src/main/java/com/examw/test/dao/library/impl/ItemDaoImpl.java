@@ -295,4 +295,21 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 		}
 		return null;
 	}
+	
+	/*
+	 * 根据IDs查询试题
+	 */
+	@Override
+	public List<Item> findItems(String[] itemId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("根据id［%1$s］查询试题...", Arrays.toString(itemId)));
+		if(itemId != null && itemId.length>0)
+		{
+			String hql = "from Item i where (i.parent is null) and i.id in (:itemId) ";
+			Map<String, Object> parameters = new HashMap<>();
+			parameters.put("itemId", itemId);
+			if(logger.isDebugEnabled()) logger.debug(hql);
+			return this.find(hql, parameters, 0, 0);
+		}
+		return null;
+	}
 }

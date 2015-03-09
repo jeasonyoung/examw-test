@@ -3,6 +3,7 @@ package com.examw.test.service.syllabus.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
+import com.examw.test.dao.library.IItemDao;
 import com.examw.test.dao.settings.IAreaDao;
 import com.examw.test.dao.settings.ISubjectDao;
 import com.examw.test.dao.syllabus.ISyllabusDao;
@@ -37,6 +39,16 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 	private ISubjectDao subjectDao;
 	private IAreaDao areaDao;
 	private Map<Integer, String> statusMap;
+	private IItemDao itemDao;
+	private IItemService itemService;
+	/**
+	 * 设置 题目服务
+	 * @param itemService
+	 * 
+	 */
+	public void setItemService(IItemService itemService) {
+		this.itemService = itemService;
+	}
 	/**
 	 * 设置大纲数据接口。
 	 * @param syllabusDao
@@ -71,6 +83,14 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 	public void setStatusMap(Map<Integer, String> statusMap) {
 		if(logger.isDebugEnabled()) logger.debug("注入设置状态值和名称集合...");
 		this.statusMap = statusMap;
+	}
+	/**
+	 * 设置 试题数据接口
+	 * @param itemDao
+	 * 
+	 */
+	public void setItemDao(IItemDao itemDao) {
+		this.itemDao = itemDao;
 	}
 	/*
 	 * 加载状态名称。
@@ -274,18 +294,8 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 		return this.syllabusDao.load(Syllabus.class, syllabusId);
 	}
 	
-	
-	private IItemService itemService;
-	
-	/**
-	 * 设置 题目服务
-	 * @param itemService
-	 * 
-	 */
-	public void setItemService(IItemService itemService) {
-		this.itemService = itemService;
-	}
 	/*
+	 * 加载考试大纲关联试题数据
 	 * 2014.12.28
 	 * @see com.examw.test.service.syllabus.ISyllabusService#loadSyllabusItems(java.lang.String)
 	 */
@@ -294,7 +304,7 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试大纲[syllabusId = %s]试题数据...", syllabusId));
 		if(StringUtils.isEmpty(syllabusId)) return null;
 		Syllabus data = this.syllabusDao.load(Syllabus.class, syllabusId);
-		if(data == null ) return null;
+		if(data == null ) throw new RuntimeException(String.format("大纲[%s]不存在", syllabusId));
 		Set<Item> items = data.getItems();
 		List<ItemInfo> result = new ArrayList<ItemInfo>();
 		if(items!=null && !items.isEmpty())
@@ -311,5 +321,52 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 			}
 		}
 		return result;
+	}
+	
+	public void updateSyllabusItems(String syllabusId,String[] itemId,boolean isDelete)
+	{
+		if(logger.isDebugEnabled()) logger.debug(String.format("更新考试大纲[syllabusId = %s]与试题关联...", syllabusId));
+		if(StringUtils.isEmpty(syllabusId)) return;
+		if(itemId ==null || itemId.length == 0) return;
+		Syllabus data = this.syllabusDao.load(Syllabus.class, syllabusId);
+		if(data == null ) throw new RuntimeException(String.format("大纲[%s]不存在", syllabusId));
+		Set<Item> items = data.getItems();
+		if(items == null) items = new HashSet<Item>();
+		if(isDelete)
+		{
+			if(logger.isDebugEnabled()) logger.debug("删除大纲与试题的关联...");
+//			//移除set中的
+			 Iterator<Item> it = items.iterator();  
+		        while(it.hasNext()){  
+		        	Item item = it.next();  
+		        	for(String id:itemId)
+		        	{
+		        		if(item.getId().equals(id))
+		        		{
+		        			it.remove();  
+		        			break;
+		        		}
+		        	}
+		        }  
+		    data.setItems(items);
+//			Set<Item> _items = new HashSet<Item>();
+//			for(Item it:items){
+//				if(!Arrays.toString(itemId).contains(it.getId())){
+//					_items.add(it);
+//				}
+//			}
+//			items.clear();
+//			
+//			if(_items.size()==0) data.setItems(null);
+//			else data.setItems(_items);
+//			if(logger.isDebugEnabled()) logger.debug("删除大纲与试题的关联..."+_items.size());
+			return;
+		}
+		List<Item> list = this.itemDao.findItems(itemId);
+		if(list!=null )
+		{
+			items.addAll(list);
+		}
+		data.setItems(items);	//更新关联
 	}
 }

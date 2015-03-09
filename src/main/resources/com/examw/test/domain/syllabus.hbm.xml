@@ -49,7 +49,7 @@
 			<many-to-many class="com.examw.test.domain.settings.Area"  column="area_id" />
 		</set>
 		<!-- 大纲下的试题 -->
-		<set name="items" inverse="true" cascade="none" table="tbl_Examw_Test_Library_ItemSyllabuses">
+		<set name="items" inverse="false" cascade="none" table="tbl_Examw_Test_Library_ItemSyllabuses">
 			<key column="syllabus_id" />
 			<many-to-many class="com.examw.test.domain.library.Item" column="item_id" />
 		</set>

@@ -21,12 +21,14 @@ import com.examw.test.model.records.UserItemFavoriteInfo;
 import com.examw.test.model.records.UserItemRecordInfo;
 import com.examw.test.model.records.UserPaperRecordInfo;
 import com.examw.test.model.settings.FrontSubjectInfo;
+import com.examw.test.model.syllabus.FrontSyllabusInfo;
 import com.examw.test.service.library.IFrontPaperService;
 import com.examw.test.service.library.IItemErrorRecorveryService;
 import com.examw.test.service.products.IProductUserService;
 import com.examw.test.service.records.IUserItemFavoriteService;
 import com.examw.test.service.records.IUserItemRecordService;
 import com.examw.test.service.records.IUserPaperRecordService;
+import com.examw.test.service.syllabus.IFrontSyllabusService;
 
 /**
  * 前端用户数据接口。
@@ -49,10 +51,16 @@ public class FrontDataController {
 	//产品用户服务。
 	@Resource
 	private IProductUserService productUserService;
+	//试卷服务
 	@Resource
 	private IFrontPaperService frontPaperService;
+	//用户错题记录服务
 	@Resource
 	private IItemErrorRecorveryService itemErrorRecorveryServcie;
+	//前台大纲服务
+	@Resource
+	private IFrontSyllabusService frontSyllabusService;
+	
 	private ObjectMapper mapper;
 	/**
 	 * 构造函数。
@@ -532,5 +540,17 @@ public class FrontDataController {
 			logger.error("添加用户试卷记录发生异常：" + e.getMessage(), e);
 		}
 		return result;
+	}
+	
+	/**
+	 * 加载科目下的考试大纲。
+	 * @param subjectId
+	 * @return
+	 */
+	@RequestMapping(value = {"/subjects/{subjectId}/syllabuses"}, method = {RequestMethod.GET})
+	@ResponseBody
+	public List<FrontSyllabusInfo> loadSubjectSyllabuses(@PathVariable String subjectId,String userId){
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载科目[subjectId = %s]下的考试大纲...", subjectId));
+		return this.frontSyllabusService.loadLastSyllabuses(subjectId,userId);
 	}
 }

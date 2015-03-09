@@ -66,4 +66,10 @@ public interface ISyllabusService extends IBaseDataService<SyllabusInfo> {
 	 * 2014.12.28
 	 */
 	List<ItemInfo> loadSyllabusItems(String syllabusId);
+	/**
+	 * 更新试题关联
+	 * @param syllabusId
+	 * @param itemId
+	 */
+	void updateSyllabusItems(String syllabusId,String[] itemId,boolean isDelete);
 }

@@ -1,0 +1,32 @@
+<#--大纲列表-->
+<#include "comm.ftl"/>
+<#assign module="syllabus_syllabus_items"/>
+<#assign dg="${module}_dg_items"/>
+<script type="text/javascript">
+<!--
+$(function(){
+	//search
+	${dg}_search = function(){
+		$("#${dg}").datagrid("load",{subjectId:"${subject_id}", content:$("#${dg}_toobar input[name='content']").val() });
+	};
+})
+//-->
+</script>
+<table id="${dg}" class="easyui-datagrid" data-options="url:'<@s.url '/library/item/datagrid'/>',fit:true,fitColumns:true,rownumbers:true,
+		border:true,striped:true,idField:'id',sortName:'createTime',toolbar:'#${dg}_toobar',queryParams: {
+			subjectId:'${subject_id}',
+			content:'#$&@@'
+		},
+		onLoadError:function(e){ <@error_dialog 'e'/> }">
+	    <thead>
+	    	<tr>
+	    		<th data-options="field:'id',checkbox:true"></th>
+				<th data-options="field:'content',width:60,align:'left',sortable:false,formatter:function(value,row,index){ value = value.replace(/<[^>]*>/g,'');  return  '<span title=\''+ value +'\'>' + value + '</span>'; }">试题</th>
+				<th data-options="field:'typeName',width:12,align:'center',sortable:true">题型</th>
+	    	</tr>
+		</thead>
+</table>
+<div id="${dg}_toobar">
+	<label>关键字：<input name="content" type="text" style="width:198px;"/></label>
+	<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
+</div>
