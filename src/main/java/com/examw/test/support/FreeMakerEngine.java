@@ -2,6 +2,7 @@ package com.examw.test.support;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -69,6 +70,8 @@ public class FreeMakerEngine {
 		Template template = this.config.getTemplate(templateName, "UTF-8");
 		
 		StringWriter writer = new StringWriter();
+		//2015.03.09  添加生成时间
+		if(model!=null) model.put("updateTime", new Date());
 		template.process(model, writer);  
 		
 		return  writer.toString();

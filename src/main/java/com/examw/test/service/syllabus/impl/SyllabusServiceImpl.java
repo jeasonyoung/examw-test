@@ -21,6 +21,7 @@ import com.examw.test.dao.syllabus.ISyllabusDao;
 import com.examw.test.domain.library.Item;
 import com.examw.test.domain.settings.Area;
 import com.examw.test.domain.settings.Subject;
+import com.examw.test.domain.syllabus.ChapterKnowledge;
 import com.examw.test.domain.syllabus.Syllabus;
 import com.examw.test.model.library.ItemInfo;
 import com.examw.test.model.syllabus.SyllabusInfo;
@@ -368,5 +369,39 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 			items.addAll(list);
 		}
 		data.setItems(items);	//更新关联
+	}
+	
+	/*
+	 * 导入大纲要点的内容
+	 * @see com.examw.test.service.syllabus.ISyllabusService#importBookContentIntoSyllabusPoint(java.lang.String)
+	 */
+	@Override
+	public void importBookContentIntoSyllabusPoint(String syllabusId) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("根据已加的书籍导入大纲要点的内容...", syllabusId));
+		if(StringUtils.isEmpty(syllabusId)) return;
+		Syllabus data = this.syllabusDao.load(Syllabus.class, syllabusId);
+		if(data == null ) throw new RuntimeException(String.format("大纲[%s]不存在", syllabusId));
+		//查询知识点的内容 加入更新
+		this.setChildSyllabusContent(data);
+	}
+	/**
+	 * 设置大纲的内容
+	 * @param data
+	 */
+	private void setChildSyllabusContent(Syllabus data)
+	{
+		Set<Syllabus> children = data.getChildren();
+		if(children!=null && !children.isEmpty())
+		{
+			for(Syllabus child:children)
+			{
+				setChildSyllabusContent(child);
+			}
+		}
+		Set<ChapterKnowledge> knowledges  = data.getKnowledges();
+		if(knowledges != null && !knowledges.isEmpty())
+		{
+			data.setDescription(knowledges.iterator().next().getDescription());
+		}
 	}
 }

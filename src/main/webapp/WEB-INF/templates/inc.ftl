@@ -3,6 +3,9 @@
 <#--头部资源-->
 <#macro header_resources>
 <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<#if updateTime??>
+<meta name="UpdateTime" content="${updateTime?datetime}">
+</#if>
 <link href="http://img.examw.com/test/pub.css" rel="stylesheet" type="text/css" />
 <link href="http://img.examw.com/test/index.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="http://img.examw.com/jQuery.js"></script>

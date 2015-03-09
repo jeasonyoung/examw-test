@@ -18,6 +18,8 @@ public class Exam implements Serializable,Comparable<Exam> {
 	private Set<Area> areas;
 	private Set<Subject> subjects;
 	private Set<Product> products;
+	//2015.03.09 增加属性
+	private String title,keywords,description;
 	/**
 	 * 获取考试ID。
 	 * @return 考试ID。
@@ -167,6 +169,55 @@ public class Exam implements Serializable,Comparable<Exam> {
 	 */
 	public void setProducts(Set<Product> products) {
 		this.products = products;
+	}
+	
+	/**
+	 * 获取 标题
+	 * @return title
+	 * 标题
+	 */
+	public String getTitle() {
+		return title;
+	}
+	/**
+	 * 设置 标题
+	 * @param title
+	 * 标题
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	/**
+	 * 获取 关键字
+	 * @return keywords
+	 * 关键字
+	 */
+	public String getKeywords() {
+		return keywords;
+	}
+	/**
+	 * 设置 关键字
+	 * @param keywords
+	 * 关键字
+	 */
+	public void setKeywords(String keywords) {
+		this.keywords = keywords;
+	}
+	/**
+	 * 获取 描述
+	 * @return description
+	 * 描述
+	 */
+	public String getDescription() {
+		return description;
+	}
+	/**
+	 * 设置 描述
+	 * @param description
+	 * 描述
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	/*
 	 * 对象字符串。

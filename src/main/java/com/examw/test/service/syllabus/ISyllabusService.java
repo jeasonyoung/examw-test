@@ -72,4 +72,9 @@ public interface ISyllabusService extends IBaseDataService<SyllabusInfo> {
 	 * @param itemId
 	 */
 	void updateSyllabusItems(String syllabusId,String[] itemId,boolean isDelete);
+	/**
+	 * 导入大纲的内容
+	 * @param syllabusId	最顶级大纲的id
+	 */
+	void importBookContentIntoSyllabusPoint(String syllabusId);
 }

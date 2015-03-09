@@ -20,6 +20,8 @@ public class Subject implements Serializable,Comparable<Subject>{
 	//Add by FW,2014.11.10 将科目改为树形结构 适应类似3+x考试
 	private Subject parent;
 	private Set<Subject> children;
+	//2015.03.09添加属性
+	private String title,keywords,description;
 	/**
 	 * 获取科目ID。
 	 * @return 科目ID。
@@ -139,6 +141,54 @@ public class Subject implements Serializable,Comparable<Subject>{
 	 */
 	public void setChildren(Set<Subject> children) {
 		this.children = children;
+	}
+	/**
+	 * 获取 标题
+	 * @return title
+	 * 标题
+	 */
+	public String getTitle() {
+		return title;
+	}
+	/**
+	 * 设置 标题
+	 * @param title
+	 * 标题
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	/**
+	 * 获取 关键字
+	 * @return keywords
+	 * 关键字
+	 */
+	public String getKeywords() {
+		return keywords;
+	}
+	/**
+	 * 设置 关键字
+	 * @param keywords
+	 * 关键字
+	 */
+	public void setKeywords(String keywords) {
+		this.keywords = keywords;
+	}
+	/**
+	 * 获取 描述
+	 * @return description
+	 * 描述
+	 */
+	public String getDescription() {
+		return description;
+	}
+	/**
+	 * 设置 描述
+	 * @param description
+	 * 描述
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	/*
 	 * 对象字符串。

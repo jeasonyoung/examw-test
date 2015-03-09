@@ -2,11 +2,14 @@
 <#include "/inc.ftl" />
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>${examName}-考试页面</title>
-		<meta name="keywords" Content=""/>
-		<meta name="Description" Content=""/>
-		<meta name="UpdateTime" Content="${updateTime?string("yyyy-MM-dd HH:mm:ss")}"/>
+		<title><#if title??>${title}<#else>${examName}-考试页面</#if></title>
 		<#--头部资源-->
+		<#if keywords??>
+			<meta name="keywords" content="${keywords}" >
+		</#if>
+		<#if description??>
+			<meta name="description" content="${description}">
+		</#if>
 		<@header_resources/>
 	</head>
 	<body>

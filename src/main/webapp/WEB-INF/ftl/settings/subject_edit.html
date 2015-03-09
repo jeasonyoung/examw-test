@@ -2,7 +2,8 @@
 <#include "comm.ftl"/>
 <#assign module="settings_subject"/>
 <#assign form="${module}_edit_form"/>
-<form id="${form}" method="POST" style="padding:10px;">
+<form id="${form}" method="POST" class="easyui-tabs">
+<div title="基础信息">
 	<div style="float:left;margin-top:2px;width:100%;">
 		<label style="width:75px;">所属考试：</label>
 		<input name="categoryId" class="easyui-combotree" data-options="url:'<@s.url '/settings/category/tree'/>',required:true,valueField:'id', textField:'name',
@@ -43,4 +44,21 @@
 				handler:function(e){var rows = $(e.data.target).combobox('getData');if(rows && $.isArray(rows)){ var opts = [];$.each(rows,function(i,n){ opts.push(n['id']); });$(e.data.target).combobox('setValues', opts);
 			}}},{ iconCls:'icon-clear', handler:function(e){ $(e.data.target).combobox('clear'); }}]" style="width:372px;"/>
 	</div>
+</div>
+<div title="页面显示信息">
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">页面标题：</label>
+		<input type="text" name="title" class="easyui-textbox" style="width:368px;" />
+	</div>
+	<div style="float:left;margin-top:12px;width:100%;">
+		<label style="width:75px;">关键字：</label>
+		<input type="text" name="keywords" class="easyui-textbox" style="width:368px;" />
+	</div>
+	<div style="float:left; margin-top:12px; width:100%;">
+		<label style="width:75px;">描述：</label>
+		<div style="float:left;margin-left:12px;">
+			<textarea name="description" class="easyui-ueditor" data-options="width:360,height:80"></textarea>
+		</div>
+    </div>
+</div>
 </form>

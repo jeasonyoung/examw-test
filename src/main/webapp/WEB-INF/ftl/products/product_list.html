@@ -24,6 +24,7 @@
 					<th width="80px"  data-options="field:'paperTotal',align:'right',sortable:true">试卷总数</th>
 					<th width="80px"  data-options="field:'itemTotal',align:'right',sortable:true">试题总数</th>
 					<th width="80px"  data-options="field:'statusName',align:'center',sortable:true">状态</th>
+					<th width="80px"  data-options="field:'keywords',align:'center'">关键字</th>
 				</tr>
 			</thead>
 		</table>
@@ -99,7 +100,7 @@ $(function(){
 			}
 		}
 		var d = $("<div/>").dialog({
-			title:title,width:800,height:600,modal:true,
+			title:title,width:820,height:630,modal:true,
 			href:"<@s.url '/products/product/edit'/>?categoryId=" + category_id + "&examId=" + exam_id,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">

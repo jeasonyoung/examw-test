@@ -22,7 +22,7 @@
 		<dt>关联的试卷：</dt>
 		<#list papers as paper>
 		<dd>
-			<div style="float:left;">${paper_index+1}.${paper[0]}[${paper[1]}][${paper[2]}]</div>
+			<div style="float:left;" title="${paper[0]}">${paper_index+1}.${paper[0]}[${paper[1]}][${paper[2]}]</div>
 		</dd>
 		</#list>
 	</dl>

@@ -20,7 +20,7 @@ $(function(){
 	//edit
 	${module}_edit_window = function(title,index,row,code){
 		var d = $("<div/>").dialog({
-			title:title,width:600,height:350,modal:true,
+			title:title,width:600,height:400,modal:true,
 			href:"<@s.url '/settings/exam/edit'/>",
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
@@ -142,6 +142,7 @@ $(function(){
 	 					<th data-options="field:'statusName',width:10,align:'center',sortable:true">状态</th>
 	 					<th data-options="field:'areaName',width:60,align:'left'">所属地区</th>
 	 					<th data-options="field:'imageUrl',width:60,align:'left'">图片地址</th>
+	 					<th data-options="field:'keywords',width:60,align:'left'">关键字</th>
 	 				</tr>
 	 			</thead>
 	 	</table>
