@@ -108,12 +108,12 @@ public class AppClient implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("clientId").append("=").append(this.clientId).append(",")
-				   .append("clientName").append("=").append(this.clientName).append(",")
-				   .append("clientVersion").append("=").append(this.clientVersion).append(",")
-				   .append("clientTypeCode").append("=").append(this.clientTypeCode).append(",")
-				   .append("clientMachine").append("=").append(this.clientMachine).append(",")
-				   .append("productId").append("=").append(this.productId);
+		builder.append("clientId").append(":").append(this.clientId).append(",")
+				   .append("clientName").append(":").append(this.clientName).append(",")
+				   .append("clientVersion").append(":").append(this.clientVersion).append(",")
+				   .append("clientTypeCode").append(":").append(this.clientTypeCode).append(",")
+				   .append("clientMachine").append(":").append(this.clientMachine).append(",")
+				   .append("productId").append(":").append(this.productId);
 		return builder.toString();
 	}
 }

@@ -235,7 +235,9 @@ public class UserPaperRecordServiceImpl extends BaseDataServiceImpl<UserPaperRec
 			if(StringUtils.isEmpty(info.getId())){
 				info.setId(UUID.randomUUID().toString());
 			}
-			info.setCreateTime(new Date());
+			if(info.getCreateTime() == null){
+				info.setCreateTime(new Date());
+			}
 			data = new UserPaperRecord();
 		}else {
 			info.setCreateTime(data.getCreateTime());

@@ -2,6 +2,7 @@ package com.examw.test.model.api;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+import org.springframework.beans.BeanUtils;
 /**
  * 客户端同步
  * 
@@ -12,6 +13,20 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 public class AppClientSync extends AppClient {
 	private static final long serialVersionUID = 1L;
 	private String code,startTime;
+	/**
+	 * 构造函数。
+	 */
+	public AppClientSync(){};
+	/**
+	 * 构造函数。
+	 * @param appClient
+	 */
+	public AppClientSync(AppClient appClient){
+		this();
+		if(appClient != null){
+			BeanUtils.copyProperties(appClient, this);
+		}
+	}
 	/**
 	 * 获取注册码。
 	 * @return 注册码。
