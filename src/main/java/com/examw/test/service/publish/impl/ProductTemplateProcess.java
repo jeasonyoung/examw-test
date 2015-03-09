@@ -1,6 +1,7 @@
 package com.examw.test.service.publish.impl;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,10 +46,10 @@ public class ProductTemplateProcess extends BaseTemplateProcess {
 	}
 	/*
 	 * 模版静态化处理。
-	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#addTemplateProcess()
+	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#addTemplateProcess(java.util.Date)
 	 */
 	@Override
-	protected int addTemplateProcess() throws Exception {
+	protected int addTemplateProcess(Date startTime) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("模版处理...");
 		List<Product> products = this.productDao.findProducts(new ProductInfo(){
 			private static final long serialVersionUID = 1L;
@@ -61,6 +62,7 @@ public class ProductTemplateProcess extends BaseTemplateProcess {
 		});
 		if(products == null || products.size() == 0) return 0;
 		Map<String, Object>  parameters = new HashMap<>();
+		parameters.put("updateTime", startTime);
 		//常见问题
 		parameters.put("questions", this.loadQuestions());
 		int total = 0;

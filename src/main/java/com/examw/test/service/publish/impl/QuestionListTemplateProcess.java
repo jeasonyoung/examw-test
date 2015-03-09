@@ -21,10 +21,10 @@ public class QuestionListTemplateProcess extends BaseTemplateProcess {
 	private static final Logger logger = Logger.getLogger(QuestionListTemplateProcess.class);
 	/*
 	 * 模版静态化处理。
-	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#addTemplateProcess()
+	 * @see com.examw.test.service.publish.impl.BaseTemplateProcess#addTemplateProcess(java.util.Date)
 	 */
 	@Override
-	protected int addTemplateProcess() throws Exception {
+	protected int addTemplateProcess(Date startTime) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("常见问题列表模版处理...");
 		Long count = this.questionDao.total(new QuestionInfo()); 
 		Map<String, Object> parameters = new HashMap<String, Object>();

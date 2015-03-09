@@ -121,13 +121,15 @@ public abstract class BaseTemplateProcess implements ITemplateProcess,ResourceLo
 		this.engine = new FreeMakerEngine(this.resourceLoader);
 		this.engine.setTemplateDir(this.templatesRoot);
 		//模版静态化处理。
-		return this.addTemplateProcess();
+		return this.addTemplateProcess(this.record.getStartTime());
 	}
 	/**
 	 * 模版静态化处理。
+	 * @param startTime
+	 * @return
 	 * @throws Exception
 	 */
-	protected abstract int addTemplateProcess() throws Exception;
+	protected abstract int addTemplateProcess(Date startTime) throws Exception;
 	/**
 	 * 更新静态页面数据。
 	 * @param id
