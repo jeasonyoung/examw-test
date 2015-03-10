@@ -67,5 +67,11 @@
 	    <property name="registrationCodeService" ref="registrationService" />
 	    <!-- 试卷发布数据接口 -->
 	    <property name="paperReleaseDao" ref="paperReleaseDao" />
+	    <!-- 试卷记录数据服务接口 -->
+	    <property name="userPaperRecordService" ref="userPaperRecordService" />
+	    <!-- 试题记录数据服务接口 -->
+	    <property name="userItemRecordService" ref="userItemRecordService" />
+	    <!-- 试题收藏数据服务接口 -->
+	    <property name="userItemFavoriteService" ref="userItemFavoriteService" />
 	</bean>
 </beans>

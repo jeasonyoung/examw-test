@@ -10,9 +10,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.model.Json;
+import com.examw.test.model.api.AppClientPush;
 import com.examw.test.model.api.AppClientSync;
 import com.examw.test.model.api.AppRegister;
+import com.examw.test.model.api.FavoriteSync;
 import com.examw.test.model.api.LoginUser;
+import com.examw.test.model.api.PaperItemRecordSync;
+import com.examw.test.model.api.PaperRecordSync;
 import com.examw.test.model.api.RegisterUser;
 import com.examw.test.service.api.IDataSyncService;
 import com.examw.test.service.api.IHostAccessProxyService;
@@ -127,6 +131,63 @@ public class MobileController {
 		Json result = new Json();
 		try {
 			result.setData(this.dataSyncService.syncPapers(req));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+		}
+		return result;
+	}
+	/**
+	 * 同步试卷记录数据。
+	 * @param req
+	 * @return
+	 */
+	@RequestMapping(value = {"/sync/records/papers"}, method = {RequestMethod.POST})
+	@ResponseBody
+	public Json syncPaperRecords(AppClientPush<PaperRecordSync> req){
+		if(logger.isDebugEnabled()) logger.debug("同步试卷记录数据...");
+		Json result = new Json();
+		try {
+			result.setData(this.dataSyncService.syncPaperRecords(req));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+		}
+		return result;
+	}
+	/**
+	 * 同步试题记录数据。
+	 * @param req
+	 * @return
+	 */
+	@RequestMapping(value = {"/sync/records/items"}, method = {RequestMethod.POST})
+	@ResponseBody
+	public Json syncPaperItemRecords(AppClientPush<PaperItemRecordSync> req){
+		if(logger.isDebugEnabled()) logger.debug("同步试题记录数据...");
+		Json result = new Json();
+		try {
+			result.setData(this.dataSyncService.syncPaperItemRecords(req));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+		}
+		return result;
+	}
+	/**
+	 * 同步收藏夹数据。
+	 * @param req
+	 * @return
+	 */
+	@RequestMapping(value = {"/sync/favorites"}, method = {RequestMethod.POST})
+	@ResponseBody
+	public Json syncFavorites(AppClientPush<FavoriteSync> req){
+		if(logger.isDebugEnabled()) logger.debug("同步收藏夹数据...");
+		Json result = new Json();
+		try {
+			result.setData(this.dataSyncService.syncFavorites(req));
 			result.setSuccess(true);
 		} catch (Exception e) {
 			result.setSuccess(false);

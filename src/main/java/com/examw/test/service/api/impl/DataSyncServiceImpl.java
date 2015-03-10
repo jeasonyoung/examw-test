@@ -16,13 +16,23 @@ import com.examw.test.domain.products.Product;
 import com.examw.test.domain.products.Registration;
 import com.examw.test.domain.settings.Exam;
 import com.examw.test.domain.settings.Subject;
+import com.examw.test.model.api.AppClientPush;
 import com.examw.test.model.api.AppClientSync;
 import com.examw.test.model.api.ExamSync;
+import com.examw.test.model.api.FavoriteSync;
+import com.examw.test.model.api.PaperItemRecordSync;
+import com.examw.test.model.api.PaperRecordSync;
 import com.examw.test.model.api.PaperSync;
 import com.examw.test.model.api.SubjectSync;
+import com.examw.test.model.records.UserItemFavoriteInfo;
+import com.examw.test.model.records.UserItemRecordInfo;
+import com.examw.test.model.records.UserPaperRecordInfo;
 import com.examw.test.service.api.IDataSyncService;
 import com.examw.test.service.library.PaperType;
 import com.examw.test.service.products.IRegistrationCodeService;
+import com.examw.test.service.records.IUserItemFavoriteService;
+import com.examw.test.service.records.IUserItemRecordService;
+import com.examw.test.service.records.IUserPaperRecordService;
 
 /**
  * 数据同步服务接口实现类。
@@ -34,6 +44,9 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	private final static Logger logger = Logger.getLogger(DataSyncServiceImpl.class);
 	private IPaperReleaseDao paperReleaseDao;
 	private IRegistrationCodeService registrationCodeService;
+	private IUserPaperRecordService userPaperRecordService;
+	private IUserItemRecordService userItemRecordService;
+	private IUserItemFavoriteService userItemFavoriteService;
 	/**
 	 * 设置发布试卷数据接口。
 	 * @param paperReleaseDao 
@@ -51,6 +64,33 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	public void setRegistrationCodeService(IRegistrationCodeService registrationCodeService) {
 		if(logger.isDebugEnabled()) logger.debug("注入注册码服务接口...");
 		this.registrationCodeService = registrationCodeService;
+	}
+	/**
+	 * 设置用户试卷记录服务接口。
+	 * @param userPaperRecordService 
+	 *	  用户试卷记录服务接口。
+	 */
+	public void setUserPaperRecordService(IUserPaperRecordService userPaperRecordService) {
+		if(logger.isDebugEnabled()) logger.debug("注入用户试卷记录服务接口...");
+		this.userPaperRecordService = userPaperRecordService;
+	}
+	/**
+	 * 设置用户试题记录服务接口。
+	 * @param userItemRecordService 
+	 *	  用户试题记录服务接口。
+	 */
+	public void setUserItemRecordService(IUserItemRecordService userItemRecordService) {
+		if(logger.isDebugEnabled()) logger.debug("注入用户试题记录服务接口...");
+		this.userItemRecordService = userItemRecordService;
+	}
+	/**
+	 * 设置用户试题收藏服务接口。
+	 * @param userItemFavoriteService 
+	 *	  用户试题收藏服务接口。
+	 */
+	public void setUserItemFavoriteService(IUserItemFavoriteService userItemFavoriteService) {
+		if(logger.isDebugEnabled()) logger.debug("注入用户试题收藏服务接口...");
+		this.userItemFavoriteService = userItemFavoriteService;
 	}
 	/*
 	 * 同步考试科目数据。
@@ -126,6 +166,116 @@ public class DataSyncServiceImpl implements IDataSyncService {
 			list.add(s.getId());
 		}
 		return list.toArray(new String[0]);
+	}
+	/*
+	 * 同步试卷记录。
+	 * @see com.examw.test.service.api.IDataSyncService#syncPaperRecords(com.examw.test.model.api.AppClientPush)
+	 */
+	@Override
+	public List<String> syncPaperRecords(AppClientPush<PaperRecordSync> req)  throws Exception{
+		if(logger.isDebugEnabled()) logger.debug("同步试卷记录...");
+		if(req == null) throw new IllegalArgumentException("同步请求信息为空！");
+		//验证客户端信息
+		this.validationSyncReq(req.toAppClientSync());
+		//
+		if(req.getRecords() == null || req.getRecords().size() == 0) return null;
+		List<String> failures = new ArrayList<>();
+		for(PaperRecordSync record : req.getRecords()){
+			if(record == null) continue;
+			try {
+					UserPaperRecordInfo data = new UserPaperRecordInfo();
+					data.setId(record.getId());
+					data.setUserId(req.getUserId());
+					data.setPaperId(record.getPaperId());
+					data.setProductId(req.getProductId());
+					data.setTerminalCode(Integer.parseInt(req.getClientTypeCode()));
+					data.setRightNum(record.getRights());
+					data.setScore(record.getScore());
+					data.setStatus(record.getStatus());
+					data.setUsedTime((long)record.getUseTimes());
+					data.setCreateTime(record.getCreateTime());
+					data.setLastTime(record.getLastTime());
+					this.userPaperRecordService.update(data);
+			} catch (Exception e) {
+				 if(logger.isDebugEnabled())logger.debug(String.format("同步数据异常：%1$s[%2$s]", e.getMessage(), record));
+				 failures.add(record.getId());
+			}
+		}
+		return failures;
+	}
+	/*
+	 * 同步试题记录。
+	 * @see com.examw.test.service.api.IDataSyncService#syncPaperItemRecords(com.examw.test.model.api.AppClientPush)
+	 */
+	@Override
+	public List<String> syncPaperItemRecords(AppClientPush<PaperItemRecordSync> req)  throws Exception{
+		if(logger.isDebugEnabled())logger.debug("同步试题记录...");
+		if(req == null) throw new IllegalArgumentException("同步请求信息为空！");
+		//验证客户端信息
+		this.validationSyncReq(req.toAppClientSync());
+		if(req.getRecords() == null || req.getRecords().size() == 0) return null;
+		List<String> failures = new ArrayList<>();
+		for(PaperItemRecordSync record : req.getRecords()){
+			if(record == null) continue;
+			try {
+				UserItemRecordInfo data = new UserItemRecordInfo();
+				data.setId(record.getId());
+				data.setStructureId(record.getStructureId());
+				data.setItemId(record.getItemId());
+				data.setItemContent(record.getContent());
+				data.setAnswer(record.getAnswer());
+				data.setStatus(record.getStatus());
+				data.setTerminalCode(Integer.parseInt(req.getClientTypeCode()));
+				data.setUsedTime((long)record.getUseTimes());
+				data.setScore(record.getScore());
+				data.setCreateTime(record.getCreateTime());
+				data.setLastTime(record.getLastTime());
+				List<UserItemRecordInfo> list = new ArrayList<>();
+				list.add(data);
+				this.userItemRecordService.addItemRecord(record.getPaperRecordId(), list);
+			} catch (Exception e) {
+				if(logger.isDebugEnabled())logger.debug(String.format("同步数据异常：%1$s[%2$s]", e.getMessage(), record));
+				failures.add(record.getId());
+			}
+		}
+		return failures;
+	}
+	/*
+	 * 同步收藏记录。
+	 * @see com.examw.test.service.api.IDataSyncService#syncFavorites(com.examw.test.model.api.AppClientPush)
+	 */
+	@Override
+	public List<String> syncFavorites(AppClientPush<FavoriteSync> req)  throws Exception{
+		if(logger.isDebugEnabled()) logger.debug("同步收藏记录...");
+		if(req == null) throw new IllegalArgumentException("同步请求信息为空！");
+		//验证客户端信息
+		this.validationSyncReq(req.toAppClientSync());
+		if(req.getRecords() == null || req.getRecords().size() == 0) return null;
+		List<String> failures = new ArrayList<>();
+		for(FavoriteSync favorite : req.getRecords()){
+			if(favorite == null) continue;
+			try {
+				if(favorite.getStatus() == 0){//删除数据
+					this.userItemFavoriteService.delete(new String[]{favorite.getId()});
+				}else {//更新数据
+					UserItemFavoriteInfo data = new UserItemFavoriteInfo();
+					data.setId(favorite.getId());
+					data.setUserId(req.getUserId());
+					data.setSubjectId(favorite.getSubjectId());
+					data.setItemId(favorite.getItemId());
+					data.setItemContent(favorite.getContent());
+					data.setRemarks(favorite.getRemarks());
+					data.setItemType(favorite.getItemType());
+					data.setTerminalCode(Integer.parseInt(req.getClientTypeCode()));
+					data.setCreateTime(favorite.getCreateTime());
+					this.userItemFavoriteService.update(data);
+				}
+			} catch (Exception e) {
+				if(logger.isDebugEnabled())logger.debug(String.format("同步数据异常：%1$s[%2$s]", e.getMessage(), favorite));
+				failures.add(favorite.getId());
+			}
+		}
+		return failures;
 	}
 	//验证同步请求的合法性。
 	private Product validationSyncReq(AppClientSync req) throws Exception{
