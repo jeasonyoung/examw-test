@@ -86,6 +86,7 @@ $(function(){
 				error:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
 				success:function(data,textStatus){
 					$.messager.progress("close");
+					var data = $.parseJSON(data);
 					if(data.success){
 						${module}_reload(p.id);
 					}else{
@@ -103,9 +104,8 @@ $(function(){
 			if(id){
 				var node1 = $("#${module}_tree").tree("find",id);
 				$("#${module}_tree").tree("scrollTo",node1.target);
-				$('#${module}_loading').hide();
-				return;
 			}
+			$('#${module}_loading').hide();
 		}});
 	};
 	//导入已经加了的知识点的内容
@@ -127,10 +127,12 @@ $(function(){
 			success:function(data)
 			{
 				$.messager.progress("close");
+				var data = $.parseJSON(data);
 				if(data.success){
-					${module}_reload(node.id);
-				}else{
+					${module}_reload();
 					$.messager.show({ title:"提示",msg:"导入成功" });
+				}else{
+					$.messager.show({ title:"提示",msg:"导入失败" });
 				}
 			}
 		});

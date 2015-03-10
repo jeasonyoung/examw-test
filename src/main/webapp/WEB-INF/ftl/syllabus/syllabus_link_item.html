@@ -16,13 +16,18 @@ $(function(){
 		}
 		var syllabusId = node.id;
 		var row = {"description":node.attributes.description};
+		var text = node.text;
+		if(text.indexOf('[已加]')!=-1)
+		{
+			text = text.substring(0,text.length-4);
+		}
 		//查询到顶级节点
 		while($("#${module}_tree").tree("getParent",node.target)!=null)
 		{
 			node =  $("#${module}_tree").tree("getParent",node.target); 	
 		}
 		var d = $("<div/>").dialog({
-			title:"搜索试题",width:700, height:600,modal:true,
+			title:"搜索试题 - "+text,width:700, height:600,modal:true,
 			href:"<@s.url '/syllabus/syllabus/'/>"+node.id+"/points_items_search",
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">    
