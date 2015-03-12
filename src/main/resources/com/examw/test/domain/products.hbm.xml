@@ -57,6 +57,9 @@
 		<property name="createTime" column="create_time" type="timestamp" />
 		<!-- 最后修改时间 -->
 		<property name="lastTime" column="last_time" type="timestamp" />
+		<property name="title" type="string" length="256"/>
+		<property name="keywords" type="string" length="256"/>
+		<property name="description" type="text" />
 	</class>
 	<!-- 销售渠道 -->
 	<class name="Channel" table="tbl_Examw_Test_Products_Channels">

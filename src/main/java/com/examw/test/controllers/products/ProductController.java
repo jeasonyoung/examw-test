@@ -167,4 +167,26 @@ public class ProductController {
 		}
 		return result;
 	}
+	
+	/**
+	 * 设置所有产品的标题,关键字,描述
+	 * @return
+	 */
+	@RequiresPermissions({ModuleConstant.PRODUCTS_PRODUCT + ":" + Right.UPDATE})
+	@RequestMapping(value="/setKeywords", method = RequestMethod.POST)
+	@ResponseBody
+	public Json setKeywords(){
+		if(logger.isDebugEnabled()) logger.debug("设置标题,关键字,描述...");
+		Json result = new Json();
+		try {
+			this.productService.setTitleKeywords();
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+			logger.error(String.format("设置标题,关键字,描述数据时发生异常:%s", e.getMessage()), e);
+		}
+		return result;
+	}
+	
 }

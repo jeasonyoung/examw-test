@@ -2,22 +2,27 @@
 <#include "/inc.ftl" />
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title><#if title??>${title}<#else>${examName}-考试页面</#if></title>
+		<title><#if title??>${title}<#else>${examName}考试题库：${examName}考试真题及答案、模拟试题、章节练习题等考试试题及答案解析 - 中华考试网题库</#if></title>
 		<#--头部资源-->
 		<#if keywords??>
 			<meta name="keywords" content="${keywords}" >
+		<#else>
+			<meta name="keywords" content="${examName}考试题库,${examName}考试真题,${examName}考试模拟试题,${examName}考试答案" >
 		</#if>
 		<#if description??>
 			<meta name="description" content="${description}">
+		<#else>
+			<meta name="description" content="中华考试网${examName}考试题库为大家提供2015${examName}考试模拟试题、历年真题及答案、章节练习题、网校名师预测试题、考前冲刺试题等考试试题及答案解析，支持网页版、安卓、苹果手机版下载试用。">
 		</#if>
 		<@header_resources/>
+		<script type="text/javascript" language="javascript" src="http://www.examw.com/mycode.js"></script>
 	</head>
 	<body>
 		<#--top banner-->
 		<@topbox/>
 		<div class="h20"></div>
 		<div class="main">
-			<div class="weizhi fl"><span></span>当前位置：<a href="#">首页</a><i>&gt;</i>${examName}</div>
+			<div class="weizhi fl"><span></span>当前位置：<a href="/">首页</a><i>&gt;</i>${examName}</div>
 		</div>
 		<div class="h1d"></div>
 		<div class="h1f"></div>
@@ -66,7 +71,11 @@
 		<@news_hots_question/>
 		<div class="h1d"></div>
 		<div class="h30"></div>
+		<#-- 考试资讯 -->
+		<@examw_info />		
+		<div class="h30"></div>
 		<#--footer-->
 		<@footer/>
+		<script language="javascript" src="http://www.examw.com/mycode.js"></script>
 	</body>
 </html>

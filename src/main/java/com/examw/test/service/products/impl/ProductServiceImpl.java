@@ -316,4 +316,33 @@ public class ProductServiceImpl  extends BaseDataServiceImpl<Product,ProductInfo
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试［examId = %s］下最大排序号...", examId));
 		return this.productDao.loadMaxOrder(examId);
 	}
+	
+	/*
+	 * 设置标题,关键字,描述
+	 * @see com.examw.test.service.products.IProductService#setTitleKeywords()
+	 */
+	@Override
+	public void setTitleKeywords() {
+		List<Product> products = this.productDao.findProducts(new ProductInfo(){
+			private static final long serialVersionUID = 1L;
+			});
+		if(products!=null && !products.isEmpty())
+		{
+			for(Product p:products)
+			{
+				if(p == null) continue;
+				String examName = p.getExam().getName();
+				if(p.getArea() != null && !"全国".equals(p.getArea().getName()))
+				{
+					examName = p.getArea().getName()+examName;
+				}
+				if(StringUtils.isEmpty(p.getTitle())) 
+					p.setTitle(String.format("2015%1$s考试题库：%2$s真题及答案、模拟试题、章节练习题等考试试题及答案解析 - 中华考试网题库",examName, examName));
+				if(StringUtils.isEmpty(p.getKeywords())) 
+					p.setKeywords(String.format("%1$s考试题库,%2$s真题,%3$s模拟试题,%4$s考试答案", examName, examName, examName, examName));
+				if(StringUtils.isEmpty(p.getDescription())) 
+					p.setDescription(String.format("中华考试网%1$s考试题库为大家提供%2$s考试真题及答案、模拟试题、章节练习题、网校名师预测试题、考前冲刺试题等考试试题及答案解析，更有大数据分析出章节知识点、重要考点尽在%3$s题库中。", examName, examName, examName));
+			}
+		}
+	}
 }

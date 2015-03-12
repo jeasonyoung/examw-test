@@ -2,10 +2,9 @@
 <#include "/inc.ftl" />
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>${examName}试卷列表</title>
-		<meta name="keywords" Content=""/>
-		<meta name="Description" Content=""/>
-		<meta name="UpdateTime" Content="${updateTime?string("yyyy-MM-dd HH:mm:ss")}"/>
+		<title>${examName}考试试卷：2015年${examName}考试真题及答案、模拟试题、章节练习题 - 中华考试网题库</title>
+		<meta name="keywords" Content="${examName}考试试题,${examName}考试题库,${examName}考试试卷"/>
+		<meta name="Description" Content="${examName}考试试卷：2015年${examName}考试试题、历年真题及答案解析、模拟试题、章节练习题、${examName}考试题库 - 中华考试网题库"/>
 		<#--头部资源-->
 		<@header_resources/>
 		<#--分页-->

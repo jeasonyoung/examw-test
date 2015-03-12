@@ -2,10 +2,15 @@
 <#include "/inc.ftl" />
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>最热试卷排行</title>
-		<meta name="keywords" Content=""/>
-		<meta name="Description" Content=""/>
-		<meta name="UpdateTime" Content="${updateTime?string("yyyy-MM-dd HH:mm:ss")}"/>
+		<#if examName??>
+		<title>${examName}最热考试试卷：2015年${examName}考试试题及答案 - 中华考试网题库</title>
+		<meta name="keywords" Content="${examName}最热考试试卷：2015年${examName}考试试题及答案、模拟试题、历年真题、考前预测、冲刺试题及答案等等 - 中华考试网题库"/>
+		<meta name="Description" Content="${examName}考试试题,${examName}考试试卷,${examName}考试题库"/>
+		<#else>
+		<title>中华考试网题库最热考试试卷：2015年中华考试网题库试题及答案 - 中华考试网题库</title>
+		<meta name="keywords" Content="中华考试网题库试题,中华考试网题库试卷,中华考试网题库"/>
+		<meta name="Description" Content="中华考试网题库最热考试试卷：中华考试网题库试题及答案、模拟试题、历年真题、考前预测、冲刺试题及答案等等 - 中华考试网题库"/>
+		</#if>
 		<#--头部资源-->
 		<@header_resources/>
 		<#--分页-->

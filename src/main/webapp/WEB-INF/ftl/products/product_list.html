@@ -30,14 +30,18 @@
 		</table>
 		<div id="${dg}_toolbar">
 			<@shiro.hasPermission name="${PER_UPDATE}">
-			<a href="#" class="easyui-linkbutton" onclick="${dg}_add()" data-options="iconCls:'icon-add',plain:true" style="float:left;">新增</a>
+			<a href="#" class="easyui-linkbutton" onclick="${dg}_add()" data-options="iconCls:'icon-add',plain:true" >新增</a>
 			</@shiro.hasPermission>
 			<span>|</span>
 			<@shiro.hasPermission name="${PER_DELETE}">
 			<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
 			</@shiro.hasPermission>
-			
 			<label style="margin-left:15px;"><input name="name" class="easyui-textbox"  prompt="产品名称" data-options="icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}},{iconCls:'icon-search',handler:function(e){ ${dg}_search();}}]" style="width:398px;"/></label>
+			<@shiro.hasPermission name="${PER_UPDATE}">
+			<label style="margin-left:15px;">
+			<a href="#" class="easyui-linkbutton" onclick="${dg}_setKeywords()" data-options="iconCls:'icon-edit',plain:true">一键设置标题关键字描述</a>
+			</label>
+			</@shiro.hasPermission>
 		</div>
 	</div>
 </div>
@@ -80,6 +84,27 @@ $(function(){
 			${module}_edit_window("新增产品",0,null,order);
 		});
 	};
+	//setKeywords
+	${dg}_setKeywords = function(){
+		$.messager.progress({"text":"正在设置标题关键字数据，请稍后..."});
+		$.ajax({
+			url:"<@s.url '/products/product/setKeywords'/>",
+			type:"POST",
+			dataType:"json",
+			contentType:"application/json;charset=UTF-8",
+			error:function(e){
+				$.messager.progress("close"); <@error_dialog "e"/> 
+			},
+			success:function(data,textStatus){
+				$.messager.progress("close");
+				if(data.success){
+					$("#${dg}").datagrid("load").datagrid("unselectAll");
+				}else{
+					$.messager.show({title:"提示", msg:data.msg });
+				}
+			}
+		});
+	}
 	</@shiro.hasPermission>
 	//edit
 	${module}_edit_window = function(title,index,row,order){

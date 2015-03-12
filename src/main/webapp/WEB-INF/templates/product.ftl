@@ -3,13 +3,17 @@
 <#assign do_product_url = "http://tiku.examw.com/library/${product.id}"/><#--链接到考试前台产品界面-->
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head> 
-		<title><#if product.title??>${product.title}<#else>${product.text}产品页面</#if></title>
+		<title><#if product.title??>${product.title}<#else>${product.text} - ${product.examName}题库免费下载试用 - 中华考试网</#if></title>
 		<#--头部资源-->
 		<#if product.keywords??>
 			<meta name="keywords" content="${product.keywords}" >
+		<#else>
+			<meta name="keywords" content="${product.text},${product.examName}考试题库" >
 		</#if>
 		<#if product.description??>
 			<meta name="description" content="${product.description}">
+		<#else>
+			<meta name="description" content="${product.text}、包含${product.examName}考试历年真题及答案、模拟试题、章节练习题、网校名师预测试题、考前冲刺试题等考试试题及答案解析，支持网页版、安卓、苹果手机版下载试用。">
 		</#if>
 		<@header_resources/>
 	</head>
@@ -49,7 +53,7 @@
 		                        <li>累计下载：58658</li>
 		                        -->
 		                    </ul>
-		                    <div class="tishi">一点通服务：由<a href="http://www.examw.com/" target="_blank">中华考试网</a>提供在线咨询、购买安装指导、售后服务</div>
+		                    <div class="tishi">题库服务：由<a href="http://www.examw.com/" target="_blank">中华考试网</a>提供在线咨询、购买安装指导、售后服务</div>
 		                    <div class="btn"><div class="hong-btn"><a href="${do_product_url}">立即做题</a></div></div>
 		                    <div class="btn"><div class="lv-btn"><a name="index-products-buy"  id="${product.id}" Price="${product.price}" GoodPrice="${product.discount}" Title="${product.text}" href="#">立即购买</a></div></div>
 		                </div>
@@ -57,7 +61,6 @@
 		                <div class="phonebox fl">
 		                	<div class="tit fl">
 		                    	<div class="ico"><h2>移动学习平台</h2>移动应用辅助学习</div>
-		                        <div class="phone-r">迷你网校尽在手机展现：<span>1、IPhone版考试一点通</span><span>2、Android考试一点通</span><span>3、Ipad版考试一点通</span></div>
 		                    </div>
 		                    <div class="ios">
 		                    	<div  class="out" onMouseOver="this.className='over'" onMouseOut="this.className='out'">

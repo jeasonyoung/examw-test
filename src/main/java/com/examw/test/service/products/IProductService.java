@@ -61,4 +61,10 @@ public interface IProductService extends IBaseDataService<ProductInfo>{
 	 * 产品数据集合。
 	 */
 	List<ProductInfo> loadProducts(String examId);
+	
+	//2015.03.11
+	/**
+	 * 批量设置标题,关键字,描述
+	 */
+	void setTitleKeywords();
 }

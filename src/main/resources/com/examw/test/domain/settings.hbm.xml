@@ -102,6 +102,9 @@
 		    <!-- 产品 -->
 		    <one-to-many class="com.examw.test.domain.products.Product"/>
 		</set>
+		<property name="title" type="string" length="256"/>
+		<property name="keywords" type="string" length="256"/>
+		<property name="description" type="text" />
 	</class>
 	<!-- 考试科目 -->
 	<class name="Subject" table="tbl_Examw_Test_Settings_Subjects">
@@ -135,5 +138,8 @@
 			<key column="pid" />
 			<one-to-many class="Subject"/>
 		</set>
+		<property name="title" type="string" length="256"/>
+		<property name="keywords" type="string" length="256"/>
+		<property name="description" type="text" />
 	</class>
 </hibernate-mapping>
