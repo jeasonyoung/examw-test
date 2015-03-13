@@ -14,7 +14,7 @@
 		<@topbox/>
 		<div class="h20"></div>
 		<div class="main">
-			<div class="weizhi fl"><span></span>当前位置：<a href="http://test.examw.com/">题库首页</a><i>&gt;</i><a href="/${abbr}/list/">${examName}</a><i>&gt;</i><a href="/${abbr}/${subjectCode}/list/">${subjectName}</a><i>&gt;</i>${paperName}</div>
+			<div class="weizhi fl"><span></span>当前位置：<a href="http://test.examw.com/">题库首页</a><i>&gt;</i><a href="/${abbr}/list/">${examName}</a><i>&gt;</i><a href="/${abbr}/${subjectCode}/">${subjectName}</a><i>&gt;</i>${paperName}</div>
 		</div>
 		<div class="h1d"></div>
 		<div class="h1f"></div>
