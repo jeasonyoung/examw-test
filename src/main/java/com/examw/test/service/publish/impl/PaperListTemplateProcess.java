@@ -67,12 +67,14 @@ public class PaperListTemplateProcess extends BaseTemplateProcess {
 			if(exam.getSubjects() != null && exam.getSubjects().size() > 0){
 				for(Subject subject : exam.getSubjects()){
 					if(subject == null) continue;
+					if(subject.getParent()!=null) continue;	//子科目不参与
 					subjects.add(new ViewListData(String.format("%d",subject.getCode()), subject.getName()));
 				}
 			}
 			//科目数量
 			parameters.put("subjects", subjects);
 			parameters.put("subjectCode", "");
+			parameters.put("subjectName", "");
 			//获取试卷数量
 			Long count = this.paperReleaseDao.totalPaperReleases(where);
 			if(count  == null || count == 0){//没有试卷
@@ -84,9 +86,11 @@ public class PaperListTemplateProcess extends BaseTemplateProcess {
 				if(exam.getSubjects() != null && exam.getSubjects().size() > 0){
 					for(Subject subject : exam.getSubjects()){
 						if(subject == null) continue;
+						if(subject.getParent()!=null) continue;	//子科目不参与
 						parameters.put("subjectCode",String.format("%d",subject.getCode()));
+						parameters.put("subjectName",subject.getName());
 						prefix =  String.format("%1$s-%2$d-list", exam.getAbbr(), subject.getCode());
-						path =  String.format("/%1$s/%2$d/list", exam.getAbbr(), subject.getCode());
+						path =  String.format("/%1$s/%2$d", exam.getAbbr(), subject.getCode());
 						where.setSubjectId(subject.getId());
 						count = this.paperReleaseDao.totalPaperReleases(where);
 						total += this.createStaticPages(prefix, path, parameters, (count == null) ? null : (int)(count / page_count) + ((count % page_count) > 0 ? 1 : 0), where);

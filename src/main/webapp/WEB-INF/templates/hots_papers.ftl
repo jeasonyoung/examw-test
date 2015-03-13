@@ -21,7 +21,7 @@
 		<@topbox/>
 		<div class="h20"></div>
 		<div class="main">
-			<div class="weizhi fl"><span></span>当前位置：<a href="/">首页</a><i>&gt;</i><#if examName??>${examName}</#if>最热试卷排行</div>
+			<div class="weizhi fl"><span></span>当前位置：<a href="http://test.examw.com/">题库首页</a><i>&gt;</i><#if examName??>${examName}</#if>最热试卷排行</div>
 		</div>
 		<div class="h1d"></div>
 		<div class="h1f"></div>
@@ -37,7 +37,7 @@
 		                    <div class="title">
 		                        <em class="nobg">
 		                        	<div class="bgcheng">${p.order}</div>
-		                            <div class="title"><a href="${p.category}/${p.id}.html" target="_blank" title="${p.text}">${p.text}</a></div>
+		                            <div class="title"><a href="${p.category}/${p.id}.html"  title="${p.text}">${p.text}</a></div>
 		                            <p>总题：${p.items?string("###")} 题</p><p>考试时长：${p.times?string("###")}分钟</p><p>总分：${p.total?string("###")}分</p><#--<p>题型：普通模拟题</p>--><p>${p.users?string("###")}人次参考</p>
 		                        </em>
 		                        <span>${p.createTime?string("yyyy-MM-dd")}</span>

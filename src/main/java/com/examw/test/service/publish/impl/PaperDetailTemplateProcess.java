@@ -74,6 +74,7 @@ public class PaperDetailTemplateProcess extends BaseTemplateProcess {
 			if(release == null || (paper = release.getPaper()) == null) continue;
 			subject = paper.getSubject();
 			parameters.put("subjectName", subject == null ? null : subject.getName());
+			parameters.put("subjectCode", subject == null ? null : subject.getCode());
 			exam = subject.getExam();
 			parameters.put("examName", exam.getName());
 			String abbr = exam.getAbbr();

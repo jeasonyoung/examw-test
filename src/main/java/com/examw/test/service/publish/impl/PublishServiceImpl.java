@@ -1,6 +1,7 @@
 package com.examw.test.service.publish.impl;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -9,8 +10,11 @@ import org.springframework.util.StringUtils;
 import com.examw.service.Status;
 import com.examw.test.dao.publish.IConfigurationDao;
 import com.examw.test.dao.publish.IPublishRecordDao;
+import com.examw.test.dao.publish.IStaticPageDao;
 import com.examw.test.domain.publish.Configuration;
 import com.examw.test.domain.publish.PublishRecord;
+import com.examw.test.domain.publish.StaticPage;
+import com.examw.test.model.publish.StaticPageInfo;
 import com.examw.test.service.publish.ConfigurationTemplateType;
 import com.examw.test.service.publish.IPublishService;
 import com.examw.test.service.publish.ITemplateProcess;
@@ -26,6 +30,7 @@ public class PublishServiceImpl implements IPublishService {
 	private static final Logger logger = Logger.getLogger(PublishServiceImpl.class);
 	private IConfigurationDao configurationDao;
 	private IPublishRecordDao publishRecordDao;
+	private IStaticPageDao staticPageDao;
 	private Map<Integer, ITemplateProcess> processes;
 	//远程生成页面地址
 	private String remoteCreatePagesUrl; 
@@ -46,6 +51,15 @@ public class PublishServiceImpl implements IPublishService {
 	public void setPublishRecordDao(IPublishRecordDao publishRecordDao) {
 		if(logger.isDebugEnabled()) logger.debug("注入发布记录数据接口...");
 		this.publishRecordDao = publishRecordDao;
+	}
+	/**
+	 * 设置静态页面数据接口。
+	 * @param staticPageDao 
+	 *	  静态页面数据接口。
+	 */
+	public void setStaticPageDao(IStaticPageDao staticPageDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入静态页面数据接口...");
+		this.staticPageDao = staticPageDao;
 	}
 	/**
 	 * 设置模版处理器集合。
@@ -87,17 +101,34 @@ public class PublishServiceImpl implements IPublishService {
 		this.updatePublish(this.configurationDao.loadTopConfiguration());
 		if(StringUtils.isEmpty(remoteCreatePagesUrl)) return;
 		//远程调用生成页面
+		List<StaticPage> pages = this.staticPageDao.findPages(new StaticPageInfo(){
+			private static final long serialVersionUID = 1L;}
+		);
+		if(pages!=null && pages.size()>0)
+		{
+			for(StaticPage page:pages)
+			{
+				if(page == null) continue;
+				remoteCreatePage(page.getId());
+			}
+		}
+	}
+	//远程调用生成页面
+	private void remoteCreatePage(String id)
+	{
 		int times = 1;
-		while(times < 4)
+		while(times<4)
 		{
 			try{
-				if(logger.isDebugEnabled()) logger.debug("=>开始生成页面....");
-				String response = HttpUtil.sendRequest(remoteCreatePagesUrl, "GET", null);
-				if(logger.isDebugEnabled()) logger.debug(response);
-				break;
+				String res = HttpUtil.sendRequest(String.format(remoteCreatePagesUrl, id), "GET", null);
+				if(res.contains("succes"))
+				{
+					return;
+				}
+				times++;
 			}catch(Exception e)
 			{
-				logger.error(String.format("第%1$d次生成失败:%2$s", times,e.getMessage()));
+				logger.error(String.format("id为%s的页面生成失败", id));
 				times++;
 			}
 		}

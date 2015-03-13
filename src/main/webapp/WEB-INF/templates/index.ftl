@@ -7,7 +7,6 @@
 		<meta name="Description" Content="中华考试网题库基于大数据的人工智能算法研发而成的考试题库，根据职业资格考试的考点、考频、难度分布，是职业资格考试备考首选平台，支持网页版、安卓手机和苹果手机版下载试用。"/>
 		<#--头部资源-->
 		<@header_resources/>
-		<script type="text/javascript" language="javascript" src="http://www.examw.com/mycode.js"></script>
 	</head>
 	<body>
 		<#--top banner-->
@@ -25,7 +24,7 @@
 						<#if (category.exams??) && (category.exams?size>0)>
 						<ul class="fl-list">
 							<#list category.exams as exam>
-								<li><a href="/${exam.id}/" target="_blank" title="${exam.text}">${exam.text}</a></li>
+								<li><a href="/${exam.id}/"  title="${exam.text}">${exam.text}</a></li>
 							</#list>
 						</ul>
 						</#if>

@@ -92,6 +92,8 @@
         </property>
         <!-- 远程调用生成页面的地址 -->
         <property name="remoteCreatePagesUrl" value="${remote_create_pages_url}"></property>
+        <!-- 静态页面数据接口 -->
+        <property name="staticPageDao" ref="staticPageDao" />
     </bean>
     <!-- 模版处理器抽象类 -->
     <bean id="templateProcess" abstract="true" class="com.examw.test.service.publish.impl.BaseTemplateProcess">

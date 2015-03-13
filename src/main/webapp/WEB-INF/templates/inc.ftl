@@ -2,10 +2,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <#--头部资源-->
 <#macro header_resources>
-<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <#if updateTime??>
 <meta name="UpdateTime" content="${updateTime?datetime}">
 </#if>
+<base target="_blank" />
 <link href="http://img.examw.com/test/pub.css" rel="stylesheet" type="text/css" />
 <link href="http://img.examw.com/test/index.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" charset="gb2312" src="http://img.examw.com/jQuery.js"></script>
@@ -22,7 +23,7 @@
         <div class="top-l">
             <ul>
                 <li><a class="shy" href="http://www.examw.com/">首页</a></li>
-                <li><a href="/ksbd/">宝典</a></li>
+                <li><a href="http://www.examw.com/ksbd/">宝典</a></li>
                 <li><a href="http://class.examw.com/">网校</a></li>
                 <li><a href="http://test.examw.com/">题库</a></li>
                 <li><a href="http://book.examw.com/">图书</a></li>
@@ -30,9 +31,9 @@
             </ul>
         </div>
         <div class="top-r" id="LoginA">
-        	<div class="log"><a rel="nofollow" href="http://test.examw.com/class/?DoMain=test" target="_blank">登陆</a></div>
+        	<div class="log"><a rel="nofollow" href="http://test.examw.com/class/?DoMain=test" >登陆</a></div>
             <div class="ge fl">|</div>
-            <div class="log"><a rel="nofollow" href="http://test.examw.com/class/?DoMain=test" target="_blank">注册</a></div>
+            <div class="log"><a rel="nofollow" href="http://test.examw.com/class/?DoMain=test" >注册</a></div>
         </div>
     </div>
 </div>
@@ -46,14 +47,14 @@
 <div class="menubox fl bulebg">
 	<div class="menu">
         <ul>
-            <li class="cur"><a href="/">首页</a></li>
+            <li class="cur"><a href="http://test.examw.com/">题库首页</a></li>
             <li><a href="/#category">考试分类</a></li>
             <li><a href="/news/">最新试卷</a></li>
             <li><a href="/hots/">试卷排行</a></li>
             <li><a href="/questions/list/">常见问题</a></li>
         </ul>
         <#-- 暂时默认的是[一建工程经济产品] -->
-        <div class="my"><a id="mytiku" rel="nofollow" href="http://tiku.examw.com/" target="_blank"></a></div>
+        <div class="my"><a id="mytiku" rel="nofollow" href="http://tiku.examw.com/" ></a></div>
     </div>
 </div>
 </#macro>
@@ -89,16 +90,10 @@
 </#if>
 </#macro>
 <#--试卷名称字符串截断 -->
-<#macro text_length_limit text>
-<#if (text?length >25)>
-	${text?substring(0,26)}...
-<#else>
-	${text}
-</#if>
-</#macro>
+<#macro text_length_limit text><#if (text?length >25)>${text?substring(0,26)}...<#else>${text}</#if></#macro>
 <#--最新试卷-->
 <#macro news_papers>
-<div class="newtit bulebg fl"><span><a <#if abbr??>href="/news/${abbr}"<#else>href="/news/"</#if> target="_blank">更多&gt;&gt;</a></span>最新试卷</div><div class="newtitbg"></div>
+<div class="newtit bulebg fl"><span><a <#if abbr??>href="/news/${abbr}/"<#else>href="/news/"</#if> >更多&gt;&gt;</a></span>最新试卷</div><div class="newtitbg"></div>
 <@papers_list_views newsPapers/>
 </#macro>
 <#--常见问题列表－最新试卷 -->
@@ -117,7 +112,7 @@
 </#macro>
 <#--最热试卷-->
 <#macro hots_papers>
-<div class="newtit bulebg fl"><span><a <#if abbr??>href="/hots/${abbr}"<#else>href="/hots/"</#if> target="_blank">更多&gt;&gt;</a></span>热门试卷</div><div class="newtitbg"></div>
+<div class="newtit bulebg fl"><span><a <#if abbr??>href="/hots/${abbr}/"<#else>href="/hots/"</#if> >更多&gt;&gt;</a></span>热门试卷</div><div class="newtitbg"></div>
 <@papers_list_views hotsPapers/>
 </#macro>
 <#--常见问题列表－最热试卷-->
@@ -137,7 +132,7 @@
 <#--常见问题-->
 <#macro questions_list>
 <div class="new-question">
-	<div class="newtit bulebg fl"><span><a href="/questions/list/" target="_blank">更多&gt;&gt;</a></span>常见问题</div><div class="newtitbg"></div>
+	<div class="newtit bulebg fl"><span><a href="/questions/list/" >更多&gt;&gt;</a></span>常见问题</div><div class="newtitbg"></div>
     <#if (questions??)>
     <ul class="list">
     	<#list questions as data>
@@ -422,9 +417,9 @@
 	<div class="nva"><a rel="nofollow" href="http://www.examw.com/about/">关于本站</a>┊<a href="http://www.examw.com/about/map.htm">网站地图</a>┊<a rel="nofollow" href="http://www.examw.com/about/copyright.html">网站声明</a>┊<a rel="nofollow" href="http://www.examw.com/about/ads.html">广告服务</a>┊<a href="http://www.examw.com/link/">友情链接</a>┊<a rel="nofollow" href="http://www.examw.com/about/job/">诚聘英才</a>┊<a rel="nofollow" href="http://www.examw.com/about/contact.html">联系我们</a>┊<a rel="nofollow" href="http: //bbs.examw.com/forum-4-1.html">意见咨询</a></div>
 	<div id="ft_about"></div>
 </div>
-<script type="text/javascript" charset="gb2312" language="javascript" src="http://img.examw.com/test/c.js"></script>
-<script type="text/javascript" charset="gb2312" language="javascript" src="http://img.examw.com/e.js"></script>
+<script type="text/javascript" language="javascript" src="http://img.examw.com/test/c.js"></script>
+<script type="text/javascript" language="javascript" src="http://img.examw.com/e_u.js"></script>
 <#-- 统计代码  -->
-<iframe src="/count.html" height="0" width="0" scrolling="no"></iframe>
+<iframe src="http://test.examw.com/count.html" height="0" width="0" scrolling="no"></iframe>
 </#macro>
 

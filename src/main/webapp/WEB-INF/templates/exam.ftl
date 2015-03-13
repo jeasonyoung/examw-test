@@ -15,20 +15,19 @@
 			<meta name="description" content="中华考试网${examName}考试题库为大家提供2015${examName}考试模拟试题、历年真题及答案、章节练习题、网校名师预测试题、考前冲刺试题等考试试题及答案解析，支持网页版、安卓、苹果手机版下载试用。">
 		</#if>
 		<@header_resources/>
-		<script type="text/javascript" language="javascript" src="http://www.examw.com/mycode.js"></script>
 	</head>
 	<body>
 		<#--top banner-->
 		<@topbox/>
 		<div class="h20"></div>
 		<div class="main">
-			<div class="weizhi fl"><span></span>当前位置：<a href="/">首页</a><i>&gt;</i>${examName}</div>
+			<div class="weizhi fl"><span></span>当前位置：<a href="http://test.examw.com/">题库首页</a><i>&gt;</i>${examName}</div>
 		</div>
 		<div class="h1d"></div>
 		<div class="h1f"></div>
 		<div class="h20"></div>
 		<div class="main">
-			<div class="titbox bulebg fl">免费下载试用</div><div class="titboxbg"></div>
+			<div class="titbox bulebg fl">免费试用</div><div class="titboxbg"></div>
 		    <div class="content yinying">
 		        <div class="porduct-list">
 		            <ul>
@@ -45,12 +44,12 @@
 	                <#list products as p>
 		                <li class="out" onMouseOver="this.className='over'" onMouseOut="this.className='out'">
 		                    <div class="title">
-		                        <em>&middot;<a href="/${abbr}/${p.id}.html" target="_blank" title="${p.text}">${p.text}</a></em>
+		                        <em>&middot;<a href="/${abbr}/${p.id}.html"  title="${p.text}">${p.text}</a></em>
 		                        <span>${p.price}元</span>
 		                        <span class="red">${p.discount}元</span>
 		                        <span>${p.total}题</span>
 		                        <i>
-		                        	<#--<div class="buy"><a name="index-products-buy" id="${p.id}" Price="${p.price}" GoodPrice="${p.discount}" Title="${p.text}" href="#" target="_blank">我要购买</a></div>-->
+		                        	<#--<div class="buy"><a name="index-products-buy" id="${p.id}" Price="${p.price}" GoodPrice="${p.discount}" Title="${p.text}" href="#" >我要购买</a></div>-->
 		                        	<div class="tiyan"><a href="/${abbr}/${p.id}.html" target="_blank">免费体验</a></div>
 		                        </i>
 		                    </div>
@@ -76,6 +75,5 @@
 		<div class="h30"></div>
 		<#--footer-->
 		<@footer/>
-		<script language="javascript" src="http://www.examw.com/mycode.js"></script>
 	</body>
 </html>

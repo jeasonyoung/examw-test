@@ -3,14 +3,14 @@
 <#assign do_product_url = "http://tiku.examw.com/library/${product.id}"/><#--链接到考试前台产品界面-->
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head> 
-		<title><#if product.title??>${product.title}<#else>${product.text} - ${product.examName}题库免费下载试用 - 中华考试网</#if></title>
+		<title><#if product.title??&&((product.title?trim)!="")>${product.title}<#else>${product.text} - ${product.examName}题库免费试用 - 中华考试网</#if></title>
 		<#--头部资源-->
-		<#if product.keywords??>
+		<#if product.keywords??&&((product.keywords?trim)!="")>
 			<meta name="keywords" content="${product.keywords}" >
 		<#else>
 			<meta name="keywords" content="${product.text},${product.examName}考试题库" >
 		</#if>
-		<#if product.description??>
+		<#if product.description??&&((product.description?trim)!="")>
 			<meta name="description" content="${product.description}">
 		<#else>
 			<meta name="description" content="${product.text}、包含${product.examName}考试历年真题及答案、模拟试题、章节练习题、网校名师预测试题、考前冲刺试题等考试试题及答案解析，支持网页版、安卓、苹果手机版下载试用。">
@@ -23,7 +23,7 @@
 		<@topbox/>
 		<div class="h20"></div>
 		<div class="main">
-			<div class="weizhi fl"><span></span>当前位置：<a href="/">首页</a><i>&gt;</i><a href="/${product.examAbbr}">${product.examName}</a></div>
+			<div class="weizhi fl"><span></span>当前位置：<a href="http://test.examw.com/">题库首页</a><i>&gt;</i><a href="/${product.examAbbr}/">${product.examName}题库</a><i>&gt;</i>${product.text}</div>
 		</div>
 		<div class="h1d"></div>
 		<div class="h1f"></div>
@@ -53,9 +53,11 @@
 		                        <li>累计下载：58658</li>
 		                        -->
 		                    </ul>
-		                    <div class="tishi">题库服务：由<a href="http://www.examw.com/" target="_blank">中华考试网</a>提供在线咨询、购买安装指导、售后服务</div>
-		                    <div class="btn"><div class="hong-btn"><a href="${do_product_url}">立即做题</a></div></div>
-		                    <div class="btn"><div class="lv-btn"><a name="index-products-buy"  id="${product.id}" Price="${product.price}" GoodPrice="${product.discount}" Title="${product.text}" href="#">立即购买</a></div></div>
+		                    <div class="tishi">题库服务：由<a href="http://www.examw.com/" >中华考试网</a>提供在线咨询、购买安装指导、售后服务</div>
+		                    <div class="btn"><div class="hong-btn"><a rel="nofollow" href="${do_product_url}">立即做题</a></div></div>
+		                    <#--
+		                    <div class="btn"><div class="lv-btn"><a rel="nofollow" name="index-products-buy"  id="${product.id}" Price="${product.price}" GoodPrice="${product.discount}" Title="${product.text}" href="#">立即购买</a></div></div>
+		                    -->
 		                </div>
 		                <div class="h30"></div>
 		                <div class="phonebox fl">
