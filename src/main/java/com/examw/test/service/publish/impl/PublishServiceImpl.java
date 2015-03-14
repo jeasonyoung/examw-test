@@ -110,8 +110,11 @@ public class PublishServiceImpl implements IPublishService {
 			{
 				if(page == null) continue;
 				remoteCreatePage(page.getId());
+				sleep();
 			}
 		}
+		//手动清除缓存
+		this.staticPageDao.evict(StaticPage.class);
 	}
 	//远程调用生成页面
 	private void remoteCreatePage(String id)
@@ -120,15 +123,19 @@ public class PublishServiceImpl implements IPublishService {
 		while(times<4)
 		{
 			try{
+				logger.error(String.format("id为%s的页面开始生成", id));
 				String res = HttpUtil.sendRequest(String.format(remoteCreatePagesUrl, id), "GET", null);
 				if(res.contains("succes"))
 				{
+					logger.error(String.format("id为%s的页面开始生成成功", id));
 					return;
 				}
+				logger.error(String.format("id为%1$s的页面开始生成失败 %2$s", id,res));
 				times++;
 			}catch(Exception e)
 			{
-				logger.error(String.format("id为%s的页面生成失败", id));
+				logger.error(e.getMessage());
+				logger.error(String.format("id为%1$s的页面生成失败 %2$s", id,e.getMessage()));
 				times++;
 			}
 		}
@@ -192,5 +199,40 @@ public class PublishServiceImpl implements IPublishService {
 		record.setEndTime(new Date());
 		this.publishRecordDao.saveOrUpdate(record);
 		if(logger.isDebugEnabled()) logger.debug("=>更新发布结束！");
+	}
+	
+	/*
+	 * 生成页面
+	 * @see com.examw.test.service.publish.IPublishService#createPage()
+	 */
+	@Override
+	public void createPage() {
+		if(StringUtils.isEmpty(remoteCreatePagesUrl)) return;
+		//远程调用生成页面
+		List<StaticPage> pages = this.staticPageDao.findPages(new StaticPageInfo(){
+			private static final long serialVersionUID = 1L;}
+		);
+		if(pages!=null && pages.size()>0)
+		{
+			for(StaticPage page:pages)
+			{
+				if(page == null) continue;
+				remoteCreatePage(page.getId());
+				sleep();
+			}
+		}
+		//手动清除缓存
+		this.staticPageDao.evict(StaticPage.class);
+	}
+	/**
+	 * sleep 500ms
+	 */
+	private void sleep()
+	{
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 }

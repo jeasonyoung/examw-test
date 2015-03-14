@@ -51,7 +51,7 @@
 		        <div class="shjlist">
 		            <ul>
 		            	<#list papers as p>
-		                <li class="shjout" onMouseOver="this.className='shjover'" onMouseOut="this.className='shjout'">
+		                <li class="shjout">
 		                    <div class="title">
 		                        <em>
 		                            <div class="title"><a href="/${examAbbr}/${p.category}/${p.id}.html"  title="${p.text}">${p.text}</a></div>

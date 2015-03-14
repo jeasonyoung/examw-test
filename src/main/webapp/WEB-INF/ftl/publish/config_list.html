@@ -27,7 +27,8 @@
 	<@shiro.hasPermission name="${PER_DELETE}">
 	<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
 	</@shiro.hasPermission>
-	
+	<span>|</span>
+	<a href="#" class="easyui-linkbutton" onclick="${dg}_createPage()" data-options="iconCls:'icon-remove',plain:true">生成页面</a>
 	<label style="margin-left:10px;"><input name="name" class="easyui-textbox" prompt="发布配置名称" data-options="icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}},{iconCls:'icon-search',handler:function(e){ ${dg}_search(); }}]" style="width:398px;"/></label>
 </div>
 <script type="text/javascript">
@@ -144,6 +145,25 @@ $(function(){
 		}
 	};
 	</@shiro.hasPermission>
+	${dg}_createPage = function()
+	{
+		$.messager.progress({"text":"正在生成页面数据，请稍后..."});
+		$.ajax({
+			url:"<@s.url '/publish/config/createPage'/>",
+			type:"POST",
+			dataType:"json",
+			contentType:"application/json;charset=UTF-8",
+			error:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
+			success:function(data,textStatus){
+				$.messager.progress("close");
+				if(data.success){
+					$.messager.show({title:"提示", msg:"生成成功" });
+				}else{
+					$.messager.show({title:"提示", msg:data.msg });
+				}
+			}
+		});
+	}
 });
 //-->
 </script>

@@ -420,6 +420,6 @@
 <script type="text/javascript" language="javascript" src="http://img.examw.com/test/c.js"></script>
 <script type="text/javascript" language="javascript" src="http://img.examw.com/e_u.js"></script>
 <#-- 统计代码  -->
-<iframe src="http://test.examw.com/count.html" height="0" width="0" scrolling="no"></iframe>
+<iframe src="/count.html" scrolling="no" height="0" width="0" style="display: none;"></iframe>
 </#macro>
 

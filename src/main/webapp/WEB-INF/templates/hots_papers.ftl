@@ -33,7 +33,7 @@
 		        <div class="shjlist">
 		            <ul>
 		            	<#list papers as p>
-		                <li class="shjout" onMouseOver="this.className='shjover'" onMouseOut="this.className='shjout'">
+		                <li>
 		                    <div class="title">
 		                        <em class="nobg">
 		                        	<div class="bgcheng">${p.order}</div>

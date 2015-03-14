@@ -59,7 +59,7 @@
 		                    </div>
 		                </li>
 		                <#list products as p>
-		                <li class="out" onMouseOver="this.className='over'" onMouseOut="this.className='out'">
+		                <li class="out">
 		                    <div class="title">
 		                        <em>&middot;<a href="/${abbr}/${p.id}.html"  title="${p.text}">${p.text}</a></em>
 		                        <span>${p.price}元</span>

@@ -60,6 +60,7 @@
 		                    -->
 		                </div>
 		                <div class="h30"></div>
+		                <#--
 		                <div class="phonebox fl">
 		                	<div class="tit fl">
 		                    	<div class="ico"><h2>移动学习平台</h2>移动应用辅助学习</div>
@@ -102,6 +103,7 @@
 		                        </div>
 		                    </div>
 		                </div>
+		                -->
 		            </div>
 		        </div>
 		    </div>

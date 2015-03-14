@@ -27,6 +27,7 @@ $(function(){
 	    <thead>
 	    	<tr>
 	    		<th data-options="field:'id',checkbox:true"></th>
+	    		<th data-options="field:'hasSyllabus',width:12,align:'left',sortable:false,formatter:function(value,row,index){ var text='<span style=\'color:red\'>未关联</span>'; if(row.hasSyllabus) text='已有关联'; return text; }">是否关联</th>
 				<th data-options="field:'content',width:60,align:'left',sortable:false,formatter:function(value,row,index){ value = value.replace(/<[^>]*>/g,'');  return  '<span title=\''+ value +'\'>' + value + '</span>'; }">试题</th>
 				<th data-options="field:'typeName',width:12,align:'center',sortable:true">题型</th>
 	    	</tr>

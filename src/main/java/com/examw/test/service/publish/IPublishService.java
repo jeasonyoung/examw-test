@@ -16,4 +16,8 @@ public interface IPublishService {
 	 * 配置ID。
 	 */
 	void updatePublish(String configId);
+	/**
+	 * 生成页面
+	 */
+	void createPage();
 }

@@ -27,7 +27,6 @@ import com.examw.test.model.library.ItemInfo;
 import com.examw.test.model.syllabus.SyllabusInfo;
 import com.examw.test.service.impl.BaseDataServiceImpl;
 import com.examw.test.service.library.IItemService;
-import com.examw.test.service.library.ItemStatus;
 import com.examw.test.service.syllabus.ISyllabusService;
 /**
  * 大纲服务接口实现类。
@@ -313,12 +312,12 @@ public class SyllabusServiceImpl extends BaseDataServiceImpl<Syllabus, SyllabusI
 			for(Item item:items)
 			{
 				if(item == null) continue;
-				if(item.getStatus().equals(ItemStatus.AUDIT.getValue()))
-				{
+//				if(item.getStatus().equals(ItemStatus.AUDIT.getValue()))
+//				{
 					ItemInfo info = new ItemInfo();
 					itemService.conversion(item, info, true);
 					result.add(info);
-				}
+//				}
 			}
 		}
 		return result;
