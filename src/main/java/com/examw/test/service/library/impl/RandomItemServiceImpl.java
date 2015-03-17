@@ -140,9 +140,15 @@ public class RandomItemServiceImpl implements IRandomItemService {
 		}
 		int total_index = total,index = 0;//结构需要的试题总数。
 		while(total_index > 0){
-			if(pools == null || pools.size() == 0) break;
+			if(pools == null || pools.size() == 0){
+				logger.error("试题池为空了....");
+				break;
+			}
 			Item item = this.pushItemHandler(pools);
-			if(item == null) break;
+			if(item == null) {
+				logger.error("抽到的试题为NULL,跳出了循环 total_index = "+total_index);
+				break;
+			}
 			if(!itemsMap.containsKey(item.getId())){
 				pools.remove(item);//从随机池移除被选中的试题。
 				itemsMap.put(item.getId(), item);
@@ -151,6 +157,7 @@ public class RandomItemServiceImpl implements IRandomItemService {
 				continue;
 			}
 			if(index > push_item_random_for_count){
+				logger.error("抽到了已经存在的试题");
 				break;
 			}
 			index++;

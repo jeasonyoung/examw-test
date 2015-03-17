@@ -212,7 +212,7 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载试题［subject = %1$s］［itemType = %2$s］［area = %3$s］集合...", subjectId, itemType, area));
 		StringBuilder hqlBuilder = new StringBuilder();
 		// 2014.11.22 修改查询语句,在试题中若地区为null的话 查询不出试题的问题
-		hqlBuilder.append("select i from Item i left join i.area a where (i.parent is null) ");
+		hqlBuilder.append("select i from Item i left join fetch i.structures s left join i.area a where (i.parent is null) ");
 		Map<String, Object> parameters = new HashMap<>();
 		if(subjectId != null && subjectId.length > 0){
 			hqlBuilder.append("and (i.subject.id in (:subjectId)) ");
@@ -226,6 +226,8 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 			hqlBuilder.append("  and ((a is null) or (a.code = 1) or (a.id = :areaId)) ");
 			parameters.put("areaId", area.getId());
 		}
+		//修改 只查询没有关联的试题
+		hqlBuilder.append("  and s.structure is null ");
 		if(logger.isDebugEnabled()) logger.debug(hqlBuilder.toString());
 		return this.find(hqlBuilder.toString(), parameters, null, null);
 	}
