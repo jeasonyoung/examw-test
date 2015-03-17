@@ -1,14 +1,11 @@
 package com.examw.test.service.library.impl;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
-import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
@@ -211,11 +208,11 @@ public class RandomItemServiceImpl implements IRandomItemService {
 		}
 		return pools.size();
 	}
-	//抽题处理。
+	//抽题处理(只抽取未关联的试题)。
 	private Item pushItemHandler(List<Item> sources){
-		Map<Long, Item> map = new TreeMap<Long, Item>(new Comparator<Long>() {
-			@Override public int compare(Long o1, Long o2) { return (int)(o1 - o2); }
-		});
+//		Map<Long, Item> map = new TreeMap<Long, Item>(new Comparator<Long>() {
+//			@Override public int compare(Long o1, Long o2) { return (int)(o1 - o2); }
+//		});
 		int index = push_item_random_for_count;//随机次数。
 		while(index > 0){
 			Item item = this.randomSelected(sources);
@@ -224,15 +221,15 @@ public class RandomItemServiceImpl implements IRandomItemService {
 			if(count == 0){//如果随机出的试题未被试卷关联过将作为首要目标。
 				return item;
 			}
-			map.put(count, item);
+			//map.put(count, item);
 			//随机次数递减。
 			index --;
 		}
-		if(map.size() == 0) return null;
+		//if(map.size() == 0) return null;
 		//将关联次数最少的试题作为目标试题。
-		for(Entry<Long, Item> entry : map.entrySet()){
-			if(entry != null) return entry.getValue();
-		}
+//		for(Entry<Long, Item> entry : map.entrySet()){
+//			if(entry != null) return entry.getValue();
+//		}
 		return null;
 	}
 	//随机选题。
