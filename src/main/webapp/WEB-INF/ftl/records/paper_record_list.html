@@ -9,6 +9,35 @@ $(function(){
 	${dg}_search = function(){
 		$("#${dg}").datagrid("load",{"userName":$("#${dg}_toobar input[name='userName']").val(),"paperName":$("#${dg}_toobar input[name='paperName']").val()});
 	};
+	//删除
+	<@shiro.hasPermission name="${PER_DELETE}">
+	//delete
+	${dg}_delete = function(){
+		var rows = $("#${dg}").datagrid("getChecked");
+		if(rows && rows.length > 0){
+			$.messager.confirm("确认","这是用户数据,请谨慎操作,您是否确认删除选中的数据?",function(r){
+				if(!r)return;
+				$.messager.progress({"text":"正在删除数据，请稍后..."});
+				var ids = [];
+				for(var i = 0; i < rows.length; i++){ ids.push(rows[i].id); }
+				$.ajax({
+					url:"<@s.url '/record/paper/delete'/>",type:"POST",data:JSON.stringify(ids),dataType:"json",contentType:"application/json;charset=UTF-8",
+					error:function(e){ $.messager.progress("close"); <@error_dialog "e"/> },
+					success:function(data,textStatus){
+						$.messager.progress("close");
+						if(data.success){
+							$("#${dg}").datagrid("load").datagrid("unselectAll");
+						}else{
+							$.messager.show({title:"提示", msg:data.msg });
+						}
+					}
+				});
+			});
+		}else{
+			$.messager.alert("提示","未选中须删除的数据！");
+		}
+	};
+	</@shiro.hasPermission>
 });
 //-->
 </script>
@@ -29,6 +58,9 @@ $(function(){
 			</thead>
 </table>
 <div id="${dg}_toobar">
+	<@shiro.hasPermission name="${PER_DELETE}">
+	<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
+	</@shiro.hasPermission>
 	<label>用户名: <input name="userName" type="text" style="width:168px;"/></label>
 	<label>试卷名称：<input name="paperName" type="text" style="width:268px;"/></label>
 	<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
