@@ -97,6 +97,7 @@ $(function(){
 				exam_id = "";
 			}
 		}
+		$('#${dg}').datagrid('unselectAll');
 		$("#${dg}").datagrid("load",{
 			  "name":$("#${dg}_toobar input[name='name']").val(),
 			  "categoryId":catalog_id,

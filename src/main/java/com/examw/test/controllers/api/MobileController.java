@@ -145,7 +145,7 @@ public class MobileController {
 	 */
 	@RequestMapping(value = {"/sync/records/papers"}, method = {RequestMethod.POST})
 	@ResponseBody
-	public Json syncPaperRecords(AppClientPush<PaperRecordSync> req){
+	public Json syncPaperRecords(@RequestBody AppClientPush<PaperRecordSync> req){
 		if(logger.isDebugEnabled()) logger.debug("同步试卷记录数据...");
 		Json result = new Json();
 		try {
@@ -164,7 +164,7 @@ public class MobileController {
 	 */
 	@RequestMapping(value = {"/sync/records/items"}, method = {RequestMethod.POST})
 	@ResponseBody
-	public Json syncPaperItemRecords(AppClientPush<PaperItemRecordSync> req){
+	public Json syncPaperItemRecords(@RequestBody AppClientPush<PaperItemRecordSync> req){
 		if(logger.isDebugEnabled()) logger.debug("同步试题记录数据...");
 		Json result = new Json();
 		try {
@@ -183,7 +183,7 @@ public class MobileController {
 	 */
 	@RequestMapping(value = {"/sync/favorites"}, method = {RequestMethod.POST})
 	@ResponseBody
-	public Json syncFavorites(AppClientPush<FavoriteSync> req){
+	public Json syncFavorites(@RequestBody AppClientPush<FavoriteSync> req){
 		if(logger.isDebugEnabled()) logger.debug("同步收藏夹数据...");
 		Json result = new Json();
 		try {

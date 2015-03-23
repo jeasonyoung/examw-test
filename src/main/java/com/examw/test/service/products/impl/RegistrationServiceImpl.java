@@ -469,4 +469,32 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 	public Registration loadRegistration(String code) {
 		return this.registrationDao.loadRegistration(this.cleanCodeFormat(code));
 	}
+	
+	@Override
+	public void activeRegistration(String code) throws Exception {
+		boolean result = this.verificationFormat(code);
+		if(!result) throw new Exception("注册码错误！");
+		Registration data = this.registrationDao.loadRegistration(code);
+		if(data == null) throw new Exception(String.format("注册码未登记！"));
+		//必须未激活
+		if(data.getStatus() != RegistrationStatus.NONE.getValue()){
+			throw new Exception(String.format("注册码：%s!", this.loadStatusName(data.getStatus())));
+		}
+		//激活
+		int limit = 12;
+		if(data.getLimits() != null && data.getLimits().intValue() != 0)
+		{
+			limit = data.getLimits();
+		}
+		data.setStartTime(new Date());//激活时间
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(data.getStartTime());
+		calendar.add(Calendar.MONTH, limit);
+		calendar.set(Calendar.HOUR_OF_DAY, 23);//时
+		calendar.set(Calendar.MINUTE, 59);//分
+		calendar.set(Calendar.SECOND, 59);//秒
+		calendar.set(Calendar.MILLISECOND, 0);//微妙
+		data.setEndTime(calendar.getTime());//过期时间
+		data.setStatus(RegistrationStatus.ACTIVE.getValue());
+	}
 }

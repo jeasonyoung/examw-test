@@ -5,9 +5,11 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
-import org.springframework.format.annotation.DateTimeFormat;
+
+import com.examw.support.CustomDateDeserializer;
 /**
  * 试题记录同步
  * 
@@ -123,7 +125,7 @@ public class PaperRecordSync implements Serializable {
 	 * @param createTime 
 	 *	  创建时间。
 	 */
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonDeserialize(using = CustomDateDeserializer.LongDate.class)
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
@@ -139,7 +141,7 @@ public class PaperRecordSync implements Serializable {
 	 * @param lastTime 
 	 *	  最后修改时间。
 	 */
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonDeserialize(using = CustomDateDeserializer.LongDate.class)
 	public void setLastTime(Date lastTime) {
 		this.lastTime = lastTime;
 	}

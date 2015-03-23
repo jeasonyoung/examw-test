@@ -74,4 +74,11 @@ public interface IRegistrationCodeService {
 	 * @return
 	 */
 	Registration loadRegistration(String code);
+	
+	/**
+	 * 激活注册码
+	 * @param code
+	 * @throws Exception 
+	 */
+	void activeRegistration(String code) throws Exception;
 }

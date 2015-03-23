@@ -1,5 +1,9 @@
 package com.examw.test.service.api.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
 
@@ -10,6 +14,7 @@ import com.examw.test.model.api.AppRegister;
 import com.examw.test.service.api.IHostRegisterService;
 import com.examw.test.service.products.IRegistrationBindingService;
 import com.examw.test.service.products.IRegistrationCodeService;
+import com.examw.test.service.products.RegistrationStatus;
 /**
  * 服务端注册服务接口实现类。
  * 
@@ -50,6 +55,7 @@ public class HostRegisterServiceImpl implements IHostRegisterService {
 	}
 	/*
 	 * 验证应用注册码。
+	 * 注册码没有激活的话,激活注册码  2015.03.19 修改
 	 * @see com.examw.test.service.api.IHostRegisterService#verifyAppRegister(com.examw.test.model.api.AppRegister)
 	 */
 	@Override
@@ -58,8 +64,42 @@ public class HostRegisterServiceImpl implements IHostRegisterService {
 		if(appRegister == null) throw new IllegalArgumentException("注册信息为空！");
 		String reg_code = this.registrationCodeService.cleanCodeFormat(appRegister.getCode());
 		if(StringUtils.isEmpty(reg_code)) throw new Exception("注册码为空！");
-		if(this.registrationCodeService.validation(reg_code)){//检测注册码是否合法
-			Registration registration = this.registrationCodeService.loadRegistration(reg_code);
+		boolean result = this.registrationCodeService.verificationFormat(reg_code);
+		if(!result) throw new Exception("注册码错误！");
+		Registration data = this.registrationCodeService.loadRegistration(reg_code);
+		if(data == null) throw new Exception(String.format("注册码未登记！"));
+		//注册码没有激活
+		if(data.getStatus() == RegistrationStatus.NONE.getValue()){
+			//激活注册码
+			//激活
+			int limit = 12;
+			if(data.getLimits() != null && data.getLimits().intValue() != 0)
+			{
+				limit = data.getLimits();
+			}
+			data.setStartTime(new Date());//激活时间
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(data.getStartTime());
+			calendar.add(Calendar.MONTH, limit);
+			calendar.set(Calendar.HOUR_OF_DAY, 23);//时
+			calendar.set(Calendar.MINUTE, 59);//分
+			calendar.set(Calendar.SECOND, 59);//秒
+			calendar.set(Calendar.MILLISECOND, 0);//微妙
+			data.setEndTime(calendar.getTime());//过期时间
+			data.setStatus(RegistrationStatus.ACTIVE.getValue());
+		}else if(data.getStatus() != RegistrationStatus.ACTIVE.getValue())
+		{
+			throw new Exception("注册码不是有效状态!");
+		}else{
+			if(data.getStartTime() != null && data.getEndTime() != null){//验证有效期
+				long current_time = System.currentTimeMillis(),start_time = data.getStartTime().getTime(),end_time = data.getEndTime().getTime();
+				if(current_time < start_time || current_time > end_time){
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					throw new Exception(String.format("注册码不在有效时间范围［%1$s - %2$s］内！", sdf.format(data.getStartTime()), sdf.format(data.getEndTime())));
+				}	
+			}
+		}
+		Registration registration = data;
 			Product product = null;
 			if(registration != null && (product =  registration.getProduct()) != null){
 				if(!product.getId().equalsIgnoreCase(appRegister.getProductId())){//检查注册码所属产品是否一致
@@ -79,7 +119,6 @@ public class HostRegisterServiceImpl implements IHostRegisterService {
 						appRegister.getClientMachine(),
 						appRegister.getUserId());
 			}
-		}
 		return false;
 	}
 

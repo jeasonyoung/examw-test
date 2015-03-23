@@ -82,6 +82,7 @@ $(function(){
 	//search
 	${dg}_search = function(){
 		var node = $('#${module}_tree').tree("getSelected");
+		$('#${dg}').datagrid('unselectAll');
 		$("#${dg}").datagrid("load",{
 			  "name":$("#${dg}_toobar input[name='name']").val(),
 			  "pid":(node ? node.id : "")

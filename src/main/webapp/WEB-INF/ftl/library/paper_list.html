@@ -167,6 +167,7 @@ $(function(){
 				exam_id = node["id"];
 			}
 		}
+		$('#${dg}').datagrid('unselectAll');
 		$("#${dg}").datagrid("load",{"examId":exam_id, "subjectId":subject_id,"name":$("#${dg}_toobar input[name='name']").val() });
 	};
 	<@shiro.hasPermission name="${PER_DELETE}">

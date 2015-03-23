@@ -4,9 +4,11 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
-import org.springframework.format.annotation.DateTimeFormat;
+
+import com.examw.support.CustomDateDeserializer;
 /**
  * 收藏同步。
  * 
@@ -136,7 +138,7 @@ public class FavoriteSync implements Serializable {
 	 * @param createTime 
 	 *	  收藏时间。
 	 */
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonDeserialize(using = CustomDateDeserializer.LongDate.class)  
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}

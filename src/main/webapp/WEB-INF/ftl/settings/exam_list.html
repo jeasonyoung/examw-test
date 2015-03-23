@@ -75,6 +75,7 @@ $(function(){
 	//search
 	${dg}_search = function(){
 		var node = $('#${module}_category_tree').tree("getSelected");
+		$('#${dg}').datagrid('unselectAll');
 		$("#${dg}").datagrid("load",{
 			"categoryId":(node ? node.id : ""),
 			"name":$("#${dg}_toobar input[name='name']").val()
