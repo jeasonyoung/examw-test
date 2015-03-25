@@ -108,4 +108,8 @@ public interface IPaperReleaseDao extends IBaseDao<PaperRelease> {
 	 * 试卷发布数据统计。
 	 */
 	Long totalPaperReleases(PaperInfo info);
+	/**
+	 * 查找试卷状态为为审核的发布数据。
+	 */
+	List<PaperRelease> findTopPapersStatusNone(Integer top);
 }

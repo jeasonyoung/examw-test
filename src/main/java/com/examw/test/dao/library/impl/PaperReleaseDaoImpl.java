@@ -13,6 +13,7 @@ import com.examw.test.dao.library.IPaperReleaseDao;
 import com.examw.test.domain.library.PaperRelease;
 import com.examw.test.model.library.PaperInfo;
 import com.examw.test.service.library.ItemStatus;
+import com.examw.test.service.library.PaperStatus;
 import com.examw.test.service.library.PaperType;
 
 /**
@@ -246,5 +247,17 @@ public class PaperReleaseDaoImpl extends BaseDaoImpl<PaperRelease> implements IP
 		Map<String, Object> parameters = new HashMap<>();
 		hql = this.addWhere(info, hql, parameters);
 		return this.count(hql, parameters);
+	}
+	/*
+	 * 查找试卷状态为为审核的发布数据。
+	 * @see com.examw.test.dao.library.IPaperReleaseDao#findTopPapersStatusNone(java.lang.Integer)
+	 */
+	@Override
+	public List<PaperRelease> findTopPapersStatusNone(Integer top) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("查找试卷状态为为审核的发布数据...:%d", top));
+		final String hql = "from PaperRelease r where r.paper.status = :status ";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("status", PaperStatus.NONE.getValue());
+		return this.find(hql, parameters, 0, top);
 	}
 }

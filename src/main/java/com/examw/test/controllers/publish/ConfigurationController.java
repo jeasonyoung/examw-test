@@ -172,23 +172,22 @@ public class ConfigurationController {
 		}
 		return result;
 	}
-	
-	@RequiresPermissions({ModuleConstant.PUBLISH_CONFIG + ":" + Right.UPDATE})
-	@RequestMapping(value={"/createPage"}, method = RequestMethod.POST)
-	@ResponseBody
-	public Json createPage()
-	{
-		if(logger.isDebugEnabled()) logger.debug("生成页面");
-		Json result = new Json();
-		try{
-			this.publishService.createPage();
-			result.setSuccess(true);
-		}catch(Exception e)
-		{
-			result.setSuccess(false);
-			result.setMsg(e.getMessage());
-			logger.error(String.format("生成页面时发生异常:%s", e.getMessage()), e);
-		}
-		return result;
-	}
+//	@RequiresPermissions({ModuleConstant.PUBLISH_CONFIG + ":" + Right.UPDATE})
+//	@RequestMapping(value={"/createPage"}, method = RequestMethod.POST)
+//	@ResponseBody
+//	public Json createPage()
+//	{
+//		if(logger.isDebugEnabled()) logger.debug("生成页面");
+//		Json result = new Json();
+//		try{
+//			this.publishService.createPage();
+//			result.setSuccess(true);
+//		}catch(Exception e)
+//		{
+//			result.setSuccess(false);
+//			result.setMsg(e.getMessage());
+//			logger.error(String.format("生成页面时发生异常:%s", e.getMessage()), e);
+//		}
+//		return result;
+//	}
 }

@@ -1,23 +1,21 @@
 package com.examw.test.service.publish.impl;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationListener;
 import org.springframework.util.StringUtils;
 
 import com.examw.service.Status;
 import com.examw.test.dao.publish.IConfigurationDao;
 import com.examw.test.dao.publish.IPublishRecordDao;
-import com.examw.test.dao.publish.IStaticPageDao;
 import com.examw.test.domain.publish.Configuration;
 import com.examw.test.domain.publish.PublishRecord;
-import com.examw.test.domain.publish.StaticPage;
-import com.examw.test.model.publish.StaticPageInfo;
 import com.examw.test.service.publish.ConfigurationTemplateType;
 import com.examw.test.service.publish.IPublishService;
 import com.examw.test.service.publish.ITemplateProcess;
+import com.examw.test.service.publish.RemotePublishEvent;
 import com.examw.utils.HttpUtil;
 
 /**
@@ -26,14 +24,14 @@ import com.examw.utils.HttpUtil;
  * @author yangyong
  * @since 2014年12月30日
  */
-public class PublishServiceImpl implements IPublishService {
+public class PublishServiceImpl implements IPublishService,ApplicationListener<RemotePublishEvent> {
 	private static final Logger logger = Logger.getLogger(PublishServiceImpl.class);
+	private static final int remote_createpage_max_times = 3,remote_create_waiting = 100;
 	private IConfigurationDao configurationDao;
 	private IPublishRecordDao publishRecordDao;
-	private IStaticPageDao staticPageDao;
 	private Map<Integer, ITemplateProcess> processes;
 	//远程生成页面地址
-	private String remoteCreatePagesUrl; 
+	private String remoteCreatePagesUrl;
 	/**
 	 * 设置发布配置数据接口。
 	 * @param configurationDao 
@@ -53,15 +51,6 @@ public class PublishServiceImpl implements IPublishService {
 		this.publishRecordDao = publishRecordDao;
 	}
 	/**
-	 * 设置静态页面数据接口。
-	 * @param staticPageDao 
-	 *	  静态页面数据接口。
-	 */
-	public void setStaticPageDao(IStaticPageDao staticPageDao) {
-		if(logger.isDebugEnabled()) logger.debug("注入静态页面数据接口...");
-		this.staticPageDao = staticPageDao;
-	}
-	/**
 	 * 设置模版处理器集合。
 	 * @param processes 
 	 *	  模版处理器集合。
@@ -70,11 +59,10 @@ public class PublishServiceImpl implements IPublishService {
 		if(logger.isDebugEnabled()) logger.debug("注入模版处理器集合...");
 		this.processes = processes;
 	}
-	
 	/**
 	 * 设置 生成页面的远程调用地址
 	 * @param remoteCreatePagesUrl
-	 * 
+	 *  生成页面的远程调用地址
 	 */
 	public void setRemoteCreatePagesUrl(String remoteCreatePagesUrl) {
 		this.remoteCreatePagesUrl = remoteCreatePagesUrl;
@@ -99,46 +87,6 @@ public class PublishServiceImpl implements IPublishService {
 	public synchronized void updatePublish() {
 		if(logger.isDebugEnabled()) logger.debug("=>开始更新发布....");
 		this.updatePublish(this.configurationDao.loadTopConfiguration());
-		if(StringUtils.isEmpty(remoteCreatePagesUrl)) return;
-		//远程调用生成页面
-		List<StaticPage> pages = this.staticPageDao.findPages(new StaticPageInfo(){
-			private static final long serialVersionUID = 1L;}
-		);
-		if(pages!=null && pages.size()>0)
-		{
-			for(StaticPage page:pages)
-			{
-				if(page == null) continue;
-				remoteCreatePage(page.getId());
-				sleep();
-			}
-		}
-		//手动清除缓存
-		this.staticPageDao.evict(StaticPage.class);
-	}
-	//远程调用生成页面
-	private void remoteCreatePage(String id)
-	{
-		int times = 1;
-		while(times<4)
-		{
-			try{
-				logger.error(String.format("id为%s的页面开始生成", id));
-				String res = HttpUtil.sendRequest(String.format(remoteCreatePagesUrl, id), "GET", null);
-				if(res.contains("succes"))
-				{
-					logger.error(String.format("id为%s的页面开始生成成功", id));
-					return;
-				}
-				logger.error(String.format("id为%1$s的页面开始生成失败 %2$s", id,res));
-				times++;
-			}catch(Exception e)
-			{
-				logger.error(e.getMessage());
-				logger.error(String.format("id为%1$s的页面生成失败 %2$s", id,e.getMessage()));
-				times++;
-			}
-		}
 	}
 	/*
 	 * 更新发布指定配置。
@@ -200,39 +148,28 @@ public class PublishServiceImpl implements IPublishService {
 		this.publishRecordDao.saveOrUpdate(record);
 		if(logger.isDebugEnabled()) logger.debug("=>更新发布结束！");
 	}
-	
 	/*
-	 * 生成页面
-	 * @see com.examw.test.service.publish.IPublishService#createPage()
+	 * 响应远程发布事件
+	 * @see org.springframework.context.ApplicationListener#onApplicationEvent(org.springframework.context.ApplicationEvent)
 	 */
 	@Override
-	public void createPage() {
-		if(StringUtils.isEmpty(remoteCreatePagesUrl)) return;
-		//远程调用生成页面
-		List<StaticPage> pages = this.staticPageDao.findPages(new StaticPageInfo(){
-			private static final long serialVersionUID = 1L;}
-		);
-		if(pages!=null && pages.size()>0)
-		{
-			for(StaticPage page:pages)
-			{
-				if(page == null) continue;
-				remoteCreatePage(page.getId());
-				sleep();
+	public void onApplicationEvent(RemotePublishEvent event) {
+		if(event != null && !StringUtils.isEmpty(event.getStaticPageID()) && !StringUtils.isEmpty(this.remoteCreatePagesUrl)){
+			String staticPageId = event.getStaticPageID();
+			int index = 0;
+			while(index < remote_createpage_max_times){
+				try {
+					Thread.sleep(remote_create_waiting);
+					if(logger.isDebugEnabled()) logger.debug(String.format("开始生成[id=%1$s,%2$d]...", staticPageId,index));
+					String callback = HttpUtil.sendRequest(String.format(this.remoteCreatePagesUrl, staticPageId), "GET", null);
+					if(logger.isDebugEnabled()) logger.debug(String.format("生成[id=%1$s,%2$d]结束:%3$s", staticPageId,index,callback));
+					if(!StringUtils.isEmpty(callback) && callback.toLowerCase().contains("succes")){
+						break;
+					}
+				} catch (Exception e) {
+					 logger.error(String.format("远程生成页面[id=%1$s][%2$d]发生异常:%3$s", staticPageId, index, e.getMessage()), e);
+				}
 			}
-		}
-		//手动清除缓存
-		this.staticPageDao.evict(StaticPage.class);
-	}
-	/**
-	 * sleep 500ms
-	 */
-	private void sleep()
-	{
-		try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
 		}
 	}
 }

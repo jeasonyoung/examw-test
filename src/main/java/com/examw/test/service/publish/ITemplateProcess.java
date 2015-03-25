@@ -1,7 +1,6 @@
 package com.examw.test.service.publish;
 
 import com.examw.test.domain.publish.PublishRecord;
-
 /**
  * 发布模版处理接口。
  * 

@@ -32,12 +32,19 @@ public interface IPaperDao extends IBaseDao<Paper> {
 	 * 加载已审核的全部试卷总数。
 	 * @return
 	 */
-	Long loadAllAuditCount();
+	Long totalAudit();
 	/**
-	 * 加载已审核的全部试卷集合。
-	 * @return 已审核的全部试卷集合。
+	 * 加载已审核的试卷。
+	 * @param top
+	 * @return
 	 */
-	List<Paper> loadAllAudit(Integer count);
+	List<Paper> findTopAuditPapers(Integer top);
+	/**
+	 * 查找试卷状态为已发布但发布表中没有数据的试卷
+	 * @param top
+	 * @return
+	 */
+	List<Paper> findTopPublishAndNotReleasePapers(Integer top);
 	/**
 	 * 统计科目地区下的试卷总数。
 	 * @param subjectIds

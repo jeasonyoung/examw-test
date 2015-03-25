@@ -135,29 +135,41 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 		super.delete(data);
 	}
 	/*
-	 * 加载已审核的试卷。
-	 * @see com.examw.test.dao.library.IPaperDao#loadAllAudit(java.lang.Integer)
-	 */
-	@Override
-	public List<Paper> loadAllAudit(Integer count) {
-		if(logger.isDebugEnabled()) logger.debug("加载已审核的试卷...");
-		final String hql = "from Paper p where p.status = :status order by p.lastTime desc,p.createTime desc";
-		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("status", PaperStatus.AUDIT.getValue());
-		return this.find(hql, parameters, null, count);
-	}
-	/*
 	 * 加载已审核的试卷总数。
-	 * @see com.examw.test.dao.library.IPaperDao#loadAllAuditCount()
+	 * @see com.examw.test.dao.library.IPaperDao#totalAudit()
 	 */
 	@Override
-	public Long loadAllAuditCount() {
+	public Long totalAudit() {
 		if(logger.isDebugEnabled()) logger.debug("加载已审核的试卷总数...");
 		final String hql = "select count(*) from Paper p where p.status = :status "; 
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("status", PaperStatus.AUDIT.getValue());
 		Object obj = this.uniqueResult(hql, parameters);
 		return obj == null ? null : (long)obj;
+	}
+	/*
+	 * 加载已审核的试卷。
+	 * @see com.examw.test.dao.library.IPaperDao#findTopAuditPapers(java.lang.Integer)
+	 */
+	@Override
+	public List<Paper> findTopAuditPapers(Integer top) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("加载已审核的试卷:%d...", top));
+		final String hql = "from Paper p where p.status = :status order by p.lastTime desc,p.createTime desc";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("status", PaperStatus.AUDIT.getValue());
+		return this.find(hql, parameters, 0, top);
+	}
+	/*
+	 *查找试卷状态为已发布但发布表中没有数据的试卷
+	 * @see com.examw.test.dao.library.IPaperDao#findTopPublishAndNotReleasePapers(java.lang.Integer)
+	 */
+	@Override
+	public List<Paper> findTopPublishAndNotReleasePapers(Integer top) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("查找试卷状态为已发布但发布表中没有数据的试卷:%d...", top));
+		final String hql = "from Paper p where p.status = :status  and (p.id not in (select pr.paper.id from PaperRelease pr)) order by p.lastTime desc,p.createTime desc";
+		Map<String, Object> parameters = new HashMap<>();
+		parameters.put("status", PaperStatus.PUBLISH.getValue());
+		return this.find(hql, parameters, 0, top);
 	}
 	/*
 	 * 统计科目地区下的试卷总数。
