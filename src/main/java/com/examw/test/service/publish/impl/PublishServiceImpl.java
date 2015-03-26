@@ -168,6 +168,8 @@ public class PublishServiceImpl implements IPublishService,ApplicationListener<R
 					}
 				} catch (Exception e) {
 					 logger.error(String.format("远程生成页面[id=%1$s][%2$d]发生异常:%3$s", staticPageId, index, e.getMessage()), e);
+				}finally{
+					index++;
 				}
 			}
 		}
