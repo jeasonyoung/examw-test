@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.springframework.context.ApplicationListener;
 import org.springframework.util.StringUtils;
 
 import com.examw.service.Status;
@@ -15,7 +14,6 @@ import com.examw.test.domain.publish.PublishRecord;
 import com.examw.test.service.publish.ConfigurationTemplateType;
 import com.examw.test.service.publish.IPublishService;
 import com.examw.test.service.publish.ITemplateProcess;
-import com.examw.test.service.publish.RemotePublishEvent;
 import com.examw.utils.HttpUtil;
 
 /**
@@ -24,7 +22,7 @@ import com.examw.utils.HttpUtil;
  * @author yangyong
  * @since 2014年12月30日
  */
-public class PublishServiceImpl implements IPublishService,ApplicationListener<RemotePublishEvent> {
+public class PublishServiceImpl implements IPublishService {
 	private static final Logger logger = Logger.getLogger(PublishServiceImpl.class);
 	private static final int remote_createpage_max_times = 3,remote_create_waiting = 100;
 	private IConfigurationDao configurationDao;
@@ -147,31 +145,50 @@ public class PublishServiceImpl implements IPublishService,ApplicationListener<R
 		record.setEndTime(new Date());
 		this.publishRecordDao.saveOrUpdate(record);
 		if(logger.isDebugEnabled()) logger.debug("=>更新发布结束！");
+		//本地发布完成，触发远程发布
+		this.threadRemotePublish();
 	}
-	/*
-	 * 响应远程发布事件
-	 * @see org.springframework.context.ApplicationListener#onApplicationEvent(org.springframework.context.ApplicationEvent)
-	 */
-	@Override
-	public void onApplicationEvent(RemotePublishEvent event) {
-		if(event != null && !StringUtils.isEmpty(event.getStaticPageID()) && !StringUtils.isEmpty(this.remoteCreatePagesUrl)){
-			String staticPageId = event.getStaticPageID();
+	//多线程调用远程发布
+	private void threadRemotePublish(){
+			//多线程处理 
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					//远程发布
+					remotePublish();
+				}
+			}).start();
+	}
+	//远程发布
+	private void remotePublish(){
+		try {
+			if(logger.isDebugEnabled()) logger.debug("开始远程发布...");
+			if(ITemplateProcess.STATICPAGEID_QUEUE == null || ITemplateProcess.STATICPAGEID_QUEUE.size() == 0){
+				if(logger.isDebugEnabled())logger.debug("没有需要远程发布的数据!");
+				return;
+			}
+			String staticPageId = null;
 			int index = 0;
-			while(index < remote_createpage_max_times){
-				try {
-					Thread.sleep(remote_create_waiting);
-					if(logger.isDebugEnabled()) logger.debug(String.format("开始生成[id=%1$s,%2$d]...", staticPageId,index));
-					String callback = HttpUtil.sendRequest(String.format(this.remoteCreatePagesUrl, staticPageId), "GET", null);
-					if(logger.isDebugEnabled()) logger.debug(String.format("生成[id=%1$s,%2$d]结束:%3$s", staticPageId,index,callback));
-					if(!StringUtils.isEmpty(callback) && callback.toLowerCase().contains("succes")){
-						break;
+			while(!StringUtils.isEmpty(staticPageId = ITemplateProcess.STATICPAGEID_QUEUE.poll())){
+				index = 0;
+				while(index < remote_createpage_max_times){
+					try {
+						Thread.sleep(remote_create_waiting);
+						if(logger.isDebugEnabled()) logger.debug(String.format("开始生成[id=%1$s,%2$d]...", staticPageId,index));
+						String callback = HttpUtil.sendRequest(String.format(this.remoteCreatePagesUrl, staticPageId), "GET", null);
+						if(logger.isDebugEnabled()) logger.debug(String.format("生成[id=%1$s,%2$d]结束:%3$s", staticPageId,index,callback));
+						if(!StringUtils.isEmpty(callback) && callback.toLowerCase().contains("succes")){
+							break;
+						}
+					} catch (Exception e) {
+						logger.error(String.format("远程生成页面[id=%1$s][%2$d]发生异常:%3$s", staticPageId, index, e.getMessage()), e);
+					}finally{
+						index++;
 					}
-				} catch (Exception e) {
-					 logger.error(String.format("远程生成页面[id=%1$s][%2$d]发生异常:%3$s", staticPageId, index, e.getMessage()), e);
-				}finally{
-					index++;
 				}
 			}
+		} catch (Exception e) {
+			logger.error(String.format("远程发布发生异常：%s", e.getMessage()), e);
 		}
 	}
 }

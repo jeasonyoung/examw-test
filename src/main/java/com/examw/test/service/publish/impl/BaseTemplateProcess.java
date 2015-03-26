@@ -9,9 +9,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.StringUtils;
@@ -27,7 +24,6 @@ import com.examw.test.domain.publish.StaticPage;
 import com.examw.test.domain.records.Question;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.service.publish.ITemplateProcess;
-import com.examw.test.service.publish.RemotePublishEvent;
 import com.examw.test.support.FreeMakerEngine;
 
 /**
@@ -36,14 +32,13 @@ import com.examw.test.support.FreeMakerEngine;
  * @author yangyong
  * @since 2014年12月30日
  */
-public  abstract class BaseTemplateProcess implements ITemplateProcess,ResourceLoaderAware,ApplicationContextAware {
+public  abstract class BaseTemplateProcess implements ITemplateProcess,ResourceLoaderAware {
 	private static final Logger logger = Logger.getLogger(BaseTemplateProcess.class);
 	private static final Map<String, List<ViewListData>> view_data_cache = new HashMap<String, List<ViewListData>>();
 	private static final Map<String, Integer> papers_data_cache = new HashMap<>();
 	protected static final int list_max_top = 10, page_count = 10;
 	private String templatesRoot,templateName;
 	private ResourceLoader resourceLoader;
-	private ApplicationContext appContext;
 	private FreeMakerEngine engine;
 	protected IUserPaperRecordDao userPaperRecordDao;
 	private IStaticPageDao staticPageDao;
@@ -58,15 +53,6 @@ public  abstract class BaseTemplateProcess implements ITemplateProcess,ResourceL
 	public void setResourceLoader(ResourceLoader resourceLoader) {
 		if(logger.isDebugEnabled()) logger.debug("注入Spring资源加载器...");
 		this.resourceLoader = resourceLoader;
-	}
-	/*
-	 * 设置Spring上下文。
-	 * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
-	 */
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		if(logger.isDebugEnabled()) logger.debug("注入Spring上下文...");
-		this.appContext = applicationContext;
 	}
 	/**
 	 * 设置模版根目录。
@@ -166,10 +152,12 @@ public  abstract class BaseTemplateProcess implements ITemplateProcess,ResourceL
 		data.setContent(content);
 		data.setLastTime(new Date());
 		data.setPublish(this.record);
-		if(isAdded) this.staticPageDao.save(data);
-		//出发静态页面远程发布事件
-		if(this.appContext != null && data != null && !StringUtils.isEmpty(data.getId())){
-			this.appContext.publishEvent(new RemotePublishEvent(data.getId()));
+		if(isAdded){
+			this.staticPageDao.save(data);
+		}
+		//添加到静态页面ID队列
+		if(STATICPAGEID_QUEUE != null && data != null && !StringUtils.isEmpty(data.getId())){
+			STATICPAGEID_QUEUE.offer(data.getId());
 		}
 	}
 	/**
