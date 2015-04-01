@@ -304,7 +304,7 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 			//获取创建时间
 			info.setCreateTime(data.getCreateTime());
 			//1.先删除
-			this.itemDao.delete(data);
+			this.itemDao.delete(data,true);
 			//2.清空缓存
 			this.itemDao.evict(Item.class);
 		}

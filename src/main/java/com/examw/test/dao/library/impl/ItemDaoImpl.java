@@ -139,23 +139,33 @@ public class ItemDaoImpl extends BaseDaoImpl<Item> implements IItemDao {
 	 */
 	@Override
 	public void delete(Item data) {
+		this.delete(data, false);
+	}
+	/*
+	 * 删除数据。
+	 * @see com.examw.test.dao.library.IItemDao#delete(com.examw.test.domain.library.Item, boolean)
+	 */
+	@Override
+	public void delete(Item data, boolean isForce) {
 		if(logger.isDebugEnabled()) logger.debug("删除数据...");
 		if(data == null) return;
 		Item parent = data;
 		while(parent.getParent() != null){
 			parent = parent.getParent();
 		}
-		String msg = null;
-		if(parent.getStatus() == ItemStatus.AUDIT.getValue()){
-			msg = "试题已审核，不允许删除！";
-			if(logger.isDebugEnabled()) logger.debug(msg);
-			throw new RuntimeException(msg);
-		}
-		int count = 0;
-		if(parent.getStructures() != null && (count = parent.getStructures().size()) > 0){
-			msg = String.format("被关联在［%d］试卷中，暂不能删除！", count);
-			if(logger.isDebugEnabled()) logger.debug(msg);
-			throw new RuntimeException(msg);
+		if(!isForce){//是否强制删除
+			String msg = null;
+			if(parent.getStatus() == ItemStatus.AUDIT.getValue()){
+				msg = "试题已审核，不允许删除！";
+				if(logger.isDebugEnabled()) logger.debug(msg);
+				throw new RuntimeException(msg);
+			}
+			int count = 0;
+			if(parent.getStructures() != null && (count = parent.getStructures().size()) > 0){
+				msg = String.format("被关联在［%d］试卷中，暂不能删除！", count);
+				if(logger.isDebugEnabled()) logger.debug(msg);
+				throw new RuntimeException(msg);
+			}
 		}
 		super.delete(parent);
 	}

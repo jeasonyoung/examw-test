@@ -86,7 +86,6 @@ public interface IItemDao extends IBaseDao<Item> {
 	 * 试题总数。
 	 */
 	Integer totalItems(String[] subjectIds,String areaId);
-	
 	/**
 	 * 根据ID查询试题
 	 * @param itemId
@@ -94,4 +93,12 @@ public interface IItemDao extends IBaseDao<Item> {
 	 * 2015.03.05
 	 */
 	List<Item> findItems(String[] itemId);
+	/**
+	 * 删除数据
+	 * @param data
+	 * 数据
+	 * @param isForce
+	 * 是否强制删除
+	 */
+	void delete(Item data,boolean isForce);
 }
