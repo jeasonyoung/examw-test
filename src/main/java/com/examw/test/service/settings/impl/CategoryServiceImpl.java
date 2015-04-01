@@ -106,6 +106,9 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 			data.setParent(null);
 		}
 		if(isAdded) this.categoryDao.save(data);
+		//更新二级缓存
+		this.categoryDao.evict(Category.class);
+		//
 		return this.changeModel(data);
 	}
 	/*
@@ -116,12 +119,18 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 	public void delete(String[] ids) {
 		if(logger.isDebugEnabled()) logger.debug("删除数据...");
 		if(ids == null || ids.length == 0) return;
+		boolean isDeletes = false;
 		for(int i = 0; i < ids.length; i++){
 			Category data = this.categoryDao.load(Category.class, ids[i]);
 			if(data != null){
 				if(logger.isDebugEnabled()) logger.debug(String.format("［%1$d］删除数据［%2$s］...", i+1, data.getId()));
 				this.categoryDao.delete(data);
+				isDeletes = true;
 			}
+		}
+		//更新二级缓存
+		if(isDeletes){
+			this.categoryDao.evict(Category.class);
 		}
 	}
 	/*
@@ -288,7 +297,6 @@ public class CategoryServiceImpl extends BaseDataServiceImpl<Category, CategoryI
 		}
 		return treeNodes;
 	}
-	//构建考试类别/考试/科目
 	/**
 	 * 构建考试类别/考试/科目的树节点
 	 * @param category		考试分类

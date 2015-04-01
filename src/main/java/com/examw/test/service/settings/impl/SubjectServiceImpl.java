@@ -137,7 +137,7 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 		return this.changeModel(data, false);
 	}
 	protected SubjectInfo changeModel(Subject data,boolean isLoadChildren) {
-		if(logger.isDebugEnabled())logger.debug("数据模型转换...");
+		if(logger.isDebugEnabled())logger.debug("数据模型转换 Subject => SubjectInfo...");
 		if(data == null) return null;
 		SubjectInfo info = new SubjectInfo();
 		BeanUtils.copyProperties(data, info,new String[]{"children"});
@@ -264,9 +264,12 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 			//包含多个科目的情况    name like 'asdf，asdf'
 			this.batchSave(data);
 		}
+		//更新二级缓存
+		this.areaDao.evict(Subject.class);
+		//
 		return this.changeModel(data);
 	}
-	
+	//
 	private void batchSave(Subject data)
 	{
 		if(data.getName().contains("，")){
@@ -293,13 +296,19 @@ public class SubjectServiceImpl extends BaseDataServiceImpl<Subject, SubjectInfo
 	public void delete(String[] ids) {
 		if(logger.isDebugEnabled())logger.debug("删除数据...");
 		if(ids == null || ids.length == 0)return;
+		boolean isDeletes = false;
 		for(int i = 0; i < ids.length;i++){
 			if(StringUtils.isEmpty(ids[i])) continue;
 			Subject data = this.subjectDao.load(Subject.class, ids[i]);
 			if(data != null){
 				if(logger.isDebugEnabled()) logger.debug(String.format("［%1$d］.删除数据［%2$s］...", i+1, data));
 				this.subjectDao.delete(data);
+				isDeletes = true;
 			}
+		}
+		//更新二级缓存
+		if(isDeletes){
+			this.subjectDao.evict(Subject.class);
 		}
 	}
 	/*

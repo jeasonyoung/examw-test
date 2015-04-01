@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -55,11 +54,12 @@ public class SubjectController {
 	 */
 	@RequiresPermissions({ModuleConstant.SETTINGS_SUBJECT + ":" + Right.UPDATE})
 	@RequestMapping(value="/edit", method = RequestMethod.GET)
-	public String edit(String categoryId,String examId,String subjectId,Model model){
+	public String edit(Boolean isAdd, String categoryId,String examId,String subjectId,Model model){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载科目［categoryId = %1$s  examId = %2$s］编辑页面...", categoryId,examId));
+		model.addAttribute("isAdd", isAdd);
 		model.addAttribute("current_category_id", categoryId);
 		model.addAttribute("current_exam_id", examId);
-		if(!StringUtils.isEmpty(subjectId)) model.addAttribute("current_subject_id", subjectId);
+		model.addAttribute("current_subject_id", subjectId);
 		return "settings/subject_edit";
 	}
 	/**

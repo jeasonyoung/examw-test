@@ -177,6 +177,9 @@ public class ExamServiceImpl extends BaseDataServiceImpl<Exam, ExamInfo> impleme
 		}
 		data.setAreas(areas);
 		if(isAdded)this.examDao.save(data);
+		//更新二级缓存
+		this.examDao.evict(Exam.class);
+		//
 		return this.changeModel(data);
 	}
 	/*
@@ -187,11 +190,17 @@ public class ExamServiceImpl extends BaseDataServiceImpl<Exam, ExamInfo> impleme
 	public void delete(String[] ids) {
 		if(logger.isDebugEnabled()) logger.debug("删除数据," + ids);
 		if(ids == null || ids.length == 0) return;
+		boolean isDeletes = false;
 		for(int i = 0; i < ids.length; i++){
 			Exam data = this.examDao.load(Exam.class, ids[i]);
 			if(data != null){
 				this.examDao.delete(data);
+				isDeletes = true;
 			}
+		}
+		//更新二级缓存
+		if(isDeletes){
+			this.examDao.evict(Exam.class);
 		}
 	}
 	/*

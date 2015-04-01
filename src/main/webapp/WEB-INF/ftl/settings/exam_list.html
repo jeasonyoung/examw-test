@@ -75,7 +75,7 @@ $(function(){
 	//search
 	${dg}_search = function(){
 		var node = $('#${module}_category_tree').tree("getSelected");
-		$('#${dg}').datagrid('unselectAll');
+		//$('#${dg}').datagrid('unselectAll');
 		$("#${dg}").datagrid("load",{
 			"categoryId":(node ? node.id : ""),
 			"name":$("#${dg}_toobar input[name='name']").val()
@@ -103,8 +103,7 @@ $(function(){
 					success:function(data,textStatus){
 						$.messager.progress("close");
 						if(data.success){
-							$("#${dg}").datagrid("load");
-							$("#${dg}").datagrid("unselectAll");
+							$("#${dg}").datagrid("load").datagrid("unselectAll");
 						}else{
 							$.messager.show({ title:"提示", msg:data.msg });
 						}
@@ -127,7 +126,7 @@ $(function(){
 		 			${dg}_search();
 		 	}
 	 	}]" style="padding:5px;width:190px;">
-	 	<ul id="${module}_category_tree" class="easyui-tree" data-options="url:'<@s.url '/settings/category/tree'/>',onLoadError:function(e){ <@error_dialog 'e'/> },onClick:function(node){ ${dg}_search();}"></ul>
+	 	<ul id="${module}_category_tree" class="easyui-tree" data-options="url:'<@s.url '/settings/category/tree'/>',lines:true,onLoadError:function(e){ <@error_dialog 'e'/> },onClick:function(node){ ${dg}_search();}"></ul>
 	 </div>
 	 <div data-options="region:'center',title:'考试列表'">
 	 	<table id="${dg}" class="easyui-datagrid" data-options="url:'<@s.url '/settings/exam/datagrid'/>',fit:true,fitColumns:true,rownumbers:true,border:true,striped:true,
@@ -142,8 +141,8 @@ $(function(){
 	 					<th data-options="field:'name',width:30,align:'left',sortable:true">考试名称</th>
 	 					<th data-options="field:'statusName',width:10,align:'center',sortable:true">状态</th>
 	 					<th data-options="field:'areaName',width:60,align:'left'">所属地区</th>
-	 					<th data-options="field:'imageUrl',width:60,align:'left'">图片地址</th>
-	 					<th data-options="field:'keywords',width:60,align:'left'">关键字</th>
+	 					<!-- <th data-options="field:'imageUrl',width:60,align:'left'">图片地址</th> -->
+	 					<!-- <th data-options="field:'keywords',width:60,align:'left'">关键字</th> -->
 	 				</tr>
 	 			</thead>
 	 	</table>
@@ -155,11 +154,7 @@ $(function(){
 			<@shiro.hasPermission name="${PER_DELETE}">
 			<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
 			</@shiro.hasPermission>
-			
-			<label>考试名称:</label>
-			<input name="name" type="text" style="width:168px;"/>
-	
-			<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
+			<input name="name" class="easyui-textbox" data-options="prompt:'考试名称',icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}},{iconCls:'icon-search',handler:function(e){${dg}_search();}}]" style="width:468px;"/>
 		</div>
 	 </div>
 </div>

@@ -289,29 +289,45 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 			if(!data.getId().equalsIgnoreCase(checkItem.getId())){
 				throw new RuntimeException("试题修改后与题库中已存在的试题一致，不能重复添加！");
 			}
+			//如果没有被审核
+			if(andAudit && !ItemStatus.AUDIT.getValue().equals(data.getStatus())){
+				data.setStatus(ItemStatus.AUDIT.getValue());
+			}
+			//试题没有被修改无需更新
+			return data;
 		}
+		//已审核的试题不能被修改
 		if(data != null && ItemStatus.AUDIT.getValue().equals(data.getStatus())){
 			throw new RuntimeException(String.format("试题状态为［%s］,暂不能修改！", this.loadStatusName(data.getStatus())));
 		}
-		if(data == null){
-			if(StringUtils.isEmpty(info.getId())) info.setId(UUID.randomUUID().toString());
-			info.setCreateTime(new Date());
-			info.setStatus(ItemStatus.NONE.getValue());
-			data = new Item();
-		}else {
-			info.setId(data.getId());
-			info.setStatus(data.getStatus() == null ? ItemStatus.NONE.getValue() : data.getStatus());
+		if(data != null){
+			//获取创建时间
 			info.setCreateTime(data.getCreateTime());
-			this.itemDao.merge(data);
+			//1.先删除
+			this.itemDao.delete(data);
+			//2.清空缓存
+			this.itemDao.evict(Item.class);
 		}
+		//试题ID
+		if(StringUtils.isEmpty(info.getId())) info.setId(UUID.randomUUID().toString());
+		//创建时间
+		if(info.getCreateTime() == null){
+			info.setCreateTime(new Date());
+		}
+		//状态
+		info.setStatus(andAudit ? ItemStatus.AUDIT.getValue() :  ItemStatus.NONE.getValue());
+		//校验码
 		info.setCheckCode(checkCode);
+		//最后修改时间
 		info.setLastTime(new Date());
+		//初始化
+		Item item = new Item();
 		//所属科目
-		data.setSubject(StringUtils.isEmpty(info.getSubjectId()) ? null : this.subjectDao.load(Subject.class, info.getSubjectId()));
+		item.setSubject(StringUtils.isEmpty(info.getSubjectId()) ? null : this.subjectDao.load(Subject.class, info.getSubjectId()));
 		//所属来源
-		data.setSource(StringUtils.isEmpty(info.getSourceId()) ?  null : this.sourceDao.load(Source.class, info.getSourceId()));
+		item.setSource(StringUtils.isEmpty(info.getSourceId()) ?  null : this.sourceDao.load(Source.class, info.getSourceId()));
 		//所属地区
-		data.setArea(StringUtils.isEmpty(info.getAreaId()) ? null : this.areaDao.load(Area.class, info.getAreaId()));
+		item.setArea(StringUtils.isEmpty(info.getAreaId()) ? null : this.areaDao.load(Area.class, info.getAreaId()));
 		
 		ItemParser parser = this.itemParsers.get(info.getType());
 		if(parser == null){
@@ -319,10 +335,9 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 			logger.error(err);
 			throw new RuntimeException(err);
 		}
-		parser.parser(info, data);
-		if(andAudit) data.setStatus(ItemStatus.AUDIT.getValue());
-		this.itemDao.saveOrUpdate(data);
-		return data;
+		parser.parser(info, item);
+		this.itemDao.save(item);
+		return item;
 	}
 	/*
 	 * 试题纠错完成,修改关联试卷的状态,[重新发布]

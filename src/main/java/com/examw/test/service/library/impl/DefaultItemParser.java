@@ -1,6 +1,7 @@
 package com.examw.test.service.library.impl;
 
-import java.util.HashSet;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -106,20 +107,30 @@ public class DefaultItemParser implements ItemParser {
 			target.getChildren().clear();
 		}
 		BeanUtils.copyProperties(source, target, new String[]{"children","syllabuses"});
-		if(source.getChildren() != null && source.getChildren().size() > 0){
-			if(target.getChildren() == null) target.setChildren(new HashSet<Item>());
-			for(BaseItemInfo<?> info : source.getChildren()){
-				if(info == null) continue;
-				Item item = StringUtils.isEmpty(info.getId()) ? null : this.itemDao.load(Item.class, info.getId());
-				if(item == null){
-					if(StringUtils.isEmpty(info.getId())){
-						info.setId(UUID.randomUUID().toString());
+		Set<?> children = null; 
+		if((children = source.getChildren()) != null && children.size() > 0){
+			if(target.getChildren() == null) target.setChildren(new TreeSet<Item>());
+			Object[] objects = children.toArray();
+			//排序
+			Arrays.sort(objects, new Comparator<Object>() {
+				@Override
+				public int compare(Object o1, Object o2) {
+					if((o1 instanceof BaseItemInfo<?>) && (o2 instanceof BaseItemInfo<?>)){
+						return ((BaseItemInfo<?>)o1).getOrderNo() -  ((BaseItemInfo<?>)o2).getOrderNo();
 					}
-					item = new Item();
+					return 0;
 				}
-				item.setParent(target);
-				if(this.changeModel(info, item)){
-					target.getChildren().add(item);
+			});
+			for(int i = 0; i < objects.length; i++){
+				if((objects[i] != null) && (objects[i] instanceof BaseItemInfo<?>)){
+					BaseItemInfo<?> info = (BaseItemInfo<?>)objects[i];
+					if(info == null) continue;
+					if(StringUtils.isEmpty(info.getId())){ info.setId(UUID.randomUUID().toString()); }
+					Item item = new Item();
+					item.setParent(target);
+					if(this.changeModel(info, item)){
+						target.getChildren().add(item);
+					}
 				}
 			}
 		}

@@ -10,16 +10,16 @@
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">考试代码：</label>
-		<input type="text" name="code" class="easyui-numberbox"  data-options="required:true" style="width:80px;"/>
+		<input name="code" class="easyui-numberbox"  data-options="required:true" style="width:80px;"/>
 		<input type="hidden" name="id"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">字母简称：</label>
-		<input type="text" name="abbr" class="easyui-textbox" data-options="required:true,validType:['english','length[0,15]']"  style="width:80px;"/>
+		<input name="abbr" class="easyui-textbox" data-options="required:true,validType:['english','length[0,15]']"  style="width:80px;"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">考试名称：</label>
-		<input type="text" name="name" class="easyui-textbox" data-options="required:true,validType:['length[0,20]']"  style="width:464px;" />
+		<input name="name" class="easyui-textbox" data-options="required:true,validType:['length[0,20]']"  style="width:464px;" />
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">所属地区：</label>
@@ -31,7 +31,7 @@
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">图片地址：</label>
-		<input type="text" name="imageUrl" class="easyui-textbox" style="width:464px;" />
+		<input name="imageUrl" class="easyui-textbox" style="width:464px;" />
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;margin-top:2px;">考试状态：</label>
@@ -45,17 +45,15 @@
 <div title="页面显示信息">
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">页面标题：</label>
-		<input type="text" name="title" class="easyui-textbox" style="width:464px;" />
+		<input name="title" class="easyui-textbox" style="width:464px;" />
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">关键字：</label>
-		<input type="text" name="keywords" class="easyui-textbox" style="width:464px;" />
+		<input name="keywords" class="easyui-textbox" style="width:464px;" />
 	</div>
 	<div style="float:left; margin-top:12px; width:100%;">
 		<label style="width:75px;">描述：</label>
-		<div style="float:left;margin-left:12px;">
-			<textarea name="description" class="easyui-ueditor" data-options="width:460,height:100"></textarea>
-		</div>
+		<input name="description" class="easyui-textbox" data-options="multiline:true" style="width:464px;height:100px;"/>
     </div>
 </div>
 </form>

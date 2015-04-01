@@ -13,7 +13,7 @@ import com.examw.test.domain.syllabus.Syllabus;
  * @author yangyong.
  * @since 2014-08-02.
  */
-public class Item implements Serializable {
+public class Item implements Serializable,Comparable<Item> {
 	private static final long serialVersionUID = 1L;
 	private String id,content,answer,analysis,checkCode,userId,userName;
 	private Integer type,level,year,opt,status,orderNo,count;
@@ -369,5 +369,14 @@ public class Item implements Serializable {
 	 */
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+	/*
+	 * 重载排序
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(Item o) {
+		if(o == null) return 0;
+		return this.getOrderNo() - o.getOrderNo();
 	}
 }

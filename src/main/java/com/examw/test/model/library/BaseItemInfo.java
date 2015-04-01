@@ -461,17 +461,7 @@ public abstract class BaseItemInfo<T extends BaseItemInfo<T>>  extends Paging im
 	 */
 	@Override
 	public int compareTo(BaseItemInfo<T> o) {
-		if(this == o) return 0;
-		int index = this.getOrderNo() - o.getOrderNo();
-		if(index == 0){
-			index = this.getContent().compareTo(o.getContent());
-			if(index == 0){
-				index = this.getCheckCode().compareTo(o.getCheckCode());
-				if(index == 0){
-					index = this.getId().compareTo(o.getId());
-				}
-			}
-		}
-		return index;
-	}
+		if(o == null) return 0;
+		return this.getOrderNo() - o.getOrderNo();
+	};
 }

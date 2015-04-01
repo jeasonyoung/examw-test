@@ -112,8 +112,7 @@ $(function(){
 					success:function(data,textStatus){
 						$.messager.progress("close");
 						if(data.success){
-							$("#${dg}").datagrid("load");
-							$("#${dg}").datagrid("unselectAll");
+							$("#${dg}").datagrid("load").datagrid("unselectAll");
 							$("#${module}_tree").tree("reload");
 						}else{
 							$.messager.show({ title:"提示", msg:data.msg });
@@ -152,7 +151,7 @@ $(function(){
 					<th data-options="field:'name',width:50,sortable:true">类别名称</th>
 					<th data-options="field:'abbr',width:20,sortable:true">类别简称</th>
 					<th data-options="field:'fullName',width:60">类别全称</th>
-					<th data-options="field:'imageUrl',width:80">图片地址</th>
+					<th data-options="field:'imageUrl',width:60">图片地址</th>
 				</tr>
 			</thead>
 		</table>
@@ -165,9 +164,7 @@ $(function(){
 			<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
 			</@shiro.hasPermission>
 			
-			<label>类别名称：<input type="text"  name="name"  style="168px;"/></label>
-			
-			<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
+			<input name="name" class="easyui-textbox" data-options="prompt:'类别名称',icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}},{iconCls:'icon-search',handler:function(e){${dg}_search();}}]"  style="width:468px;"/>
 		</div>
 	</div>
 </div>

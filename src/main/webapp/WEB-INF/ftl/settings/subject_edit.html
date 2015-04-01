@@ -4,7 +4,7 @@
 <#assign form="${module}_edit_form"/>
 <form id="${form}" method="POST" class="easyui-tabs">
 <div title="基础信息">
-	<div style="float:left;margin-top:2px;width:100%;">
+	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">所属考试：</label>
 		<input name="categoryId" class="easyui-combotree" data-options="url:'<@s.url '/settings/category/tree'/>',required:true,valueField:'id', textField:'name',
 			onLoadError:function(e){ <@error_dialog 'e'/> },onChange:function(n,o){
@@ -20,21 +20,17 @@
 	<!-- 上级科目 -->
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">上级科目：</label>
-		<input id="${form}_pid" name="pid"  class="easyui-combotree" data-options="url:'<@s.url '/settings/subject/tree'/>?examId=${current_exam_id}&ignoreSubjectId=${current_subject_id}',valueField:'id',textField:'name',
-			onLoadError:function(e){ <@error_dialog 'e'/> },onChange:function(n,o){$('#${form}_area_part').hide();},icons:[{iconCls:'icon-clear',  handler:function(e){ $(e.data.target).combotree('clear');$('#${form}_area_part').show();} }]" style="width:268px;"/>
+		<input id="${form}_pid" name="pid"  class="easyui-combotree" data-options="url:'<@s.url '/settings/subject/tree'/>?examId=${current_exam_id}&ignoreSubjectId=${current_subject_id}',valueField:'id',textField:'name',lines:true,
+			onLoadError:function(e){ <@error_dialog 'e'/> },onChange:function(n,o){$('#${form}_area_part').hide();},icons:[{iconCls:'icon-clear',  handler:function(e){ $(e.data.target).combotree('clear');$('#${form}_area_part').show();} }]" style="width:368px;"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">科目代码：</label>
-		<input type="text" name="code" class="easyui-numberbox" style="width:90px;" data-options="required:true"/>
+		<input name="code" class="easyui-numberbox" style="width:90px;" data-options="required:true"/>
 		<input type="hidden" name="id"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
-		<label style="width:75px;"></label>
-		<label style="float:left;">同一级的若有多个科目可用"，"符号进行分隔添加</label>
-	</div>
-	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">科目名称：</label>
-		<input type="text" name="name" class="easyui-validatebox" style="width:368px;" data-options="required:true"/>
+		<input name="name" class="easyui-textbox" data-options="<#if isAdd>prompt:'若有多个科目可用,进行分隔添加',</#if>required:true" style="width:368px;"/>
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;" id="${form}_area_part">
 		<label style="width:75px;">地区：</label>
@@ -48,17 +44,15 @@
 <div title="页面显示信息">
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">页面标题：</label>
-		<input type="text" name="title" class="easyui-textbox" style="width:368px;" />
+		<input name="title" class="easyui-textbox" style="width:368px;" />
 	</div>
 	<div style="float:left;margin-top:12px;width:100%;">
 		<label style="width:75px;">关键字：</label>
-		<input type="text" name="keywords" class="easyui-textbox" style="width:368px;" />
+		<input name="keywords" class="easyui-textbox" style="width:368px;" />
 	</div>
 	<div style="float:left; margin-top:12px; width:100%;">
 		<label style="width:75px;">描述：</label>
-		<div style="float:left;margin-left:12px;">
-			<textarea name="description" class="easyui-ueditor" data-options="width:360,height:80"></textarea>
-		</div>
+		<input name="description" class="easyui-textbox" data-options="multiline:true" style="width:368px;height:90px;"/>
     </div>
 </div>
 </form>

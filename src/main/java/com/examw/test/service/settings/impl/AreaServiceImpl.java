@@ -22,11 +22,12 @@ public class AreaServiceImpl extends BaseDataServiceImpl<Area, AreaInfo> impleme
 	private static final Logger logger = Logger.getLogger(AreaServiceImpl.class);
 	private IAreaDao areaDao;
 	/**
-	 * 设置 地区数据接口
+	 * 设置地区数据接口
 	 * @param areaDao
 	 * 地区数据接口
 	 */
 	public void setAreaDao(IAreaDao areaDao) {
+		if(logger.isDebugEnabled())logger.debug("注入地区数据接口...");
 		this.areaDao = areaDao;
 	}
 	/*
@@ -53,7 +54,7 @@ public class AreaServiceImpl extends BaseDataServiceImpl<Area, AreaInfo> impleme
 	 */
 	@Override
 	protected AreaInfo changeModel(Area data) {
-		if (logger.isDebugEnabled())logger.debug("[地区]数据模型转换...");
+		if (logger.isDebugEnabled())logger.debug("[地区]数据模型转换 Area=>AreaInfo...");
 		if (data == null) return null;
 		AreaInfo info = new AreaInfo();
 		BeanUtils.copyProperties(data, info);
@@ -65,7 +66,7 @@ public class AreaServiceImpl extends BaseDataServiceImpl<Area, AreaInfo> impleme
 	 */
 	@Override
 	public AreaInfo conversion(Area area) {
-		if(logger.isDebugEnabled()) logger.debug("类型转换...");
+		if(logger.isDebugEnabled()) logger.debug("数据模型转换...");
 		return this.changeModel(area);
 	}
 	/*
@@ -96,7 +97,10 @@ public class AreaServiceImpl extends BaseDataServiceImpl<Area, AreaInfo> impleme
 		BeanUtils.copyProperties(info, data);
 		//新增数据。
 		if(isAdded) this.areaDao.save(data);
-		return info;
+		//更新二级缓存
+		this.areaDao.evict(Area.class);
+		//
+		return this.changeModel(data);
 	}
 	/*
 	 * 删除数据。
@@ -106,13 +110,19 @@ public class AreaServiceImpl extends BaseDataServiceImpl<Area, AreaInfo> impleme
 	public void delete(String[] ids) {
 		if (logger.isDebugEnabled())logger.debug("删除数据...");
 		if (ids == null || ids.length == 0) return;
+		boolean isDelete = false;
 		for (int i = 0; i < ids.length; i++) {
 			if (StringUtils.isEmpty(ids[i]))continue;
 			Area data = this.areaDao.load(Area.class, ids[i]);
 			if (data != null) {
 				logger.debug("删除地区数据：" + ids[i]);
 				this.areaDao.delete(data);
+				isDelete = true;
 			}
+		}
+		//更新二级缓存
+		if(isDelete){
+			this.areaDao.evict(Area.class);
 		}
 	}
 	/*

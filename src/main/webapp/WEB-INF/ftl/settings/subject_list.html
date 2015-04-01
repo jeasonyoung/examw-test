@@ -19,12 +19,13 @@ $(function(){
 	</@shiro.hasPermission>
 	//edit
 	${module}_edit_window = function(title,index,row,code){
-		var catalog_id = "",exam_id ="",subject_id="";
+		var catalog_id = "",exam_id ="",subject_id="",isAdd=false;
 		if(row){
 			catalog_id = (row.categoryId) ?  row.categoryId : "";
 			exam_id = (row.examId) ? row.examId : "";
 			subject_id = row.id
 		}else{
+			isAdd = true;
 			var node = $("#${module}_tree").tree("getSelected");
 			if(node){
 				if(node.attributes["type"] == "exam"){
@@ -39,7 +40,7 @@ $(function(){
 		}
 		var d = $("<div/>").dialog({
 			title:title,width:498,height:360,modal:true,
-			href:"<@s.url '/settings/subject/edit'/>?categoryId=" + catalog_id + "&examId=" + exam_id+"&subjectId="+subject_id,
+			href:"<@s.url '/settings/subject/edit'/>?categoryId=" + catalog_id + "&examId=" + exam_id+"&subjectId="+subject_id + "&isAdd="+isAdd,
 			buttons:[
 			<@shiro.hasPermission name="${PER_UPDATE}">
 			  {
@@ -61,8 +62,7 @@ $(function(){
 							$.messager.progress("close");
 							var data = $.parseJSON(data);
 							if(data.success){
-								$("#${dg}").datagrid("load");
-								$("#${dg}").datagrid("unselectAll");
+								$("#${dg}").datagrid("load").datagrid("unselectAll");
 								d.dialog("close");
 							}else{
 								$.messager.show({title:"保存异常", msg:data.msg});
@@ -151,7 +151,7 @@ $(function(){
 			 		${dg}_search();
 		 	}
 	 	}]" style="padding:5px;width:195px;">
-	 	<ul id="${module}_tree" class="easyui-tree" data-options="url:'<@s.url '/settings/category/exams/tree'/>',onLoadError:function(e){ <@error_dialog 'e'/> }, onClick:function(node){ ${dg}_search(); }"></ul>
+	 	<ul id="${module}_tree" class="easyui-tree" data-options="url:'<@s.url '/settings/category/exams/tree'/>',lines:true,onLoadError:function(e){ <@error_dialog 'e'/> }, onClick:function(node){ ${dg}_search(); }"></ul>
 	 </div>
 	 <div data-options="region:'center',title:'科目列表'">
 		<table id="${dg}" class="easyui-datagrid" data-options="url:'<@s.url '/settings/subject/datagrid'/>',fit:true,	border:true,striped:true,fitColumns:true,rownumbers:true,
@@ -178,10 +178,7 @@ $(function(){
 			<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
 			</@shiro.hasPermission>
 			
-			<label>科目名称:</label>
-			<input name="name" type="text" style="width:198px;"/>
-
-			<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
+			<input name="name" class="easyui-textbox" data-options="prompt:'科目名称',icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}},{iconCls:'icon-search',handler:function(e){${dg}_search();}}]" style="width:468px;"/>
 		</div>
 	</div>
 </div>

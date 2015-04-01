@@ -61,9 +61,9 @@
 				<!-- 缓存提供类 -->
 				<prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop>
 				<!--是否启用二级缓存 -->
-				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.use_second_level_cache">false</prop>
 				<!-- 是否开启查询缓存 -->
-				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.cache.use_query_cache">false</prop>
 				<!-- 配置RegionFactory为Ehcache的RegionFactory -->
 				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
 				<!-- 强制Hibernate以更人性化的格式将数据存入二级缓存 -->
@@ -113,10 +113,6 @@
 		<aop:pointcut id="transactionPointcut" expression="execution(* com.examw.test.service..*Impl.*(..))" />
 		<aop:advisor pointcut-ref="transactionPointcut" advice-ref="transactionAdvice"/>
 	</aop:config>
-	<!-- <aop:config>
-		<aop:pointcut id="transactionModulePointcut" expression="execution(* com.examw.netplatform.*.service..*Impl.*(..))" />
-		<aop:advisor pointcut-ref="transactionModulePointcut" advice-ref="transactionAdvice"/>
-	</aop:config> -->
 	<!--配置druid监控spring jdbc-->
 	<bean id="druid-stat-interceptor" class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor"/>
 	<bean id="druid-stat-pointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut" scope="prototype">
