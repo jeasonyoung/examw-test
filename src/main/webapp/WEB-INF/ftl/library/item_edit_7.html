@@ -96,7 +96,10 @@ $(function(){
 			pop = true;
 			$.getJSON("<@s.url '/library/item/uuid'/>?count=2",function(data){
 				pop = false;
-				$("#${form} input[name='items_id']").val(data[0]);
+				var item_id_obj =  $("#${form} input[name='items_id']");
+				if(item_id_obj && item_id_obj.val() == ""){
+					item_id_obj.val(data[0]);
+				}
 				${module}_edit_window("新增共享答案子试题［"+$(item).text()+"］",0,{"id":data[1],"children":opts},$(item).attr("value"));
 			});
 		}

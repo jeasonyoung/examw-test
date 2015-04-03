@@ -125,8 +125,14 @@ public class DefaultItemParser implements ItemParser {
 				if((objects[i] != null) && (objects[i] instanceof BaseItemInfo<?>)){
 					BaseItemInfo<?> info = (BaseItemInfo<?>)objects[i];
 					if(info == null) continue;
-					if(StringUtils.isEmpty(info.getId())){ info.setId(UUID.randomUUID().toString()); }
-					Item item = new Item();
+					Item item = null;
+					if(StringUtils.isEmpty(info.getId())){ 
+						info.setId(UUID.randomUUID().toString());
+						item = new Item();
+					}else{
+						item = this.itemDao.load(Item.class, info.getId());
+						if(item == null) item = new Item();
+					}
 					item.setParent(target);
 					if(this.changeModel(info, item)){
 						target.getChildren().add(item);

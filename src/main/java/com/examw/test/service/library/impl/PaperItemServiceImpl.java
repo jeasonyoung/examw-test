@@ -151,13 +151,13 @@ public class PaperItemServiceImpl extends BaseDataServiceImpl<StructureItem,Stru
 			logger.error(msg =  (paper == null ? "试卷不存在！" : String.format("试卷［%1$s］状态［%2$s］不允许更新！",paper.getName(),PaperStatus.convert(paper.getStatus()))));
 			throw new RuntimeException(msg);
 		}
-		if (StringUtils.isEmpty(info.getId()) && structure.getTotal() > 0) {
+		if (StringUtils.isEmpty(info.getId()) && structure != null && structure.getTotal() > 0) {
 			Long has_count = this.structureDao.totalStructureItems(info.getStructureId());
 			Integer item_count = this.itemService.calculationCount(info);
 			Long count =  (has_count == null ? 0 : has_count)  + (item_count == null ?  0 : item_count);
 			if (count != null && count > structure.getTotal()) {
-				msg = String.format("试卷［%1$s］结构下［structureId = %2$s］题目数量已满［total = %3$d］［count = %4$d］！",
-						paper.getName(), info.getStructureId(), structure.getTotal(), count);
+				msg = String.format("试卷［%1$s］结构下［structureId = %2$s］题目数量已满［%3$d / %4$d］！",
+						paper.getName(), structure.getTitle(), count,structure.getTotal());
 				logger.error(msg);
 				throw new RuntimeException(msg);
 			}

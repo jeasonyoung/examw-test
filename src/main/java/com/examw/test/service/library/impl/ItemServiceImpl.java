@@ -289,22 +289,40 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 			if(!data.getId().equalsIgnoreCase(checkItem.getId())){
 				throw new RuntimeException("试题修改后与题库中已存在的试题一致，不能重复添加！");
 			}
+			boolean isUpdate = false;
 			//如果没有被审核
 			if(andAudit && !ItemStatus.AUDIT.getValue().equals(data.getStatus())){
 				data.setStatus(ItemStatus.AUDIT.getValue());
+				isUpdate = true;
 			}
-			//试题没有被修改无需更新
+			//更新答案
+			if(!StringUtils.isEmpty(info.getAnswer()) && !info.getAnswer().equalsIgnoreCase(data.getAnswer())){
+				data.setAnswer(info.getAnswer());
+				isUpdate = true;
+			}
+			//更新解析
+			if(!StringUtils.isEmpty(info.getAnalysis()) && !info.getAnalysis().equalsIgnoreCase(data.getAnalysis())){
+				data.setAnalysis(info.getAnalysis());
+				isUpdate = true;
+			}
+			//更新时间
+			if(isUpdate){
+				data.setLastTime(new Date());
+			}
 			return data;
 		}
-		//已审核的试题不能被修改
-		if(data != null && ItemStatus.AUDIT.getValue().equals(data.getStatus())){
-			throw new RuntimeException(String.format("试题状态为［%s］,暂不能修改！", this.loadStatusName(data.getStatus())));
-		}
-		if(data != null){
-			//获取创建时间
+		//
+		boolean isAdded = false;
+		if(isAdded = (data == null)){
+			//初始化
+			data = new Item();
+		} else {
+			//已审核的试题不能被修改
+			if(ItemStatus.AUDIT.getValue().equals(data.getStatus())){
+				throw new RuntimeException(String.format("试题状态为［%s］,暂不能修改！", this.loadStatusName(data.getStatus())));
+			}
+			//1.获取创建时间
 			info.setCreateTime(data.getCreateTime());
-			//1.先删除
-			this.itemDao.delete(data,true);
 			//2.清空缓存
 			this.itemDao.evict(Item.class);
 		}
@@ -320,14 +338,13 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 		info.setCheckCode(checkCode);
 		//最后修改时间
 		info.setLastTime(new Date());
-		//初始化
-		Item item = new Item();
+		
 		//所属科目
-		item.setSubject(StringUtils.isEmpty(info.getSubjectId()) ? null : this.subjectDao.load(Subject.class, info.getSubjectId()));
+		data.setSubject(StringUtils.isEmpty(info.getSubjectId()) ? null : this.subjectDao.load(Subject.class, info.getSubjectId()));
 		//所属来源
-		item.setSource(StringUtils.isEmpty(info.getSourceId()) ?  null : this.sourceDao.load(Source.class, info.getSourceId()));
+		data.setSource(StringUtils.isEmpty(info.getSourceId()) ?  null : this.sourceDao.load(Source.class, info.getSourceId()));
 		//所属地区
-		item.setArea(StringUtils.isEmpty(info.getAreaId()) ? null : this.areaDao.load(Area.class, info.getAreaId()));
+		data.setArea(StringUtils.isEmpty(info.getAreaId()) ? null : this.areaDao.load(Area.class, info.getAreaId()));
 		
 		ItemParser parser = this.itemParsers.get(info.getType());
 		if(parser == null){
@@ -335,9 +352,9 @@ public class ItemServiceImpl extends BaseDataServiceImpl<Item, ItemInfo> impleme
 			logger.error(err);
 			throw new RuntimeException(err);
 		}
-		parser.parser(info, item);
-		this.itemDao.save(item);
-		return item;
+		parser.parser(info, data);
+		if(isAdded) this.itemDao.save(data);
+		return data;
 	}
 	/*
 	 * 试题纠错完成,修改关联试卷的状态,[重新发布]

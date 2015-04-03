@@ -123,7 +123,7 @@ $(function(){
 					if(index > -1) {
 						$("#${dg}").datagrid("updateRow",{index:index, row : post});
 					}else{
-						$("#${dg}").datagrid("insertRow",{index:0,row:post});
+						$("#${dg}").datagrid("appendRow",post)
 					}
 					d.dialog("close");
 				}
