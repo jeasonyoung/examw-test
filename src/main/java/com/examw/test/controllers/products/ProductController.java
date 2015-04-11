@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.examw.model.DataGrid;
 import com.examw.model.Json;
+import com.examw.test.domain.products.Product;
 import com.examw.test.domain.security.Right;
 import com.examw.test.model.products.ProductInfo;
 import com.examw.test.service.products.IProductService;
@@ -107,8 +107,12 @@ public class ProductController {
 	public List<ProductInfo> loadProducts(String examId){
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载考试［examId = %s］下产品数据集合...", examId)); 
 		List<ProductInfo> list = new ArrayList<>();
-		if(!StringUtils.isEmpty(examId)){
-			list = this.productService.loadProducts(examId);
+		List<Product> products = this.productService.loadProducts(examId);
+		if(products != null && products.size() > 0){
+			for(Product p : products){
+				if(p == null) continue;
+				list.add(this.productService.conversion(p));
+			}
 		}
 		return list;
 	}

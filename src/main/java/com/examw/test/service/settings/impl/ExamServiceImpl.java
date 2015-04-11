@@ -263,4 +263,13 @@ public class ExamServiceImpl extends BaseDataServiceImpl<Exam, ExamInfo> impleme
 		if(StringUtils.isEmpty(examId)) return null;
 		return this.changeModel(this.examDao.load(Exam.class, examId));
 	}
+	/*
+	 * 根据考试简称加载考试数据.
+	 * @see com.examw.test.service.settings.IExamService#loadExamByAbbr(java.lang.String)
+	 */
+	@Override
+	public Exam loadExamByAbbr(String abbr) {
+		if(logger.isDebugEnabled()) logger.debug(String.format("根据考试简称［%s］加载考试数据...", abbr));
+		return this.examDao.loadExamByAbbr(abbr);
+	}
 }

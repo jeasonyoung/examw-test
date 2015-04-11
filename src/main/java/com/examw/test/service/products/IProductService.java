@@ -60,7 +60,7 @@ public interface IProductService extends IBaseDataService<ProductInfo>{
 	 * @return
 	 * 产品数据集合。
 	 */
-	List<ProductInfo> loadProducts(String examId);
+	List<Product> loadProducts(String examId);
 	
 	//2015.03.11
 	/**

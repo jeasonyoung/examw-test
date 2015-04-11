@@ -53,4 +53,11 @@ public interface IExamService  extends IBaseDataService<ExamInfo>{
 	 * @return
 	 */
 	ExamInfo loadExam(String examId);
+	/**
+	 * 根据考试简称加载考试数据。
+	 * @param abbr
+	 * 考试简称。
+	 * @return 考试数据
+	 */
+	Exam loadExamByAbbr(String abbr);
 }

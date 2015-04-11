@@ -13,6 +13,7 @@ import org.springframework.beans.BeanUtils;
 public class AppClientSync extends AppClient {
 	private static final long serialVersionUID = 1L;
 	private String code,startTime;
+	private boolean ignoreCode;
 	/**
 	 * 构造函数。
 	 */
@@ -56,5 +57,20 @@ public class AppClientSync extends AppClient {
 	 */
 	public void setStartTime(String startTime) {
 		this.startTime = startTime;
+	}
+	/**
+	 * 获取是否忽略注册码。
+	 * @return 是否忽略注册码。
+	 */
+	public boolean isIgnoreCode() {
+		return ignoreCode;
+	}
+	/**
+	 * 设置是否忽略注册码。
+	 * @param ignoreCode 
+	 *	  是否忽略注册码。
+	 */
+	public void setIgnoreCode(boolean ignoreCode) {
+		this.ignoreCode = ignoreCode;
 	}
 }

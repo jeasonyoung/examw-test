@@ -33,4 +33,11 @@ public interface IExamDao extends IBaseDao<Exam>{
 	 * @return
 	 */
 	Integer loadMaxCode();
+	/**
+	 * 根据考试代码加载数据。
+	 * @param abbr
+	 * 考试英文简称。
+	 * @return 加载数据。
+	 */
+	Exam loadExamByAbbr(String abbr);
 }

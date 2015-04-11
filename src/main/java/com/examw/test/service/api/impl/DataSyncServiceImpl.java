@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.library.IPaperReleaseDao;
@@ -23,16 +24,19 @@ import com.examw.test.model.api.FavoriteSync;
 import com.examw.test.model.api.PaperItemRecordSync;
 import com.examw.test.model.api.PaperRecordSync;
 import com.examw.test.model.api.PaperSync;
+import com.examw.test.model.api.ProductSync;
 import com.examw.test.model.api.SubjectSync;
 import com.examw.test.model.records.UserItemFavoriteInfo;
 import com.examw.test.model.records.UserItemRecordInfo;
 import com.examw.test.model.records.UserPaperRecordInfo;
 import com.examw.test.service.api.IDataSyncService;
 import com.examw.test.service.library.PaperType;
+import com.examw.test.service.products.IProductService;
 import com.examw.test.service.products.IRegistrationCodeService;
 import com.examw.test.service.records.IUserItemFavoriteService;
 import com.examw.test.service.records.IUserItemRecordService;
 import com.examw.test.service.records.IUserPaperRecordService;
+import com.examw.test.service.settings.IExamService;
 
 /**
  * 数据同步服务接口实现类。
@@ -47,6 +51,8 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	private IUserPaperRecordService userPaperRecordService;
 	private IUserItemRecordService userItemRecordService;
 	private IUserItemFavoriteService userItemFavoriteService;
+	private IExamService examService;
+	private IProductService productService;
 	/**
 	 * 设置发布试卷数据接口。
 	 * @param paperReleaseDao 
@@ -91,6 +97,49 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	public void setUserItemFavoriteService(IUserItemFavoriteService userItemFavoriteService) {
 		if(logger.isDebugEnabled()) logger.debug("注入用户试题收藏服务接口...");
 		this.userItemFavoriteService = userItemFavoriteService;
+	}
+	/**
+	 * 设置考试服务接口。
+	 * @param examService 
+	 *	  考试服务接口。
+	 */
+	public void setExamService(IExamService examService) {
+		if(logger.isDebugEnabled()) logger.debug("注入考试服务接口...");
+		this.examService = examService;
+	}
+	/**
+	 * 设置产品服务接口。
+	 * @param productService 
+	 *	  产品服务接口。
+	 */
+	public void setProductService(IProductService productService) {
+		if(logger.isDebugEnabled()) logger.debug("注入产品服务接口...");
+		this.productService = productService;
+	}
+	/*
+	 * 同步考试下产品集合
+	 * @see com.examw.test.service.api.IDataSyncService#syncProducts(java.lang.String)
+	 */
+	@Override
+	public List<ProductSync> syncProducts(String abbr) throws Exception {
+		if(logger.isDebugEnabled()) logger.debug(String.format("同步考试[abbr=%s]下产品集合...", abbr));
+		if(StringUtils.isEmpty(abbr)) throw new IllegalArgumentException("考试简称为空！");
+		Exam exam = this.examService.loadExamByAbbr(abbr);
+		if(exam == null) throw new RuntimeException(String.format("考试简称［abbr = %s］不存在!", abbr));
+		List<Product> products =  this.productService.loadProducts(exam.getId());
+		List<ProductSync> list = new ArrayList<ProductSync>();
+		if(products != null && products.size() > 0){
+			for(Product p : products){
+				if(p == null) continue;
+				ProductSync sync = new ProductSync();
+				BeanUtils.copyProperties(p, sync);
+				if(p.getArea() != null){
+					sync.setAreaName(p.getArea().getName());
+				}
+				list.add(sync);
+			}
+		}
+		return list;
 	}
 	/*
 	 * 同步考试科目数据。
@@ -281,6 +330,11 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	private Product validationSyncReq(AppClientSync req) throws Exception{
 		if(logger.isDebugEnabled()) logger.debug("验证同步请求的合法性...");
 		if(req == null) throw new IllegalArgumentException("同步请求为空！");
+		if(req.isIgnoreCode()){//忽略注册码验证
+			if(StringUtils.isEmpty(req.getProductId())) throw new Exception("未设置产品ID！");
+			return this.productService.loadProduct(req.getProductId());
+		}
+		//验证注册码
 		String reg_code =  this.registrationCodeService.cleanCodeFormat(req.getCode());
 		if(StringUtils.isEmpty(reg_code)) throw new Exception("注册码为空！");
 		if(this.registrationCodeService.validation(reg_code)){

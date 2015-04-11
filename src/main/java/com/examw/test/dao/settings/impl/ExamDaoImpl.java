@@ -81,6 +81,7 @@ public class ExamDaoImpl extends BaseDaoImpl<Exam> implements IExamDao {
 	 */
 	@Override
 	public Integer loadMaxCode() {
+		if(logger.isDebugEnabled()) logger.debug("加载最大考试代码值...");
 		final String hql = "select max(e.code) from Exam e order by e.code desc ";
 		Object obj = this.uniqueResult(hql, null);
 		return obj == null ? null : (int)obj;
@@ -91,6 +92,7 @@ public class ExamDaoImpl extends BaseDaoImpl<Exam> implements IExamDao {
 	 */
 	@Override
 	public void delete(Exam data) {
+		if(logger.isDebugEnabled()) logger.debug("删除数据...");
 		if(data == null) return;
 		int count = 0;
 		if(data.getSubjects() != null && (count = data.getSubjects().size()) > 0){
@@ -100,5 +102,22 @@ public class ExamDaoImpl extends BaseDaoImpl<Exam> implements IExamDao {
 			throw new RuntimeException(String.format("考试［%1$s］关联有［%2$d］产品，暂不能删除！", data.getName(), count));
 		}
 		super.delete(data);
+	}
+	/*
+	 * 根据简称加载数据.
+	 * @see com.examw.test.dao.settings.IExamDao#loadExamByAbbr(java.lang.String)
+	 */
+	@Override
+	public Exam loadExamByAbbr(String abbr) {
+		if(logger.isDebugEnabled())logger.debug(String.format("根据简称[%s]加载数据...", abbr));
+		if(StringUtils.isEmpty(abbr)) return null;
+		final String hql = "from Exam e where e.abbr = :abbr order by e.code desc";
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("abbr", abbr);
+		List<Exam> list =  this.find(hql, parameters, 0, 1);
+		if(list != null && list.size() > 0){
+			return list.get(0);
+		}
+		return null;
 	}
 }

@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -97,6 +98,26 @@ public class MobileController {
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMsg(e.getMessage());
+		}
+		return result;
+	}
+	
+	/**
+	 * 同步考试下的产品集合
+	 * @param examCode
+	 * @return
+	 */
+	@RequestMapping(value = {"/sync/products/{abbr}"}, method = {RequestMethod.GET,RequestMethod.POST})
+	@ResponseBody
+	public Json syncProducts(@PathVariable String abbr){
+		if(logger.isDebugEnabled()) logger.debug(String.format("同步考试简称［abbr ＝ %s］下的产品信息...", abbr));
+		Json result = new Json();
+		try {
+			result.setData(this.dataSyncService.syncProducts(abbr));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			 result.setSuccess(false);
+			 result.setMsg(e.getMessage());
 		}
 		return result;
 	}
