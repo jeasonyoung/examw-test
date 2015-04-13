@@ -2,8 +2,6 @@ package com.examw.test.service.products;
 
 import java.io.Serializable;
 
-import org.springframework.util.StringUtils;
-
 /**
  * 
  * @author fengwei.
@@ -11,12 +9,12 @@ import org.springframework.util.StringUtils;
  */
 public interface IProductRegisterService {
 	/**
-	 * 注册码验证
-	 * @param productRegister 产品注册对象
+	 * 注册码验证。
+	 * @param productRegister 
+	 * 产品注册对象。
 	 * @return
 	 */
 	boolean verify(ProductRegister productRegister)throws Exception;
-	
 	/**
 	 * 产品注册.
 	 * @author fengwei
@@ -105,34 +103,6 @@ public interface IProductRegisterService {
 		 */
 		public void setTerminalCode(Integer terminalCode) {
 			this.terminalCode = terminalCode;
-		}
-		
-		/**
-		 * 校验参数合法性.
-		 * @throws Exception
-		 */
-		public boolean check() throws Exception{
-			///TODO:进行空值判断
-			if(StringUtils.isEmpty(code))
-				throw new Exception("注册码为空");
-			if(StringUtils.isEmpty(productId))
-				throw new Exception("产品ID为空");
-			if(StringUtils.isEmpty(userId))
-				throw new Exception("产品 用户ID为空");
-			if(StringUtils.isEmpty(machine))
-				throw new Exception("机器码为空");
-			if(terminalCode == null)
-				throw new Exception("终端代码为空");
-			return true;
-		}
-		/*
-		 * 重载toString方法.
-		 * @see java.lang.Object#toString()
-		 */
-		@Override
-		public String toString() {
-			return String.format("注册码[%1$s],产品ID[%2$s],产品用户ID[%3$s],机器码[%4$s],终端代码[%5$d]",
-					this.code,this.productId,this.userId,this.machine,this.terminalCode);
 		}
 	}
 }

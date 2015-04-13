@@ -68,8 +68,7 @@ public class HostRegisterServiceImpl implements IHostRegisterService {
 		if(data == null) throw new Exception(String.format("注册码未登记！"));
 		//注册码没有激活
 		if(data.getStatus() == RegistrationStatus.NONE.getValue()){//激活注册码
-			 this.registrationCodeService.activeRegistration(reg_code);
-			 data = this.registrationCodeService.loadRegistration(reg_code);
+			this.registrationCodeService.activeRegistration(data);
 		}
 		else if(data.getStatus() != RegistrationStatus.ACTIVE.getValue()){
 			throw new Exception("注册码不是有效状态!");
@@ -100,9 +99,6 @@ public class HostRegisterServiceImpl implements IHostRegisterService {
 			throw new Exception(String.format("注册码绑定［%1$d］已超过限制［%2$d］", count, limits));
 		}
 		//添加绑定
-		return this.registrationBindingService.addBinding(reg_code, 
-																						appRegister.getClientTypeCode(),
-																						appRegister.getClientMachine(),
-																						appRegister.getUserId());
+		return this.registrationBindingService.addBinding(data, appRegister.getClientTypeCode(),	 appRegister.getClientMachine(), appRegister.getUserId());
 	}
 }

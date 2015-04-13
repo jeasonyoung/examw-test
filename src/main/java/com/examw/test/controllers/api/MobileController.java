@@ -94,6 +94,7 @@ public class MobileController {
 		if(logger.isDebugEnabled()) logger.debug("应用注册...");
 		Json result = new Json();
 		try {
+			if(logger.isDebugEnabled()) logger.debug(String.format( "AppRegister:%s",register));
 			result.setSuccess(this.hostRegisterService.verifyAppRegister(register));
 		} catch (Exception e) {
 			result.setSuccess(false);

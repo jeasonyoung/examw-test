@@ -125,8 +125,6 @@
 	<bean id="registrationBindingService" class="com.examw.test.service.products.impl.RegistrationBindingServiceImpl">
 	    <!-- 注册码绑定数据接口 -->
 	    <property name="registrationBindingDao" ref="registrationBindingDao" />
-	    <!-- 注册码数据接口 -->
-	    <!-- <property name="registrationDao" ref="registrationDao" /> -->
 	    <!-- 产品用户数据接口 -->
 	    <property name="productUserDao" ref="productUserDao" />
 	    <!-- 注册码代码服务接口 -->

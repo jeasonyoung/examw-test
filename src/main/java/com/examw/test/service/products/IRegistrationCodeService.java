@@ -59,7 +59,6 @@ public interface IRegistrationCodeService {
 	 * 去除格式后注册码。
 	 */
 	String cleanCodeFormat(String code);
-	
 	/**
 	 * 自动生成注册码
 	 * @param productId	产品ID[必须]
@@ -74,11 +73,16 @@ public interface IRegistrationCodeService {
 	 * @return
 	 */
 	Registration loadRegistration(String code);
-	
 	/**
 	 * 激活注册码
 	 * @param code
 	 * @throws Exception 
 	 */
-	void activeRegistration(String code) throws Exception;
+	boolean activeRegistration(String code)  throws Exception;
+	/**
+	 * 激活注册码。
+	 * @param data
+	 * @throws Exception
+	 */
+	boolean activeRegistration(Registration data);
 }
