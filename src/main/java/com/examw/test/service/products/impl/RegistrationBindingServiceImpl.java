@@ -141,49 +141,50 @@ public class RegistrationBindingServiceImpl extends BaseDataServiceImpl<Registra
 		if(StringUtils.isEmpty(registerCode)) throw new Exception("注册码为空！");
 		if(StringUtils.isEmpty(softwareTypeCode)) throw new Exception("软件类型代码为空！");
 		if(StringUtils.isEmpty(machine)) throw new Exception("设备机器标示为空！");
-		if(this.registrationCodeService.validation(registerCode)){//验证注册码合法性
-			Registration registration = this.registrationCodeService.loadRegistration(registerCode);
-			if(registration == null) throw new Exception("加载注册码对象失败！");
-			SoftwareType softwareType = null;
-			SoftwareTypeLimit softwareTypeLimit = null;
-			if(registration.getSoftwareTypeLimits() != null){//查找软件类型限制。
-				for(SoftwareTypeLimit limit : registration.getSoftwareTypeLimits()){
-					if(limit == null || (softwareType = limit.getSoftwareType()) == null) continue;
-					if(Integer.parseInt(softwareTypeCode) ==  softwareType.getCode()){
-						softwareTypeLimit = limit;
-						break;
-					}
+		if(!this.registrationCodeService.validation(registerCode)){//验证注册码合法性
+			if(logger.isDebugEnabled()) logger.debug("验证注册码合法性校验失败！");
+			return false;
+		}
+		Registration registration = this.registrationCodeService.loadRegistration(registerCode);
+		if(registration == null) throw new Exception("加载注册码对象失败！");
+		SoftwareType softwareType = null;
+		SoftwareTypeLimit softwareTypeLimit = null;
+		if(registration.getSoftwareTypeLimits() != null){//查找软件类型限制。
+			for(SoftwareTypeLimit limit : registration.getSoftwareTypeLimits()){
+				if(limit == null || (softwareType = limit.getSoftwareType()) == null) continue;
+				if(Integer.parseInt(softwareTypeCode) ==  softwareType.getCode()){
+					softwareTypeLimit = limit;
+					break;
 				}
 			}
-			if(softwareTypeLimit == null) throw  new Exception("注册码未设置使用软件类型！");
-			final String reg_id = registration.getId(), type_id = softwareType.getId();
-			//是否重复绑定
-			RegistrationBinding dataBinding = this.registrationBindingDao.loadBinding(reg_id, type_id, machine);
-			if(dataBinding != null){
-				dataBinding.setLastTime(new Date());
-				dataBinding.setTimes(dataBinding.getTimes() + 1);
-				dataBinding.setUser(StringUtils.isEmpty(userId) ? null : this.productUserDao.load(ProductUser.class, userId));
-				return true;
-			}
-			int times = 0;
-			if((times = softwareTypeLimit.getTimes()) <= 0) throw new Exception(String.format("注册码不允许在软件类型［%1$d:%2$s］上使用！", softwareType.getCode(),softwareType.getName()));
-			long total = this.registrationBindingDao.total(new RegistrationBindingInfo(){
+		}
+		if(softwareTypeLimit == null) throw  new Exception("注册码未设置使用软件类型！");
+		final String reg_id = registration.getId(), type_id = softwareType.getId();
+		//是否重复绑定
+		RegistrationBinding dataBinding = this.registrationBindingDao.loadBinding(reg_id, type_id, machine);
+		if(dataBinding != null){
+			dataBinding.setLastTime(new Date());
+			dataBinding.setTimes(dataBinding.getTimes() + 1);
+			dataBinding.setUser(StringUtils.isEmpty(userId) ? null : this.productUserDao.load(ProductUser.class, userId));
+			return true;
+		}
+		int times = 0;
+		if((times = softwareTypeLimit.getTimes()) <= 0) throw new Exception(String.format("注册码不允许在软件类型［%1$d:%2$s］上使用！", softwareType.getCode(),softwareType.getName()));
+		long total = this.registrationBindingDao.total(new RegistrationBindingInfo(){
 				private static final long serialVersionUID = 1L;
 				@Override
 				public String getRegistrationId() { return reg_id; }
 				@Override
 				public String getSoftwareTypeId() { return type_id;}
-			});
-			if(total > times) throw new Exception("注册码已超过了允许绑定设备机器的上限！");
-			dataBinding = new RegistrationBinding();
- 			dataBinding.setRegistration(registration);
- 			dataBinding.setSoftwareType(softwareType);
- 			dataBinding.setMachine(machine);
- 			dataBinding.setUser(StringUtils.isEmpty(userId) ? null : this.productUserDao.load(ProductUser.class, userId));
- 			this.registrationBindingDao.save(dataBinding);
- 			return true;
-		}
-		return false;
+		});
+		if(total > times) throw new Exception("注册码已超过了允许绑定设备机器的上限！");
+		dataBinding = new RegistrationBinding();
+ 		dataBinding.setRegistration(registration);
+ 		dataBinding.setSoftwareType(softwareType);
+ 		dataBinding.setMachine(machine);
+ 		dataBinding.setUser(StringUtils.isEmpty(userId) ? null : this.productUserDao.load(ProductUser.class, userId));
+ 		this.registrationBindingDao.save(dataBinding);
+ 		return true;
 	}
 	
 	/*
@@ -199,7 +200,7 @@ public class RegistrationBindingServiceImpl extends BaseDataServiceImpl<Registra
 			if(logger.isDebugEnabled()) logger.debug(String.format("添加注册码绑定:%s",data.toString()));
 			String code = this.registrationCodeService.cleanCodeFormat(data.getCode());
 			if(!this.registrationCodeService.validation(code)){
-				throw new Exception("注册码不合法");
+				throw new Exception("注册码不合法!");
 			}
 			Registration registration = this.registrationCodeService.loadRegistration(code);
 			if(registration == null) throw new Exception("加载注册码对象失败！");

@@ -481,8 +481,8 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 			throw new Exception(String.format("注册码：%s!", this.loadStatusName(data.getStatus())));
 		}
 		//激活
-		int limit = 12;
-		if(data.getLimits() != null && data.getLimits().intValue() != 0)
+		int limit = 1;
+		if(data.getLimits() != null && data.getLimits() > 0)
 		{
 			limit = data.getLimits();
 		}
@@ -496,5 +496,9 @@ public class RegistrationServiceImpl extends BaseDataServiceImpl<Registration,Re
 		calendar.set(Calendar.MILLISECOND, 0);//微妙
 		data.setEndTime(calendar.getTime());//过期时间
 		data.setStatus(RegistrationStatus.ACTIVE.getValue());
+		//更新激活
+		this.registrationDao.update(data);
+		//清除缓存
+		this.registrationDao.evict(Registration.class);
 	}
 }

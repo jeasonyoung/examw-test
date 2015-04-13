@@ -31,11 +31,11 @@
 $(function(){
 	<@shiro.hasPermission name="${PER_DELETE}">
 	${dg}_delete = function(){
-		/* var rows = $("#${dg}'').datagrid("getChecked");
+		 var rows = $("#${dg}").datagrid("getChecked");
 		if(rows && rows.length > 0){
 			$.messager.confirm("确认","您是否确认删除选中的数据?",function(r){
 				if(!r)return;
-				$.messager.progress("text":"正在删除数据，请稍后...");
+				$.messager.progress({"text":"正在删除数据，请稍后..."});
 				var ids = [];
 				for(var i = 0; i < rows.length; i++){ ids.push(rows[i].id);}
 				$.ajax({
@@ -44,7 +44,7 @@ $(function(){
 					success:function(data,textStatus){
 						$.messager.progress("close");
 						if(data.success){
-							$("#${dg}'').datagrid("load").datagrid("unselectAll");
+							$("#${dg}").datagrid("load").datagrid("unselectAll");
 						}else{
 							$.messager.show({ title:"提示", msg:data.msg });
 						}
@@ -53,7 +53,7 @@ $(function(){
 			});
 		}else{
 			$.messager.alert("提示","未选中须删除的数据！");
-		} */
+		} 
 	};
 	</@shiro.hasPermission>
 });
