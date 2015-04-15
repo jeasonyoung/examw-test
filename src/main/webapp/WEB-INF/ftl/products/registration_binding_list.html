@@ -9,7 +9,7 @@
 			<th data-options="field:'id',checkbox:true"></th>
 			<th data-options="field:'registrationCode',width:25,align:'left',sortable:true">注册码</th>
 			<th data-options="field:'softwareTypeName',width:15,align:'center',sortable:true">软件类型</th>
-			<th data-options="field:'userName',width:15,align:'left',sortable:true,formatter:function(v,row,index){ return '<span title=\'用户代码:'+row['userCode']+ ' \r\n电话号码:' + row['userMobile'] + '\'></span>';}">所属用户</th>
+			<th data-options="field:'userName',width:15,align:'left',sortable:true,formatter:function(v,row,index){ return '<span title=\'用户代码:'+row['userCode']+ ' \r\n电话号码:' + row['userMobile'] + '\'>'+row['userName']+'</span>';}">所属用户</th>
 			<th data-options="field:'machine',width:20,align:'left',sortable:true">设备标示</th>
 			<th data-options="field:'times',width:10,align:'right',sortable:true">绑定次数</th>
 			<th data-options="field:'createTime',width:15,align:'right',sortable:true,formatter:function(v,row,index){return '<span title=\'' +v+'\'>'+v+'</span>';}">绑定时间</th>
