@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd 
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd" default-lazy-init="true">
+	
+    <description>mybatis configuration use to sqlserver sync</description>
+    
+    <!-- sqlserver数据源配置，用于发布数据 -->
+    <bean id="sqlDataSource" class="com.alibaba.druid.pool.DruidDataSource"  init-method="init" destroy-method="close">
+        <!-- 数据源驱动类 -->
+        <property name="driverClassName" value="${sql_jdbc_driver}"/>
+        
+        <!-- 基本属性url、 user、 password -->
+        <property name="url" value="${sql_jdbc_url}" />
+        <property name="username" value="${sql_jdbc_username}" />
+ 		<property name="password" value="${sql_jdbc_password}" />
+ 		
+ 		<!--配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="${sql_jdbc_pool_minIdle}"/>
+		<property name="minIdle" value="${sql_jdbc_pool_minIdle}"/>
+		<property name="maxActive" value="${sql_jdbc_pool_maxActive}"/>
+		
+		<!--配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="60000"/>
+		
+		<!--配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		
+		<!--配置一个连接在池中最小生存的时间，单位是毫秒 --> 
+  		<property name="minEvictableIdleTimeMillis" value="300000" /> 
+		
+		<property name="validationQuery" value="SELECT 'x' " /> 
+		<property name="testWhileIdle" value="true" />
+  		<property name="testOnBorrow" value="false" /> 
+  		<property name="testOnReturn" value="false" /> 
+  		 
+		<!--配置监控统计拦截的filters -->
+		<property name="filters" value="stat" /> 
+    </bean>
+    
+    <!-- mybatis begin -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="sqlDataSource" />
+        <property name="typeAliasesPackage" value="com.examw.test.sync.bean"/>
+        <property name="mapperLocations">
+            <list>
+                <value>classpath:mappers/*_mapper.xml</value>
+            </list>
+        </property>
+    </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.examw.test.sync.mappers"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+    </bean>
+    <!-- transaction support -->
+    <!-- <tx:annotation-driven transaction-manager="sqlTransactionManager"/>
+    <bean id="sqlTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="sqlDataSource"/>
+    </bean> -->
+    <!-- mybatis end -->
+</beans>
