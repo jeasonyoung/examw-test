@@ -51,7 +51,7 @@
             <li><a href="/#category">考试分类</a></li>
             <li><a href="/news/">最新试卷</a></li>
             <li><a href="/hots/">试卷排行</a></li>
-            <li><a href="/questions/list/">常见问题</a></li>
+            <#--<li><a href="/questions/list/">常见问题</a></li>-->
         </ul>
         <#-- 暂时默认的是[一建工程经济产品] -->
         <div class="my"><a id="mytiku" rel="nofollow" href="http://tiku.examw.com/" ></a></div>
@@ -63,16 +63,16 @@
 <#macro news_hots_question>
 <div class="newbox fl">
 	<div class="main">
-        <div class="newshj">
+        <div class="newshj2"><#--newshj-->
         	<#--最新试卷-->
         	<@news_papers />
         </div>
-        <div class="newshj">
+        <div class="newshj2 prno"><#--newshj-->
         	<#--最热试卷-->
         	<@hots_papers />
         </div>
         <#--常见问题-->
-        <@questions_list />
+        <#--<@questions_list />-->
     </div>
 </div>
 </#macro>

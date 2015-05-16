@@ -74,7 +74,9 @@ public class ProductTemplateProcess extends BaseTemplateProcess {
 			//最新试卷
 			parameters.put("newsPapers", this.loadNewsPapers(exam.getId()));
 			//最热试卷
-			parameters.put("hotsPapers", this.loadHotsPapers(exam.getId()));  
+			parameters.put("hotsPapers", this.loadHotsPapers(exam.getId())); 
+			//所属考试abbr
+			parameters.put("abbr", exam.getAbbr());
 			
 			ProductDetailViewData p = new ProductDetailViewData();
 			p.setExamAbbr(exam.getAbbr());//所属考试EN简称

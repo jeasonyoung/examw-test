@@ -76,12 +76,12 @@
                 <entry key="0x0010"><!-- 试卷详情页面模版处理 -->
                     <ref local="paperDetailTemplateProcess"/>
                 </entry>
-                <entry key="0x0020"><!--常见问题列表页面模版处理 -->
+               <!--  <entry key="0x0020">常见问题列表页面模版处理
                     <ref local="questionListTemplateProcess"/>
-                </entry>
-                <entry key="0x0040"><!--常见问题详细页面模版处理 -->
+                </entry> -->
+              <!--   <entry key="0x0040">常见问题详细页面模版处理
                     <ref local="questionDetailTemplateProcess"/>
-                </entry>
+                </entry> -->
                 <entry key="0x0080"><!-- 最新试卷列表页面模版处理 -->
                     <ref local="newsPaperTemplateProcess" />
                 </entry>
