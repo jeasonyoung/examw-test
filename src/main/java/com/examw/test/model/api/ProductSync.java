@@ -10,9 +10,9 @@ import java.math.BigDecimal;
  */
 public class ProductSync implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private String id,name,areaName,examDate;
-	private Integer orderNo,paperTotal,itemTotal;
+	private String id,name,area;
 	private BigDecimal price,discount;
+	private Integer papers,items,order;
 	/**
 	 * 获取产品ID。
 	 * @return 产品ID。
@@ -44,34 +44,19 @@ public class ProductSync implements Serializable {
 		this.name = name;
 	}
 	/**
-	 * 获取所属地区。
-	 * @return 所属地区。
+	 * 获取area
+	 * @return area
 	 */
-	public String getAreaName() {
-		return areaName;
+	public String getArea() {
+		return area;
 	}
 	/**
-	 * 设置所属地区。
-	 * @param areaName 
-	 *	  所属地区。
+	 * 设置 area
+	 * @param area 
+	 *	  area
 	 */
-	public void setAreaName(String areaName) {
-		this.areaName = areaName;
-	}
-	/**
-	 * 获取考试日期。
-	 * @return 考试日期。
-	 */
-	public String getExamDate() {
-		return examDate;
-	}
-	/**
-	 * 设置考试日期。
-	 * @param examDate 
-	 *	  考试日期。
-	 */
-	public void setExamDate(String examDate) {
-		this.examDate = examDate;
+	public void setArea(String area) {
+		this.area = area;
 	}
 	/**
 	 * 获取产品原价。
@@ -104,48 +89,72 @@ public class ProductSync implements Serializable {
 		this.discount = discount;
 	}
 	/**
-	 * 获取试卷总数。
-	 * @return 试卷总数。
+	 * 获取试卷数。
+	 * @return 试卷数。
 	 */
-	public Integer getPaperTotal() {
-		return paperTotal;
+	public Integer getPapers() {
+		return papers;
 	}
 	/**
-	 * 设置试卷总数。
-	 * @param paperTotal 
-	 *	  试卷总数。
+	 * 设置试卷数。
+	 * @param papers 
+	 *	  试卷数。
 	 */
-	public void setPaperTotal(Integer paperTotal) {
-		this.paperTotal = paperTotal;
+	public void setPapers(Integer papers) {
+		this.papers = papers;
 	}
 	/**
-	 * 获取试题总数。
-	 * @return 试题总数。
+	 * 获取试题数。
+	 * @return 试题数。
 	 */
-	public Integer getItemTotal() {
-		return itemTotal;
+	public Integer getItems() {
+		return items;
 	}
 	/**
-	 * 设置试题总数。
-	 * @param itemTotal 
-	 *	  试题总数。
+	 * 设置试题数。
+	 * @param items 
+	 *	  试题数。
 	 */
-	public void setItemTotal(Integer itemTotal) {
-		this.itemTotal = itemTotal;
+	public void setItems(Integer items) {
+		this.items = items;
 	}
 	/**
 	 * 获取排序号。
 	 * @return 排序号。
 	 */
-	public Integer getOrderNo() {
-		return orderNo;
+	public Integer getOrder() {
+		return order;
 	}
 	/**
 	 * 设置排序号。
-	 * @param orderNo 
+	 * @param order 
 	 *	  排序号。
 	 */
-	public void setOrderNo(Integer orderNo) {
-		this.orderNo = orderNo;
+	public void setOrder(Integer order) {
+		this.order = order;
+	}
+	/*
+	 * 重载。
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return 31 + (this.getId() == null ? 0 : this.getId().hashCode());
+	}
+	/*
+	 * 重载比较。
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj) return true;
+		if(obj instanceof ProductSync){
+			ProductSync other = (ProductSync)obj;
+			if(this.getId() == null){
+				return other.getId() == null;
+			}
+			return this.getId().equals(other.getId());
+		}
+		return false;
 	}
 }

@@ -4,7 +4,6 @@ import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -104,17 +103,17 @@ public class MobileController {
 	}
 	
 	/**
-	 * 同步考试下的产品集合
+	 * 同步考试分类集合
 	 * @param examCode
 	 * @return
 	 */
-	@RequestMapping(value = {"/sync/products/{abbr}"}, method = {RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value = {"/download/categories"}, method = {RequestMethod.GET,RequestMethod.POST})
 	@ResponseBody
-	public Json syncProducts(@PathVariable String abbr){
-		if(logger.isDebugEnabled()) logger.debug(String.format("同步考试简称［abbr ＝ %s］下的产品信息...", abbr));
+	public Json downloadCategories(){
+		if(logger.isDebugEnabled()) logger.debug("同步考试分类集合...");
 		Json result = new Json();
 		try {
-			result.setData(this.dataSyncService.syncProducts(abbr));
+			result.setData(this.dataSyncService.downloadCategories());
 			result.setSuccess(true);
 		} catch (Exception e) {
 			 result.setSuccess(false);
@@ -122,25 +121,25 @@ public class MobileController {
 		}
 		return result;
 	}
-	/**
-	 * 同步考试科目数据。
-	 * @param req
-	 * @return
-	 */
-	@RequestMapping(value = {"/sync/exams"}, method = {RequestMethod.POST})
-	@ResponseBody
-	public Json syncExam(@RequestBody AppClientSync req){
-		if(logger.isDebugEnabled()) logger.debug("同步考试科目数据...");
-		Json result = new Json();
-		try {
-			result.setData(this.dataSyncService.syncExams(req));
-			result.setSuccess(true);
-		} catch (Exception e) {
-			result.setSuccess(false);
-			result.setMsg(e.getMessage());
-		}
-		return result;
-	}
+//	/**
+//	 * 同步考试科目数据。
+//	 * @param req
+//	 * @return
+//	 */
+//	@RequestMapping(value = {"/sync/exams"}, method = {RequestMethod.POST})
+//	@ResponseBody
+//	public Json syncExam(@RequestBody AppClientSync req){
+//		if(logger.isDebugEnabled()) logger.debug("同步考试科目数据...");
+//		Json result = new Json();
+//		try {
+//			result.setData(this.dataSyncService.syncExams(req));
+//			result.setSuccess(true);
+//		} catch (Exception e) {
+//			result.setSuccess(false);
+//			result.setMsg(e.getMessage());
+//		}
+//		return result;
+//	}
 	/**
 	 * 同步试卷数据。
 	 * @param req

@@ -2,30 +2,32 @@ package com.examw.test.service.api.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.library.IPaperReleaseDao;
+import com.examw.test.dao.settings.ICategoryDao;
 import com.examw.test.domain.library.PaperRelease;
 import com.examw.test.domain.products.Product;
 import com.examw.test.domain.products.Registration;
+import com.examw.test.domain.settings.Category;
 import com.examw.test.domain.settings.Exam;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.api.AppClientPush;
 import com.examw.test.model.api.AppClientSync;
+import com.examw.test.model.api.CategorySync;
 import com.examw.test.model.api.ExamSync;
 import com.examw.test.model.api.FavoriteSync;
 import com.examw.test.model.api.PaperItemRecordSync;
 import com.examw.test.model.api.PaperRecordSync;
 import com.examw.test.model.api.PaperSync;
 import com.examw.test.model.api.ProductSync;
-import com.examw.test.model.api.SubjectSync;
 import com.examw.test.model.records.UserItemFavoriteInfo;
 import com.examw.test.model.records.UserItemRecordInfo;
 import com.examw.test.model.records.UserPaperRecordInfo;
@@ -36,7 +38,6 @@ import com.examw.test.service.products.IRegistrationCodeService;
 import com.examw.test.service.records.IUserItemFavoriteService;
 import com.examw.test.service.records.IUserItemRecordService;
 import com.examw.test.service.records.IUserPaperRecordService;
-import com.examw.test.service.settings.IExamService;
 
 /**
  * 数据同步服务接口实现类。
@@ -51,8 +52,8 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	private IUserPaperRecordService userPaperRecordService;
 	private IUserItemRecordService userItemRecordService;
 	private IUserItemFavoriteService userItemFavoriteService;
-	private IExamService examService;
 	private IProductService productService;
+	private ICategoryDao categoryDao;
 	/**
 	 * 设置发布试卷数据接口。
 	 * @param paperReleaseDao 
@@ -99,15 +100,6 @@ public class DataSyncServiceImpl implements IDataSyncService {
 		this.userItemFavoriteService = userItemFavoriteService;
 	}
 	/**
-	 * 设置考试服务接口。
-	 * @param examService 
-	 *	  考试服务接口。
-	 */
-	public void setExamService(IExamService examService) {
-		if(logger.isDebugEnabled()) logger.debug("注入考试服务接口...");
-		this.examService = examService;
-	}
-	/**
 	 * 设置产品服务接口。
 	 * @param productService 
 	 *	  产品服务接口。
@@ -116,58 +108,115 @@ public class DataSyncServiceImpl implements IDataSyncService {
 		if(logger.isDebugEnabled()) logger.debug("注入产品服务接口...");
 		this.productService = productService;
 	}
+	/**
+	 * 设置考试分类数据接口。
+	 * @param categoryDao 
+	 *	  考试分类数据接口。
+	 */
+	public void setCategoryDao(ICategoryDao categoryDao) {
+		if(logger.isDebugEnabled()) logger.debug("注入考试分类数据接口...");
+		this.categoryDao = categoryDao;
+	}
 	/*
-	 * 同步考试下产品集合
-	 * @see com.examw.test.service.api.IDataSyncService#syncProducts(java.lang.String)
+	 * 下载考试类别数据。
+	 * @see com.examw.test.service.api.IDataSyncService#downloadCategories()
 	 */
 	@Override
-	public List<ProductSync> syncProducts(String abbr) throws Exception {
-		if(logger.isDebugEnabled()) logger.debug(String.format("同步考试[abbr=%s]下产品集合...", abbr));
-		if(StringUtils.isEmpty(abbr)) throw new IllegalArgumentException("考试简称为空！");
-		Exam exam = this.examService.loadExamByAbbr(abbr);
-		if(exam == null) throw new RuntimeException(String.format("考试简称［abbr = %s］不存在!", abbr));
-		List<Product> products =  this.productService.loadProducts(exam.getId());
-		List<ProductSync> list = new ArrayList<ProductSync>();
-		if(products != null && products.size() > 0){
-			for(Product p : products){
-				if(p == null) continue;
-				ProductSync sync = new ProductSync();
-				BeanUtils.copyProperties(p, sync);
-				if(p.getArea() != null){
-					sync.setAreaName(p.getArea().getName());
+	public List<CategorySync> downloadCategories() throws Exception {
+		if(logger.isDebugEnabled()) logger.debug("下载考试类别数据...");
+		List<CategorySync> list = new ArrayList<CategorySync>();
+		List<Category> categories =  this.categoryDao.loadTopCategories();
+		if(categories != null && categories.size() > 0){
+			for(Category category : categories){
+				if(category == null)continue;
+				CategorySync categorySync = new CategorySync();
+				categorySync.setId(category.getId());
+				categorySync.setCode(category.getCode());
+				categorySync.setName(category.getName());
+				categorySync.setAbbr(category.getAbbr());
+				//
+				this.createCategories(categorySync, category);
+				//考试排序
+				if(categorySync.getExams() != null && categorySync.getExams().size() > 0){
+					Collections.sort(categorySync.getExams(), new Comparator<ExamSync>(){
+						@Override
+						public int compare(ExamSync o1, ExamSync o2) {
+							return o1.getCode() - o2.getCode();
+						}
+					});
 				}
-				list.add(sync);
+				//
+				list.add(categorySync);
 			}
+			//排序
+			Collections.sort(list, new Comparator<CategorySync>(){
+				@Override
+				public int compare(CategorySync o1, CategorySync o2) {
+					return o1.getCode() - o2.getCode();
+				}
+			});
 		}
 		return list;
 	}
-	/*
-	 * 同步考试科目数据。
-	 * @see com.examw.test.service.api.IDataSyncService#syncExams(com.examw.test.model.api.AppClientSync)
-	 */
-	@Override
-	public ExamSync syncExams(AppClientSync req) throws Exception {
-		if(logger.isDebugEnabled()) logger.debug("同步考试科目数据...");
-		Product p = this.validationSyncReq(req);
-		if(p == null) throw new Exception("加载产品数据失败！");
-		Exam exam = null;
-		if((exam = p.getExam()) == null) throw new Exception(String.format("产品［%s］未设置考试！", p.getName()));
-		ExamSync examSync = new ExamSync();
-		examSync.setCode(String.format("%d", exam.getCode()));
-		examSync.setName(exam.getName());
-		examSync.setAbbr(exam.getAbbr());
-		if(p.getSubjects() != null && p.getSubjects().size() > 0){
-			Set<SubjectSync> subjectSyncs = new HashSet<>();
-			for(Subject subject : p.getSubjects()){
-				if(subject == null) continue;
-				SubjectSync subjectSync = new SubjectSync();
-				subjectSync.setCode(String.format("%d", subject.getCode()));
-				subjectSync.setName(subject.getName());
-				subjectSyncs.add(subjectSync);
+	//创建考试类别模型
+	private void createCategories(CategorySync categorySync,Category category){
+		if(categorySync == null || category == null) return;
+		//创建考试
+		this.createExamProducts(categorySync, category.getExams());
+		//
+		if(category.getChildren() != null && category.getChildren().size() > 0){
+			for(Category c : category.getChildren()){
+				if(c == null) continue;
+				this.createCategories(categorySync, c);
 			}
-			examSync.setSubjects(subjectSyncs);
 		}
-		return examSync;
+	}
+	//创建考试及其产品
+	private void createExamProducts(CategorySync categorySync, Set<Exam> exams){
+		if(categorySync == null || exams == null || exams.size() == 0) return;
+		if(categorySync.getExams() == null){
+			categorySync.setExams(new ArrayList<ExamSync>());
+		}
+		for(Exam exam : exams){
+			if(exam == null) continue;
+			//考试
+			ExamSync examSync = new ExamSync();
+			examSync.setId(exam.getId());
+			examSync.setCode(exam.getCode());
+			examSync.setName(exam.getName());
+			examSync.setAbbr(exam.getAbbr());
+			//产品
+			if(exam.getProducts() != null){
+				List<ProductSync> productSyncs = new ArrayList<ProductSync>();
+				for(Product product : exam.getProducts()){
+					if(product == null) continue;
+					ProductSync productSync = new ProductSync();
+					productSync.setId(product.getId());
+					productSync.setName(product.getName());
+					productSync.setPrice(product.getPrice());
+					productSync.setDiscount(product.getDiscount());
+					if(product.getArea() != null){
+						productSync.setArea(product.getArea().getName());
+					}
+					productSync.setPapers(product.getPaperTotal());
+					productSync.setItems(product.getItemTotal());
+					productSync.setOrder(product.getOrderNo());
+					
+					productSyncs.add(productSync);
+				}
+				if(productSyncs.size() > 0){
+					Collections.sort(productSyncs, new Comparator<ProductSync>(){
+						@Override
+						public int compare(ProductSync o1, ProductSync o2) {
+							return o1.getOrder() - o2.getOrder();
+						}
+					});
+					examSync.setProducts(productSyncs);
+				}
+			}
+			//添加到考试类别
+			categorySync.getExams().add(examSync);
+		}
 	}
 	/*
 	 * 同步试卷数据。

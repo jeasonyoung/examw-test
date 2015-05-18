@@ -63,19 +63,19 @@
 	</bean>
 	<!-- 数据同步服务 -->
 	<bean id="dataSyncService" class="com.examw.test.service.api.impl.DataSyncServiceImpl">
-	    <!-- 注册码服务接口 -->
-	    <property name="registrationCodeService" ref="registrationService" />
 	    <!-- 试卷发布数据接口 -->
 	    <property name="paperReleaseDao" ref="paperReleaseDao" />
+	     <!-- 注册码服务接口 -->
+	    <property name="registrationCodeService" ref="registrationService" />
 	    <!-- 试卷记录数据服务接口 -->
 	    <property name="userPaperRecordService" ref="userPaperRecordService" />
 	    <!-- 试题记录数据服务接口 -->
 	    <property name="userItemRecordService" ref="userItemRecordService" />
 	    <!-- 试题收藏数据服务接口 -->
 	    <property name="userItemFavoriteService" ref="userItemFavoriteService" />
-	    <!-- 考试服务接口 -->
-	    <property name="examService" ref="examService" />
 	    <!-- 产品服务接口 -->
 	    <property name="productService" ref="productService" />
+	      <!-- 考试类别数据接口 -->
+	    <property name="categoryDao" ref="categoryDao" />
 	</bean>
 </beans>
