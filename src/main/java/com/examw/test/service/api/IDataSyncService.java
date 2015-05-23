@@ -5,6 +5,7 @@ import java.util.List;
 import com.examw.test.model.api.AppClientPush;
 import com.examw.test.model.api.AppClientSync;
 import com.examw.test.model.api.CategorySync;
+import com.examw.test.model.api.ExamSync;
 import com.examw.test.model.api.FavoriteSync;
 import com.examw.test.model.api.PaperItemRecordSync;
 import com.examw.test.model.api.PaperRecordSync;
@@ -23,6 +24,13 @@ public interface IDataSyncService {
 	 * @throws Exception
 	 */
 	List<CategorySync> downloadCategories() throws Exception;
+	/**
+	 * 同步考试科目数据
+	 * @param req
+	 * @return
+	 * @throws Exception
+	 */
+	ExamSync syncExams(AppClientSync req) throws Exception;
 	/**
 	 * 同步试卷数据。
 	 * @param req

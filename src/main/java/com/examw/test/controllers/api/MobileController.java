@@ -121,25 +121,25 @@ public class MobileController {
 		}
 		return result;
 	}
-//	/**
-//	 * 同步考试科目数据。
-//	 * @param req
-//	 * @return
-//	 */
-//	@RequestMapping(value = {"/sync/exams"}, method = {RequestMethod.POST})
-//	@ResponseBody
-//	public Json syncExam(@RequestBody AppClientSync req){
-//		if(logger.isDebugEnabled()) logger.debug("同步考试科目数据...");
-//		Json result = new Json();
-//		try {
-//			result.setData(this.dataSyncService.syncExams(req));
-//			result.setSuccess(true);
-//		} catch (Exception e) {
-//			result.setSuccess(false);
-//			result.setMsg(e.getMessage());
-//		}
-//		return result;
-//	}
+	/**
+	 * 同步考试科目数据。
+	 * @param req
+	 * @return
+	 */
+	@RequestMapping(value = {"/sync/exams"}, method = {RequestMethod.POST})
+	@ResponseBody
+	public Json syncExam(@RequestBody AppClientSync req){
+		if(logger.isDebugEnabled()) logger.debug("同步考试科目数据...");
+		Json result = new Json();
+		try {
+			result.setData(this.dataSyncService.syncExams(req));
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMsg(e.getMessage());
+		}
+		return result;
+	}
 	/**
 	 * 同步试卷数据。
 	 * @param req

@@ -17,6 +17,7 @@ public class ExamSync implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String id,name,abbr;
 	private Integer code;
+	private List<SubjectSync> subjects;
 	private List<ProductSync> products;
 	/**
 	 * 获取考试ID。
@@ -77,6 +78,21 @@ public class ExamSync implements Serializable {
 	 */
 	public void setAbbr(String abbr) {
 		this.abbr = abbr;
+	}
+	/**
+	 * 获取科目集合。
+	 * @return 科目集合。
+	 */
+	public List<SubjectSync> getSubjects() {
+		return subjects;
+	}
+	/**
+	 * 设置科目集合。
+	 * @param subjects 
+	 *	  科目集合。
+	 */
+	public void setSubjects(List<SubjectSync> subjects) {
+		this.subjects = subjects;
 	}
 	/**
 	 * 获取产品集合。

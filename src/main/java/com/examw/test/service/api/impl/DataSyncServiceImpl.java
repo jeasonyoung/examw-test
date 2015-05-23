@@ -28,6 +28,7 @@ import com.examw.test.model.api.PaperItemRecordSync;
 import com.examw.test.model.api.PaperRecordSync;
 import com.examw.test.model.api.PaperSync;
 import com.examw.test.model.api.ProductSync;
+import com.examw.test.model.api.SubjectSync;
 import com.examw.test.model.records.UserItemFavoriteInfo;
 import com.examw.test.model.records.UserItemRecordInfo;
 import com.examw.test.model.records.UserPaperRecordInfo;
@@ -178,7 +179,7 @@ public class DataSyncServiceImpl implements IDataSyncService {
 			categorySync.setExams(new ArrayList<ExamSync>());
 		}
 		for(Exam exam : exams){
-			if(exam == null) continue;
+			if(exam == null || exam.getStatus() == 0) continue;
 			//考试
 			ExamSync examSync = new ExamSync();
 			examSync.setId(exam.getId());
@@ -189,7 +190,7 @@ public class DataSyncServiceImpl implements IDataSyncService {
 			if(exam.getProducts() != null){
 				List<ProductSync> productSyncs = new ArrayList<ProductSync>();
 				for(Product product : exam.getProducts()){
-					if(product == null) continue;
+					if(product == null || product.getStatus() == 0) continue;
 					ProductSync productSync = new ProductSync();
 					productSync.setId(product.getId());
 					productSync.setName(product.getName());
@@ -217,6 +218,34 @@ public class DataSyncServiceImpl implements IDataSyncService {
 			//添加到考试类别
 			categorySync.getExams().add(examSync);
 		}
+	}
+	/*
+	 * 同步考试科目数据。
+	 * @see com.examw.test.service.api.IDataSyncService#syncExams(com.examw.test.model.api.AppClientSync)
+	 */
+	@Override
+	public ExamSync syncExams(AppClientSync req) throws Exception {
+		if(logger.isDebugEnabled()) logger.debug("同步考试科目数据...");
+		Product p = this.validationSyncReq(req);
+		if(p == null) throw new Exception("加载产品数据失败！");
+		Exam exam = null;
+		if((exam = p.getExam()) == null) throw new Exception(String.format("产品［%s］未设置考试！", p.getName()));
+		ExamSync examSync = new ExamSync();
+		examSync.setCode(exam.getCode());
+		examSync.setName(exam.getName());
+		examSync.setAbbr(exam.getAbbr());
+		if(p.getSubjects() != null && p.getSubjects().size() > 0){
+			List<SubjectSync> subjectSyncs = new ArrayList<SubjectSync>();
+			for(Subject subject : p.getSubjects()){
+				if(subject == null) continue;
+				SubjectSync subjectSync = new SubjectSync();
+				subjectSync.setCode(String.format("%d", subject.getCode()));
+				subjectSync.setName(subject.getName());
+				subjectSyncs.add(subjectSync);
+			}
+			examSync.setSubjects(subjectSyncs);
+		}
+		return examSync;
 	}
 	/*
 	 * 同步试卷数据。

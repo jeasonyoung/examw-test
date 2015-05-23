@@ -49,7 +49,7 @@ public class PaperReleaseDaoImpl extends BaseDaoImpl<PaperRelease> implements IP
 		}
 		if(createTime !=null)	//增加时间的条件查询
 		{
-			hqlBuilder.append(" and  (p.createTime >= :createTime) ");
+			hqlBuilder.append(" and  (p.createTime > :createTime) ");
 			parameters.put("createTime", createTime);
 		}
 		hqlBuilder.append(" order by p.createTime desc");
