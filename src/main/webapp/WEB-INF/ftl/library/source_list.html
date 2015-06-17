@@ -60,7 +60,7 @@ $(function(){
 	};
 	//search
 	${dg}_search = function(){
-		$("#${dg}").datagrid("load",{ name:$("#${dg}_toobar input[name='name']").val() });
+		$("#${dg}").datagrid("load",{name:$("#${dg}_toobar input[name='name']").val() });
 	};
 	<@shiro.hasPermission name="${PER_DELETE}">
 	//delete
@@ -114,7 +114,5 @@ $(function(){
 	<a href="#" class="easyui-linkbutton" onclick="${dg}_delete()" data-options="iconCls:'icon-remove',plain:true">删除</a>
 	</@shiro.hasPermission>
 	
-	<label>来源名称：<input name="name" type="text" style="width:198px;"/></label>
-	
-	<a href="#" class="easyui-linkbutton" style="margin-left:10px;"  onclick="${dg}_search()" data-options="iconCls:'icon-search',plain:true">查询</a>
+	<input name="name" class="easyui-textbox" data-options="prompt:'来源代码/来源名称',icons:[{iconCls:'icon-clear',handler:function(e){$(e.data.target).textbox('clear');}},{iconCls:'icon-search',handler:function(e){${dg}_search();}}]" style="width:468px"/>
 </div>

@@ -51,7 +51,7 @@ public class SourceDaoImpl extends BaseDaoImpl<Source> implements ISourceDao {
 	//查询条件。
 	private String addWhere(SourceInfo info,String hql,Map<String, Object> parameters){
 		if(!StringUtils.isEmpty(info.getName())){
-			hql += " and (s.code like :name or s.name like :name) ";
+			hql += " and ((s.name like :name) or (s.code like :name)) ";
 			parameters.put("name", "%"+ info.getName() +"%");
 		}
 		return hql;
