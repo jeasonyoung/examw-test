@@ -61,7 +61,7 @@ public class AreaDaoImpl extends BaseDaoImpl<Area> implements IAreaDao {
 	// 添加查询条件到HQL。
 	private String addWhere(AreaInfo info, String hql,Map<String, Object> parameters) {
 		if (!StringUtils.isEmpty(info.getName())) {
-			hql += " and ((a.name like :name) or (a.code like :name))";
+			hql += " and ((a.name like :name) or (a.abbr like :name) or (a.code like :name))";
 			parameters.put("name", "%" + info.getName() + "%");
 		}
 		return hql;

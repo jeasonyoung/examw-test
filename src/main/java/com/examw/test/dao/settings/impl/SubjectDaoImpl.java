@@ -55,7 +55,7 @@ public class SubjectDaoImpl extends BaseDaoImpl<Subject> implements ISubjectDao{
 			parameters.put("pid", info.getPid());
 		}
 		if (!StringUtils.isEmpty(info.getName())) {
-			hql += " and (s.name like :name)";
+			hql += " and ((s.name like :name) or (s.code like :name))";
 			parameters.put("name", "%" + info.getName() + "%");
 		}
 		if (!StringUtils.isEmpty(info.getExamId())) {

@@ -53,7 +53,7 @@ public class CategoryDaoImpl extends BaseDaoImpl<Category> implements ICategoryD
 			parameters.put("pid", info.getPid());
 		}
 		if (!StringUtils.isEmpty(info.getName())) {
-			hql += " and (c.name like :name)";
+			hql += " and ((c.name like :name) or (c.code like :name) or (c.abbr like :name))";
 			parameters.put("name", "%" + info.getName() + "%");
 		}
 		return hql;

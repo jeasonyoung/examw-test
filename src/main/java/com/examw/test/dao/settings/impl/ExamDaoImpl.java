@@ -62,7 +62,7 @@ public class ExamDaoImpl extends BaseDaoImpl<Exam> implements IExamDao {
 	// 添加查询条件到HQL。
 	private String addWhere(ExamInfo info, String hql,Map<String, Object> parameters) {
 		if (!StringUtils.isEmpty(info.getName())) {
-			hql += " and (e.name like :name)";
+			hql += " and ((e.name like :name) or (e.code like :name) or (e.abbr like :name))";
 			parameters.put("name", "%" + info.getName() + "%");
 		}
 		if (!StringUtils.isEmpty(info.getCategoryId())) {
