@@ -2,14 +2,14 @@
 <#include "/inc.ftl" />
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title><#if title??>${title}<#else>${examName}考试题库：${examName}考试真题及答案、模拟试题、章节练习题等考试试题及答案解析 - 中华考试网题库</#if></title>
+		<title><#if ((title??) && (title?length > 0))>${title} <#else> ${examName}考试题库：${examName}考试真题及答案、模拟试题、章节练习题等考试试题及答案解析 - 中华考试网题库</#if></title>
 		<#--头部资源-->
-		<#if keywords??>
+		<#if ((keywords??) && (keywords?length > 0))>
 			<meta name="keywords" content="${keywords}" >
 		<#else>
 			<meta name="keywords" content="${examName}考试题库,${examName}考试真题,${examName}考试模拟试题,${examName}考试答案" >
 		</#if>
-		<#if description??>
+		<#if ((description??) && (description?length > 0))>
 			<meta name="description" content="${description}">
 		<#else>
 			<meta name="description" content="中华考试网${examName}考试题库为大家提供2015${examName}考试模拟试题、历年真题及答案、章节练习题、网校名师预测试题、考前冲刺试题等考试试题及答案解析，支持网页版、安卓、苹果手机版下载试用。">
