@@ -2,6 +2,15 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 	<!-- service -->
+	<!-- 缓存管理器配置 -->
+	<bean id="cacheServiceManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+	   <!-- 缓存管理器名称 -->
+	    <property name="cacheManagerName" value="examw_test_service" />
+	    <!-- 是否共享 -->
+	    <property name="shared" value="true" />
+	     <!-- 缓存配置文件 -->
+	    <property name="configLocation" value="classpath:spring-examw-test-ehcache-service.xml" />
+	</bean>
 	<!-- 文件上传服务 -->
 	<bean id="fileUploadService" class="com.examw.test.service.impl.FileUploadServiceImpl">
 	    <!-- 临时存储目录 -->

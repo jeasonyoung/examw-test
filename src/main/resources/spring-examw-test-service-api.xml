@@ -61,8 +61,19 @@
 	    <!-- 注册码绑定服务接口 -->
 	    <property name="registrationBindingService" ref="registrationBindingService"/>
 	</bean>
+	
+	<!-- 配置数据同步缓存工厂Bean对象 -->
+	<bean id="apiCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+	    <!-- 缓存管理器 -->
+	    <property name="cacheManager" ref="cacheServiceManager" />
+	    <!-- 使用缓存配置 -->
+	    <property name="cacheName" value="apiCache" />
+	</bean>
+	
 	<!-- 数据同步服务 -->
 	<bean id="dataSyncService" class="com.examw.test.service.api.impl.DataSyncServiceImpl">
+	    <!--  设置缓存 -->
+	    <property name="cache" ref="apiCache" />
 	    <!-- 试卷发布数据接口 -->
 	    <property name="paperReleaseDao" ref="paperReleaseDao" />
 	     <!-- 注册码服务接口 -->

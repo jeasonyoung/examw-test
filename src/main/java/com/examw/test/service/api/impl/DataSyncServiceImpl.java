@@ -2,11 +2,15 @@ package com.examw.test.service.api.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.Element;
 
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
@@ -48,6 +52,7 @@ import com.examw.test.service.records.IUserPaperRecordService;
  */
 public class DataSyncServiceImpl implements IDataSyncService {
 	private final static Logger logger = Logger.getLogger(DataSyncServiceImpl.class);
+	private Cache cache;
 	private IPaperReleaseDao paperReleaseDao;
 	private IRegistrationCodeService registrationCodeService;
 	private IUserPaperRecordService userPaperRecordService;
@@ -55,13 +60,23 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	private IUserItemFavoriteService userItemFavoriteService;
 	private IProductService productService;
 	private ICategoryDao categoryDao;
+	
+	/**
+	 * 设置EnCache缓存。
+	 * @param cache 
+	 *	  EnCache缓存。
+	 */
+	public void setCache(Cache cache) {
+		logger.debug("注入缓存对象...");
+		this.cache = cache;
+	}
 	/**
 	 * 设置发布试卷数据接口。
 	 * @param paperReleaseDao 
 	 *	  发布试卷数据接口。
 	 */
 	public void setPaperReleaseDao(IPaperReleaseDao paperReleaseDao) {
-		if(logger.isDebugEnabled()) logger.debug("注入发布试卷数据接口...");
+		logger.debug("注入发布试卷数据接口...");
 		this.paperReleaseDao = paperReleaseDao;
 	}
 	/**
@@ -70,7 +85,7 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	 *	  注册码服务接口。
 	 */
 	public void setRegistrationCodeService(IRegistrationCodeService registrationCodeService) {
-		if(logger.isDebugEnabled()) logger.debug("注入注册码服务接口...");
+		logger.debug("注入注册码服务接口...");
 		this.registrationCodeService = registrationCodeService;
 	}
 	/**
@@ -79,7 +94,7 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	 *	  用户试卷记录服务接口。
 	 */
 	public void setUserPaperRecordService(IUserPaperRecordService userPaperRecordService) {
-		if(logger.isDebugEnabled()) logger.debug("注入用户试卷记录服务接口...");
+		logger.debug("注入用户试卷记录服务接口...");
 		this.userPaperRecordService = userPaperRecordService;
 	}
 	/**
@@ -88,7 +103,7 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	 *	  用户试题记录服务接口。
 	 */
 	public void setUserItemRecordService(IUserItemRecordService userItemRecordService) {
-		if(logger.isDebugEnabled()) logger.debug("注入用户试题记录服务接口...");
+		logger.debug("注入用户试题记录服务接口...");
 		this.userItemRecordService = userItemRecordService;
 	}
 	/**
@@ -97,7 +112,7 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	 *	  用户试题收藏服务接口。
 	 */
 	public void setUserItemFavoriteService(IUserItemFavoriteService userItemFavoriteService) {
-		if(logger.isDebugEnabled()) logger.debug("注入用户试题收藏服务接口...");
+		logger.debug("注入用户试题收藏服务接口...");
 		this.userItemFavoriteService = userItemFavoriteService;
 	}
 	/**
@@ -106,7 +121,7 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	 *	  产品服务接口。
 	 */
 	public void setProductService(IProductService productService) {
-		if(logger.isDebugEnabled()) logger.debug("注入产品服务接口...");
+		logger.debug("注入产品服务接口...");
 		this.productService = productService;
 	}
 	/**
@@ -115,17 +130,33 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	 *	  考试分类数据接口。
 	 */
 	public void setCategoryDao(ICategoryDao categoryDao) {
-		if(logger.isDebugEnabled()) logger.debug("注入考试分类数据接口...");
+		logger.debug("注入考试分类数据接口...");
 		this.categoryDao = categoryDao;
 	}
+	//缓存键名
+	private static final String CACHE_KEY_CATEGORIES = "__downloadCategories__";
 	/*
 	 * 下载考试类别数据。
 	 * @see com.examw.test.service.api.IDataSyncService#downloadCategories()
 	 */
 	@Override
 	public List<CategorySync> downloadCategories() throws Exception {
-		if(logger.isDebugEnabled()) logger.debug("下载考试类别数据...");
-		List<CategorySync> list = new ArrayList<CategorySync>();
+		logger.debug("下载考试类别数据...");
+		//检查缓存
+		if(this.cache != null){
+			Element element = this.cache.get(CACHE_KEY_CATEGORIES);
+			if(element != null){
+				logger.debug("从缓存中加载考试类别数据...");
+				CategorySync[] arrays = (CategorySync [])element.getObjectValue();
+				if(arrays != null && arrays.length > 0){
+					 logger.debug("从缓存中反馈考试类别数据...");
+					return Arrays.asList(arrays);
+				}
+			}
+		}
+		//初始化目标数据
+		List<CategorySync> list  = new ArrayList<CategorySync>();
+		//从数据库中加载数据..
 		List<Category> categories =  this.categoryDao.loadTopCategories();
 		if(categories != null && categories.size() > 0){
 			for(Category category : categories){
@@ -156,6 +187,11 @@ public class DataSyncServiceImpl implements IDataSyncService {
 					return o1.getCode() - o2.getCode();
 				}
 			});
+		}
+		//检查数据并进行缓存处理
+		if(this.cache != null && list != null && list.size() > 0){
+			logger.debug("将考试类别数据加载到缓存中...");
+			this.cache.put(new Element(CACHE_KEY_CATEGORIES,  list.toArray(new CategorySync[0])));
 		}
 		return list;
 	}
@@ -226,6 +262,19 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	@Override
 	public ExamSync syncExams(AppClientSync req) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("同步考试科目数据...");
+		final String cacheKey = "syncExams_" + req.getProductId();
+		//检查缓存
+		if(this.cache != null){
+			Element element = this.cache.get(cacheKey);
+			if(element != null){
+				ExamSync exam = (ExamSync)element.getObjectValue();
+				if(exam != null){
+					logger.debug("从缓存中加载产品考试科目数据...");
+					return exam;
+				}
+			}
+		}
+		//校验产品
 		Product p = this.validationSyncReq(req);
 		if(p == null) throw new Exception("加载产品数据失败！");
 		Exam exam = null;
@@ -245,7 +294,16 @@ public class DataSyncServiceImpl implements IDataSyncService {
 			}
 			examSync.setSubjects(subjectSyncs);
 		}
+		//存入缓存
+		if(this.cache != null && examSync != null){
+			logger.debug("产品["+cacheKey+"]科目数据存入缓存...");
+			this.cache.put(new Element(cacheKey, examSync));
+		}
 		return examSync;
+	}
+	//创建试卷缓存键名
+	private static String createPapersCacheKey(AppClientSync req){
+		return  "__syncPapers__" + req.getProductId() + req.getStartTime();
 	}
 	/*
 	 * 同步试卷数据。
@@ -253,8 +311,22 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	 */
 	@Override
 	public List<PaperSync> syncPapers(AppClientSync req) throws Exception {
-		if(logger.isDebugEnabled()) logger.debug("同步试卷数据...");
+		logger.debug("同步试卷数据...");
 		Product p = this.validationSyncReq(req);
+		//缓存键
+		final String cacheKey = createPapersCacheKey(req);
+		//检查缓存
+		if(this.cache != null){
+			Element element = this.cache.get(cacheKey);
+			if(element != null){
+				logger.debug("从缓存中加载试卷数据...");
+				PaperSync [] papers = (PaperSync [])element.getObjectValue();
+				if(papers != null && papers.length > 0){
+					logger.debug("从缓存中反馈试卷数据...");
+					return Arrays.asList(papers);
+				}
+			}
+		}
 		//试卷类型
 		Integer[] paper_types = {PaperType.REAL.getValue(),PaperType.SIMU.getValue(),PaperType.FORECAS.getValue(),PaperType.PRACTICE.getValue()};
 		Date startTime = null;
@@ -282,6 +354,11 @@ public class DataSyncServiceImpl implements IDataSyncService {
 				}
 				list.add(sync);
 			}
+		}
+		//缓存数据
+		if(this.cache != null && list != null && list.size() > 0){
+			logger.debug("将试卷数据加载到缓存中...");
+			this.cache.put(new Element(cacheKey,  list.toArray(new PaperSync[0])));
 		}
 		 return list;
 	}
