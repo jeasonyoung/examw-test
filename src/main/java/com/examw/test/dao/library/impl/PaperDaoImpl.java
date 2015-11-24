@@ -154,7 +154,7 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 	@Override
 	public List<Paper> findTopAuditPapers(Integer top) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载已审核的试卷:%d...", top));
-		final String hql = "from Paper p where p.status = :status order by p.createTime asc";
+		final String hql = "from Paper p where p.status = :status order by p.publishTime,p.lastTime,p.createTime";
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("status", PaperStatus.AUDIT.getValue());
 		return this.find(hql, parameters, 0, top);
@@ -166,7 +166,7 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 	@Override
 	public List<Paper> findTopPublishAndNotReleasePapers(Integer top) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("查找试卷状态为已发布但发布表中没有数据的试卷:%d...", top));
-		final String hql = "from Paper p where p.status = :status  and (p.id not in (select pr.paper.id from PaperRelease pr)) order by p.lastTime desc,p.createTime desc";
+		final String hql = "from Paper p where p.status = :status  and (p.id not in (select pr.paper.id from PaperRelease pr)) order by p.publishTime,p.lastTime,p.createTime";
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("status", PaperStatus.PUBLISH.getValue());
 		return this.find(hql, parameters, 0, top);
