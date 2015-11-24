@@ -41,7 +41,7 @@ public class RandomItemServiceImpl implements IRandomItemService {
 	 *	  试卷数据接口。
 	 */
 	public void setPaperDao(IPaperDao paperDao) {
-		if(logger.isDebugEnabled()) logger.debug("注入试卷数据接口...");
+		logger.debug("注入试卷数据接口...");
 		this.paperDao = paperDao;
 	}
 	/**
@@ -50,7 +50,7 @@ public class RandomItemServiceImpl implements IRandomItemService {
 	 *	  试卷结构数据接口。
 	 */
 	public void setStructureDao(IStructureDao structureDao) {
-		if(logger.isDebugEnabled()) logger.debug("注入试卷结构数据接口...");
+		logger.debug("注入试卷结构数据接口...");
 		this.structureDao = structureDao;
 	}
 	/**
@@ -59,7 +59,7 @@ public class RandomItemServiceImpl implements IRandomItemService {
 	 *	  试题数据接口。
 	 */
 	public void setItemDao(IItemDao itemDao) {
-		if(logger.isDebugEnabled()) logger.debug("注入试题数据接口...");
+		logger.debug("注入试题数据接口...");
 		this.itemDao = itemDao;
 	}
 	/*
@@ -68,10 +68,10 @@ public class RandomItemServiceImpl implements IRandomItemService {
 	 */
 	@Override
 	public void addRandomItem(String structureId)  throws Exception {
-		if(logger.isDebugEnabled()) logger.debug(String.format("随机添加试题到试卷结构［structureId ＝%s］....", structureId));
+		logger.debug(String.format("随机添加试题到试卷结构［structureId ＝%s］....", structureId));
 		if(StringUtils.isEmpty(structureId)) return;
 		String msg = null;
-		Structure structure = this.structureDao.load(Structure.class, structureId);
+		final Structure structure = this.structureDao.load(Structure.class, structureId);
 		if(structure == null){
 			logger.error(msg = String.format("试卷结构［%s］不存在！", structureId));
 			throw new Exception(msg);
@@ -92,13 +92,13 @@ public class RandomItemServiceImpl implements IRandomItemService {
 	 */
 	@Override
 	public int addRandomItem(Structure structure, boolean checkItemCount) throws Exception {
-		if(logger.isDebugEnabled()) logger.debug(String.format("随机添加试题到试卷结构［%s］...", structure));
+		logger.debug(String.format("随机添加试题到试卷结构［%s］...", structure));
 		String msg = null;
 		if(structure == null){
 			logger.error(msg = "试卷结构不存在！");
 			throw new Exception(msg);
 		}
-		Integer total = structure.getTotal();
+		final Integer total = structure.getTotal();
 		if(total == null || total <= 0){
 			logger.error(msg = String.format("试卷结构未设置试题数目［%d］!", total));
 			throw new Exception(msg);
@@ -115,19 +115,19 @@ public class RandomItemServiceImpl implements IRandomItemService {
 				throw new Exception(msg);
 			}
 		}
-		ItemType itemType =  (structure.getType() == null) ?  null : ItemType.convert(structure.getType());
+		final ItemType itemType =  (structure.getType() == null) ?  null : ItemType.convert(structure.getType());
 		if(itemType == null){
 			logger.error(msg = String.format("试卷结构的试题类型［%d］不存在或不能被解析！", structure.getType()));
 			throw new Exception(msg);
 		}
 		//Add by FW 2014.11.14  修改试卷结构科目 modify by FW 2014.12.04
-		String[] subjectIds = this.getSubjectIds(structure);
+		final String[] subjectIds = this.getSubjectIds(structure);
 		if(subjectIds == null || subjectIds.length == 0){
 			logger.error(msg =  "试卷所属科目未设置！");
 			throw new Exception(msg);
 		}
-		Area area = (structure.getPaper() == null || structure.getPaper().getArea() == null) ?  null : structure.getPaper().getArea();
-		List<Item> pools = this.itemDao.loadItems(subjectIds, itemType, area);
+		final Area area = (structure.getPaper() == null || structure.getPaper().getArea() == null) ?  null : structure.getPaper().getArea();
+	    final	List<Item> pools = this.itemDao.loadItems(subjectIds, itemType, area);
 		if(pools == null || pools.size() == 0){
 			logger.error(msg = String.format("题库中没有满足条件［%1$s］［%2$s］［%3$s］的试题！",subjectIds, itemType, (area == null ? "" : area.getName())));
 			throw new Exception(msg);
@@ -179,10 +179,9 @@ public class RandomItemServiceImpl implements IRandomItemService {
 		return order;
 	}
 	//计算结构下面包含的科目ID
-	private String[] getSubjectIds(Structure structure)
-	{
+	private String[] getSubjectIds(Structure structure){
 		Structure parent = structure;
-		List<String> listSubjectId = new ArrayList<String>();
+		final List<String> listSubjectId = new ArrayList<String>();
 		while(parent.getSubjects() == null || parent.getSubjects().size()==0){
 			if(parent.getParent()==null) break;
 			parent = parent.getParent();
@@ -195,7 +194,7 @@ public class RandomItemServiceImpl implements IRandomItemService {
 		}else{
 			listSubjectId.add(structure.getPaper().getSubject().getId());
 		}
-		return listSubjectId.toArray(new String[0]);
+		return listSubjectId.size() == 0 ? null : listSubjectId.toArray(new String[0]);
 	}
 	//计算试题池里试题的数量
 	private Integer calculatePoolSize(List<Item> pools,ItemType itemType,Map<Integer,Integer> eachCount) {

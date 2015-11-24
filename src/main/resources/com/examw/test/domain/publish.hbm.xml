@@ -58,6 +58,8 @@
  	    <property name="content" type="text" />
  	    <!-- 所属发布记录 -->
  	    <many-to-one name="publish" column="publish_id" class="PublishRecord" />
+ 	    <!-- 状态(0:未发布,1:已发布)-->
+ 	    <property name="status" type="integer" />
  	     <!-- 创建时间 -->
 		<property name="createTime" type="timestamp" />
 		<!-- 最后修改时间 -->

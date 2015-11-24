@@ -57,7 +57,9 @@
         <!-- 发布配置数据接口 -->
         <property name="configurationDao" ref="configurationDao" />
         <!-- 发布记录数据接口 -->
-        <property name="publishRecordDao" ref="publishRecordDao" />
+        <property name="publishRecordDao" ref="publishRecordDao"/>
+        <!-- 静态页面数据接口 -->
+        <property name="staticPageDao" ref="staticPageDao"/>
         <!--  模版处理配置集合 -->
         <property name="processes">
             <map>

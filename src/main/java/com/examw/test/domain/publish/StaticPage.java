@@ -14,6 +14,7 @@ public class StaticPage implements Serializable {
 	private String id,path,content;
 	private PublishRecord publish;
 	private Date createTime,lastTime;
+	private Integer status;
 	/**
 	 * 获取页面ID。
 	 * @return 页面ID。
@@ -73,6 +74,21 @@ public class StaticPage implements Serializable {
 	 */
 	public void setPublish(PublishRecord publish) {
 		this.publish = publish;
+	}
+	/**
+	 * 获取状态。
+	 * @return 状态。
+	 */
+	public Integer getStatus() {
+		return status;
+	}
+	/**
+	 * 设置状态。
+	 * @param status 
+	 *	  状态。
+	 */
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 	/**
 	 * 获取创建时间。

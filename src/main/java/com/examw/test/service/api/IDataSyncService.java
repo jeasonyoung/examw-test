@@ -39,6 +39,10 @@ public interface IDataSyncService {
 	 */
 	List<PaperSync> syncPapers(AppClientSync req) throws Exception;
 	/**
+	 * 自动缓存产品试卷。
+	 */
+	void autoProductPapersCache();
+	/**
 	 * 同步试卷记录数据。
 	 * @param req
 	 * @return

@@ -76,4 +76,16 @@ public class StaticPageDaoImpl extends BaseDaoImpl<StaticPage> implements IStati
 		}
 		return hql;
 	}
+	/*
+	 * 查找未发布的页面记录。
+	 * @see com.examw.test.dao.publish.IStaticPageDao#findUnpublishedPages(java.lang.Integer)
+	 */
+	@Override
+	public List<StaticPage> findUnpublishedPages(Integer top) {
+		if(logger.isDebugEnabled()) logger.debug("查找未发布的页面记录..." + top);
+		final String hql = "from StaticPage sp where sp.status = :status  order by sp.lastTime";
+		final HashMap<String, Object> parameters = new HashMap<>();
+		parameters.put("status", 0);
+		return this.find(hql, parameters, 0, top);
+	}
 }

@@ -154,7 +154,7 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements IPaperDao {
 	@Override
 	public List<Paper> findTopAuditPapers(Integer top) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载已审核的试卷:%d...", top));
-		final String hql = "from Paper p where p.status = :status order by p.lastTime desc,p.createTime desc";
+		final String hql = "from Paper p where p.status = :status order by p.createTime asc";
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("status", PaperStatus.AUDIT.getValue());
 		return this.find(hql, parameters, 0, top);

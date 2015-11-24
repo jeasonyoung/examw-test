@@ -29,4 +29,13 @@ public interface IStaticPageDao extends IBaseDao<StaticPage> {
 	 * 查询数据统计。
 	 */
 	Long total(StaticPageInfo info);
+	
+	/**
+	 * 查找未发布的页面记录。
+	 * @param top
+	 * 限制数量。
+	 * @return
+	 * 数据集合。
+	 */
+	List<StaticPage> findUnpublishedPages(Integer top);
 }

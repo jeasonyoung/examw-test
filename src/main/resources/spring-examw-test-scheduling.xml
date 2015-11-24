@@ -44,6 +44,7 @@
                     <property name="cronExpression" value="0 0 2 * * ?" />
                 </bean>
                 -->
+                
                 <!-- 自动发布静态页面 -->
                 <bean class="org.springframework.scheduling.quartz.CronTriggerBean">
                     <!-- 任务明细 -->
@@ -54,8 +55,35 @@
                         </bean>
                     </property>
                     <!-- 触发时间 -->
-                    <property name="cronExpression" value="0 0 2 * * ?" />
+                    <property name="cronExpression" value="0 0 23 * * ?" />
                 </bean>
+                
+                <!--  自动远程发布静态页面 -->
+                <bean class="org.springframework.scheduling.quartz.CronTriggerBean">
+                    <!-- 任务明细 -->
+                    <property name="jobDetail">
+                        <bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+                            <property name="targetObject" ref="publishService" />
+                            <property name="targetMethod" value="updateAutoRemotePublish" />
+                        </bean>
+                    </property>
+                    <!-- 触发时间 -->
+                    <property name="cronExpression" value="0 0/5 * * * ?" />
+                </bean>
+                
+                 <!-- 自动产品试卷缓存 -->
+                 <bean class="org.springframework.scheduling.quartz.CronTriggerBean">
+                     <!-- 任务明细 -->
+                    <property name="jobDetail">
+                        <bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+                            <property name="targetObject" ref="dataSyncService" />
+                            <property name="targetMethod" value="autoProductPapersCache" />
+                        </bean>
+                    </property>
+                    <!-- 触发时间 -->
+                    <property name="cronExpression" value="0 0 2 * * ?" />
+                 </bean>
+                 
             </list>
         </property>
     </bean>

@@ -78,13 +78,13 @@ public class PaperReleaseServiceImpl implements IPaperReleaseService {
 	@Override
 	public void updateRelease() {
 			if(logger.isDebugEnabled()) logger.debug("开始发布试卷....");
-			Long count = this.paperDao.totalAudit();
+		    final	Long count = this.paperDao.totalAudit();
 			if(count == null || count <= 0){
 				if(logger.isDebugEnabled())logger.debug("没有需要发布的试卷!");
 				return;
 			}
 			if(logger.isDebugEnabled())logger.debug(String.format("共有［%d］要发布...", count));
-			List<Paper> papers = this.paperDao.findTopAuditPapers(CONST_BATCH_VALUE);
+			final List<Paper> papers = this.paperDao.findTopAuditPapers(CONST_BATCH_VALUE);
 			if(papers != null && papers.size() > 0){
 				for(Paper paper : papers){
 					try {

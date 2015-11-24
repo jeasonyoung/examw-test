@@ -9,9 +9,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.Element;
-
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
 
@@ -43,6 +40,10 @@ import com.examw.test.service.products.IRegistrationCodeService;
 import com.examw.test.service.records.IUserItemFavoriteService;
 import com.examw.test.service.records.IUserItemRecordService;
 import com.examw.test.service.records.IUserPaperRecordService;
+import com.examw.utils.MD5Util;
+
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.Element;
 
 /**
  * 数据同步服务接口实现类。
@@ -134,7 +135,7 @@ public class DataSyncServiceImpl implements IDataSyncService {
 		this.categoryDao = categoryDao;
 	}
 	//缓存键名
-	private static final String CACHE_KEY_CATEGORIES = "__downloadCategories__";
+	private static final String CACHE_KEY_CATEGORIES = MD5Util.MD5( "__downloadCategories__");
 	/*
 	 * 下载考试类别数据。
 	 * @see com.examw.test.service.api.IDataSyncService#downloadCategories()
@@ -262,7 +263,7 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	@Override
 	public ExamSync syncExams(AppClientSync req) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("同步考试科目数据...");
-		final String cacheKey = "syncExams_" + req.getProductId();
+		final String cacheKey = MD5Util.MD5("syncExams_" + req.getProductId());
 		//检查缓存
 		if(this.cache != null){
 			Element element = this.cache.get(cacheKey);
@@ -303,7 +304,12 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	}
 	//创建试卷缓存键名
 	private static String createPapersCacheKey(AppClientSync req){
-		return  "__syncPapers__" + req.getProductId() + req.getStartTime();
+		//return  MD5Util.MD5("__syncPapers__" + req.getProductId() + req.getStartTime());
+		return createPapersCacheKey(req.getProductId(), req.getStartTime());
+	}
+	//创建试卷缓存键名
+	private static String createPapersCacheKey(String productId, String startTime){
+		return  MD5Util.MD5(StringUtils.trimAllWhitespace("__syncPapers__" + productId + (StringUtils.isEmpty(startTime) ? "" : startTime))); 
 	}
 	/*
 	 * 同步试卷数据。
@@ -312,9 +318,10 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	@Override
 	public List<PaperSync> syncPapers(AppClientSync req) throws Exception {
 		logger.debug("同步试卷数据...");
-		Product p = this.validationSyncReq(req);
+		final Product p = this.validationSyncReq(req);
 		//缓存键
 		final String cacheKey = createPapersCacheKey(req);
+		if(logger.isDebugEnabled()) logger.debug("生成缓存键=>" + cacheKey);
 		//检查缓存
 		if(this.cache != null){
 			Element element = this.cache.get(cacheKey);
@@ -327,19 +334,38 @@ public class DataSyncServiceImpl implements IDataSyncService {
 				}
 			}
 		}
-		//试卷类型
-		Integer[] paper_types = {PaperType.REAL.getValue(),PaperType.SIMU.getValue(),PaperType.FORECAS.getValue(),PaperType.PRACTICE.getValue()};
 		Date startTime = null;
 		//获取数据开始时间
 		if(!StringUtils.isEmpty(req.getStartTime())){
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			startTime = dateFormat.parse(req.getStartTime());
 		}
-		List<PaperSync> list = new ArrayList<>();
-		//查询数据
-		List<PaperRelease> paperReleases = this.paperReleaseDao.loadReleases(paper_types, this.buildSubjectIds(p.getSubjects()), 
-					p.getArea() == null ?  null : new String[]{p.getArea().getId()}, startTime, null, null);
-		if(paperReleases != null && paperReleases.size() > 0){
+		final List<PaperSync> list =  this.buildProductPapers(p, startTime);
+		//缓存数据
+		if(this.cache != null && list != null && list.size() > 0){
+			logger.debug("将试卷数据加载到缓存键["+ cacheKey +"]中...");
+			this.cache.put(new Element(cacheKey,  list.toArray(new PaperSync[0])));
+		}
+		 return list;
+	}
+	//构建产品试卷集合
+	private List<PaperSync> buildProductPapers(Product p, Date startTime){
+		if(p == null) return null;
+		try{
+			if(logger.isDebugEnabled()) logger.debug("构建产品["+p.getId()+","+p.getName()+"]试卷..");
+			//试卷类型
+			final Integer[] paper_types = { PaperType.REAL.getValue(),
+															   PaperType.SIMU.getValue(),
+															   PaperType.FORECAS.getValue(),
+															   PaperType.PRACTICE.getValue() };
+			//查询数据
+			final List<PaperRelease> paperReleases = this.paperReleaseDao.loadReleases(paper_types,
+																																	  		   this.buildSubjectIds(p.getSubjects()), 
+																																	           p.getArea() == null ?  null : new String[]{ p.getArea().getId() }, 
+																																	           startTime, null, null);
+			if(paperReleases == null || paperReleases.size() == 0) return null;
+			//初始化集合
+			final List<PaperSync> list = new ArrayList<>();
 			for(PaperRelease paperRelease : paperReleases){
 				if(paperRelease == null || paperRelease.getPaper() == null) continue;
 				PaperSync sync = new PaperSync();
@@ -354,14 +380,13 @@ public class DataSyncServiceImpl implements IDataSyncService {
 				}
 				list.add(sync);
 			}
+			return list;
+		}catch(Exception e){
+			logger.error("发生异常:" + e.getMessage(), e);
 		}
-		//缓存数据
-		if(this.cache != null && list != null && list.size() > 0){
-			logger.debug("将试卷数据加载到缓存中...");
-			this.cache.put(new Element(cacheKey,  list.toArray(new PaperSync[0])));
-		}
-		 return list;
+		return null;
 	}
+	//科目类型转换
 	private String[] buildSubjectIds(Set<Subject> subjects){
 		if(subjects == null || subjects.size() == 0) return null;
 		List<String> list = new ArrayList<>();
@@ -371,6 +396,88 @@ public class DataSyncServiceImpl implements IDataSyncService {
 		}
 		return list.toArray(new String[0]);
 	}
+	
+	/*
+	 * 自动缓存产品试卷。
+	 * @see com.examw.test.service.api.IDataSyncService#autoProductPapersCache()
+	 */
+	@Override
+	public void autoProductPapersCache(){
+		try{
+			if(logger.isDebugEnabled()) logger.debug("自动产品试卷缓存...");
+			if(this.cache == null){
+				if(logger.isDebugEnabled()) logger.debug("未配置缓存设置!");
+				return;
+			}
+			//加载考试类别
+			final List<CategorySync> categories = this.downloadCategories();
+			if(categories == null || categories.size() == 0){
+				if(logger.isDebugEnabled()) logger.debug("加载考试类别数据为空, 自动缓存试卷结束!");
+				return;
+			}
+			//循环考试类别
+			for(CategorySync category : categories){
+				try{
+					if(category == null) continue;
+					if(logger.isDebugEnabled()) logger.debug("开始缓存考试类别["+ category.getId() +","+category.getName()+"]下考试...");
+					final List<ExamSync> exams = category.getExams();
+					if(exams == null || exams.size() == 0){
+						if(logger.isDebugEnabled()) logger.debug("考试类型["+ category.getName() +"]下没有考试!");
+						continue;
+					}
+					//循环考试
+					for(ExamSync exam : exams){
+						try{
+							if(exam == null) continue;
+							if(logger.isDebugEnabled()) logger.debug("开始缓存考试["+ exam.getId() +","+exam.getName()+"]下产品...");
+							final List<ProductSync> products =  exam.getProducts();
+							if(products == null || products.size() == 0){
+								if(logger.isDebugEnabled()) logger.debug("考试["+ exam.getId() +","+exam.getName()+"]下没有产品!");
+								continue;
+							}
+							//循环产品
+							for(ProductSync product : products){
+								try{
+									if(product == null) continue;
+									if(logger.isDebugEnabled()) logger.debug("开始自动缓存产品["+product.getId()+","+ product.getName() +"]下试卷集合");
+									//加载产品数据
+									final Product p = this.productService.loadProduct(product.getId());
+									if(p == null){
+										if(logger.isDebugEnabled()) logger.debug("产品["+product.getId()+"]不存在!");
+										continue;
+									}
+									//生成缓存键
+									final String cacheKey = createPapersCacheKey(product.getId(), null);
+									if(logger.isDebugEnabled()) logger.debug("自动缓存生成缓存键=>" + cacheKey);
+									if(StringUtils.isEmpty(cacheKey)) continue;
+									//查询数据
+									final List<PaperSync> list =  this.buildProductPapers(p, null);
+									if(list == null || list.size() == 0){
+										if(logger.isDebugEnabled()) logger.debug("产品["+p.getId()+","+p.getName()+"]下没有试卷集合...");
+										continue;
+									}
+									//开始缓存
+									if(this.cache != null){
+										logger.debug("自动将试卷数据加载到缓存键["+ cacheKey +"]中...");
+										this.cache.put(new Element(cacheKey,  list.toArray(new PaperSync[0])));
+									}
+								}catch(Exception e){
+									logger.error("自动缓存产品异常:" + e.getMessage(), e);
+								}
+							}
+						}catch(Exception e){
+							logger.error("自动缓存考试异常:" + e.getMessage(), e);
+						}
+					}
+				}catch(Exception e){
+					logger.error("自动缓存考试类别["+ category.getId()+"," + category.getName()+ "]异常:" + e.getMessage(), e);
+				}
+			}
+		}catch(Exception e){
+			logger.error("自动缓存异常:" + e.getMessage(), e);
+		}
+	}
+	
 	/*
 	 * 同步试卷记录。
 	 * @see com.examw.test.service.api.IDataSyncService#syncPaperRecords(com.examw.test.model.api.AppClientPush)

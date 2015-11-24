@@ -150,15 +150,16 @@ public  abstract class BaseTemplateProcess implements ITemplateProcess,ResourceL
 		}
 		data.setPath(path);
 		data.setContent(content);
+		data.setStatus(0);
 		data.setLastTime(new Date());
 		data.setPublish(this.record);
 		if(isAdded){
 			this.staticPageDao.save(data);
 		}
-		//添加到静态页面ID队列
-		if(STATICPAGEID_QUEUE != null && data != null && !StringUtils.isEmpty(data.getId())){
-			STATICPAGEID_QUEUE.offer(data.getId());
-		}
+//		//添加到静态页面ID队列
+//		if(STATICPAGEID_QUEUE != null && data != null && !StringUtils.isEmpty(data.getId())){
+//			STATICPAGEID_QUEUE.offer(data.getId());
+//		}
 	}
 	/**
 	 * 生成静态页面内容。

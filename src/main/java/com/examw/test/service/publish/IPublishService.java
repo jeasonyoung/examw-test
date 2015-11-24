@@ -16,4 +16,8 @@ public interface IPublishService {
 	 * 配置ID。
 	 */
 	void updatePublish(String configId);
+	/**
+	 * 自动远程发布。
+	 */
+	void updateAutoRemotePublish();
 }
