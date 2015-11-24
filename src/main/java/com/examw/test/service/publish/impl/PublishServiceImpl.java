@@ -183,7 +183,7 @@ public class PublishServiceImpl implements IPublishService {
 				try{
 					if(sp == null || StringUtils.isEmpty(sp.getId())) continue;
 					final String callback = HttpUtil.sendRequest(String.format(this.remoteCreatePagesUrl, sp.getId()), "GET", null);
-					if(!StringUtils.isEmpty(callback) && callback.toLowerCase() == "succes"){
+					if(!StringUtils.isEmpty(callback) && callback.equalsIgnoreCase("succes")){
 						//发布成功
 						sp.setStatus(1);
 						//更新数据
