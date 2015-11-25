@@ -41,7 +41,7 @@ public interface IDataSyncService {
 	/**
 	 * 自动缓存产品试卷。
 	 */
-	void autoProductPapersCache();
+	void updateAutoProductPapersCache();
 	/**
 	 * 同步试卷记录数据。
 	 * @param req

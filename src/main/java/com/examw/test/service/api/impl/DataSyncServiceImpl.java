@@ -399,10 +399,10 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	
 	/*
 	 * 自动缓存产品试卷。
-	 * @see com.examw.test.service.api.IDataSyncService#autoProductPapersCache()
+	 * @see com.examw.test.service.api.IDataSyncService#updateAutoProductPapersCache()
 	 */
 	@Override
-	public void autoProductPapersCache(){
+	public void updateAutoProductPapersCache(){
 		try{
 			if(logger.isDebugEnabled()) logger.debug("自动产品试卷缓存...");
 			if(this.cache == null){
