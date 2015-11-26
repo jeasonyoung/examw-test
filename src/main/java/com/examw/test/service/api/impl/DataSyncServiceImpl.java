@@ -1,5 +1,11 @@
 package com.examw.test.service.api.impl;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,8 +14,12 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.util.StringUtils;
 
 import com.examw.test.dao.library.IPaperReleaseDao;
@@ -54,6 +64,7 @@ import net.sf.ehcache.Element;
 public class DataSyncServiceImpl implements IDataSyncService {
 	private final static Logger logger = Logger.getLogger(DataSyncServiceImpl.class);
 	private Cache cache;
+	private String zipTempDir;
 	private IPaperReleaseDao paperReleaseDao;
 	private IRegistrationCodeService registrationCodeService;
 	private IUserPaperRecordService userPaperRecordService;
@@ -70,6 +81,14 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	public void setCache(Cache cache) {
 		logger.debug("注入缓存对象...");
 		this.cache = cache;
+	}
+	/**
+	 * 设置Zip存储临时目录。
+	 * @param zipTempDir 
+	 *	  Zip存储临时目录。
+	 */
+	public void setZipTempDir(String zipTempDir) {
+		this.zipTempDir = zipTempDir;
 	}
 	/**
 	 * 设置发布试卷数据接口。
@@ -134,6 +153,26 @@ public class DataSyncServiceImpl implements IDataSyncService {
 		logger.debug("注入考试分类数据接口...");
 		this.categoryDao = categoryDao;
 	}
+	
+	//获取缓存数据
+	private Object getCacheValue(String key){
+		if(logger.isDebugEnabled()) logger.debug("获取缓存数据=>" +  key);
+		if(this.cache != null && !StringUtils.isEmpty(key)){
+			final Element e = this.cache.get(key);
+			if(e != null){
+				return e.getObjectValue();
+			}
+		}
+		return null;
+	}
+	//设置缓存数据
+	private void setCacheValue(String key, Serializable value){
+		if(logger.isDebugEnabled()) logger.debug("设置缓存["+key+"]数据..=>" + value);
+		if(this.cache != null && !StringUtils.isEmpty(key) && value != null){
+			this.cache.put(new Element(key, value));
+		}
+	}
+	
 	//缓存键名
 	private static final String CACHE_KEY_CATEGORIES = MD5Util.MD5( "__downloadCategories__");
 	/*
@@ -144,25 +183,19 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	public List<CategorySync> downloadCategories() throws Exception {
 		logger.debug("下载考试类别数据...");
 		//检查缓存
-		if(this.cache != null){
-			Element element = this.cache.get(CACHE_KEY_CATEGORIES);
-			if(element != null){
-				logger.debug("从缓存中加载考试类别数据...");
-				CategorySync[] arrays = (CategorySync [])element.getObjectValue();
-				if(arrays != null && arrays.length > 0){
-					 logger.debug("从缓存中反馈考试类别数据...");
-					return Arrays.asList(arrays);
-				}
-			}
+		final CategorySync[] arrays = (CategorySync[])this.getCacheValue(CACHE_KEY_CATEGORIES);
+		if(arrays != null && arrays.length > 0){
+			logger.debug("从缓存["+CACHE_KEY_CATEGORIES+"]中反馈考试类别数据...");
+			return Arrays.asList(arrays);
 		}
 		//初始化目标数据
-		List<CategorySync> list  = new ArrayList<CategorySync>();
+		final List<CategorySync> list  = new ArrayList<CategorySync>();
 		//从数据库中加载数据..
-		List<Category> categories =  this.categoryDao.loadTopCategories();
+		final List<Category> categories =  this.categoryDao.loadTopCategories();
 		if(categories != null && categories.size() > 0){
 			for(Category category : categories){
 				if(category == null)continue;
-				CategorySync categorySync = new CategorySync();
+				final CategorySync categorySync = new CategorySync();
 				categorySync.setId(category.getId());
 				categorySync.setCode(category.getCode());
 				categorySync.setName(category.getName());
@@ -190,9 +223,10 @@ public class DataSyncServiceImpl implements IDataSyncService {
 			});
 		}
 		//检查数据并进行缓存处理
-		if(this.cache != null && list != null && list.size() > 0){
+		
+		if(list != null && list.size() > 0){
 			logger.debug("将考试类别数据加载到缓存中...");
-			this.cache.put(new Element(CACHE_KEY_CATEGORIES,  list.toArray(new CategorySync[0])));
+			this.setCacheValue(CACHE_KEY_CATEGORIES, list.toArray(new CategorySync[0]));
 		}
 		return list;
 	}
@@ -263,24 +297,20 @@ public class DataSyncServiceImpl implements IDataSyncService {
 	@Override
 	public ExamSync syncExams(AppClientSync req) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("同步考试科目数据...");
-		final String cacheKey = MD5Util.MD5("syncExams_" + req.getProductId());
-		//检查缓存
-		if(this.cache != null){
-			Element element = this.cache.get(cacheKey);
-			if(element != null){
-				ExamSync exam = (ExamSync)element.getObjectValue();
-				if(exam != null){
-					logger.debug("从缓存中加载产品考试科目数据...");
-					return exam;
-				}
-			}
-		}
 		//校验产品
 		Product p = this.validationSyncReq(req);
 		if(p == null) throw new Exception("加载产品数据失败！");
+		//创建缓存键
+		final String cacheKey = MD5Util.MD5("syncExams_" + req.getProductId());
+		//检查缓存
+		ExamSync examSync = (ExamSync)this.getCacheValue(cacheKey);
+		if(examSync != null){
+			logger.debug("从缓存中加载产品考试科目数据...");
+			return examSync;
+		}
 		Exam exam = null;
 		if((exam = p.getExam()) == null) throw new Exception(String.format("产品［%s］未设置考试！", p.getName()));
-		ExamSync examSync = new ExamSync();
+		examSync = new ExamSync();
 		examSync.setCode(exam.getCode());
 		examSync.setName(exam.getName());
 		examSync.setAbbr(exam.getAbbr());
@@ -296,9 +326,9 @@ public class DataSyncServiceImpl implements IDataSyncService {
 			examSync.setSubjects(subjectSyncs);
 		}
 		//存入缓存
-		if(this.cache != null && examSync != null){
+		if(examSync != null){
 			logger.debug("产品["+cacheKey+"]科目数据存入缓存...");
-			this.cache.put(new Element(cacheKey, examSync));
+			this.setCacheValue(cacheKey, examSync);
 		}
 		return examSync;
 	}
@@ -323,31 +353,132 @@ public class DataSyncServiceImpl implements IDataSyncService {
 		final String cacheKey = createPapersCacheKey(req);
 		if(logger.isDebugEnabled()) logger.debug("生成缓存键=>" + cacheKey);
 		//检查缓存
-		if(this.cache != null){
-			Element element = this.cache.get(cacheKey);
-			if(element != null){
-				logger.debug("从缓存中加载试卷数据...");
-				PaperSync [] papers = (PaperSync [])element.getObjectValue();
-				if(papers != null && papers.length > 0){
-					logger.debug("从缓存中反馈试卷数据...");
-					return Arrays.asList(papers);
-				}
-			}
+		final PaperSync [] papers = (PaperSync[])this.getCacheValue(cacheKey);
+		if(papers != null && papers.length > 0){
+			logger.debug("从缓存中反馈试卷数据...");
+			return Arrays.asList(papers);
 		}
+		//
 		Date startTime = null;
 		//获取数据开始时间
 		if(!StringUtils.isEmpty(req.getStartTime())){
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			startTime = dateFormat.parse(req.getStartTime());
 		}
 		final List<PaperSync> list =  this.buildProductPapers(p, startTime);
 		//缓存数据
-		if(this.cache != null && list != null && list.size() > 0){
+		if(list != null && list.size() > 0){
 			logger.debug("将试卷数据加载到缓存键["+ cacheKey +"]中...");
-			this.cache.put(new Element(cacheKey,  list.toArray(new PaperSync[0])));
+			this.setCacheValue(cacheKey, list.toArray(new PaperSync[0]));
 		}
-		 return list;
+		return list;
 	}
+	
+	/*
+	 * 下载zip格式试卷数据。
+	 * @see com.examw.test.service.api.IDataSyncService#downloadZipPapers(com.examw.test.model.api.AppClientSync)
+	 */
+	@Override
+	public byte[] downloadZipPapers(AppClientSync req) throws Exception {
+		if(logger.isInfoEnabled()) logger.info("下载zip格式试卷数据...");
+		final String zipCacheJSONKey = "zip_" + createPapersCacheKey(req) + "_json", zipCacheHashKey = zipCacheJSONKey + "_hash";
+		//从缓存中读取文件名
+		final String zipFileHash = (String)this.getCacheValue(zipCacheHashKey);
+		try{
+			//从临时缓存目录读取文件
+			if(logger.isInfoEnabled()) logger.info("从临时缓存目录读取文件=>" + zipFileHash);
+			if(!StringUtils.isEmpty(zipFileHash) && !StringUtils.isEmpty(this.zipTempDir) && new File(this.zipTempDir).exists()){
+				final File zipFilePath = new File(this.zipTempDir, zipFileHash + ".zip");
+				if(zipFilePath.exists()){
+					if(logger.isInfoEnabled()) logger.info("从临时文件["+zipFilePath.getAbsolutePath()+"]中读取数据=>" + zipFileHash);
+					 return FileUtils.readFileToByteArray(zipFilePath);
+				}
+			}
+		}catch(Exception e){
+			logger.error("从临时缓存目录读取文件["+zipFileHash+"]异常:" + e.getMessage(), e);
+		}
+		//从缓存中读取JSON串
+		if(logger.isInfoEnabled()) logger.info("从缓存中读取JSON串=>" + zipCacheJSONKey);
+		String json = (String)this.getCacheValue(zipCacheJSONKey);
+		if(StringUtils.isEmpty(json)){
+			//加载查询数据
+			final List<PaperSync> papers = this.syncPapers(req);
+			if(papers != null && papers.size() > 0){
+				final ObjectMapper mapper = new ObjectMapper();
+				 json = mapper.writeValueAsString(papers);
+				 if(!StringUtils.isEmpty(json)){
+					 if(logger.isInfoEnabled()) logger.info("将数据JSON处理,并缓存=>" + zipCacheJSONKey);
+					 this.setCacheValue(zipCacheJSONKey, json);
+				 }
+			}
+		}
+		//检查数据/压缩处理
+		if(logger.isInfoEnabled()) logger.info("JSON压缩处理...");
+		if(!StringUtils.isEmpty(json)){
+			byte[] bodys = null;
+			//输出流
+			ByteArrayOutputStream outputStream = null;
+			ZipOutputStream zipOutputStream = null;
+			try{
+				//初始化输出流
+				outputStream = new ByteArrayOutputStream();
+				//初始化Zip输出流
+				zipOutputStream = new ZipOutputStream(outputStream);
+				//zip压缩
+				this.zip(zipOutputStream, json.getBytes("UTF-8"), "data.json");
+				//flush
+				zipOutputStream.flush();
+				//结果数据
+				bodys = outputStream.toByteArray();
+			}catch(Exception e){
+				 logger.error("JSON压缩时发生异常:" + e.getMessage(), e);
+			}finally{
+				//关闭zip输出流
+				if(zipOutputStream != null) zipOutputStream.close();
+				//关闭输出流
+				if(outputStream != null) outputStream.close();
+			}
+			try{
+				 //临时文件处理
+				 if(bodys != null && bodys.length > 0 &&  !StringUtils.isEmpty(this.zipTempDir) && new File(this.zipTempDir).exists()){
+					 final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					 //计算文件Hash
+					 final String zipHash = sdf.format(new Date()) + File.separator + MD5Util.MD5(json);
+					 //生成临时文件
+					 if(logger.isInfoEnabled()) logger.info("生成临时文件=>" + zipHash);
+					 FileUtils.writeByteArrayToFile(new File(this.zipTempDir, zipHash + ".zip"), bodys);
+					 //缓存文件键
+					 this.setCacheValue(zipCacheHashKey, zipHash);
+				 }
+			}catch(Exception e){
+				logger.error("写入临时目录缓存文件异常:" + e.getMessage(), e);
+			}
+			 //压缩结果处理
+			 return bodys;
+		}
+		return null;
+	}
+	
+	//zip压缩
+	private void zip(final ZipOutputStream out, final byte[] data, final String fileName) throws Exception{
+		//初始化zip输出缓冲流
+		final BufferedOutputStream bufOutputStream = new BufferedOutputStream(out);
+		//创建zip文件
+		out.putNextEntry(new ZipEntry(fileName));
+		//初始化输入缓冲流
+		final BufferedInputStream bufInputStream = new BufferedInputStream(new ByteArrayInputStream(data));
+		//
+		final byte[] buf = new byte[1024];
+		int count = 0;
+		while((count = bufInputStream.read(buf, 0, buf.length)) != -1){
+			bufOutputStream.write(buf, 0, count);
+		}
+		//关闭输入缓冲流
+		bufInputStream.close();
+		//关闭输出缓冲流
+		bufOutputStream.close();
+	}
+	
 	//构建产品试卷集合
 	private List<PaperSync> buildProductPapers(Product p, Date startTime){
 		if(p == null) return null;
@@ -396,7 +527,6 @@ public class DataSyncServiceImpl implements IDataSyncService {
 		}
 		return list.toArray(new String[0]);
 	}
-	
 	/*
 	 * 自动缓存产品试卷。
 	 * @see com.examw.test.service.api.IDataSyncService#updateAutoProductPapersCache()
@@ -457,10 +587,8 @@ public class DataSyncServiceImpl implements IDataSyncService {
 										continue;
 									}
 									//开始缓存
-									if(this.cache != null){
-										logger.debug("自动将试卷数据加载到缓存键["+ cacheKey +"]中...");
-										this.cache.put(new Element(cacheKey,  list.toArray(new PaperSync[0])));
-									}
+									logger.debug("自动将试卷数据加载到缓存键["+ cacheKey +"]中...");
+									this.setCacheValue(cacheKey, list.toArray(new PaperSync[0]));
 								}catch(Exception e){
 									logger.error("自动缓存产品异常:" + e.getMessage(), e);
 								}
@@ -597,12 +725,12 @@ public class DataSyncServiceImpl implements IDataSyncService {
 			return this.productService.loadProduct(req.getProductId());
 		}
 		//验证注册码
-		String reg_code =  this.registrationCodeService.cleanCodeFormat(req.getCode());
+		final String reg_code =  this.registrationCodeService.cleanCodeFormat(req.getCode());
 		if(StringUtils.isEmpty(reg_code)) throw new Exception("注册码为空！");
 		if(this.registrationCodeService.validation(reg_code)){
-			Registration reg = this.registrationCodeService.loadRegistration(reg_code);
+			final Registration reg = this.registrationCodeService.loadRegistration(reg_code);
 			if(reg == null) throw new Exception(String.format("加载注册码对象失败! %s", reg_code));
-			Product p = reg.getProduct();
+			final Product p = reg.getProduct();
 			if(p == null) throw new Exception("加载产品信息失败！");
 			if(!p.getId().equalsIgnoreCase(req.getProductId())){
 				throw new Exception(String.format("注册码［%1$s］属于产品［%2$s］与App应用产品不符!", reg_code, p.getName()));

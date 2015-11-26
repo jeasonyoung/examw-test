@@ -39,6 +39,14 @@ public interface IDataSyncService {
 	 */
 	List<PaperSync> syncPapers(AppClientSync req) throws Exception;
 	/**
+	 * 下载zip试卷数据。
+	 * @param req
+	 * @return
+	 * zip字节数组
+	 * @throws Exception
+	 */
+	byte[] downloadZipPapers(AppClientSync req) throws Exception;
+	/**
 	 * 自动缓存产品试卷。
 	 */
 	void updateAutoProductPapersCache();

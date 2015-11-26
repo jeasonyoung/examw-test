@@ -74,6 +74,8 @@
 	<bean id="dataSyncService" class="com.examw.test.service.api.impl.DataSyncServiceImpl">
 	    <!--  设置缓存 -->
 	    <property name="cache" ref="apiCache" />
+	    <!-- 设置zip临时目录 -->
+	    <property name="zipTempDir" value="${api_zip_temp_dir}"/>
 	    <!-- 试卷发布数据接口 -->
 	    <property name="paperReleaseDao" ref="paperReleaseDao" />
 	     <!-- 注册码服务接口 -->

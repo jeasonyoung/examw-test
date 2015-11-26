@@ -1,6 +1,9 @@
 package com.examw.test.controllers.api;
 
+import java.io.BufferedOutputStream;
+
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -159,6 +162,30 @@ public class MobileController {
 		}
 		return result;
 	}
+	
+	/**
+	 * 下载试卷数据。
+	 * @param req
+	 * @return
+	 */
+	@RequestMapping(value = {"/download/papers"}, method = {RequestMethod.POST})
+	public void downloadPapers(@RequestBody AppClientSync req, HttpServletResponse response){
+		if(logger.isDebugEnabled()) logger.debug("下载试卷数据...");
+		try{
+			final byte[] bodys  = this.dataSyncService.downloadZipPapers(req);
+			response.setContentType("application/octet-stream;charset=UTF-8");
+			response.setHeader("Content-Disposition", "attachment;filename=papers.zip");
+			response.setHeader("Content-Length",  String.valueOf(bodys == null ? 0 : bodys.length));
+			
+			final BufferedOutputStream bos = new BufferedOutputStream(response.getOutputStream());
+			bos.write(bodys);
+			bos.close();
+		}catch(Exception e){
+			logger.error("下载试卷异常:" + e.getMessage(), e);
+		}
+
+	}
+	
 	/**
 	 * 同步试卷记录数据。
 	 * @param req
