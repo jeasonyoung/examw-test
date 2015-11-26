@@ -93,6 +93,13 @@ public interface IPaperReleaseDao extends IBaseDao<PaperRelease> {
 	 */
 	List<PaperRelease> loadNewsReleases(String examId,Integer top);
 	/**
+	 * 加载最新试卷集合。
+	 * @param info
+	 * 查询条件。
+	 * @return
+	 */
+	List<PaperRelease> loadNewsReleases(PaperInfo info);
+	/**
 	 * 查询试卷发布数据。
 	 * @param info
 	 * 查询条件。

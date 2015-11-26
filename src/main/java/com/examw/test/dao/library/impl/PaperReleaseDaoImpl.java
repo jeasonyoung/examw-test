@@ -188,21 +188,44 @@ public class PaperReleaseDaoImpl extends BaseDaoImpl<PaperRelease> implements IP
 	@Override
 	public List<PaperRelease> loadNewsReleases(final String examId,final Integer top) {
 		if(logger.isDebugEnabled()) logger.debug(String.format("加载最新试卷集合:［%1$s - %2$d］...", examId, top));
-		if(top == null) return null;
-		return this.findPaperReleases(new PaperInfo(){
+		//查询条件
+		final PaperInfo info = new PaperInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
-			public String getExamId() { return examId;}
+			public String getExamId() { return examId; }
 			@Override
-			public String getSort() { return "createTime";}
+			public String getSort() { return "createTime"; }
 			@Override
-			public String getOrder() { return "desc";}
+			public String getOrder() { return "desc"; }
 			@Override
-			public Integer getPage() { return 0;}
+			public Integer getPage() { return 1;}
 			@Override
-			public Integer getRows() { return top;}
-		});
+			public Integer getRows() { return top ==  null ? 10 : top;}
+		};
+		//
+		return this.loadNewsReleases(info);
 	}
+	
+	/*
+	 * 加载最新试卷集合。
+	 * @see com.examw.test.dao.library.IPaperReleaseDao#loadNewsReleases(com.examw.test.model.library.PaperInfo)
+	 */
+	@Override
+	public List<PaperRelease> loadNewsReleases(final PaperInfo info) {
+		if(logger.isDebugEnabled()) logger.debug("加载最新试卷集合...");
+		if(info == null) return null;
+		//
+		String hql = "select new PaperRelease(p.id,p.title,p.paper,p.createTime,p.total) from PaperRelease p where (1 = 1 ) ";
+		Map<String, Object> parameters = new HashMap<>();
+		hql = this.addWhere(info, hql, parameters);
+		if(!StringUtils.isEmpty(info.getSort())){
+			if(StringUtils.isEmpty(info.getOrder())) info.setOrder("desc");
+			hql += String.format(" order by p.%1$s %2$s", info.getSort(), info.getOrder());
+		}
+		
+		return this.find(hql, parameters, info.getPage(), info.getRows());
+	}
+	
 	/*
 	 * 查询试卷发布数据。
 	 * @see com.examw.test.dao.library.IPaperReleaseDao#findPaperReleases(com.examw.test.model.library.PaperInfo)

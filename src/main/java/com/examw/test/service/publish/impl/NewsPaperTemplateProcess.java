@@ -60,14 +60,16 @@ public class NewsPaperTemplateProcess extends BaseTemplateProcess {
 	@Override
 	protected int addTemplateProcess(Date startTime) throws Exception {
 		if(logger.isDebugEnabled()) logger.debug("执行最新试卷模版处理...");
-		PaperInfo where = new PaperInfo();
+		//初始化查询条件
+	    final PaperInfo where = new PaperInfo();
 		where.setSort("createTime");
 		where.setOrder("desc");
 		where.setRows(page_count);
+		
 		long count = this.paperReleaseDao.totalPaperReleases(where);
 		int total = 0;
-		String prefix = "news",path = "/news";
-		Map<String, Object> parameters = new HashMap<>();
+		final String prefix = "news",path = "/news";
+		final Map<String, Object> parameters = new HashMap<>();
 		parameters.put("updateTime", startTime);
 		if(count == 0){
 			total += this.createStaticPages(prefix, path,parameters, null, where);
@@ -77,7 +79,7 @@ public class NewsPaperTemplateProcess extends BaseTemplateProcess {
 			total += this.createStaticPages(prefix, path,parameters, totalPages, where);
 		}
 		//分考试进行加载
-		List<Exam> exams = this.examDao.findExams(new ExamInfo(){
+		final List<Exam> exams = this.examDao.findExams(new ExamInfo(){
 			private static final long serialVersionUID = 1L;
 			@Override
 			public Integer getStatus() { return Status.ENABLED.getValue();}
@@ -120,18 +122,23 @@ public class NewsPaperTemplateProcess extends BaseTemplateProcess {
 		parameters.put("prefix", prefix);
 		parameters.put("path", path);
 		int total = 0;
-		PaperRelease release = null;
+		//PaperRelease release = null;
 		for(int i = 0; i < totalPages; i++){
 			where.setPage(i+1);
 			parameters.put("current", i + 1);
 			papers = new ArrayList<>();
-			List<PaperRelease> paperReleases = this.paperReleaseDao.findPaperReleases(where);
-			for(int j = 0; j < paperReleases.size(); j++){
-				release = paperReleases.get(j);
-				if(release == null || release.getPaper() == null) continue;
-				PaperSortingViewData ps =  this.buildPaperListViewData((i * page_count) + (j + 1), release.getPaper(), release.getTotal());
-				if(ps != null) papers.add(ps);
+			
+			final List<PaperRelease> paperReleases = this.paperReleaseDao.loadNewsReleases(where);
+			if(paperReleases != null && paperReleases.size() > 0){
+				int j = 0;
+				for(PaperRelease p : paperReleases){
+					if(p == null || p.getPaper() == null) continue;
+					final PaperSortingViewData ps =  this.buildPaperListViewData((i * page_count) + (j + 1), p.getPaper(), p.getTotal());
+					if(ps != null) papers.add(ps);
+					j++;
+				}
 			}
+			
 			parameters.put("papers", papers);
 			this.updateStaticPage(prefix + "-" + ((i == 0) ? "index": where.getPage()),
 					(i == 0) ? String.format("%s/index.html", path) : String.format("%1$s/%2$d.html", path, where.getPage()),
@@ -141,19 +148,21 @@ public class NewsPaperTemplateProcess extends BaseTemplateProcess {
 		return total;
 	}
 	/**
-	 * 构建试卷列表数据。
+	 * 构建试卷列表数据
+	 * @param order
 	 * @param paper
+	 * @param createTime
 	 * @param items
 	 * @return
 	 */
 	protected PaperSortingViewData buildPaperListViewData(Integer order, Paper paper, Integer items){
 		if(paper == null) return null;
-		Subject subject = paper.getSubject();
+		final Subject subject = paper.getSubject();
 		if(subject == null || subject.getExam() == null) return null;
-		PaperSortingViewData ps = new PaperSortingViewData(paper.getId(), paper.getName(), items, paper.getTime(),
+		final PaperSortingViewData ps = new PaperSortingViewData(paper.getId(), paper.getName(), items, paper.getTime(),
 				(paper.getScore() == null ? 0 : paper.getScore().intValue()), paper.getPrice());
 		ps.setCategory(String.format("/%1$s/%2$d",subject.getExam().getAbbr(), subject.getCode()));
-		ps.setCreateTime(paper.getCreateTime());
+		ps.setCreateTime(paper.getPublishTime() == null ? paper.getCreateTime() : paper.getPublishTime());
 		ps.setUsers(this.loadPaperUsersTotal(ps.getId()));
 		ps.setOrder(order);
 		return ps;

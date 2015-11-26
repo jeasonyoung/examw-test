@@ -48,6 +48,22 @@ public class PaperRelease implements Serializable {
 		this.setTotal(total);
 	}
 	/**
+	 * 构造函数。
+	 * @param id
+	 * 试卷发布ID。
+	 * @param title
+	 * 试卷发布标题。
+	 * @param paper
+	 * 所属试卷。
+	 * @param createTime
+	 * 发布时间。
+	 * @param  total
+	 * 试卷试题数。
+	 */
+	public PaperRelease(String id,String title,Paper paper, Date createTime,Integer total){
+		this(id,title,paper,null,createTime,total);
+	}
+	/**
 	 * 获取试卷发布ID。
 	 * @return 试卷发布ID。
 	 */
