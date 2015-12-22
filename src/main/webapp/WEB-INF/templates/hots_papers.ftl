@@ -1,5 +1,6 @@
 <#--最热试卷-->
 <#include "/inc.ftl" />
+<#include "/list_paging.ftl"/>
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<#if examName??>
@@ -49,25 +50,8 @@
 		            </ul>
 		        </div>
 		        <div class="h20"></div>
-		         <div style="width:100%;">
-		        	<div id="${prefix}_paper_paging" class="pager-plugin"></div>
-		        	<script type="text/javascript" language="javascript">
-		        	<!--
-		        	$(function(){
-		        		$("#${prefix}_paper_paging").pager({ 
-		        			pagenumber: ${current}, 
-		        			pagecount: ${total}, 
-		        			buttonClickCallback:function(index){
-		        				if(index == 1){
-		        					window.location.href="${path}/";
-		        				}else{
-		        					window.location.href="${path}/" + index +".html";
-		        				}
-		        			}
-		        		});
-		        	});
-		        	//-->
-		        	</script>
+		         <div style="width:100%;" current=${current} total=${total}>
+		         	<@list_paging current total path/>
 		        </div>
 		         </#if>
 		        <div class="h20"></div>

@@ -36,7 +36,7 @@ public  abstract class BaseTemplateProcess implements ITemplateProcess,ResourceL
 	private static final Logger logger = Logger.getLogger(BaseTemplateProcess.class);
 	private static final Map<String, List<ViewListData>> view_data_cache = new HashMap<String, List<ViewListData>>();
 	private static final Map<String, Integer> papers_data_cache = new HashMap<>();
-	protected static final int list_max_top = 10, page_count = 10;
+	protected static final int list_max_top = 10, page_count = 20;
 	private String templatesRoot,templateName;
 	private ResourceLoader resourceLoader;
 	private FreeMakerEngine engine;
