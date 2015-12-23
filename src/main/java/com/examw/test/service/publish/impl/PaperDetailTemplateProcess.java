@@ -1,5 +1,6 @@
 package com.examw.test.service.publish.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -7,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.DeserializationConfig;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import com.examw.service.Status;
 import com.examw.test.dao.products.IProductDao;
@@ -16,6 +19,7 @@ import com.examw.test.domain.products.Product;
 import com.examw.test.domain.settings.Exam;
 import com.examw.test.domain.settings.Subject;
 import com.examw.test.model.library.PaperInfo;
+import com.examw.test.model.library.PaperPreview;
 import com.examw.test.model.products.ProductInfo;
 import com.examw.test.service.library.IPaperService;
 import com.examw.test.service.publish.impl.ExamTemplateProcess.ProductListViewData;
@@ -25,11 +29,25 @@ import com.examw.test.service.publish.impl.ExamTemplateProcess.ProductListViewDa
  * 
  * @author yangyong
  * @since 2014年12月31日
+ * 
+ * 添加试卷显示
+ * @author jeasonyoung
+ * @since 2015-12-23
  */
 public class PaperDetailTemplateProcess extends BaseTemplateProcess {
 	private static final Logger logger = Logger.getLogger(PaperDetailTemplateProcess.class);
 	private IProductDao productDao;
 	private IPaperService paperService;
+	
+	private static ObjectMapper objMapper;
+	
+	static{
+		final ObjectMapper mapper = new ObjectMapper();
+		DeserializationConfig cfg = mapper.getDeserializationConfig();
+		cfg = cfg.withDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+		objMapper = mapper.setDeserializationConfig(cfg);
+	}
+	
 	/**
 	 * 设置产品数据接口。
 	 * @param productDao 
@@ -111,11 +129,26 @@ public class PaperDetailTemplateProcess extends BaseTemplateProcess {
 					}
 				}
 			}
-			parameters.put("products", products); 
+			parameters.put("products", products);
+			parameters.put("paper", this.loadPaperPreview(release.getContent()));
 			this.updateStaticPage(String.format("%1$s-%2$d-%3$s", abbr, subject.getCode(), paper.getId()), 
 					String.format("/%1$s/%2$d/%3$s.html", abbr, subject.getCode(), paper.getId()), this.createStaticPageContent(parameters)); 
 			total += 1;
 		}
 		return total;
+	}
+	
+	//加载试卷数据
+	private PaperPreview loadPaperPreview(String content){
+		try{
+			if(content == null || content.length() == 0) return null;
+			PaperPreview data = objMapper.readValue(content, PaperPreview.class);
+			if(data != null){
+				return data;
+			}
+		}catch(Exception e){
+			logger.error("反序列化试卷异常:" + e.getMessage(), e);
+		}
+		return null;
 	}
 }

@@ -77,127 +77,47 @@
 		    </div>
 		    </#if>
 		    <div class="h20"></div>
+		    
+		    <#if paper??>
 		    <div class="content yinying">
-		        <div class="txbox">
-		        	<div class="name">题型介绍</div>
-		            <div class="cont">
-		            	<div class="title">
-		                	<i><div class="title"><b>单项选择题</b></div><p>一、单项选择题(共44题，每题1分，每题的备选项中，只有一个最符合题意)</p></i>
-		                </div>
-		                <div class="timu fl">
-		                	<h2>第 1 题 关于施工总承包方项目管理任务的说法，正确的是( )。 </h2>
-		                    <p>A.施工总承包方一般不承担施工任务，只承担施工的总体管理和协调工作 </p>
-		                    <p>B.施工总承包方只负责所施工部门的施工安全，对业主指定分包商的施工安全不承担责任</p>
-		                    <p>C.施工总承包方不与分包商直接签订施工合同，均有业主方签订</p>
-		                    <p>D.施工总承包方应负责施工资源的供应组织</p>
-		                    <b>【正确答案-参考解析】：参加考试可见</b>
-		                </div>
-		                <div class="timu fl">
-		                	<h2>第 2 题 关于施工总承包方项目管理任务的说法，正确的是( )。 </h2>
-		                    <p>A.施工总承包方一般不承担施工任务，只承担施工的总体管理和协调工作 </p>
-		                    <p>B.施工总承包方只负责所施工部门的施工安全，对业主指定分包商的施工安全不承担责任</p>
-		                    <p>C.施工总承包方不与分包商直接签订施工合同，均有业主方签订</p>
-		                    <p>D.施工总承包方应负责施工资源的供应组织</p>
-		                    <b>【正确答案-参考解析】：参加考试可见</b>
-		                </div>
-		                <div class="timu fl">
-		                	<h2>第 3 题 关于施工总承包方项目管理任务的说法，正确的是( )。 </h2>
-		                    <p>A.施工总承包方一般不承担施工任务，只承担施工的总体管理和协调工作 </p>
-		                    <p>B.施工总承包方只负责所施工部门的施工安全，对业主指定分包商的施工安全不承担责任</p>
-		                    <p>C.施工总承包方不与分包商直接签订施工合同，均有业主方签订</p>
-		                    <p>D.施工总承包方应负责施工资源的供应组织</p>
-		                    <b>【正确答案-参考解析】：参加考试可见</b>
-		                </div>
-		            </div>
-		            <div class="cont">
-		            	<div class="title">
-		                	<i><div class="title"><b>多项选择题</b></div><p>二、多项选择题(共12题，每题2分，每题的备选项中，有2个或2个以上符合题意，至少有1个错项。错选，本题不得分；少选，所选的每个选项得0．5分)</p></i>
-		                </div>
-		                <div class="timu fl">
-		                	<h2>第 1 题 关于施工总承包方项目管理任务的说法，正确的是( )。 </h2>
-		                    <p>A.施工总承包方一般不承担施工任务，只承担施工的总体管理和协调工作 </p>
-		                    <p>B.施工总承包方只负责所施工部门的施工安全，对业主指定分包商的施工安全不承担责任</p>
-		                    <p>C.施工总承包方不与分包商直接签订施工合同，均有业主方签订</p>
-		                    <p>D.施工总承包方应负责施工资源的供应组织</p>
-		                    <b>【正确答案-参考解析】：参加考试可见</b>
-		                </div>
-		                <div class="timu fl">
-		                	<h2>第 2 题 关于施工总承包方项目管理任务的说法，正确的是( )。 </h2>
-		                    <p>A.施工总承包方一般不承担施工任务，只承担施工的总体管理和协调工作 </p>
-		                    <p>B.施工总承包方只负责所施工部门的施工安全，对业主指定分包商的施工安全不承担责任</p>
-		                    <p>C.施工总承包方不与分包商直接签订施工合同，均有业主方签订</p>
-		                    <p>D.施工总承包方应负责施工资源的供应组织</p>
-		                    <b>【正确答案-参考解析】：参加考试可见</b>
-		                </div>
-		                <div class="timu fl">
-		                	<h2>第 3 题 关于施工总承包方项目管理任务的说法，正确的是( )。 </h2>
-		                    <p>A.施工总承包方一般不承担施工任务，只承担施工的总体管理和协调工作 </p>
-		                    <p>B.施工总承包方只负责所施工部门的施工安全，对业主指定分包商的施工安全不承担责任</p>
-		                    <p>C.施工总承包方不与分包商直接签订施工合同，均有业主方签订</p>
-		                    <p>D.施工总承包方应负责施工资源的供应组织</p>
-		                    <b>【正确答案-参考解析】：参加考试可见</b>
-		                </div>
-		            </div>
-		            <div class="cont">
-		            	<div class="title">
-		                	<i><div class="title"><b>判断题</b></div><p>三、判断题（本类题共20题，每小题1分，共20分。）</p></i>
-		                </div>
-		                <div class="timu fl">
-		                	<h2>第 1 题 关于施工总承包方项目管理任务的说法，是只承担施工的总体管理和协调工作。 </h2>
-		                    <p><label><input type="radio" name="" value="1">对</label></p>
-		                    <p><label><input type="radio" name="" value="2">错</label></p>
-		                    <b>【正确答案-参考解析】：参加考试可见</b>
-		                </div>
-		                <div class="timu fl">
-		                	<h2>第 2 题 关于施工总承包方项目管理任务的说法，是只承担施工的总体管理和协调工作。 </h2>
-		                    <p><label><input type="radio" name="" value="1">对</label></p>
-		                    <p><label><input type="radio" name="" value="2">错</label></p>
-		                    <b>【正确答案-参考解析】：参加考试可见</b>
-		                </div>
-		                <div class="timu fl">
-		                	<h2>第 3 题 关于施工总承包方项目管理任务的说法，是只承担施工的总体管理和协调工作。 </h2>
-		                    <p><label><input type="radio" name="" value="1">对</label></p>
-		                    <p><label><input type="radio" name="" value="2">错</label></p>
-		                    <b>【正确答案-参考解析】：参加考试可见</b>
-		                </div>
-		            </div>
-		            <div class="cont">
-		            	<div class="title">
-		                	<i><div class="title"><b>材料题</b></div><p>四、案例分析题（本类题共20题，每小题1分，共20分。）</p></i>
-		                </div>
-		                <div class="timu fl">
-		                	<h2>回答题材料：
-		高级会计师的基本任务条件之一是取得博士学位高级会计师的基本任务条件之一是取得博士学位高级会计师的基本任务条件之一是取得博士学位
-		要求：根据以上资料，回答以下问题</h2>
-		                </div>
-		                <div class="timu fl">
-		                	<h2>第 1 题 高级会计师的基本任务条件之一是取得博士学位，并担任会计师职务( )。</h2>
-		                    <p>A.3-5年</p>
-		                    <p>B.2-5年</p>
-		                    <p>C.1-5年</p>
-		                    <p>D.5年以上</p>
-		                    <b>【正确答案-参考解析】：参加考试可见</b>
-		                </div>
-		                <div class="timu fl">
-		                	<h2>第 2 题 高级会计师的基本任务条件之一是取得博士学位，并担任会计师职务( )。</h2>
-		                    <p>A.3-5年</p>
-		                    <p>B.2-5年</p>
-		                    <p>C.1-5年</p>
-		                    <p>D.5年以上</p>
-		                    <b>【正确答案-参考解析】：参加考试可见</b>
-		                </div>
-		                <div class="timu fl">
-		                	<h2>第 3 题 高级会计师的基本任务条件之一是取得博士学位，并担任会计师职务( )。</h2>
-		                    <p>A.3-5年</p>
-		                    <p>B.2-5年</p>
-		                    <p>C.1-5年</p>
-		                    <p>D.5年以上</p>
-		                    <b>【正确答案-参考解析】：参加考试可见</b>
-		                </div>
-		            </div>
-		        </div>
+		    	<div class="txbox">
+		    		<div class="name">题型介绍</div>
+		    		<#if paper.structures??>
+		    		<#list paper.structures as structrue>
+		    		<#if (structrue_index > 1)>
+		    			<#break>
+		    		</#if>
+		    		<div class="cont">
+		    			<div class="title">
+		    				<i><#if structrue.typeName??><div class="title"><b>${structrue.typeName}</b></div></#if><p>${structrue.title}</p></i>
+		    			</div>
+		    			<#if structrue.items??>
+		    			<#list structrue.items?sort_by("orderNo") as item>
+		    				<#if (item_index > 1)>
+		    					<#break>
+		    				</#if>
+		    				<#if item.content??>
+		    				<div class="timu fl">
+		    					<h2><#if item.orderNo??>${item.orderNo}.</#if>${item.content}</h2>
+		    					<#if item.children ??>
+		    					<#list item.children as opt>
+		    						<#if opt.content??>
+		    					 	<p>${opt.content}</p>
+		    					 	</#if>
+		    					</#list>
+		    					</#if>
+		    					<b>【正确答案-参考解析】：参加考试可见</b>
+		    				</div>
+		    				</#if>
+		    			</#list>
+		    			</#if>
+		    		</div>
+		    		</#list>
+		    		</#if>
+		    	</div>
 		    </div>
-		</div>
+		    </#if>
+		
 		<div class="h30"></div>
 		<div class="h1d"></div>
 		<div class="newbox fl">
