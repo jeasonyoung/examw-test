@@ -89,7 +89,7 @@
 		    		</#if>
 		    		<div class="cont">
 		    			<div class="title">
-		    				<i><#if structrue.typeName??><div class="title"><b>${structrue.typeName}</b></div></#if><p>${structrue.title}</p></i>
+		    				<i><div class="title"><b>${structrue.title}</b></div><p>(${structrue.description})</p></i>
 		    			</div>
 		    			<#if structrue.items??>
 		    			<#list structrue.items?sort_by("orderNo") as item>
