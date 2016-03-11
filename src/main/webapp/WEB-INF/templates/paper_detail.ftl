@@ -98,7 +98,7 @@
 		    				</#if>
 		    				<#if item.content??>
 		    				<div class="timu fl">
-		    					<h2><#if item.orderNo??>${item.orderNo}.</#if>${item.content}</h2>
+		    					<h2><a href="/shiti/${item.id}.html" target="_blank"><#if item.orderNo??>${item.orderNo}.</#if>${item.content}</a></h2>
 		    					<#if item.children ??>
 		    					<#list item.children as opt>
 		    						<#if opt.content??>
